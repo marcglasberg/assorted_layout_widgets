@@ -30,10 +30,9 @@ class ColumnSuper extends MultiChildRenderObjectWidget {
         super(key: key, children: _childrenPlusSeparator(children, separator));
 
   static List<Widget> _childrenPlusSeparator(List<Widget> children, Widget separator) {
-    if (separator == null)
-      return children.where((child) => child != null).toList();
-    else
-      return List.of(children)..add(separator);
+    var list = children.where((child) => child != null).toList();
+    if (separator != null) list.add(separator);
+    return list;
   }
 
   @override
