@@ -1,0 +1,297 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+
+// /////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Developed by Marcelo Glasberg (nov 2019).
+
+/// For more info, see: https://pub.dartlang.org/packages/assorted_layout_widgets
+class ColumnSuper extends MultiChildRenderObjectWidget {
+  //
+  final double outerDistance;
+  final double innerDistance;
+  final bool invert;
+  final Alignment alignment;
+  final Widget separator;
+  final bool separatorOnTop;
+
+  ColumnSuper({
+    Key key,
+    List<Widget> children,
+    this.outerDistance = 0.0,
+    this.innerDistance = 0.0,
+    this.invert = false,
+    this.alignment = Alignment.center,
+    this.separator,
+    this.separatorOnTop = true,
+  })  : assert(innerDistance != null),
+        assert(invert != null),
+        assert(alignment != null),
+        super(key: key, children: _childrenPlusSeparator(children, separator));
+
+  static List<Widget> _childrenPlusSeparator(List<Widget> children, Widget separator) {
+    if (separator == null)
+      return children;
+    else
+      return List.of(children)..add(separator);
+  }
+
+  @override
+  _RenderColumnSuperBox createRenderObject(BuildContext context) => _RenderColumnSuperBox(
+        outerDistance: outerDistance ?? 0.0,
+        innerDistance: innerDistance ?? 0.0,
+        invert: invert ?? false,
+        alignment: alignment ?? Alignment.center,
+        hasSeparator: separator != null,
+        separatorOnTop: separatorOnTop ?? true,
+      );
+
+  @override
+  void updateRenderObject(BuildContext context, _RenderColumnSuperBox renderObject) {
+    renderObject
+      ..outerDistance = outerDistance ?? 0.0
+      ..innerDistance = innerDistance ?? 0.0
+      ..invert = invert ?? false
+      ..alignment = alignment ?? Alignment.center
+      ..hasSeparator = separator != null
+      ..separatorOnTop = separatorOnTop ?? true;
+  }
+}
+
+// /////////////////////////////////////////////////////////////////////////////////////////////////
+
+class _RenderColumnSuperBox extends RenderBox
+    with
+        ContainerRenderObjectMixin<RenderBox, MultiChildLayoutParentData>,
+        RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
+  //
+  _RenderColumnSuperBox({
+    RenderBox child,
+    @required double outerDistance,
+    @required double innerDistance,
+    @required bool invert,
+    @required Alignment alignment,
+    @required bool hasSeparator,
+    @required bool separatorOnTop,
+  })  : assert(innerDistance != null),
+        assert(invert != null),
+        _outerDistance = outerDistance,
+        _innerDistance = innerDistance,
+        _invert = invert,
+        _alignment = alignment,
+        _hasSeparator = hasSeparator,
+        _separatorOnTop = separatorOnTop,
+        super();
+
+  double _outerDistance;
+  double _innerDistance;
+  bool _invert;
+  Alignment _alignment;
+  bool _hasSeparator;
+  bool _separatorOnTop;
+
+  double get outerDistance => _outerDistance;
+
+  double get innerDistance => _innerDistance;
+
+  bool get invert => _invert;
+
+  Alignment get alignment => _alignment;
+
+  bool get hasSeparator => _hasSeparator;
+
+  bool get separatorOnTop => _separatorOnTop;
+
+  set outerDistance(double value) {
+    if (_outerDistance == value) return;
+    _outerDistance = value;
+    markNeedsLayout();
+  }
+
+  set innerDistance(double value) {
+    if (_innerDistance == value) return;
+    _innerDistance = value;
+    markNeedsLayout();
+  }
+
+  set invert(bool value) {
+    if (_invert == value) return;
+    _invert = value;
+    markNeedsLayout();
+  }
+
+  set alignment(Alignment value) {
+    if (_alignment == value) return;
+    _alignment = value;
+    markNeedsLayout();
+  }
+
+  set hasSeparator(bool value) {
+    if (_hasSeparator == value) return;
+    _hasSeparator = value;
+    markNeedsLayout();
+  }
+
+  set separatorOnTop(bool value) {
+    if (_separatorOnTop == value) return;
+    _separatorOnTop = value;
+    markNeedsLayout();
+  }
+
+  @override
+  void setupParentData(RenderBox child) {
+    if (child.parentData is! MultiChildLayoutParentData)
+      child.parentData = MultiChildLayoutParentData();
+  }
+
+  RenderBox _renderSeparator;
+
+  RenderBox get renderSeparator => _renderSeparator;
+
+  List<RenderBox> _children;
+
+  List<RenderBox> get children => _children;
+
+  void _findChildrenAndSeparator() {
+    _children = <RenderBox>[];
+    _renderSeparator = null;
+    RenderBox child = firstChild;
+    while (child != null) {
+      final MultiChildLayoutParentData childParentData = child.parentData;
+      var recentChild = child;
+      child = childParentData.nextSibling;
+      if (!hasSeparator || child != null) _children.add(recentChild);
+    }
+
+    if (hasSeparator) _renderSeparator = lastChild;
+  }
+
+  /// The layout constraints provided by your parent are available via the [constraints] getter.
+  ///
+  /// If [sizedByParent] is true, then this function should not actually change
+  /// the dimensions of this render object. Instead, that work should be done by
+  /// [performResize]. If [sizedByParent] is false, then this function should
+  /// both change the dimensions of this render object and instruct its children
+  /// to layout.
+  ///
+  /// In implementing this function, you must call [layout] on each of your
+  /// children, passing true for parentUsesSize if your layout information is
+  /// dependent on your child's layout information. Passing true for
+  /// parentUsesSize ensures that this render object will undergo layout if the
+  /// child undergoes layout. Otherwise, the child can change its layout
+  /// information without informing this render object.
+  @override
+  void performLayout() {
+    //
+    _findChildrenAndSeparator();
+
+    var innerConstraints = BoxConstraints(maxWidth: constraints.maxWidth);
+
+    double dy = outerDistance;
+
+    for (RenderBox child in _children) {
+      final MultiChildLayoutParentData childParentData = child.parentData;
+      child.layout(innerConstraints, parentUsesSize: true);
+      childParentData.offset = Offset(dx(child), dy);
+      dy += child.size.height + innerDistance;
+      child = childParentData.nextSibling;
+    }
+
+    if (hasSeparator) {
+      renderSeparator.layout(innerConstraints, parentUsesSize: false);
+    }
+
+    size = constraints.constrain(Size(double.infinity, dy - innerDistance + outerDistance));
+  }
+
+  double dx(RenderBox child) {
+    final parentWidth = constraints.maxWidth;
+    final childWidth = child.size.width;
+    final double centerX = (parentWidth - childWidth) / 2.0;
+    return centerX + alignment.x * centerX;
+  }
+
+  @override
+  bool hitTestChildren(BoxHitTestResult result, {Offset position}) {
+    return defaultHitTestChildren(result, position: position);
+  }
+
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    if (invert)
+      invertPaint(context, offset);
+    else
+      defaultPaint(context, offset);
+  }
+
+  void defaultPaint(PaintingContext context, Offset offset) {
+    if (!separatorOnTop)
+      for (int i = 0; i < _children.length; i++) {
+        final MultiChildLayoutParentData childParentData = _children[i].parentData;
+        _paintSeparators(i, context, offset, childParentData);
+      }
+
+    for (int i = 0; i < _children.length; i++) {
+      var child = _children[i];
+      final MultiChildLayoutParentData childParentData = child.parentData;
+      context.paintChild(child, childParentData.offset + offset);
+      if (separatorOnTop) _paintSeparators(i, context, offset, childParentData);
+    }
+  }
+
+  void _paintSeparators(
+      int i, PaintingContext context, Offset offset, MultiChildLayoutParentData childParentData) {
+    if (hasSeparator && i > 0 && i < _children.length) {
+      context.paintChild(
+          renderSeparator,
+          offset +
+              Offset(dx(renderSeparator),
+                  childParentData.offset.dy - (innerDistance + renderSeparator.size.height) / 2));
+    }
+  }
+
+  void invertPaint(PaintingContext context, Offset offset) {
+    for (RenderBox child in _children.reversed) {
+      final MultiChildLayoutParentData childParentData = child.parentData;
+      context.paintChild(child, childParentData.offset + offset);
+    }
+  }
+
+  @override
+  double computeMinIntrinsicWidth(double height) {
+    double dx = 0.0;
+    for (RenderBox child in _children) {
+      dx += child.computeMinIntrinsicWidth(height);
+    }
+    return dx;
+  }
+
+  @override
+  double computeMaxIntrinsicWidth(double height) {
+    double dx = 0.0;
+    for (RenderBox child in _children) {
+      dx += child.computeMaxIntrinsicWidth(height);
+    }
+    return dx;
+  }
+
+  @override
+  double computeMinIntrinsicHeight(double width) {
+    double dy = 0.0;
+    for (RenderBox child in _children) {
+      dy += child.computeMinIntrinsicHeight(width);
+    }
+    return dy;
+  }
+
+  @override
+  double computeMaxIntrinsicHeight(double width) {
+    double dy = 0.0;
+    for (RenderBox child in _children) {
+      dy += child.computeMaxIntrinsicHeight(width);
+    }
+    return dy;
+  }
+}
+
+// /////////////////////////////////////////////////////////////////////////////////////////////////
