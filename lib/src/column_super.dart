@@ -31,7 +31,7 @@ class ColumnSuper extends MultiChildRenderObjectWidget {
 
   static List<Widget> _childrenPlusSeparator(List<Widget> children, Widget separator) {
     if (separator == null)
-      return children;
+      return children.where((child) => child != null).toList();
     else
       return List.of(children)..add(separator);
   }
@@ -185,23 +185,28 @@ class _RenderColumnSuperBox extends RenderBox
     //
     _findChildrenAndSeparator();
 
-    var innerConstraints = BoxConstraints(maxWidth: constraints.maxWidth);
+    if (_children.isEmpty) {
+      size = constraints.constrain(Size(double.infinity, 0.0));
+      return;
+    } else {
+      var innerConstraints = BoxConstraints(maxWidth: constraints.maxWidth);
 
-    double dy = outerDistance;
+      double dy = outerDistance;
 
-    for (RenderBox child in _children) {
-      final MultiChildLayoutParentData childParentData = child.parentData;
-      child.layout(innerConstraints, parentUsesSize: true);
-      childParentData.offset = Offset(dx(child), dy);
-      dy += child.size.height + innerDistance;
-      child = childParentData.nextSibling;
+      for (RenderBox child in _children) {
+        final MultiChildLayoutParentData childParentData = child.parentData;
+        child.layout(innerConstraints, parentUsesSize: true);
+        childParentData.offset = Offset(dx(child), dy);
+        dy += child.size.height + innerDistance;
+        child = childParentData.nextSibling;
+      }
+
+      if (hasSeparator) {
+        renderSeparator.layout(innerConstraints, parentUsesSize: false);
+      }
+
+      size = constraints.constrain(Size(double.infinity, dy - innerDistance + outerDistance));
     }
-
-    if (hasSeparator) {
-      renderSeparator.layout(innerConstraints, parentUsesSize: false);
-    }
-
-    size = constraints.constrain(Size(double.infinity, dy - innerDistance + outerDistance));
   }
 
   double dx(RenderBox child) {

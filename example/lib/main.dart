@@ -84,7 +84,7 @@ class Demo extends StatelessWidget {
           invert: false,
           outerDistance: 5,
           innerDistance: -15,
-          children: [redBox(), blueBox()],
+          children: [null, redBox(), null, blueBox(), null],
         ),
       );
 

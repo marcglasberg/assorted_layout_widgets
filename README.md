@@ -29,6 +29,9 @@ ColumnSuper({
   });
 ```
 
+* **`children`** is the list of widgets that represent the column cells, just like in a regular `Column` widget.
+The list may contain `null`s, which will be ignored.
+ 
 * **`outerDistance`** is the distance in pixels before the first and after the last widget.
 It can be negative, in which case the cells will overflow the column.
  
