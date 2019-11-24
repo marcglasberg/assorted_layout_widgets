@@ -4,7 +4,7 @@
 
 Assorted layout widgets that boldly go where no native Flutter widgets have gone before.
 
-**Note: I will slowly but surely add interesting widgets in this package.
+**Note: I will slowly but surely add interesting widgets to this package.
 So far it has a single widget.**
 
 Widgets in this package:
@@ -38,7 +38,7 @@ It can be negative, in which case the cells will overlap.
 * **`invert`** if true will paint the cells that come later on top of the ones that came before.
 This is specially useful when cells overlap (negative `innerDistance`).
 
-* **`alignment`** will align the cells horizontally if they are smaller then te available horizontal space.
+* **`alignment`** will align the cells horizontally if they are smaller than the available horizontal space.
 
 * **`separator`** is a widget which will be put between each cells. Its height doesn't matter,
  since the distance between cells is given by `innerDistance`.   
