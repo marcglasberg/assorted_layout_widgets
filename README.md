@@ -2,14 +2,13 @@
 
 # assorted_layout_widgets
 
-Assorted layout widgets that boldly go where no native Flutter widgets have gone before.
-
-**Note: I will slowly but surely add interesting widgets to this package.
-So far it has a single widget.**
-
 Widgets in this package:
 
 * `ColumnSuper`
+* `RowSuper`
+* `FitHorizontally`
+
+I will slowly but surely add interesting widgets to this package.
 
 
 ## ColumnSuper
@@ -49,7 +48,11 @@ This is specially useful when cells overlap (negative `innerDistance`).
 * **`separatorOnTop`** if `true` (the default) will paint the separator on top of the cells.
 If `false` will paint the separator below the cells.
 
-Try running the: <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main.dart">Example</a>.
+*Note: This is not a substitute for Flutter's native Column, 
+it doesn't try to have a similar API, and it doesn't do all that the native Column does.*
+
+Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_column_super.dart">example</a>.
+
 
 ## RowSuper
 
@@ -65,8 +68,36 @@ RowSuper({
     Widget separator,
     bool separatorOnTop,
   });
-```
+```                      
 
+Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_row_super.dart">example</a>.
+
+
+## FitHorizontally
+
+```dart
+FitHorizontally({
+    Widget child,  
+    double shrinkLimit,
+    bool fitsHeight,
+    AlignmentGeometry alignment,
+  });
+```                      
+
+The `child` will be asked to define its own intrinsic height.
+If `fitsHeight` is true, the child will be proportionately resized (keeping its aspect ratio)
+to fit the available height.
+
+Then, if the child doesn't fit the width, it will be shrinked horizontally
+only (not keeping its aspect ratio) until if fits, unless `shrinkLimit` is larger than zero, 
+in which case it will shrink only until that limit. 
+Note if `shrinkLimit` is 1.0 the child
+will not shrink at all. The default is 0.67 (67%).
+
+This is specially useful for text that is displayed in a single line.
+When text doesn't fit the container it will shrink only horizontally,
+until it reaches the shrink limit. From that point on it will clip,
+display ellipsis or fade, according to the text's `Text.overflow` property.
 
 ## AlignPositioned
 

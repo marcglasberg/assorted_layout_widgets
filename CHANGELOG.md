@@ -1,3 +1,7 @@
-## [1.0.3] - 2019/11/24
+## [1.0.4] - 2019/11/24
 
 * RowSuper and ColumnSuper.
+
+## [1.0.5] - 2019/11/25
+
+* FitHorizontally.
