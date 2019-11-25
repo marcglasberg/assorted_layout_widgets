@@ -54,7 +54,7 @@ If `false` will paint the separator below the cells.
 it doesn't try to have a similar API, and it doesn't do all that `Column` does.
 In special, `Expanded` and `Flexible` widget don't work inside of `ColumnSuper`, 
 and it will overflow if the column is not big enough to fit its contents.
-`ColumnSuper` is meant only to certain use cases where the native Column won't work, 
+`ColumnSuper` is meant only to certain use cases where `Column` won't work, 
 like when you need overlapping cells.*
 
 Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_column_super.dart">ColumnSuper example</a>.
@@ -96,6 +96,14 @@ Note, if `fitHorizontally` is false, the `shrinkLimit` is not used.
 ![alt text](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/rowSuperWithFirHorizontally.jpg)
  
 Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_row_super_with_fit_horizontally.dart">RowSuper with FitHorizontally example</a>.
+
+*Note: This is not a substitute for Flutter's native `Row`, 
+it doesn't try to have a similar API, and it doesn't do all that `Row` does.
+In special, `Expanded` and `Flexible` widget don't work inside of `RowSuper`,
+since `RowSuper` will resize cells proportionately when content doesn't fit. 
+`RowSuper` is meant only to certain use cases where `Row` won't work, 
+like when you need overlapping cells, or when you need to scale the contents
+of the cells when they don't fit.*
 
 
 ## FitHorizontally

@@ -166,7 +166,7 @@ class _RenderRowSuperBox extends RenderBox
 
   RenderBox get renderSeparator => _renderSeparator;
 
-  List<RenderBox> _children = [];
+  List<RenderBox> _children;
 
   List<RenderBox> get children => _children;
 
@@ -346,6 +346,7 @@ class _RenderRowSuperBox extends RenderBox
 
   @override
   double computeMinIntrinsicWidth(double height) {
+    if (_children == null) _findChildrenAndSeparator();
     double dx = 0.0;
     for (RenderBox child in _children) {
       dx += child.computeMinIntrinsicWidth(height);
@@ -355,6 +356,7 @@ class _RenderRowSuperBox extends RenderBox
 
   @override
   double computeMaxIntrinsicWidth(double height) {
+    if (_children == null) _findChildrenAndSeparator();
     double dx = 0.0;
     for (RenderBox child in _children) {
       dx += child.computeMaxIntrinsicWidth(height);
@@ -364,6 +366,7 @@ class _RenderRowSuperBox extends RenderBox
 
   @override
   double computeMinIntrinsicHeight(double width) {
+    if (_children == null) _findChildrenAndSeparator();
     double dy = 0.0;
     for (RenderBox child in _children) {
       dy += child.computeMinIntrinsicHeight(width);
@@ -373,6 +376,7 @@ class _RenderRowSuperBox extends RenderBox
 
   @override
   double computeMaxIntrinsicHeight(double width) {
+    if (_children == null) _findChildrenAndSeparator();
     double dy = 0.0;
     for (RenderBox child in _children) {
       dy += child.computeMaxIntrinsicHeight(width);
