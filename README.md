@@ -48,15 +48,20 @@ This is specially useful when cells overlap (negative `innerDistance`).
 * **`separatorOnTop`** if `true` (the default) will paint the separator on top of the cells.
 If `false` will paint the separator below the cells.
 
-*Note: This is not a substitute for Flutter's native Column, 
-it doesn't try to have a similar API, and it doesn't do all that the native Column does.*
+*Note: This is not a substitute for Flutter's native `Column`, 
+it doesn't try to have a similar API, and it doesn't do all that `Column` does.
+In special, `Expanded` and `Flexible` widget don't work inside of `ColumnSuper`, 
+and it will overflow if the column is not big enough to fit its contents.
+`ColumnSuper` is meant only to certain use cases where the native Column won't work, 
+like when you need overlapping cells.*
 
-Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_column_super.dart">example</a>.
+Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_column_super.dart">ColumnSuper example</a>.
 
 
 ## RowSuper
 
-Same as `ColumnSuper`, but for a row.
+Given a list of children widgets, this will arrange them in a row.
+It can overlap cells, add separators and more.
 
 ```dart
 RowSuper({  
@@ -67,10 +72,26 @@ RowSuper({
     Alignment alignment,
     Widget separator,
     bool separatorOnTop,
+    bool fitHorizontally,
+    double shrinkLimit,
   });
 ```                      
 
-Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_row_super.dart">example</a>.
+On contrary to `ColumnSuper` and the native `Row` 
+(which will overflow if the cells are not big enough to fit their content),
+`RowSuper` will resize its cells, **proportionately to the width of the minimum intrinsic width** of each cell content.
+
+Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_row_super.dart">RowSuper example</a>.
+
+Most parameters are the same as the ones of `ColumnSuper`, except:
+
+* **`fitHorizontally`** if true will resize the cells content, horizontally only, until the `shrinkLimit` is reached.   
+
+* **`shrinkLimit`** by default is 67%, which means the cell contents will shrink until 67% of their original width,
+and then overflow. Make `shrinkLimit` equal to `0.0` if you want the cell contents to shrink with no limits.
+Note, if `fitHorizontally` is false, the `shrinkLimit` is not used.
+ 
+Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_row_super_with_fit_horizontally.dart">RowSuper with FitHorizontally example</a>.
 
 
 ## FitHorizontally
@@ -82,7 +103,9 @@ FitHorizontally({
     bool fitsHeight,
     AlignmentGeometry alignment,
   });
-```                      
+```          
+
+![alt text](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/fitHorizontally.png)            
 
 The `child` will be asked to define its own intrinsic height.
 If `fitsHeight` is true, the child will be proportionately resized (keeping its aspect ratio)
@@ -98,6 +121,9 @@ This is specially useful for text that is displayed in a single line.
 When text doesn't fit the container it will shrink only horizontally,
 until it reaches the shrink limit. From that point on it will clip,
 display ellipsis or fade, according to the text's `Text.overflow` property.
+
+Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_fit_horizontally.dart">FitHorizontally example</a>.
+
 
 ## AlignPositioned
 

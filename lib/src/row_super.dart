@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+
+import '../assorted_layout_widgets.dart';
 
 // /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -14,6 +18,8 @@ class RowSuper extends MultiChildRenderObjectWidget {
   final Alignment alignment;
   final Widget separator;
   final bool separatorOnTop;
+  final bool fitHorizontally;
+  final double shrinkLimit;
 
   RowSuper({
     Key key,
@@ -24,13 +30,26 @@ class RowSuper extends MultiChildRenderObjectWidget {
     this.alignment = Alignment.center,
     this.separator,
     this.separatorOnTop = true,
+    this.fitHorizontally = false,
+    this.shrinkLimit,
   })  : assert(innerDistance != null),
         assert(invert != null),
         assert(alignment != null),
-        super(key: key, children: _childrenPlusSeparator(children, separator));
+        assert(fitHorizontally != null),
+        super(
+            key: key,
+            children: _childrenPlusSeparator(children, separator, fitHorizontally, shrinkLimit));
 
-  static List<Widget> _childrenPlusSeparator(List<Widget> children, Widget separator) {
-    var list = children.where((child) => child != null).toList();
+  static List<Widget> _childrenPlusSeparator(
+    List<Widget> children,
+    Widget separator,
+    bool fitHorizontally,
+    double shrinkLimit,
+  ) {
+    var iterable = children.where((child) => child != null);
+    if (fitHorizontally)
+      iterable = iterable.map((child) => FitHorizontally(child: child, shrinkLimit: shrinkLimit));
+    var list = iterable.toList();
     if (separator != null) list.add(separator);
     return list;
   }
@@ -159,6 +178,7 @@ class _RenderRowSuperBox extends RenderBox
       final MultiChildLayoutParentData childParentData = child.parentData;
       var recentChild = child;
       child = childParentData.nextSibling;
+      print('RenderBox = ${child.runtimeType}');
       if (!hasSeparator || child != null) _children.add(recentChild);
     }
 
@@ -186,26 +206,77 @@ class _RenderRowSuperBox extends RenderBox
 
     if (_children.isEmpty) {
       size = constraints.constrain(Size(0.0, double.infinity));
-      return;
     } else {
-      var innerConstraints = BoxConstraints(maxHeight: constraints.maxHeight);
-
-      double dx = outerDistance;
-
-      for (RenderBox child in _children) {
-        final MultiChildLayoutParentData childParentData = child.parentData;
-        child.layout(innerConstraints, parentUsesSize: true);
-        childParentData.offset = Offset(dx, dy(child));
-        dx += child.size.width + innerDistance;
-        child = childParentData.nextSibling;
-      }
-
-      if (hasSeparator) {
-        renderSeparator.layout(innerConstraints, parentUsesSize: false);
-      }
-
-      size = constraints.constrain(Size(dx - innerDistance + outerDistance, double.infinity));
+      if (constraints.maxWidth == double.infinity)
+        performLayoutInfiniteWidth();
+      else
+        performLayoutFiniteWidth();
     }
+  }
+
+  void performLayoutFiniteWidth() {
+    //
+    List<double> childWidth = [];
+    double totalChildrenWidth = 0.0;
+    for (RenderBox child in _children) {
+      var minIntrinsicWidth = child.computeMinIntrinsicWidth(constraints.maxHeight);
+      childWidth.add(minIntrinsicWidth);
+      totalChildrenWidth += minIntrinsicWidth;
+    }
+
+    var availableWidth = max(
+        0.0, constraints.maxWidth - (outerDistance * 2) - (innerDistance * (_children.length - 1)));
+
+    // If there is no space, don't display anything.
+    if (availableWidth == 0.0) {
+      _children = [];
+      size = constraints.constrain(Size(0.0, double.infinity));
+    }
+
+    var scale = min(1.0, availableWidth / totalChildrenWidth);
+    List<double> maxChildWidth = [];
+    for (double width in childWidth) {
+      maxChildWidth.add(width * scale);
+    }
+
+    double dx = outerDistance;
+
+    for (int i = 0; i < _children.length; i++) {
+      var innerConstraints =
+          BoxConstraints(maxHeight: constraints.maxHeight, maxWidth: maxChildWidth[i]);
+      var child = _children[i];
+      final MultiChildLayoutParentData childParentData = child.parentData;
+      child.layout(innerConstraints, parentUsesSize: true);
+      childParentData.offset = Offset(dx, dy(child));
+      dx += child.size.width + innerDistance;
+    }
+
+    var innerConstraints = BoxConstraints(maxHeight: constraints.maxHeight);
+    if (hasSeparator) {
+      renderSeparator.layout(innerConstraints, parentUsesSize: false);
+    }
+
+    size = constraints.constrain(Size(dx - innerDistance + outerDistance, double.infinity));
+  }
+
+  void performLayoutInfiniteWidth() {
+    //
+    var innerConstraints = BoxConstraints(maxHeight: constraints.maxHeight);
+
+    double dx = outerDistance;
+
+    for (RenderBox child in _children) {
+      final MultiChildLayoutParentData childParentData = child.parentData;
+      child.layout(innerConstraints, parentUsesSize: true);
+      childParentData.offset = Offset(dx, dy(child));
+      dx += child.size.width + innerDistance;
+    }
+
+    if (hasSeparator) {
+      renderSeparator.layout(innerConstraints, parentUsesSize: false);
+    }
+
+    size = constraints.constrain(Size(dx - innerDistance + outerDistance, double.infinity));
   }
 
   double dy(RenderBox child) {

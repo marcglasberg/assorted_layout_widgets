@@ -23,11 +23,12 @@ class FitHorizontally extends SingleChildRenderObjectWidget {
   const FitHorizontally({
     Key key,
     Widget child,
-    this.shrinkLimit = defaultShrinkLimit,
+    double shrinkLimit,
     this.fitsHeight = false,
     this.alignment = Alignment.center,
-  })  : assert(shrinkLimit != null && shrinkLimit <= 1.0),
+  })  : assert(shrinkLimit == null || shrinkLimit <= 1.0),
         assert(alignment != null),
+        shrinkLimit = shrinkLimit ?? defaultShrinkLimit,
         super(key: key, child: child);
 
   // May shrink down to 67% of its original size.
@@ -40,8 +41,8 @@ class FitHorizontally extends SingleChildRenderObjectWidget {
   final AlignmentGeometry alignment;
 
   @override
-  _RenderFittedBox createRenderObject(BuildContext context) {
-    return _RenderFittedBox(
+  RenderFitHorizontally createRenderObject(BuildContext context) {
+    return RenderFitHorizontally(
       shrinkLimit: shrinkLimit,
       fitsHeight: fitsHeight,
       alignment: alignment,
@@ -50,7 +51,7 @@ class FitHorizontally extends SingleChildRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(BuildContext context, _RenderFittedBox renderObject) {
+  void updateRenderObject(BuildContext context, RenderFitHorizontally renderObject) {
     renderObject
       ..shrinkLimit = shrinkLimit
       ..fitsHeight = fitsHeight
@@ -67,11 +68,11 @@ class FitHorizontally extends SingleChildRenderObjectWidget {
   }
 }
 
-class _RenderFittedBox extends RenderProxyBox {
+class RenderFitHorizontally extends RenderProxyBox {
   /// Scales and positions its child within itself.
   ///
   /// The [fit] and [alignment] arguments must not be null.
-  _RenderFittedBox({
+  RenderFitHorizontally({
     double shrinkLimit = FitHorizontally.defaultShrinkLimit,
     bool fitsHeight = false,
     AlignmentGeometry alignment = Alignment.center,

@@ -197,7 +197,6 @@ class _RenderColumnSuperBox extends RenderBox
         child.layout(innerConstraints, parentUsesSize: true);
         childParentData.offset = Offset(dx(child), dy);
         dy += child.size.height + innerDistance;
-        child = childParentData.nextSibling;
       }
 
       if (hasSeparator) {
