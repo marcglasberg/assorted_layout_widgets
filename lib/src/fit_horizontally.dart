@@ -62,8 +62,8 @@ class FitHorizontally extends SingleChildRenderObjectWidget {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(EnumProperty<double>('shrinkLimit', shrinkLimit));
-    properties.add(EnumProperty<bool>('fitsHeight', fitsHeight));
+    properties.add(DoubleProperty('shrinkLimit', shrinkLimit));
+    properties.add(DiagnosticsProperty('fitsHeight', fitsHeight));
     properties.add(DiagnosticsProperty<AlignmentGeometry>('alignment', alignment));
   }
 }
@@ -357,11 +357,30 @@ class RenderFitHorizontally extends RenderProxyBox {
     }
   }
 
+  bool debugHandleEvent(PointerEvent event, HitTestEntry entry) {
+    return true;
+  }
+
+  @override
+  void debugPaint(PaintingContext context, Offset offset) {}
+
+  void debugPaintSize(PaintingContext context, Offset offset) {}
+
+  void debugPaintBaselines(PaintingContext context, Offset offset) {}
+
+  void debugPaintPointers(PaintingContext context, Offset offset) {}
+
+  @override
+  List<DiagnosticsNode> debugDescribeChildren() {
+    Flex;
+    return <DiagnosticsNode>[DiagnosticsNode.message("XXX")];
+  }
+
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(EnumProperty<double>('shrink', shrink));
-    properties.add(EnumProperty<double>('shrinkLimit', shrinkLimit));
+    properties.add(DoubleProperty('shrink', shrink));
+    properties.add(DoubleProperty('shrinkLimit', shrinkLimit));
     properties.add(DiagnosticsProperty<Alignment>('alignment', alignment));
     properties.add(EnumProperty<TextDirection>('textDirection', textDirection, defaultValue: null));
   }

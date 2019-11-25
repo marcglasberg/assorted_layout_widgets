@@ -166,19 +166,19 @@ class _RenderRowSuperBox extends RenderBox
 
   RenderBox get renderSeparator => _renderSeparator;
 
-  List<RenderBox> _children;
+  List<RenderBox> _children = [];
 
   List<RenderBox> get children => _children;
 
   void _findChildrenAndSeparator() {
-    _children = <RenderBox>[];
+    _children = [];
     _renderSeparator = null;
     RenderBox child = firstChild;
     while (child != null) {
       final MultiChildLayoutParentData childParentData = child.parentData;
       var recentChild = child;
       child = childParentData.nextSibling;
-      print('RenderBox = ${child.runtimeType}');
+//      print('RenderBox = ${child.runtimeType}');
       if (!hasSeparator || child != null) _children.add(recentChild);
     }
 
