@@ -18,7 +18,7 @@ class Demo extends StatelessWidget {
               //
               SizedBox(height: 10),
               //
-              for (double width = 360; width >= 0.0; width -= 40)
+              for (double width = 360; width >= 0.0; width -= 100)
                 Column(children: [
                   SizedBox(height: 8),
                   //

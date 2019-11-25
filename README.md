@@ -26,7 +26,9 @@ ColumnSuper({
     Widget separator,
     bool separatorOnTop,
   });
-```
+```                   
+
+![alt text](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/columnSuper.png)
 
 * **`children`** is the list of widgets that represent the column cells, just like in a regular `Column` widget.
 The list may contain `null`s, which will be ignored.
@@ -90,6 +92,8 @@ Most parameters are the same as the ones of `ColumnSuper`, except:
 * **`shrinkLimit`** by default is 67%, which means the cell contents will shrink until 67% of their original width,
 and then overflow. Make `shrinkLimit` equal to `0.0` if you want the cell contents to shrink with no limits.
 Note, if `fitHorizontally` is false, the `shrinkLimit` is not used.
+
+![alt text](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/rowSuperWithFirHorizontally.jpg)
  
 Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_row_super_with_fit_horizontally.dart">RowSuper with FitHorizontally example</a>.
 
@@ -105,14 +109,15 @@ FitHorizontally({
   });
 ```          
 
-![alt text](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/fitHorizontally.png)            
+![alt text](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/fitHorizontally.png)           
+            
 
 The `child` will be asked to define its own intrinsic height.
 If `fitsHeight` is true, the child will be proportionately resized (keeping its aspect ratio)
 to fit the available height.
 
 Then, if the child doesn't fit the width, it will be shrinked horizontally
-only (not keeping its aspect ratio) until if fits, unless `shrinkLimit` is larger than zero, 
+only (not keeping its aspect ratio) until it fits, unless `shrinkLimit` is larger than zero, 
 in which case it will shrink only until that limit. 
 Note if `shrinkLimit` is 1.0 the child
 will not shrink at all. The default is 0.67 (67%).

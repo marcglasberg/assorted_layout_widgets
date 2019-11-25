@@ -10,7 +10,7 @@ import 'package:flutter/rendering.dart';
 /// (keeping its aspect ratio) to fit the available height.
 ///
 /// Then, if the child doesn't fit the width, it will be shrinked horizontally
-/// until if fits, unless [shrinkLimit] is larger than zero, in which case it
+/// until it fits, unless [shrinkLimit] is larger than zero, in which case it
 /// will shrink only until that limit. Note if [shrinkLimit] is 1.0 the child
 /// will not shrink at all. The default is 0.67 (67%).
 ///
