@@ -6,7 +6,7 @@ import 'package:flutter/rendering.dart';
 // Developed by Marcelo Glasberg (nov 2019).
 
 /// For more info, see: https://pub.dartlang.org/packages/assorted_layout_widgets
-class ColumnSuper extends MultiChildRenderObjectWidget {
+class RowSuper extends MultiChildRenderObjectWidget {
   //
   final double outerDistance;
   final double innerDistance;
@@ -15,7 +15,7 @@ class ColumnSuper extends MultiChildRenderObjectWidget {
   final Widget separator;
   final bool separatorOnTop;
 
-  ColumnSuper({
+  RowSuper({
     Key key,
     List<Widget> children,
     this.outerDistance = 0.0,
@@ -36,7 +36,7 @@ class ColumnSuper extends MultiChildRenderObjectWidget {
   }
 
   @override
-  _RenderColumnSuperBox createRenderObject(BuildContext context) => _RenderColumnSuperBox(
+  _RenderRowSuperBox createRenderObject(BuildContext context) => _RenderRowSuperBox(
         outerDistance: outerDistance ?? 0.0,
         innerDistance: innerDistance ?? 0.0,
         invert: invert ?? false,
@@ -46,7 +46,7 @@ class ColumnSuper extends MultiChildRenderObjectWidget {
       );
 
   @override
-  void updateRenderObject(BuildContext context, _RenderColumnSuperBox renderObject) {
+  void updateRenderObject(BuildContext context, _RenderRowSuperBox renderObject) {
     renderObject
       ..outerDistance = outerDistance ?? 0.0
       ..innerDistance = innerDistance ?? 0.0
@@ -59,12 +59,12 @@ class ColumnSuper extends MultiChildRenderObjectWidget {
 
 // /////////////////////////////////////////////////////////////////////////////////////////////////
 
-class _RenderColumnSuperBox extends RenderBox
+class _RenderRowSuperBox extends RenderBox
     with
         ContainerRenderObjectMixin<RenderBox, MultiChildLayoutParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
   //
-  _RenderColumnSuperBox({
+  _RenderRowSuperBox({
     RenderBox child,
     @required double outerDistance,
     @required double innerDistance,
@@ -185,18 +185,18 @@ class _RenderColumnSuperBox extends RenderBox
     _findChildrenAndSeparator();
 
     if (_children.isEmpty) {
-      size = constraints.constrain(Size(double.infinity, 0.0));
+      size = constraints.constrain(Size(0.0, double.infinity));
       return;
     } else {
-      var innerConstraints = BoxConstraints(maxWidth: constraints.maxWidth);
+      var innerConstraints = BoxConstraints(maxHeight: constraints.maxHeight);
 
-      double dy = outerDistance;
+      double dx = outerDistance;
 
       for (RenderBox child in _children) {
         final MultiChildLayoutParentData childParentData = child.parentData;
         child.layout(innerConstraints, parentUsesSize: true);
-        childParentData.offset = Offset(dx(child), dy);
-        dy += child.size.height + innerDistance;
+        childParentData.offset = Offset(dx, dy(child));
+        dx += child.size.width + innerDistance;
         child = childParentData.nextSibling;
       }
 
@@ -204,15 +204,15 @@ class _RenderColumnSuperBox extends RenderBox
         renderSeparator.layout(innerConstraints, parentUsesSize: false);
       }
 
-      size = constraints.constrain(Size(double.infinity, dy - innerDistance + outerDistance));
+      size = constraints.constrain(Size(dx - innerDistance + outerDistance, double.infinity));
     }
   }
 
-  double dx(RenderBox child) {
-    final parentWidth = constraints.maxWidth;
-    final childWidth = child.size.width;
-    final double centerX = (parentWidth - childWidth) / 2.0;
-    return centerX + alignment.x * centerX;
+  double dy(RenderBox child) {
+    final parentHeight = constraints.maxHeight;
+    final childHeight = child.size.height;
+    final double centerY = (parentHeight - childHeight) / 2.0;
+    return centerY + alignment.y * centerY;
   }
 
   @override
@@ -266,8 +266,10 @@ class _RenderColumnSuperBox extends RenderBox
       context.paintChild(
           renderSeparator,
           offset +
-              Offset(dx(renderSeparator),
-                  childParentData.offset.dy - (innerDistance + renderSeparator.size.height) / 2));
+              Offset(
+                childParentData.offset.dx - (innerDistance + renderSeparator.size.width) / 2,
+                dy(renderSeparator),
+              ));
     }
   }
 

@@ -51,6 +51,23 @@ If `false` will paint the separator below the cells.
 
 Try running the: <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main.dart">Example</a>.
 
+## RowSuper
+
+Same as `ColumnSuper`, but for a row.
+
+```dart
+RowSuper({  
+    List<Widget> children,    
+    double outerDistance,
+    double innerDistance,
+    bool invert,
+    Alignment alignment,
+    Widget separator,
+    bool separatorOnTop,
+  });
+```
+
+
 ## AlignPositioned
 
 See package <a href="https://pub.dev/packages/align_positioned">align_positioned</a>
