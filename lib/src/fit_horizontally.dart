@@ -208,9 +208,12 @@ class RenderFitHorizontally extends RenderProxyBox {
         }
         // But it's slower if there's shrink, since we also need intrinsicWidth.
         else {
-          double intrinsicWidth = child.getMinIntrinsicWidth(double.infinity);
+          double intrinsicWidth = child.getMaxIntrinsicWidth(double.infinity);
 
-          shrink = constraints.maxWidth / intrinsicWidth;
+          if (intrinsicWidth == 0)
+            shrink = 1.0;
+          else
+            shrink = constraints.maxWidth / intrinsicWidth;
 
           // Note: There must be a 1.0 pixel clearance to maxHeight,
           // because the Text widget may create a phantom fade otherwise.

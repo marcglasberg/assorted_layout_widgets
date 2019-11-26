@@ -24,6 +24,7 @@ class Demo extends StatelessWidget {
                   //
                   // fitHorizontally: false
                   Container(
+                    alignment: Alignment.centerLeft,
                     width: width,
                     height: 55,
                     color: Colors.yellow[600],
@@ -43,6 +44,7 @@ class Demo extends StatelessWidget {
                   // fitHorizontally: true
                   // (shrinkLimit is the default: 67%)
                   Container(
+                    alignment: Alignment.centerLeft,
                     width: width,
                     height: 55,
                     color: Colors.yellow[500],
@@ -61,6 +63,7 @@ class Demo extends StatelessWidget {
                   // fitHorizontally: true
                   // shrinkLimit: 0.0
                   Container(
+                    alignment: Alignment.centerLeft,
                     width: width,
                     height: 55,
                     color: Colors.yellow[300],

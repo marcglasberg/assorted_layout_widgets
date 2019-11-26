@@ -76,6 +76,7 @@ RowSuper({
     bool separatorOnTop,
     bool fitHorizontally,
     double shrinkLimit,
+    MainAxisSize mainAxisSize,
   });
 ```                      
 
@@ -92,6 +93,23 @@ Most parameters are the same as the ones of `ColumnSuper`, except:
 * **`shrinkLimit`** by default is 67%, which means the cell contents will shrink until 67% of their original width,
 and then overflow. Make `shrinkLimit` equal to `0.0` if you want the cell contents to shrink with no limits.
 Note, if `fitHorizontally` is false, the `shrinkLimit` is not used.
+
+* **`mainAxisSize`** by default is `MainAxisSize.min`, which means the row will occupy no more than its content's width.
+Make it `MainAxisSize.max` to expand the row to occupy the whole horizontal space.
+
+You can also use a `RowSpacer` to add empty space (if available) between cells. For example:
+
+```dart
+RowSuper(
+   children: [
+      widget1, 
+      RowSpacer(), 
+      widget2, 
+      widget3,
+      ]
+   )
+);   
+```
 
 ![alt text](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/rowSuperWithFirHorizontally.jpg)
  

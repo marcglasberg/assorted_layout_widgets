@@ -2,6 +2,7 @@
 
 * RowSuper and ColumnSuper.
 
-## [1.0.9] - 2019/11/25
+## [1.0.10] - 2019/11/25
 
 * FitHorizontally.
+* RowSpacer.
