@@ -1,8 +1,13 @@
-## [1.0.4] - 2019/11/24
+## [1.0.11] - 2019/11/27
 
-* RowSuper and ColumnSuper.
+* Box.
 
 ## [1.0.10] - 2019/11/25
 
 * FitHorizontally.
 * RowSpacer.
+
+## [1.0.0] - 2019/11/24
+
+* RowSuper and ColumnSuper.
+

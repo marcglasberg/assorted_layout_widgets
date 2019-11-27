@@ -7,6 +7,7 @@ Widgets in this package:
 * `ColumnSuper`
 * `RowSuper`
 * `FitHorizontally`
+* `Box`
 
 I will slowly but surely add interesting widgets to this package.
 
@@ -45,7 +46,8 @@ This is specially useful when cells overlap (negative `innerDistance`).
 * **`alignment`** will align the cells horizontally if they are smaller than the available horizontal space.
 
 * **`separator`** is a widget which will be put between each cells. Its height doesn't matter,
- since the distance between cells is given by `innerDistance`.   
+ since the distance between cells is given by `innerDistance` (in other words, separators don't occupy space).
+ The separator will overflow if its width is larger than the column's width.   
 
 * **`separatorOnTop`** if `true` (the default) will paint the separator on top of the cells.
 If `false` will paint the separator below the cells.
@@ -153,7 +155,64 @@ When text doesn't fit the container it will shrink only horizontally,
 until it reaches the shrink limit. From that point on it will clip,
 display ellipsis or fade, according to the text's `Text.overflow` property.
 
+*Note: `FitHorizontally` with `shrinkLimit` 0.0  is **not** the same as `FittedBox` with `BoxFit.fitWidth`,
+because `FitHorizontally` will only scale horizontally, while `FittedBox` will maintain the aspect ratio.*
+
 Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_fit_horizontally.dart">FitHorizontally example</a>.
+
+
+## Box
+
+`Box` is something between a `Container` and a `SizedBox`, which is less verbose and can be made `const`.
+
+```dart
+const Box({
+    bool show,
+    Color color,
+    double top,
+    double right,
+    double bottom,
+    double left,
+    double width,
+    double height,
+    Alignment alignment,
+    Widget child,
+  });
+```          
+
+Since it can be made `const`, it's good for creating colored boxes,
+with or without a child and padding:
+
+```dart
+const Box(color: Colors.red, width: 50, height:30);
+```
+The padding is given by `top`, `right`, `bottom` and `left` values, but they
+are only applied if the child is **not null**. 
+If the `child`, `width` and `height` are all `null`, this means the box will occupy no space (will be
+hidden). **Note:** This will be extended in the future, so that it ignores horizontal
+padding when the child has zero width, and ignores vertical padding when the child
+has zero height.
+
+You can also hide the box by making the `show` parameter equal to `false`.
+
+#### Debugging:
+
+* If need to quickly and temporarily add a color to your box so that you can see it,
+you can use the constructors `Box.r` for red, `Box.g` for green, and `Box.b` for blue.
+
+  ```dart
+  Box(child: myChild);
+  Box.r(child: myChild);
+  Box.g(child: myChild);
+  Box.b(child: myChild);
+  ```
+
+* If you want to see rebuilds, you can use the `Box.rand` constructor.
+It will then change its color to a random one, whenever its build method is called.
+
+  ```dart
+  Box.rand(child: myChild);  
+  ```
 
 
 ## AlignPositioned
