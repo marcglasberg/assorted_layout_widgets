@@ -14,7 +14,7 @@ class Box extends StatelessWidget {
   ///
   /// The padding is given by `top`, `right`, `bottom` and `left` values, but they
   /// are only applied if the child is NOT NULL. If the `child` is `null` and `width`
-  /// and `height` are also `null`, this means the box will ocuppy no space (will be
+  /// and `height` are also `null`, this means the box will occupy no space (will be
   /// hidden). **Note:** This will be extended in the future, so that it ignores horizontal
   /// padding when the child has zero width, and ignores vertical padding when the child
   /// has zero height.
@@ -94,6 +94,23 @@ class Box extends StatelessWidget {
         _random = false,
         super(key: key);
 
+  const Box.y({
+    Key key,
+    bool show,
+    Color color,
+    this.top,
+    this.right,
+    this.bottom,
+    this.left,
+    this.width,
+    this.height,
+    this.alignment,
+    this.child,
+  })  : show = show ?? true,
+        color = Colors.yellow,
+        _random = false,
+        super(key: key);
+
   const Box.rand({
     Key key,
     bool show,
@@ -125,15 +142,7 @@ class Box extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!show) return const SizedBox();
-    Widget current;
-
-    if (width == null && height == null)
-      current = child;
-    else
-      current = ConstrainedBox(
-        constraints: BoxConstraints.tightFor(width: width, height: height),
-        child: child,
-      );
+    Widget current = child;
 
     if (alignment != null) current = Align(alignment: alignment, child: current);
 
@@ -152,6 +161,12 @@ class Box extends StatelessWidget {
           decoration: BoxDecoration(color: Color.fromARGB(255, r, g, b)), child: current);
     } else if (color != null)
       current = DecoratedBox(decoration: BoxDecoration(color: color), child: current);
+
+    if (width != null || height != null)
+      current = ConstrainedBox(
+        constraints: BoxConstraints.tightFor(width: width, height: height),
+        child: current,
+      );
 
     return current;
   }

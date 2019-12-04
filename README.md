@@ -29,10 +29,10 @@ ColumnSuper({
   });
 ```                   
 
-![alt text](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/columnSuper.png)
+![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/columnSuper.png)
 
 * **`children`** is the list of widgets that represent the column cells, just like in a regular `Column` widget.
-The list may contain `null`s, which will be ignored.
+However, the list may contain `null`s, which will be ignored.
  
 * **`outerDistance`** is the distance in pixels before the first and after the last widget.
 It can be negative, in which case the cells will overflow the column.
@@ -113,7 +113,7 @@ RowSuper(
 );   
 ```
 
-![alt text](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/rowSuperWithFirHorizontally.jpg)
+![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/rowSuperWithFirHorizontally.jpg)
  
 Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_row_super_with_fit_horizontally.dart">RowSuper with FitHorizontally example</a>.
 
@@ -137,7 +137,7 @@ FitHorizontally({
   });
 ```          
 
-![alt text](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/fitHorizontally.png)           
+![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/fitHorizontally.png)           
             
 
 The `child` will be asked to define its own intrinsic height.
@@ -198,13 +198,14 @@ You can also hide the box by making the `show` parameter equal to `false`.
 #### Debugging:
 
 * If need to quickly and temporarily add a color to your box so that you can see it,
-you can use the constructors `Box.r` for red, `Box.g` for green, and `Box.b` for blue.
+you can use the constructors `Box.r` for red, `Box.g` for green, `Box.b` for blue, and `Box.y` for yellow.
 
   ```dart
   Box(child: myChild);
   Box.r(child: myChild);
   Box.g(child: myChild);
   Box.b(child: myChild);
+  Box.y(child: myChild);
   ```
 
 * If you want to see rebuilds, you can use the `Box.rand` constructor.
