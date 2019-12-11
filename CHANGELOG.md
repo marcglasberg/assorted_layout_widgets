@@ -1,3 +1,7 @@
+## [1.0.13] - 2019/12/11
+
+* TextOneLine that fixes https://github.com/flutter/flutter/issues/18761.
+
 ## [1.0.13] - 2019/12/04
 
 * Alignment fix.

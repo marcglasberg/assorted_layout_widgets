@@ -8,6 +8,7 @@ Widgets in this package:
 * `RowSuper`
 * `FitHorizontally`
 * `Box`
+* `TextOneLine`
 
 I will slowly but surely add interesting widgets to this package.
 
@@ -214,6 +215,42 @@ It will then change its color to a random one, whenever its build method is call
   ```dart
   Box.rand(child: myChild);  
   ```
+
+
+## TextOneLine
+
+`TextOneLine` is a substitute for `Text` when `maxLines: 1`, to fix this issue:
+https://github.com/flutter/flutter/issues/18761 filled by myself a long time ago. 
+
+It uses a special fade-with-ellipsis, which is
+much better than the current buggy and ugly-looking ellipsis-that-cuts-the-whole-word.
+
+For example, this:
+
+```dart
+Text("This isAVeryLongWordToDemonstrateAProblem", maxLines: 1, softWrap: false);  
+```
+
+Will print this in the screen:
+```dart
+This ...  
+```
+
+While this:
+
+```dart
+TextOneLine("This isAVeryLongWordToDemonstrateAProblem");  
+```
+
+Will print this:
+```dart
+This isAVeryLongWordToDemonst...  
+```
+
+
+
+
+This widget probably only makes sense while that issue is not fixed.
 
 
 ## AlignPositioned
