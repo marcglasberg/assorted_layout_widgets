@@ -232,7 +232,7 @@ Text("This isAVeryLongWordToDemonstrateAProblem", maxLines: 1, softWrap: false);
 ```
 
 Will print this in the screen:
-```dart
+```
 This ...  
 ```
 
@@ -243,7 +243,7 @@ TextOneLine("This isAVeryLongWordToDemonstrateAProblem");
 ```
 
 Will print this:
-```dart
+```
 This isAVeryLongWordToDemonst...  
 ```
 
