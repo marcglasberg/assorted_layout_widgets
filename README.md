@@ -174,6 +174,8 @@ const Box({
     double right,
     double bottom,
     double left,
+    double vertical,
+    double horizontal,
     double width,
     double height,
     Alignment alignment,
@@ -194,7 +196,50 @@ hidden). **Note:** This will be extended in the future, so that it ignores horiz
 padding when the child has zero width, and ignores vertical padding when the child
 has zero height.
 
+If `top` and `bottom` are equal, you can instead provide `vertical`:
+
+```dart                 
+// This:
+const Box(top: 20, bottom:20, child: ...);
+
+// Is the same as this:
+const Box(vertical: 20, child: ...);
+```
+
+
+You can't provide `vertical` and `top` or `bottom` at the same time.
+ 
+Similarly, if `right` and `left` are equal, you can instead provide `horizontal`.
+You can't provide `horizontal` and `right` or `left` at the same time. 
+
 You can also hide the box by making the `show` parameter equal to `false`.
+
+#### Clean-Code:
+
+`Box` can be used as a cleaner substitute for `Padding`. For example, this code:
+
+```dart
+return Container(
+    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5.0),
+    color: Colors.green,
+    child: const Padding(
+      padding: EdgeInsets.only(top: 12.0, bottom: 12.0, left: 4.0),      
+      child: Text("Hello."),
+    ),
+  ),
+);
+```
+
+Is the functional equivalent of this:
+
+```dart
+return const Box(
+    vertical: 8.0,
+    horizontal: 5.0,      
+    color: Colors.green,
+    child: Box(vertical: 12.0, left: 4.0, child: Text("Hello.")),
+);
+```
 
 #### Debugging:
 

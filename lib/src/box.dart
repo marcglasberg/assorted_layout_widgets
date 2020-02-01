@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class Box extends StatelessWidget {
   /// Box is something between a Container and a SizedBox.
-  /// Unlike a Container it can be made const, so it's good for creating colored boxes,
+  /// Unlike a Container it can be made `const`, so it's good for creating colored boxes,
   /// with or without padding:
   ///
   /// ```
@@ -19,6 +19,9 @@ class Box extends StatelessWidget {
   /// padding when the child has zero width, and ignores vertical padding when the child
   /// has zero height.
   ///
+  /// `vertical` can be used instead of `top` and `bottom`.
+  /// `horizontal` can be used instead of `left` and `right`.
+  ///
   /// You can also hide the box by making the `show` parameter equal to `false`.
   ///
   /// # Debugging:
@@ -31,99 +34,181 @@ class Box extends StatelessWidget {
     Key key,
     bool show,
     this.color,
-    this.top,
-    this.right,
-    this.bottom,
-    this.left,
+    double top,
+    double right,
+    double bottom,
+    double left,
+    double vertical,
+    double horizontal,
     this.width,
     this.height,
     this.alignment,
     this.child,
-  })  : show = show ?? true,
+  })  : assert(vertical == null || top == null, 'Cannot provide both vertical and top.'),
+        assert(vertical == null || bottom == null, 'Cannot provide both vertical and bottom.'),
+        assert(horizontal == null || right == null, 'Cannot provide both horizontal and right.'),
+        assert(horizontal == null || left == null, 'Cannot provide both horizontal and left.'),
+        top = top ?? vertical,
+        bottom = bottom ?? vertical,
+        right = right ?? horizontal,
+        left = left ?? horizontal,
+        show = show ?? true,
         _random = false,
         super(key: key);
 
+  // Adding `.r` to the box will make it red.
+  // Use this for debugging purposes only.
   const Box.r({
     Key key,
     bool show,
     Color color,
-    this.top,
-    this.right,
-    this.bottom,
-    this.left,
-    this.width,
-    this.height,
-    this.alignment,
-    this.child,
-  })  : show = show ?? true,
-        color = Colors.red,
-        _random = false,
-        super(key: key);
+    double top,
+    double right,
+    double bottom,
+    double left,
+    double vertical,
+    double horizontal,
+    double width,
+    double height,
+    Alignment alignment,
+    Widget child,
+  }) : this(
+          key: key,
+          show: show,
+          color: Colors.red,
+          top: top,
+          right: right,
+          bottom: bottom,
+          left: left,
+          vertical: vertical,
+          horizontal: horizontal,
+          width: width,
+          height: height,
+          alignment: alignment,
+          child: child,
+        );
 
+  // Adding `.g` to the box will make it green.
+  // Use this for debugging purposes only.
   const Box.g({
     Key key,
     bool show,
     Color color,
-    this.top,
-    this.right,
-    this.bottom,
-    this.left,
-    this.width,
-    this.height,
-    this.alignment,
-    this.child,
-  })  : show = show ?? true,
-        color = Colors.green,
-        _random = false,
-        super(key: key);
+    double top,
+    double right,
+    double bottom,
+    double left,
+    double vertical,
+    double horizontal,
+    double width,
+    double height,
+    Alignment alignment,
+    Widget child,
+  }) : this(
+          key: key,
+          show: show,
+          color: Colors.green,
+          top: top,
+          right: right,
+          bottom: bottom,
+          left: left,
+          vertical: vertical,
+          horizontal: horizontal,
+          width: width,
+          height: height,
+          alignment: alignment,
+          child: child,
+        );
 
+  // Adding `.b` to the box will make it blue.
+  // Use this for debugging purposes only.
   const Box.b({
     Key key,
     bool show,
     Color color,
-    this.top,
-    this.right,
-    this.bottom,
-    this.left,
-    this.width,
-    this.height,
-    this.alignment,
-    this.child,
-  })  : show = show ?? true,
-        color = Colors.blue,
-        _random = false,
-        super(key: key);
+    double top,
+    double right,
+    double bottom,
+    double left,
+    double vertical,
+    double horizontal,
+    double width,
+    double height,
+    Alignment alignment,
+    Widget child,
+  }) : this(
+          key: key,
+          show: show,
+          color: Colors.blue,
+          top: top,
+          right: right,
+          bottom: bottom,
+          left: left,
+          vertical: vertical,
+          horizontal: horizontal,
+          width: width,
+          height: height,
+          alignment: alignment,
+          child: child,
+        );
 
+  // Adding `.y` to the box will make it yellow.
+  // Use this for debugging purposes only.
   const Box.y({
     Key key,
     bool show,
     Color color,
-    this.top,
-    this.right,
-    this.bottom,
-    this.left,
-    this.width,
-    this.height,
-    this.alignment,
-    this.child,
-  })  : show = show ?? true,
-        color = Colors.yellow,
-        _random = false,
-        super(key: key);
+    double top,
+    double right,
+    double bottom,
+    double left,
+    double vertical,
+    double horizontal,
+    double width,
+    double height,
+    Alignment alignment,
+    Widget child,
+  }) : this(
+          key: key,
+          show: show,
+          color: Colors.yellow,
+          top: top,
+          right: right,
+          bottom: bottom,
+          left: left,
+          vertical: vertical,
+          horizontal: horizontal,
+          width: width,
+          height: height,
+          alignment: alignment,
+          child: child,
+        );
 
+  // Use the `Box.rand` constructor to see when the widget rebuilds.
+  // It will change its color to a random one, whenever its build method is called.
   const Box.rand({
     Key key,
     bool show,
     this.color,
-    this.top,
-    this.right,
-    this.bottom,
-    this.left,
+    double top,
+    double right,
+    double bottom,
+    double left,
+    double vertical,
+    double horizontal,
     this.width,
     this.height,
     this.alignment,
     this.child,
-  })  : show = show ?? true,
+  })  : assert(vertical == null || top == null, 'Cannot provide both vertical and top.'),
+        assert(vertical == null || bottom == null, 'Cannot provide both vertical and bottom.'),
+        assert(horizontal == null || right == null, 'Cannot provide both horizontal and right.'),
+        assert(horizontal == null || left == null, 'Cannot provide both horizontal and left.'),
+        top = top ?? vertical,
+        bottom = bottom ?? vertical,
+        right = right ?? horizontal,
+        left = left ?? horizontal,
+        show = show ?? true,
         _random = true,
         super(key: key);
 
