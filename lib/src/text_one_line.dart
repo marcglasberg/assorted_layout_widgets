@@ -53,6 +53,9 @@ class TextOneLine extends StatelessWidget implements Text {
   @override
   final TextWidthBasis textWidthBasis;
 
+  @override
+  final TextHeightBehavior textHeightBehavior;
+
   const TextOneLine(
     this.data, {
     Key key,
@@ -64,6 +67,7 @@ class TextOneLine extends StatelessWidget implements Text {
     this.overflow = TextOverflow.ellipsis,
     this.textScaleFactor = 1.0,
     this.textWidthBasis = TextWidthBasis.parent,
+    this.textHeightBehavior = const TextHeightBehavior(),
   })  : assert(data != null),
         super(key: key);
 
@@ -254,6 +258,14 @@ class RenderParagraphX extends RenderBox
   }
 
   final TextPainter _textPainter;
+
+  @override
+  TextHeightBehavior get textHeightBehavior => _textPainter.textHeightBehavior;
+
+  @override
+  set textHeightBehavior(TextHeightBehavior value) {
+    _textPainter.textHeightBehavior = value;
+  }
 
   /// The text to display.
   @override
