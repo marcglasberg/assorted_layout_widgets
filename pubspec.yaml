@@ -6,6 +6,7 @@ homepage: https://github.com/marcglasberg/assorted_layout_widgets
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
+  flutter: ^1.15.0
 
 dependencies:
   matrix4_transform: ^1.1.3
