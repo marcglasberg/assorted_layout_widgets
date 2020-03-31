@@ -8,6 +8,7 @@ Widgets in this package:
 * `RowSuper`
 * `FitHorizontally`
 * `Box`
+* `WrapSuper`
 * `TextOneLine`
 
 I will slowly but surely add interesting widgets to this package.
@@ -260,6 +261,45 @@ It will then change its color to a random one, whenever its build method is call
   ```dart
   Box.rand(child: myChild);  
   ```
+
+
+## WrapSuper
+
+`WrapSuper` is a `Wrap` with a better, minimum raggedness algorithm for line-breaks.   
+
+Just like a regular `Wrap` widget with `direction = Axis.horizontal`, 
+`WrapSuper` displays its children in lines. 
+It will leave `spacing` horizontal space between each child,
+and it will leave `lineSpacing` vertical space between each line.  
+Each line will then be aligned according to the `alignment`.
+
+```dart
+WrapSuper({
+    Key key,
+    WrapType wrapType,    
+    double spacing,
+    double lineSpacing,
+    WrapSuperAlignment alignment,        
+    List<Widget> children,
+  });
+```          
+
+`WrapSuper` with `WrapType.fit` is just like `Wrap`.
+
+However, `WrapSuper` with `WrapType.balanced` (the default) follows a more balanced layout.
+It will result in a similar number of lines as `Wrap`, 
+but lines will tend to be more similar in width.
+
+For example:
+
+![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/WrapType.jpg)
+
+- <a href="https://stackoverflow.com/questions/51679895/in-flutter-how-to-balance-the-children-of-the-wrap-widget">Here</a> is my original StackOverflow question that resulted in this widget.
+
+- You can see its algorithm <a href="https://cs.stackexchange.com/questions/123276/whats-the-most-efficient-in-terms-of-time-algorithm-to-calculate-the-minimum">here</a>.
+
+- Add your thumbs up <a href="https://github.com/flutter/flutter/issues/53549">here</a> if you want
+regular Text widgets to also allow for better line-breaks.
 
 
 ## TextOneLine
