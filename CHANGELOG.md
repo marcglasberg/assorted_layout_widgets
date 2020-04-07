@@ -1,4 +1,8 @@
-## [1.0.15] - 2019/02/01
+## [1.0.17] - 2020/04/01
+
+* WrapSuper.
+
+## [1.0.15] - 2020/02/01
 
 * Box now has `vertical` and `horizontal` as constructor parameters.
 

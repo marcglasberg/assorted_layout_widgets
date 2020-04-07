@@ -3,8 +3,6 @@ import 'dart:collection';
 import 'dart:math';
 
 class MinimumRaggedness {
-  //
-
   /// Given some [boxWidths], break it into the smallest possible number
   /// of lines such as each line has width not larger than [maxWidth].
   /// It also minimizes the difference between width of each line,
@@ -12,24 +10,6 @@ class MinimumRaggedness {
   /// Optionally accepts a [spacing] between boxes.
   ///
   static List<List<int>> divide(List<num> boxWidths, num maxWidth, {num spacing = 0.0}) {
-    //
-    // ---
-
-    /// TODO: Fix this:
-    /// Terrible hack ahead:
-    /// I translated this algorithm from Python (https://xxyxyz.org/line-breaking/)
-    /// without really taking the time to understand it.
-    /// It was originally for monospace text, so it only works for spacing 1.0.
-    /// To make this work for any spacing I am dividing all widths by the provided spacing.
-    /// And instead of spacing zero I use a very small one.
-    if (spacing != 1.0) {
-      if (spacing == 0.0) spacing = 0.000001;
-      boxWidths = boxWidths.map((w) => w / spacing).toList();
-      maxWidth = maxWidth / spacing;
-    }
-
-    // ---
-
     int count = boxWidths.length;
     List<num> offsets = [0];
 
@@ -41,7 +21,7 @@ class MinimumRaggedness {
     List<int> breaks = List<int>.filled(count + 1, 0);
 
     num cost(int i, int j) {
-      num width = offsets[j] - offsets[i] + j - i - 1;
+      num width = offsets[j] - offsets[i] + spacing * (j - i - 1);
       if (width > maxWidth)
         return 9223372036854775806;
       else

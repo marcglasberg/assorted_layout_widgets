@@ -25,11 +25,56 @@ void main() {
   ///////////////////////////////////////////////////////////////////////////////
 
   test('Divide boxes of fractional size.', () async {
+    //
     var result = MinimumRaggedness.divide([14.5, 3.3, 7.2, 5.0, 7.8, 5.2], 20.0, spacing: 1.0);
     expect(result, [
       [0],
       [1, 2, 3],
       [4, 5]
+    ]);
+
+    result = MinimumRaggedness.divide([14.5, 14.5], 29.0, spacing: 0.0);
+    expect(result, [
+      [0, 1],
+    ]);
+
+    result = MinimumRaggedness.divide([14.5, 14.5000000000001], 29.0, spacing: 0.0);
+    expect(result, [
+      [0],
+      [1],
+    ]);
+
+    result = MinimumRaggedness.divide([14.5000000000001, 14.5], 29.0, spacing: 0.0);
+    expect(result, [
+      [0],
+      [1],
+    ]);
+
+    result = MinimumRaggedness.divide([14.5, 14.5], 28.999999999, spacing: 0.0);
+    expect(result, [
+      [0],
+      [1],
+    ]);
+
+    result = MinimumRaggedness.divide([120.53], 120.53, spacing: 0.0);
+    expect(result, [
+      [0],
+    ]);
+
+    result = MinimumRaggedness.divide([15, 15], 30.000001, spacing: 0.000001);
+    expect(result, [
+      [0, 1],
+    ]);
+
+    result = MinimumRaggedness.divide([15, 15, 15], 45.000002, spacing: 0.000001);
+    expect(result, [
+      [0, 1, 2],
+    ]);
+
+    result = MinimumRaggedness.divide([15, 15, 15, 15, 15, 15], 45.000002, spacing: 0.000001);
+    expect(result, [
+      [0, 1, 2],
+      [3, 4, 5],
     ]);
   });
 
@@ -106,7 +151,6 @@ void main() {
       [2],
     ]);
 
-    // TODO: THIS WILL FAIL UNTIL THE HACK IN divide() IS REMOVED.
     // Spacing = 0.0
     result = MinimumRaggedness.divide([10, 10, 10, 15, 15], 30, spacing: 0.0);
     expect(result, [

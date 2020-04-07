@@ -6,51 +6,55 @@ import 'package:flutter/rendering.dart';
 
 import 'minimum_raggedness.dart';
 
-enum WrapSuperAlignment { left, right, center }
+// ////////////////////////////////////////////////////////////////////////////
 
 enum WrapType {
   /// Will fit all widgets it can in a line, and then move to the next one.
   fit,
 
-  /// The number of lines will be the same as in [WrapType.fit],
+  /// The number of lines will be similar as in [WrapType.fit],
   /// however, it will try to minimize the difference between line widths.
   balanced,
 }
 
+// ////////////////////////////////////////////////////////////////////////////
+
+enum WrapSuperAlignment {
+  left,
+  right,
+  center,
+}
+
+// ////////////////////////////////////////////////////////////////////////////
+
 class WrapSuper extends MultiChildRenderObjectWidget {
-  /// `WrapSuper` is just like `Wrap`, but follows a more balanced layout.
-  /// It will result in a similar number of lines as `Wrap`, but
-  /// lines will tend to be more similar in width.
+  /// `WrapSuper` is a `Wrap` with a better, minimum raggedness algorithm
+  /// for line-breaks. Just like a regular `Wrap` widget with
+  /// `direction = Axis.horizontal`, `WrapSuper` displays its children in lines.
+  /// It will leave `spacing` horizontal space between each child,
+  /// and it will leave `lineSpacing` vertical space between each line.
+  /// Each line will then be aligned according to the `alignment`.
   ///
-  /// For example, this would be a Wrap's layout:
-  /// ```
-  /// aaaaaaaaaa bbbbbbbb cccccccccccccccc
-  /// ddddd eee
-  /// ```
+  /// `WrapSuper` with `WrapType.fit` is just like `Wrap`.
   ///
-  /// While this would be a `WrapSuper`'s layout:
-  /// ```
-  /// aaaaaaaaaa bbbbbbbb
-  /// cccccccccccccccc ddddd eee
-  /// ```
+  /// However, `WrapSuper` with `WrapType.balanced` (the default)
+  /// follows a more balanced layout. It will result in the same number
+  /// of lines as `Wrap`, but lines will tend to be more similar in width.
   ///
   /// You can see my original StackOverflow question that prompted this widget here:
   /// https://stackoverflow.com/questions/51679895/in-flutter-how-to-balance-the-children-of-the-wrap-widget
   ///
-  /// And you can see its algorithm here:
-  /// https://cs.stackexchange.com/questions/123276/whats-the-most-efficient-in-terms-of-time-algorithm-to-calculate-the-minimum
+  /// And you can see the algorithm I am using here (Divide and Conquer):
+  /// https://xxyxyz.org/line-breaking/
   ///
   WrapSuper({
     Key key,
     this.wrapType = WrapType.balanced,
     this.spacing = 0.0,
     this.lineSpacing = 0.0,
-    this.curve,
     this.alignment = WrapSuperAlignment.left,
     List<Widget> children = const <Widget>[],
-  })
-      : assert(wrapType != null),
-        assert(wrapType != WrapType.balanced || curve == null),
+  })  : assert(wrapType != null),
         super(key: key, children: children);
 
   final WrapSuperAlignment alignment;
@@ -63,18 +67,13 @@ class WrapSuper extends MultiChildRenderObjectWidget {
 
   final WrapType wrapType;
 
-  /// This will be used only when the [wrapType] is [WrapType.fit].
-  /// If [wrapType] is [WrapType.balanced], then [curve] must be null.
-  final double Function(int line) curve;
-
   @override
   _RenderWrapSuper createRenderObject(BuildContext context) {
     return _RenderWrapSuper(
       spacing: spacing,
-      runSpacing: lineSpacing,
+      lineSpacing: lineSpacing,
       alignment: alignment,
       wrapType: wrapType,
-      curve: curve,
     );
   }
 
@@ -82,38 +81,31 @@ class WrapSuper extends MultiChildRenderObjectWidget {
   void updateRenderObject(BuildContext context, _RenderWrapSuper renderObject) {
     renderObject
       ..spacing = spacing
-      ..runSpacing = lineSpacing
+      ..lineSpacing = lineSpacing
       ..alignment = alignment
-      ..wrapType = wrapType
-      ..curve = curve;
+      ..wrapType = wrapType;
   }
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////
 
 class _RenderWrapSuper extends RenderBox
     with
         ContainerRenderObjectMixin<RenderBox, ContainerBoxParentData<RenderBox>>,
         RenderBoxContainerDefaultsMixin<RenderBox, ContainerBoxParentData<RenderBox>> {
-  /// Creates a wrap render object.
-  ///
-  /// By default, the wrap layout is horizontal and both the children and the
-  /// runs are aligned to the start.
+  //
   _RenderWrapSuper({
     List<RenderBox> children,
     double spacing = 0.0,
-    double runSpacing = 0.0,
+    double lineSpacing = 0.0,
     WrapSuperAlignment alignment = WrapSuperAlignment.left,
     WrapType wrapType = WrapType.balanced,
-    double Function(int line) curve,
-  })
-      : assert(spacing != null),
-        assert(runSpacing != null),
+  })  : assert(spacing != null),
+        assert(lineSpacing != null),
         assert(alignment != null),
         _spacing = spacing,
-        _runSpacing = runSpacing,
+        _lineSpacing = lineSpacing,
         _alignment = alignment,
-        _curve = curve,
         _wrapType = wrapType {
     addAll(children);
   }
@@ -130,16 +122,17 @@ class _RenderWrapSuper extends RenderBox
   }
 
   /// Defaults to 0.0.
-  double get runSpacing => _runSpacing;
-  double _runSpacing;
+  double get lineSpacing => _lineSpacing;
+  double _lineSpacing;
 
-  set runSpacing(double value) {
+  set lineSpacing(double value) {
     assert(value != null);
-    if (_runSpacing == value) return;
-    _runSpacing = value;
+    if (_lineSpacing == value) return;
+    _lineSpacing = value;
     markNeedsLayout();
   }
 
+  /// Defaults to WrapSuperAlignment.left.
   WrapSuperAlignment get alignment => _alignment;
   WrapSuperAlignment _alignment;
 
@@ -160,47 +153,37 @@ class _RenderWrapSuper extends RenderBox
     markNeedsLayout();
   }
 
-  double Function(int line) get curve => _curve;
-  double Function(int line) _curve;
-
-  set curve(double Function(int line) value) {
-    if (_curve == value) return;
-    _curve = value;
-    markNeedsLayout();
-  }
-
   @override
   void setupParentData(RenderBox child) {
     if (child.parentData is! WrapParentData) child.parentData = WrapParentData();
   }
 
   double _computeIntrinsicHeightForWidth(double width) {
-    return 0;
-//    int runCount = 0;
-//    double height = 0.0;
-//    double runWidth = 0.0;
-//    double runHeight = 0.0;
-//    int childCount = 0;
-//    RenderBox child = firstChild;
-//    while (child != null) {
-//      final double childWidth = child.getMaxIntrinsicWidth(double.infinity);
-//      final double childHeight = child.getMaxIntrinsicHeight(childWidth);
-//      if (runWidth + childWidth > width) {
-//        height += runHeight;
-//        if (runCount > 0) height += runSpacing;
-//        runCount += 1;
-//        runWidth = 0.0;
-//        runHeight = 0.0;
-//        childCount = 0;
-//      }
-//      runWidth += childWidth;
-//      runHeight = math.max(runHeight, childHeight);
-//      if (childCount > 0) runWidth += spacing;
-//      childCount += 1;
-//      child = childAfter(child);
-//    }
-//    if (childCount > 0) height += runHeight + runSpacing;
-//    return height;
+    int runCount = 0;
+    double height = 0.0;
+    double runWidth = 0.0;
+    double runHeight = 0.0;
+    int childCount = 0;
+    RenderBox child = firstChild;
+    while (child != null) {
+      final double childWidth = child.getMaxIntrinsicWidth(double.infinity);
+      final double childHeight = child.getMaxIntrinsicHeight(childWidth);
+      if (runWidth + childWidth > width) {
+        height += runHeight;
+        if (runCount > 0) height += lineSpacing;
+        runCount += 1;
+        runWidth = 0.0;
+        runHeight = 0.0;
+        childCount = 0;
+      }
+      runWidth += childWidth;
+      runHeight = max(runHeight, childHeight);
+      if (childCount > 0) runWidth += spacing;
+      childCount += 1;
+      child = childAfter(child);
+    }
+    if (childCount > 0) height += runHeight + lineSpacing;
+    return height;
   }
 
   @override
@@ -240,36 +223,6 @@ class _RenderWrapSuper extends RenderBox
     return defaultComputeDistanceToHighestActualBaseline(baseline);
   }
 
-  double _getMainAxisExtent(RenderBox child) {
-    return child.size.width;
-  }
-
-  double _getCrossAxisExtent(RenderBox child) {
-    return child.size.height;
-  }
-
-  Offset _getOffset(double mainAxisOffset, double crossAxisOffset) {
-    return Offset(mainAxisOffset, crossAxisOffset);
-  }
-
-  double _getChildCrossAxisOffset(bool flipCrossAxis,
-      double runCrossAxisExtent,
-      double childCrossAxisExtent,) {
-    return 0.0;
-//    final double freeSpace = runCrossAxisExtent - childCrossAxisExtent;
-//    switch (crossAxisAlignment) {
-//      case WrapCrossAlignment.start:
-//        return flipCrossAxis ? freeSpace : 0.0;
-//      case WrapCrossAlignment.end:
-//        return flipCrossAxis ? 0.0 : freeSpace;
-//      case WrapCrossAlignment.center:
-//        return freeSpace / 2.0;
-//    }
-//    return 0.0;
-  }
-
-  bool _hasVisualOverflow = false;
-
   @override
   void performLayout() {
     //
@@ -302,16 +255,12 @@ class _RenderWrapSuper extends RenderBox
       child = childParentData.nextSibling;
     }
 
-    // ------------------
-
     // Now calculate which widgets go in which lines.
 
     /// Will try to minimize the difference between line widths.
     if (wrapType == WrapType.balanced) {
       List<List<num>> result = MinimumRaggedness.divide(widths, availableWidth, spacing: spacing);
-      lines = result.map((List<num> indexes) =>
-      _Line()
-        ..indexes = indexes).toList();
+      lines = result.map((List<num> indexes) => _Line()..indexes = indexes).toList();
     }
     //
     // Will fit all widgets it can in a line, and then move to the next one.
@@ -335,10 +284,8 @@ class _RenderWrapSuper extends RenderBox
       }
     }
     //
-    else {
-      print('wrapType = ${wrapType}');
+    else
       throw AssertionError(wrapType);
-    }
 
     // ------------------
 
@@ -355,10 +302,8 @@ class _RenderWrapSuper extends RenderBox
       line.width = x - spacing;
       line.top = y;
 
-      y += maxY + runSpacing;
+      y += maxY + lineSpacing;
     }
-
-    /////////
 
     for (_Line line in lines) {
       double x;
@@ -378,9 +323,7 @@ class _RenderWrapSuper extends RenderBox
       }
     }
 
-    // ---
-
-    size = constraints.constrain(Size(availableWidth, y - runSpacing));
+    size = constraints.constrain(Size(availableWidth, y - lineSpacing));
   }
 
   @override
@@ -390,23 +333,16 @@ class _RenderWrapSuper extends RenderBox
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    // TODO(ianh): move the debug flex overflow paint logic somewhere common so
-    // it can be reused here
-//    if (_hasVisualOverflow)
-//      context.pushClipRect(needsCompositing, offset, Offset.zero & size, defaultPaint);
-//    else
     defaultPaint(context, offset);
   }
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////
 
 class _Line {
   List<int> indexes = [];
   double width = 0;
   double top = 0;
-
-//  _Line({@required this.top});
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////
