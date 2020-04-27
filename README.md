@@ -56,9 +56,9 @@ If `false` will paint the separator below the cells.
 
 *Note: This is not a substitute for Flutter's native `Column`, 
 it doesn't try to have a similar API, and it doesn't do all that `Column` does.
-In special, `Expanded` and `Flexible` widget don't work inside of `ColumnSuper`, 
+In special, `Expanded` and `Flexible` widgets don't work inside of `ColumnSuper`, 
 and it will overflow if the column is not big enough to fit its contents.
-`ColumnSuper` is meant only to certain use cases where `Column` won't work, 
+`ColumnSuper` is meant only for certain use cases where `Column` won't work, 
 like when you need overlapping cells.*
 
 Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_column_super.dart">ColumnSuper example</a>.
@@ -121,9 +121,9 @@ Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets
 
 *Note: This is not a substitute for Flutter's native `Row`, 
 it doesn't try to have a similar API, and it doesn't do all that `Row` does.
-In special, `Expanded` and `Flexible` widget don't work inside of `RowSuper`,
+In special, `Expanded` and `Flexible` widgets don't work inside of `RowSuper`,
 since `RowSuper` will resize cells proportionately when content doesn't fit. 
-`RowSuper` is meant only to certain use cases where `Row` won't work, 
+`RowSuper` is meant only for certain use cases where `Row` won't work, 
 like when you need overlapping cells, or when you need to scale the contents
 of the cells when they don't fit.*
 

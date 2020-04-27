@@ -375,7 +375,6 @@ class RenderFitHorizontally extends RenderProxyBox {
 
   @override
   List<DiagnosticsNode> debugDescribeChildren() {
-    Flex;
     return <DiagnosticsNode>[DiagnosticsNode.message("XXX")];
   }
 

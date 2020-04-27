@@ -749,7 +749,6 @@ class RenderParagraphX extends RenderBox
     // calculations are destructive. Other _textPainter state will also be
     // affected. See also RenderEditable which has a similar issue.
     final Size textSize = _textPainter.size;
-    final bool textDidExceedMaxLines = _textPainter.didExceedMaxLines;
     size = constraints.constrain(textSize);
 
     // This is for 1 line only, so it should never overflow the height.
