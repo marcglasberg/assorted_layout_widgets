@@ -53,6 +53,9 @@ class TextOneLine extends StatelessWidget implements Text {
   @override
   final TextWidthBasis textWidthBasis;
 
+  @override
+  final TextHeightBehavior textHeightBehavior;
+
   const TextOneLine(
     this.data, {
     Key key,
@@ -62,8 +65,9 @@ class TextOneLine extends StatelessWidget implements Text {
     this.textDirection,
     this.locale,
     this.overflow = TextOverflow.ellipsis,
-    this.textScaleFactor = 1.0,
+    this.textScaleFactor,
     this.textWidthBasis = TextWidthBasis.parent,
+    this.textHeightBehavior,
   })  : assert(data != null),
         super(key: key);
 
@@ -86,12 +90,13 @@ class TextOneLine extends StatelessWidget implements Text {
       locale: locale,
       // RichTextX uses Localizations.localeOf to obtain a default if this is null
       softWrap: softWrap ?? defaultTextStyle.softWrap,
-      overflow: overflow,
-      textScaleFactor: textScaleFactor,
+      overflow: overflow ?? defaultTextStyle.overflow,
+      textScaleFactor: textScaleFactor ?? MediaQuery.textScaleFactorOf(context),
       maxLines: maxLines ?? defaultTextStyle.maxLines,
       text: _textSpan,
       strutStyle: strutStyle,
-      textWidthBasis: textWidthBasis,
+      textWidthBasis: textWidthBasis ?? defaultTextStyle.textWidthBasis,
+      textHeightBehavior: textHeightBehavior ?? defaultTextStyle.textHeightBehavior,
     );
   }
 
@@ -138,6 +143,7 @@ class RichTextX extends RichText {
     Locale locale,
     StrutStyle strutStyle,
     TextWidthBasis textWidthBasis = TextWidthBasis.parent,
+    TextHeightBehavior textHeightBehavior,
   })  : assert(text != null),
         assert(textAlign != null),
         assert(softWrap != null),
@@ -155,7 +161,8 @@ class RichTextX extends RichText {
             maxLines: maxLines,
             locale: locale,
             strutStyle: strutStyle,
-            textWidthBasis: textWidthBasis);
+            textWidthBasis: textWidthBasis,
+            textHeightBehavior: textHeightBehavior);
 
   @override
   RenderParagraphX createRenderObject(BuildContext context) {
@@ -219,6 +226,7 @@ class RenderParagraphX extends RenderBox
     double textScaleFactor = 1.0,
     int maxLines,
     TextWidthBasis textWidthBasis = TextWidthBasis.parent,
+    TextHeightBehavior textHeightBehavior,
     Locale locale,
     StrutStyle strutStyle,
     List<RenderBox> children,
@@ -243,6 +251,7 @@ class RenderParagraphX extends RenderBox
           locale: locale,
           strutStyle: strutStyle,
           textWidthBasis: textWidthBasis,
+          textHeightBehavior: textHeightBehavior,
         ) {
     addAll(children);
     _extractPlaceholderSpans(text);
@@ -443,6 +452,16 @@ class RenderParagraphX extends RenderBox
     assert(value != null);
     if (_textPainter.textWidthBasis == value) return;
     _textPainter.textWidthBasis = value;
+    _overflowShader = null;
+    markNeedsLayout();
+  }
+
+  /// {@macro flutter.dart:ui.textHeightBehavior}
+  TextHeightBehavior get textHeightBehavior => _textPainter.textHeightBehavior;
+
+  set textHeightBehavior(TextHeightBehavior value) {
+    if (_textPainter.textHeightBehavior == value) return;
+    _textPainter.textHeightBehavior = value;
     _overflowShader = null;
     markNeedsLayout();
   }
