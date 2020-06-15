@@ -1,6 +1,7 @@
-## [1.1.2] - 2020/06/15
+## [1.1.3] - 2020/06/15
 
 * Fix: WrapSuper minimum raggedness algorithm now uses the correct JavaScript's Number.MAX_SAFE_INTEGER.
+* Fix: Divide by zero conditions.
 
 ## [1.1.1] - 2020/05/19
 

@@ -26,8 +26,10 @@ class FitHorizontally extends SingleChildRenderObjectWidget {
     double shrinkLimit,
     this.fitsHeight = false,
     this.alignment = Alignment.center,
-  })  : assert(shrinkLimit == null || shrinkLimit <= 1.0),
-        assert(alignment != null),
+  })  : assert(shrinkLimit == null || (shrinkLimit >= 0.0 && shrinkLimit <= 1.0),
+            "The shrinkLimit parameter is $shrinkLimit but should be between 0.0 and 1.0."),
+        assert(alignment != null, "The alignment parameter must not be null."),
+        assert(fitsHeight != null, "The fitsHeight parameter must not be null."),
         shrinkLimit = shrinkLimit ?? defaultShrinkLimit,
         super(key: key, child: child);
 
@@ -167,7 +169,8 @@ class RenderFitHorizontally extends RenderProxyBox {
         // Special case when shrinkLimit is 1.0, we can calculate faster.
         if (shrinkLimit == 1.0) {
           double intrinsicHeight = child.getMinIntrinsicHeight(constraints.maxWidth);
-          double width = constraints.maxWidth / constraints.maxHeight * intrinsicHeight;
+          var calc = constraints.maxHeight * intrinsicHeight;
+          double width = (calc == 0.0) ? 0.0 : constraints.maxWidth / calc;
 
           child.layout(BoxConstraints(maxWidth: width, maxHeight: intrinsicHeight),
               parentUsesSize: true);
@@ -179,8 +182,9 @@ class RenderFitHorizontally extends RenderProxyBox {
 
           // ---
 
-          shrink =
-              ((constraints.maxWidth / constraints.maxHeight) * intrinsicHeight) / intrinsicWidth;
+          shrink = (constraints.maxHeight == 0.0 || intrinsicWidth == 0.0)
+              ? 0.0
+              : ((constraints.maxWidth / constraints.maxHeight) * intrinsicHeight) / intrinsicWidth;
 
           if (shrink > shrinkLimit)
             child.layout(BoxConstraints(maxWidth: intrinsicWidth, maxHeight: intrinsicHeight),
@@ -188,8 +192,10 @@ class RenderFitHorizontally extends RenderProxyBox {
           else
             child.layout(
                 BoxConstraints(
-                    maxWidth: (intrinsicHeight * constraints.maxWidth / constraints.maxHeight) /
-                        shrinkLimit,
+                    maxWidth: (constraints.maxHeight == 0.0 || shrinkLimit == 0.0)
+                        ? 0.0
+                        : (intrinsicHeight * constraints.maxWidth / constraints.maxHeight) /
+                            shrinkLimit,
                     maxHeight: intrinsicHeight),
                 parentUsesSize: true);
         }
@@ -210,16 +216,14 @@ class RenderFitHorizontally extends RenderProxyBox {
         else {
           double intrinsicWidth = child.getMaxIntrinsicWidth(double.infinity);
 
-          if (intrinsicWidth == 0)
-            shrink = 1.0;
-          else
-            shrink = constraints.maxWidth / intrinsicWidth;
+          shrink = (intrinsicWidth == 0.0) ? 1.0 : (constraints.maxWidth / intrinsicWidth);
 
           // Note: There must be a 1.0 pixel clearance to maxHeight,
           // because the Text widget may create a phantom fade otherwise.
+          var calc = max(shrinkLimit, min(shrink, 1.0));
           child.layout(
               BoxConstraints(
-                  maxWidth: constraints.maxWidth / max(shrinkLimit, min(shrink, 1.0)),
+                  maxWidth: (calc == 0.0) ? 0.0 : (constraints.maxWidth / calc),
                   maxHeight: constraints.maxHeight + 1.0),
               parentUsesSize: true);
         }
@@ -255,8 +259,11 @@ class RenderFitHorizontally extends RenderProxyBox {
     if (fitsHeight) {
       if (shrinkLimit == 1.0) {
         sourceSize = inputSize;
-        destinationSize =
-            Size(sourceSize.width * outputSize.height / sourceSize.height, outputSize.height);
+        destinationSize = Size(
+            (sourceSize.height == 0.0)
+                ? 0.0
+                : sourceSize.width * outputSize.height / sourceSize.height,
+            outputSize.height);
       } else {
         sourceSize = inputSize;
         destinationSize = Size(
@@ -301,8 +308,10 @@ class RenderFitHorizontally extends RenderProxyBox {
       _resolve();
       final Size childSize = child.size;
       final FittedSizes sizes = _applyBoxFit(childSize, size, shrink, shrinkLimit, _fitsHeight);
-      final double scaleX = sizes.destination.width / sizes.source.width;
-      final double scaleY = sizes.destination.height / sizes.source.height;
+      final double scaleX =
+          (sizes.source.width == 0.0) ? 0.0 : sizes.destination.width / sizes.source.width;
+      final double scaleY =
+          (sizes.source.height == 0.0) ? 0.0 : sizes.destination.height / sizes.source.height;
       final Rect sourceRect = _resolvedAlignment.inscribe(sizes.source, Offset.zero & childSize);
       final Rect destinationRect =
           _resolvedAlignment.inscribe(sizes.destination, Offset.zero & size);
