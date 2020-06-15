@@ -17,13 +17,13 @@ class MinimumRaggedness {
       offsets.add(offsets.last + min(boxWidth, maxWidth));
     }
 
-    List<num> minimum = [0]..addAll(List<num>.filled(count, 9223372036854775807));
+    List<num> minimum = [0]..addAll(List<num>.filled(count, 9007199254740991));
     List<int> breaks = List<int>.filled(count + 1, 0);
 
     num cost(int i, int j) {
       num width = offsets[j] - offsets[i] + spacing * (j - i - 1);
       if (width > maxWidth)
-        return 9223372036854775806;
+        return 9007199254740991;
       else
         return minimum[i] + pow(maxWidth - width, 2);
     }
