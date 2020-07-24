@@ -227,6 +227,7 @@ class _RenderColumnSuperBox extends RenderBox
       defaultPaint(context, offset);
   }
 
+  @override
   void defaultPaint(PaintingContext context, Offset offset) {
     if (!separatorOnTop)
       for (int i = 0; i < _children.length; i++) {
@@ -297,6 +298,8 @@ class _RenderColumnSuperBox extends RenderBox
     for (RenderBox child in _children) {
       dy += child.computeMinIntrinsicHeight(width);
     }
+    if (_children.isNotEmpty) dy += ((_children.length - 1) * innerDistance);
+    dy += outerDistance * 2;
     return dy;
   }
 
@@ -307,6 +310,8 @@ class _RenderColumnSuperBox extends RenderBox
     for (RenderBox child in _children) {
       dy += child.computeMaxIntrinsicHeight(width);
     }
+    if (_children.isNotEmpty) dy += ((_children.length - 1) * innerDistance);
+    dy += outerDistance * 2;
     return dy;
   }
 }

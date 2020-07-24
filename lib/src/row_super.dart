@@ -372,6 +372,8 @@ class _RenderRowSuperBox extends RenderBox
     for (RenderBox child in _children) {
       dx += child.computeMinIntrinsicWidth(height);
     }
+    if (_children.isNotEmpty) dx += ((_children.length - 1) * innerDistance);
+    dx += outerDistance * 2;
     return dx;
   }
 
@@ -382,6 +384,8 @@ class _RenderRowSuperBox extends RenderBox
     for (RenderBox child in _children) {
       dx += child.computeMaxIntrinsicWidth(height);
     }
+    if (_children.isNotEmpty) dx += ((_children.length - 1) * innerDistance);
+    dx += outerDistance * 2;
     return dx;
   }
 

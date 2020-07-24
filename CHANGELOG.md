@@ -1,3 +1,7 @@
+## [1.1.4] - 2020/06/24
+
+* Fix: ColumnSuper intrinsic height, and RowSuper intrinsic width.
+
 ## [1.1.3] - 2020/06/15
 
 * Fix: WrapSuper minimum raggedness algorithm now uses the correct JavaScript's Number.MAX_SAFE_INTEGER.
