@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -31,7 +33,7 @@ class ColumnSuper extends MultiChildRenderObjectWidget {
 
   static List<Widget> _childrenPlusSeparator(List<Widget> children, Widget separator) {
     var list = children.where((child) => child != null).toList();
-    if (separator != null) list.add(separator);
+    if (separator != null && children.isNotEmpty) list.add(separator);
     return list;
   }
 
@@ -41,7 +43,7 @@ class ColumnSuper extends MultiChildRenderObjectWidget {
         innerDistance: innerDistance ?? 0.0,
         invert: invert ?? false,
         alignment: alignment ?? Alignment.center,
-        hasSeparator: separator != null,
+        hasSeparator: separator != null && children.isNotEmpty,
         separatorOnTop: separatorOnTop ?? true,
       );
 
@@ -52,7 +54,7 @@ class ColumnSuper extends MultiChildRenderObjectWidget {
       ..innerDistance = innerDistance ?? 0.0
       ..invert = invert ?? false
       ..alignment = alignment ?? Alignment.center
-      ..hasSeparator = separator != null
+      ..hasSeparator = separator != null && children.isNotEmpty
       ..separatorOnTop = separatorOnTop ?? true;
   }
 }
@@ -191,11 +193,19 @@ class _RenderColumnSuperBox extends RenderBox
       var innerConstraints = BoxConstraints(maxWidth: constraints.maxWidth);
 
       double dy = outerDistance;
+      double maxChildWidth = 0.0;
+
+      for (RenderBox child in _children) {
+        child.layout(innerConstraints, parentUsesSize: true);
+        maxChildWidth = max(maxChildWidth, child.size.width);
+      }
+
+      maxChildWidth = max(min(maxChildWidth, constraints.maxWidth), constraints.minWidth);
 
       for (RenderBox child in _children) {
         final MultiChildLayoutParentData childParentData = child.parentData;
         child.layout(innerConstraints, parentUsesSize: true);
-        childParentData.offset = Offset(dx(child), dy);
+        childParentData.offset = Offset(dx(child, maxChildWidth), dy);
         dy += child.size.height + innerDistance;
       }
 
@@ -203,12 +213,12 @@ class _RenderColumnSuperBox extends RenderBox
         renderSeparator.layout(innerConstraints, parentUsesSize: false);
       }
 
-      size = constraints.constrain(Size(double.infinity, dy - innerDistance + outerDistance));
+      size = constraints.constrain(Size(maxChildWidth, dy - innerDistance + outerDistance));
     }
   }
 
-  double dx(RenderBox child) {
-    final parentWidth = constraints.maxWidth;
+  double dx(RenderBox child, double width) {
+    final parentWidth = width;
     final childWidth = child.size.width;
     final double centerX = (parentWidth - childWidth) / 2.0;
     return centerX + alignment.x * centerX;
@@ -266,34 +276,34 @@ class _RenderColumnSuperBox extends RenderBox
       context.paintChild(
           renderSeparator,
           offset +
-              Offset(dx(renderSeparator),
+              Offset(dx(renderSeparator, size.width),
                   childParentData.offset.dy - (innerDistance + renderSeparator.size.height) / 2));
     }
   }
 
   @override
   double computeMinIntrinsicWidth(double height) {
-    if (_children == null) _findChildrenAndSeparator();
+    _findChildrenAndSeparator();
     double dx = 0.0;
     for (RenderBox child in _children) {
-      dx += child.computeMinIntrinsicWidth(height);
+      dx = max(dx, child.computeMinIntrinsicWidth(height));
     }
     return dx;
   }
 
   @override
   double computeMaxIntrinsicWidth(double height) {
-    if (_children == null) _findChildrenAndSeparator();
+    _findChildrenAndSeparator();
     double dx = 0.0;
     for (RenderBox child in _children) {
-      dx += child.computeMaxIntrinsicWidth(height);
+      dx = max(dx, child.computeMaxIntrinsicWidth(height));
     }
     return dx;
   }
 
   @override
   double computeMinIntrinsicHeight(double width) {
-    if (_children == null) _findChildrenAndSeparator();
+    _findChildrenAndSeparator();
     double dy = 0.0;
     for (RenderBox child in _children) {
       dy += child.computeMinIntrinsicHeight(width);
@@ -305,7 +315,7 @@ class _RenderColumnSuperBox extends RenderBox
 
   @override
   double computeMaxIntrinsicHeight(double width) {
-    if (_children == null) _findChildrenAndSeparator();
+    _findChildrenAndSeparator();
     double dy = 0.0;
     for (RenderBox child in _children) {
       dy += child.computeMaxIntrinsicHeight(width);

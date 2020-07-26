@@ -257,7 +257,7 @@ class _RenderWrapSuper extends RenderBox
 
     // Now calculate which widgets go in which lines.
 
-    /// Will try to minimize the difference between line widths.
+    // Will try to minimize the difference between line widths.
     if (wrapType == WrapType.balanced) {
       List<List<num>> result = MinimumRaggedness.divide(widths, availableWidth, spacing: spacing);
       lines = result.map((List<num> indexes) => _Line()..indexes = indexes).toList();

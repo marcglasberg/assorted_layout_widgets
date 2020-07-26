@@ -56,7 +56,7 @@ class RowSuper extends MultiChildRenderObjectWidget {
           return FitHorizontally(child: child, shrinkLimit: shrinkLimit);
       });
     var list = iterable.toList();
-    if (separator != null) list.add(separator);
+    if (separator != null && children.isNotEmpty) list.add(separator);
     return list;
   }
 
@@ -66,7 +66,7 @@ class RowSuper extends MultiChildRenderObjectWidget {
         innerDistance: innerDistance ?? 0.0,
         invert: invert ?? false,
         alignment: alignment ?? Alignment.center,
-        hasSeparator: separator != null,
+        hasSeparator: separator != null && children.isNotEmpty,
         separatorOnTop: separatorOnTop ?? true,
         mainAxisSize: mainAxisSize ?? MainAxisSize.min,
       );
@@ -78,7 +78,7 @@ class RowSuper extends MultiChildRenderObjectWidget {
       ..innerDistance = innerDistance ?? 0.0
       ..invert = invert ?? false
       ..alignment = alignment ?? Alignment.center
-      ..hasSeparator = separator != null
+      ..hasSeparator = separator != null && children.isNotEmpty
       ..separatorOnTop = separatorOnTop ?? true
       ..mainAxisSize = mainAxisSize ?? MainAxisSize.min;
   }
@@ -275,6 +275,8 @@ class _RenderRowSuperBox extends RenderBox
       maxChildHeight = max(maxChildHeight, child.size.height);
     }
 
+    maxChildHeight = max(min(maxChildHeight, constraints.maxHeight), constraints.minHeight);
+
     double dx = outerDistance;
 
     for (int i = 0; i < _children.length; i++) {
@@ -298,9 +300,9 @@ class _RenderRowSuperBox extends RenderBox
     }
   }
 
-  double dy(RenderBox child, double parentHeight) {
+  double dy(RenderBox child, double maxChildHeight) {
     final childHeight = child.size.height;
-    final double centerY = (parentHeight - childHeight) / 2.0;
+    final double centerY = (maxChildHeight - childHeight) / 2.0;
     var result = centerY + alignment.y * centerY;
     if (result.isNaN) throw AssertionError();
     return result;
@@ -367,7 +369,7 @@ class _RenderRowSuperBox extends RenderBox
 
   @override
   double computeMinIntrinsicWidth(double height) {
-    if (_children == null) _findChildrenAndSeparator();
+    _findChildrenAndSeparator();
     double dx = 0.0;
     for (RenderBox child in _children) {
       dx += child.computeMinIntrinsicWidth(height);
@@ -379,7 +381,7 @@ class _RenderRowSuperBox extends RenderBox
 
   @override
   double computeMaxIntrinsicWidth(double height) {
-    if (_children == null) _findChildrenAndSeparator();
+    _findChildrenAndSeparator();
     double dx = 0.0;
     for (RenderBox child in _children) {
       dx += child.computeMaxIntrinsicWidth(height);
@@ -391,20 +393,20 @@ class _RenderRowSuperBox extends RenderBox
 
   @override
   double computeMinIntrinsicHeight(double width) {
-    if (_children == null) _findChildrenAndSeparator();
+    _findChildrenAndSeparator();
     double dy = 0.0;
     for (RenderBox child in _children) {
-      dy += child.computeMinIntrinsicHeight(width);
+      dy = max(dy, child.computeMinIntrinsicHeight(width));
     }
     return dy;
   }
 
   @override
   double computeMaxIntrinsicHeight(double width) {
-    if (_children == null) _findChildrenAndSeparator();
+    _findChildrenAndSeparator();
     double dy = 0.0;
     for (RenderBox child in _children) {
-      dy += child.computeMaxIntrinsicHeight(width);
+      dy = max(dy, child.computeMaxIntrinsicHeight(width));
     }
     return dy;
   }

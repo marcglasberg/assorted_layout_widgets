@@ -37,7 +37,7 @@ ColumnSuper({
 However, the list may contain `null`s, which will be ignored.
  
 * **`outerDistance`** is the distance in pixels before the first and after the last widget.
-It can be negative, in which case the cells will overflow the column.
+It can be negative, in which case the cells will overflow the column (without any overflow warnings).
  
 * **`innerDistance`** is the distance in pixels between the cells. 
 It can be negative, in which case the cells will overlap.
@@ -47,9 +47,9 @@ This is specially useful when cells overlap (negative `innerDistance`).
 
 * **`alignment`** will align the cells horizontally if they are smaller than the available horizontal space.
 
-* **`separator`** is a widget which will be put between each cells. Its height doesn't matter,
+* **`separator`** is a widget which will be painted between each cells. Its height doesn't matter,
  since the distance between cells is given by `innerDistance` (in other words, separators don't occupy space).
- The separator will overflow if its width is larger than the column's width.   
+ The separator may overflow if its width is larger than the column's width.   
 
 * **`separatorOnTop`** if `true` (the default) will paint the separator on top of the cells.
 If `false` will paint the separator below the cells.
@@ -59,9 +59,11 @@ it doesn't try to have a similar API, and it doesn't do all that `Column` does.
 In special, `Expanded` and `Flexible` widgets don't work inside of `ColumnSuper`, 
 and it will overflow if the column is not big enough to fit its contents.
 `ColumnSuper` is meant only for certain use cases where `Column` won't work, 
-like when you need overlapping cells.*
+like when you need overlapping cells or separators.*
 
 Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_column_super.dart">ColumnSuper example</a>.
+
+Also, try <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_column_super_playground.dart">ColumnSuper Playground</a>.
 
 
 ## RowSuper
@@ -89,6 +91,8 @@ On contrary to `ColumnSuper` and the native `Row`
 `RowSuper` will resize its cells, **proportionately to the width of the minimum intrinsic width** of each cell content.
 
 Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_row_super.dart">RowSuper example</a>.
+
+Also, try <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_row_super_playground.dart">RowSuper Playground</a>.
 
 Most parameters are the same as the ones of `ColumnSuper`, except:
 
