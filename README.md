@@ -10,6 +10,7 @@ Widgets in this package:
 * `Box`
 * `WrapSuper`
 * `TextOneLine`
+* `Delayed`
 
 I will slowly but surely add interesting widgets to this package.
 
@@ -347,10 +348,48 @@ This isAVeryLongWordToDemonst...
 ```
 
 
+## Delayed
 
+`Delayed` can be used with implicitly animated widgets to give it
+an initial value, and then quickly change it to another.
 
-This widget probably only makes sense while that issue is not fixed.
+As soon as this widget is inserted into the tree, it will call the
+`builder` with `initialized`==false`.
 
+If `delay` is null, then it will call the builder again during the next frame 
+(usually 16 milliseconds later) with `initialized==true`.
+
+If `delay` is NOT null, it will call the builder again after the delay, 
+with `initialized==true`.
+
+For example, this will fade-in the widget as soon as it enters the screen:
+ 
+```dart
+Delayed(
+   builder: (context, bool initialized) => 
+      AnimatedOpacity(
+         opacity: initialized ? 1.0 : 0.0,
+         duration: const Duration(seconds: 1),
+         child: MyWidget(),
+   ),
+);
+```                                   
+
+Another example, this will fade-in the widget 300 milliseconds after after it enters the screen:
+ 
+```dart
+Delayed(
+   delay: const Duration(milliseconds: 300),
+   builder: (context, bool initialized) => 
+      AnimatedOpacity(
+         opacity: initialized ? 1.0 : 0.0,
+         duration: const Duration(seconds: 1),
+         child: MyWidget(),
+   ),
+);
+```                                   
+
+Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_delayed.dart">Delayed example</a>.
 
 ## AlignPositioned
 

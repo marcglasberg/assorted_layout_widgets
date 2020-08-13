@@ -1,3 +1,7 @@
+## [1.3.0] - 2020/08/13
+
+* Delayed.
+
 ## [1.2.0] - 2020/06/25
 
 * Breaking Change: ColumnSuper width is now the max intrinsic width of its children, just like a regular Column. 
