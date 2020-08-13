@@ -350,19 +350,47 @@ This isAVeryLongWordToDemonst...
 
 ## Delayed
 
-`Delayed` can be used with implicitly animated widgets to give it
-an initial value, and then quickly change it to another.
+`Delayed` can be used to give a widget some initial value, and then, after some delay, change it to another value.
+As we'll see, `Delayed` is specially useful when used with *implicitly animated widgets*.
 
-As soon as this widget is inserted into the tree, it will call the
-`builder` with `initialized`==false`.
+As soon as `Delayed` is inserted into the tree, 
+it will build the widget returned by `builder` with `initialized==false`. Then:
 
-If `delay` is null, then it will call the builder again during the next frame 
-(usually 16 milliseconds later) with `initialized==true`.
+* If `delay` is `null`, it will rebuild with `initialized==true` 
+in the next frame (usually 16 milliseconds later).
 
-If `delay` is NOT null, it will call the builder again after the delay, 
-with `initialized==true`.
+* If `delay` is NOT null, it will rebuild with `initialized==true`
+after that delay.
 
-For example, this will fade-in the widget as soon as it enters the screen:
+<br>
+
+For example, this shows a widget after a 2 seconds delay:
+ 
+```dart
+Delayed(                                  
+   delay: const Duration(seconds: 1),
+   builder: (context, bool initialized) => 
+      initialized 
+         ? Container(color: Colors.red, width: 50, height: 50) 
+         : SizedBox()));
+```                                   
+
+<br>
+
+For example, this changes a widget color after a 3 seconds delay:
+ 
+```dart
+Delayed(  
+   delay: const Duration(seconds: 3),
+   builder: (context, bool initialized) =>                  
+      Container(color: initialized ? Colors.red : Colors.blue, 
+                width: 50, 
+                height: 50)))
+```                                   
+
+<br>
+
+For example, this will fade-in a widget as soon as it enters the screen:
  
 ```dart
 Delayed(
@@ -370,12 +398,12 @@ Delayed(
       AnimatedOpacity(
          opacity: initialized ? 1.0 : 0.0,
          duration: const Duration(seconds: 1),
-         child: MyWidget(),
-   ),
-);
+         child: MyWidget()));
 ```                                   
 
-Another example, this will fade-in the widget 300 milliseconds after after it enters the screen:
+<br>
+
+For example, this will fade-in a widget 300 milliseconds after it enters the screen:
  
 ```dart
 Delayed(
@@ -384,9 +412,7 @@ Delayed(
       AnimatedOpacity(
          opacity: initialized ? 1.0 : 0.0,
          duration: const Duration(seconds: 1),
-         child: MyWidget(),
-   ),
-);
+         child: MyWidget()));
 ```                                   
 
 Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_delayed.dart">Delayed example</a>.
