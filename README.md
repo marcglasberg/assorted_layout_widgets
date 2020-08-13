@@ -2,6 +2,8 @@
 
 # assorted_layout_widgets
 
+I will slowly but surely add interesting widgets to this package.
+
 Widgets in this package:
 
 * `ColumnSuper`
@@ -12,8 +14,15 @@ Widgets in this package:
 * `TextOneLine`
 * `Delayed`
 
-I will slowly but surely add interesting widgets to this package.
 
+
+<br>
+
+> _Note: All these widgets are lightweight.
+And the ones you don't use will be removed by Flutter's tree shaking.
+So feel free to add the library even if you want to use only one of them._
+
+<br>
 
 ## ColumnSuper
 
@@ -66,6 +75,7 @@ Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets
 
 Also, try <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_column_super_playground.dart">ColumnSuper Playground</a>.
 
+<br>
 
 ## RowSuper
 
@@ -132,6 +142,7 @@ since `RowSuper` will resize cells proportionately when content doesn't fit.
 like when you need overlapping cells, or when you need to scale the contents
 of the cells when they don't fit.*
 
+<br>
 
 ## FitHorizontally
 
@@ -167,6 +178,7 @@ because `FitHorizontally` will only scale horizontally, while `FittedBox` will m
 
 Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_fit_horizontally.dart">FitHorizontally example</a>.
 
+<br>
 
 ## Box
 
@@ -220,6 +232,8 @@ You can't provide `horizontal` and `right` or `left` at the same time.
 
 You can also hide the box by making the `show` parameter equal to `false`.
 
+<br>
+
 #### Clean-Code:
 
 `Box` can be used as a cleaner substitute for `Padding`. For example, this code:
@@ -247,6 +261,8 @@ return const Box(
 );
 ```
 
+<br>
+
 #### Debugging:
 
 * If need to quickly and temporarily add a color to your box so that you can see it,
@@ -267,6 +283,7 @@ It will then change its color to a random one, whenever its build method is call
   Box.rand(child: myChild);  
   ```
 
+<br>
 
 ## WrapSuper
 
@@ -316,6 +333,7 @@ to allow for other spacings.
 - Add your thumbs up <a href="https://github.com/flutter/flutter/issues/53549">here</a> if you want
 native `Text` widgets to also allow for better line-breaks.
 
+<br>
 
 ## TextOneLine
 
@@ -347,6 +365,7 @@ Will print this:
 This isAVeryLongWordToDemonst...  
 ```
 
+<br>
 
 ## Delayed
 
@@ -417,11 +436,15 @@ Delayed(
 
 Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_delayed.dart">Delayed example</a>.
 
+<br>
+
 ## AlignPositioned
 
 See package <a href="https://pub.dev/packages/align_positioned">align_positioned</a>
 for widgets `AlignPositioned` and its siblings `AnimatedAlignPositioned` and `AnimChain`.
 They should be part of this package, but will remain in their own package for historical reasons.
+
+<br>
 
 ***
 
