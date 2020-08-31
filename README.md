@@ -98,8 +98,8 @@ RowSuper({
 ```                      
 
 On contrary to `ColumnSuper` and the native `Row` 
-(which will overflow if the cells are not big enough to fit their content),
-`RowSuper` will resize its cells, **proportionately to the width of the minimum intrinsic width** of each cell content.
+(which will overflow if the children are too large to fit the available free space),
+`RowSuper` may resize its children **proportionately to their minimum intrinsic width**.
 
 Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_row_super.dart">RowSuper example</a>.
 
@@ -107,7 +107,18 @@ Also, try <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/
 
 Most parameters are the same as the ones of `ColumnSuper`, except:
 
-* **`fitHorizontally`** if true will resize the cells content, horizontally only, until the `shrinkLimit` is reached.   
+* **`fill`** if true will force the children 
+to **grow their widths proportionately** to their minimum intrinsic width,
+so that they fill the whole row width. 
+This parameter is only useful if the children are not wide enough to fill the whole row width.
+In case the children are larger than the row width, they will always **shrink proportionately** 
+to their minimum intrinsic width, and the `fill` parameter will be ignored.
+See: <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_row_super_fill.dart">RowSuper Fill example</a>.               
+   
+* **`fitHorizontally`** if true will shrink the children, horizontally only, 
+until the `shrinkLimit` is reached.
+This parameter is only useful if the children are not wide enough to fill the whole row width.
+Avoid using `fitHorizontally` together with `fill: true`.     
 
 * **`shrinkLimit`** by default is 67%, which means the cell contents will shrink until 67% of their original width,
 and then overflow. Make `shrinkLimit` equal to `0.0` if you want the cell contents to shrink with no limits.
