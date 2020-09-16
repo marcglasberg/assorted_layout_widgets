@@ -1045,6 +1045,16 @@ class RenderParagraphX extends RenderBox
     return _textPainter.getWordBoundary(position);
   }
 
+  /// Returns the strut bounded height of the glyph at the given `position`.
+  ///
+  /// Valid only after [layout] has been called.
+  @override
+  double getFullHeightForCaret(TextPosition position) {
+    assert(!debugNeedsLayout);
+    _layoutTextWithConstraints(constraints);
+    return _textPainter.getFullHeightForCaret(position, Rect.zero);
+  }
+
   /// Returns the size of the text as laid out.
   ///
   /// This can differ from [size] if the text overflowed or if the [constraints]
