@@ -101,6 +101,8 @@ On contrary to `ColumnSuper` and the native `Row`
 (which will overflow if the children are too large to fit the available free space),
 `RowSuper` may resize its children **proportionately to their minimum intrinsic width**.
 
+![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/rowXRowSuperComparison.png)
+
 Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_row_super.dart">RowSuper example</a>.
 
 Also, try <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_row_super_playground.dart">RowSuper Playground</a>.
@@ -141,7 +143,7 @@ RowSuper(
 );   
 ```
 
-![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/rowSuperWithFirHorizontally.jpg)
+![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/rowSuperWithFitHorizontally.jpg)
  
 Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_row_super_with_fit_horizontally.dart">RowSuper with FitHorizontally example</a>.
 
@@ -331,7 +333,7 @@ but these lines will tend to be more similar in width.
 
 For example:
 
-![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/WrapType.jpg)
+![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/wrapType.jpg)
 
 - <a href="https://stackoverflow.com/questions/51679895/in-flutter-how-to-balance-the-children-of-the-wrap-widget">Here</a> is my original StackOverflow question that resulted in this widget.
 
