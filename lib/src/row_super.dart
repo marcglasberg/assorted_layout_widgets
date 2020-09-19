@@ -256,13 +256,6 @@ class _RenderRowSuperBox extends RenderBox
       constraints.maxWidth - (outerDistance * 2) - (innerDistance * (_children.length - 1)),
     );
 
-    // If there is no space, don't display anything.
-    if (availableWidth == 0.0) {
-      _children = [];
-      size = constraints.constrain(const Size(0.0, double.infinity));
-      return;
-    }
-
     int numberOfSpacers = 0;
     List<double> childWidth = [];
     double totalChildrenWidth = 0.0;
@@ -277,11 +270,11 @@ class _RenderRowSuperBox extends RenderBox
         ? 0.0
         : (availableWidth - totalChildrenWidth) / numberOfSpacers;
 
-    double scale;
-    if (fill)
-      scale = availableWidth / totalChildrenWidth;
-    else
-      scale = min(1.0, availableWidth / totalChildrenWidth);
+    double scale = (fill)
+        ? availableWidth / totalChildrenWidth
+        : min(1.0, availableWidth / totalChildrenWidth);
+
+    if (scale.isNaN) scale = 1.0;
 
     List<double> maxChildWidth = [];
     for (double width in childWidth) {
