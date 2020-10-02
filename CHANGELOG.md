@@ -1,3 +1,7 @@
+## [2.0.0] - 2020/10/02
+
+* Support for Flutter 1.22.
+
 ## [1.3.6] - 2020/09/19
 
 * Docs improvement.
