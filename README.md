@@ -4,7 +4,7 @@
 
 I will slowly but surely add interesting widgets to this package.
 
-Widgets in this package:
+Widgets and classes in this package:
 
 * `ColumnSuper`
 * `RowSuper`
@@ -13,8 +13,7 @@ Widgets in this package:
 * `WrapSuper`
 * `TextOneLine`
 * `Delayed`
-
-
+* `Pad`
 
 <br>
 
@@ -450,6 +449,42 @@ Delayed(
 Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_delayed.dart">Delayed example</a>.
 
 <br>
+
+## Pad
+
+`Pad` is an `EdgeInsetsGeometry` which is easy to type and remember.
+
+For example, instead of writing `padding: EdgeInsets.symmetric(vertical: 12)`
+you can write simply `padding: Pad(vertical: 12)`.
+
+```dart
+// Instead of EdgeInsets.all(12)
+padding: Pad(all: 12)
+
+// Instead of EdgeInsets.only(top: 8, bottom: 8, left: 4, right: 2)
+padding: Pad(top: 8, bottom: 8, left: 4, right: 2)
+
+// Instead of EdgeInsets.symmetric(vertical: 12)
+padding: Pad(vertical: 12)
+
+// Instead of EdgeInsets.symmetric(vertical: 12, horizontal: 6)
+padding: Pad(vertical: 12, horizontal: 6)
+```
+
+You can also compose paddings. For example, if you want 40 pixels of padding
+in all directions, except the top with 50 pixels: `padding: Pad(all: 40, top: 10)`.
+
+During development you sometimes need to temporarily remove the padding, for debugging reasons.
+Unfortunately you can't just comment the padding parameter, because the
+`Padding` widget doesn't accept `null` padding. But you can just add `.x` to the
+`Pad` class to remove it. It's marked as `deprecated` so that you don't forget to
+change it back to normal:
+
+```dart
+// This is the same as Pad.zero.
+padding: Pad.x(top: 8, bottom: 8, left: 4)
+```
+
 
 ## AlignPositioned
 
