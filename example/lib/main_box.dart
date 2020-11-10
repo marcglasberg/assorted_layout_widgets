@@ -40,31 +40,30 @@ class Demo extends StatelessWidget {
   // This is hidden because of show: false.
   Widget example3() => Box.g(
         show: false,
-        top: 20,
+        padding: Pad(top: 20),
         child: Text("Test 3"),
       );
 
   Widget example4() => Box.b(
-        top: 10,
-        bottom: 10,
+        padding: Pad(top: 10, bottom: 10),
         child: Text("Test 4"),
       );
 
   // This is hidden because child is null.
   Widget example5() => Box.y(
         color: Colors.purple,
-        top: 20,
+        padding: Pad(top: 20),
       );
 
   // This is the same as top:10, bottom:10.
   Widget example6() => Box.r(
-        vertical: 10,
+        padding: Pad(vertical: 10),
         child: Text("Test 6"),
       );
 
   // This is the same as right:10, left:10.
   Widget example7() => Box.g(
-        horizontal: 10,
+        padding: Pad(horizontal: 10),
         child: Text("Test 7"),
       );
 
@@ -75,8 +74,7 @@ class Demo extends StatelessWidget {
       );
 
   Widget example9() => Box.y(
-        vertical: 20,
-        horizontal: 40,
+        padding: Pad(vertical: 20, horizontal: 40),
         width: 200,
         height: 100,
         child: Text("Test 8"),
@@ -84,8 +82,7 @@ class Demo extends StatelessWidget {
 
   // This will change color in each rebuild.
   Widget example10() => Box.rand(
-        vertical: 20,
-        horizontal: 40,
+        padding: Pad(vertical: 20, horizontal: 40),
         child: Text("Test 8"),
       );
 }

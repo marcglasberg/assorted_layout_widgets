@@ -194,18 +194,14 @@ Try running the <a href="https://github.com/marcglasberg/assorted_layout_widgets
 
 ## Box
 
-`Box` is something between a `Container` and a `SizedBox`, which is less verbose and can be made `const`.
+`Box` is something between a `Container` and a `SizedBox`, 
+which is less verbose and can be made `const`.
 
 ```dart
 const Box({
     bool show,
     Color color,
-    double top,
-    double right,
-    double bottom,
-    double left,
-    double vertical,
-    double horizontal,
+    EdgeInsetsGeometry padding,
     double width,
     double height,
     Alignment alignment,
@@ -213,72 +209,36 @@ const Box({
   });
 ```          
 
-Since it can be made `const`, it's good for creating colored boxes,
+Since `Box` can be made `const`, it's good for creating colored boxes,
 with or without a child and padding:
 
 ```dart
 const Box(color: Colors.red, width: 50, height:30);
-```
-The padding is given by `top`, `right`, `bottom` and `left` values, but they
-are only applied if the child is **not null**. 
-If the `child`, `width` and `height` are all `null`, this means the box will occupy no space (will be
-hidden). **Note:** This will be extended in the future, so that it ignores horizontal
-padding when the child has zero width, and ignores vertical padding when the child
-has zero height.
+```                            
 
-If `top` and `bottom` are equal, you can instead provide `vertical`:
+Const objects are final/immutable and created in compile time. 
+So you don't waste time creating them. 
+Also, all const objects of the same type with the same parameters are the same instance. 
+So you don't waste memory creating more than one of them. 
+In other words, const objects make your program faster and more memory efficient.
 
-```dart                 
-// This:
-const Box(top: 20, bottom:20, child: ...);
-
-// Is the same as this:
-const Box(vertical: 20, child: ...);
-```
-
-
-You can't provide `vertical` and `top` or `bottom` at the same time.
- 
-Similarly, if `right` and `left` are equal, you can instead provide `horizontal`.
-You can't provide `horizontal` and `right` or `left` at the same time. 
+The `padding` is only applied if the child is **not null**. If the `child` is `null`
+and `width` and `height` are also `null`, this means the box will occupy no space
+(will be hidden). **Note:** This will be extended in the future, so that it ignores
+horizontal padding when the child has zero width, and ignores vertical padding when
+the child has zero height.
 
 You can also hide the box by making the `show` parameter equal to `false`.
 
-<br>
+Note: You can use the `Pad` class (provided in this package) 
+for the `padding`, instead of `EdgeInsets`.
 
-#### Clean-Code:
-
-`Box` can be used as a cleaner substitute for `Padding`. For example, this code:
-
-```dart
-return Container(
-    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5.0),
-    color: Colors.green,
-    child: const Padding(
-      padding: EdgeInsets.only(top: 12.0, bottom: 12.0, left: 4.0),      
-      child: Text("Hello."),
-    ),
-  ),
-);
-```
-
-Is the functional equivalent of this:
-
-```dart
-return const Box(
-    vertical: 8.0,
-    horizontal: 5.0,      
-    color: Colors.green,
-    child: Box(vertical: 12.0, left: 4.0, child: Text("Hello.")),
-);
-```
-
-<br>
 
 #### Debugging:
 
 * If need to quickly and temporarily add a color to your box so that you can see it,
-you can use the constructors `Box.r` for red, `Box.g` for green, `Box.b` for blue, and `Box.y` for yellow.
+you can use the constructors 
+`Box.r` for red, `Box.g` for green, `Box.b` for blue, and `Box.y` for yellow.
 
   ```dart
   Box(child: myChild);
@@ -293,7 +253,10 @@ It will then change its color to a random one, whenever its build method is call
 
   ```dart
   Box.rand(child: myChild);  
-  ```
+  ```  
+  
+All these debugging constructors are marked as deprecated 
+so that you don't forget to remove them.  
 
 <br>
 

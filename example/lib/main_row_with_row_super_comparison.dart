@@ -106,8 +106,7 @@ class Demo extends StatelessWidget {
       ];
 
   Widget text(String text) => Box.rand(
-        top: 4.0,
-        bottom: 4.0,
+        padding: Pad(top: 4.0, bottom: 4.0),
         child: Text(
           text,
           maxLines: 1,

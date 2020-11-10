@@ -1,3 +1,14 @@
+## [3.0.0] - 2020/11/10
+
+* Breaking change: The `Box` widget now has a `padding` parameter. I recommend you
+  use it with the new `Pad` class. For example: `Box(padding: Pad(top: 4.0))`.
+  The `Pad` class solves the verbosity problem, and having a `padding` parameter 
+  makes `Box` more compatible with `Container` (remember `Box` is like a `Container` which
+  can be made `const`, so it's best if their parameters are not too different).
+  
+* The debugging constructors of the `Box` widget are now marked as deprecated 
+  so that you don't forget to remove them (they are not really deprecated).      
+
 ## [2.0.1] - 2020/11/09
 
 * Pad class.

@@ -12,17 +12,16 @@ class Box extends StatelessWidget {
   /// const Box(color: Colors.red, width: 50, height:30, child: myChild);
   /// ```
   ///
-  /// The padding is given by `top`, `right`, `bottom` and `left` values, but they
-  /// are only applied if the child is NOT NULL. If the `child` is `null` and `width`
-  /// and `height` are also `null`, this means the box will occupy no space (will be
-  /// hidden). **Note:** This will be extended in the future, so that it ignores horizontal
-  /// padding when the child has zero width, and ignores vertical padding when the child
-  /// has zero height.
-  ///
-  /// `vertical` can be used instead of `top` and `bottom`.
-  /// `horizontal` can be used instead of `left` and `right`.
+  /// The `padding` is only applied if the child is NOT NULL. If the `child` is `null`
+  /// and `width` and `height` are also `null`, this means the box will occupy no space
+  /// (will be hidden). **Note:** This will be extended in the future, so that it ignores
+  /// horizontal padding when the child has zero width, and ignores vertical padding when
+  /// the child has zero height.
   ///
   /// You can also hide the box by making the `show` parameter equal to `false`.
+  ///
+  /// Note: You can use the [Pad] class (provided in the assorted_layout_widgets
+  /// package) for the `padding`, instead of [EdgeInsets].
   ///
   /// # Debugging:
   /// * If need to quickly and temporarily add a color to your box so that you can see it,
@@ -34,40 +33,24 @@ class Box extends StatelessWidget {
     Key key,
     bool show,
     this.color,
-    double top,
-    double right,
-    double bottom,
-    double left,
-    double vertical,
-    double horizontal,
+    this.padding,
     this.width,
     this.height,
     this.alignment,
     this.child,
-  })  : assert(vertical == null || top == null, 'Cannot provide both vertical and top.'),
-        assert(vertical == null || bottom == null, 'Cannot provide both vertical and bottom.'),
-        assert(horizontal == null || right == null, 'Cannot provide both horizontal and right.'),
-        assert(horizontal == null || left == null, 'Cannot provide both horizontal and left.'),
-        top = top ?? vertical,
-        bottom = bottom ?? vertical,
-        right = right ?? horizontal,
-        left = left ?? horizontal,
-        show = show ?? true,
+  })  : show = show ?? true,
         _random = false,
         super(key: key);
 
-  // Adding `.r` to the box will make it red.
-  // Use this for debugging purposes only.
+  /// Adding `.r` to the box will make it red.
+  /// Use this for debugging purposes only.
+  /// This constructor is marked as deprecated so that you don't forget to remove it.
+  @deprecated
   const Box.r({
     Key key,
     bool show,
     Color color,
-    double top,
-    double right,
-    double bottom,
-    double left,
-    double vertical,
-    double horizontal,
+    EdgeInsetsGeometry padding,
     double width,
     double height,
     Alignment alignment,
@@ -76,30 +59,22 @@ class Box extends StatelessWidget {
           key: key,
           show: show,
           color: Colors.red,
-          top: top,
-          right: right,
-          bottom: bottom,
-          left: left,
-          vertical: vertical,
-          horizontal: horizontal,
+          padding: padding,
           width: width,
           height: height,
           alignment: alignment,
           child: child,
         );
 
-  // Adding `.g` to the box will make it green.
-  // Use this for debugging purposes only.
+  /// Adding `.g` to the box will make it green.
+  /// Use this for debugging purposes only.
+  /// This constructor is marked as deprecated so that you don't forget to remove it.
+  @deprecated
   const Box.g({
     Key key,
     bool show,
     Color color,
-    double top,
-    double right,
-    double bottom,
-    double left,
-    double vertical,
-    double horizontal,
+    EdgeInsetsGeometry padding,
     double width,
     double height,
     Alignment alignment,
@@ -108,30 +83,22 @@ class Box extends StatelessWidget {
           key: key,
           show: show,
           color: Colors.green,
-          top: top,
-          right: right,
-          bottom: bottom,
-          left: left,
-          vertical: vertical,
-          horizontal: horizontal,
+          padding: padding,
           width: width,
           height: height,
           alignment: alignment,
           child: child,
         );
 
-  // Adding `.b` to the box will make it blue.
-  // Use this for debugging purposes only.
+  /// Adding `.b` to the box will make it blue.
+  /// Use this for debugging purposes only.
+  /// This constructor is marked as deprecated so that you don't forget to remove it.
+  @deprecated
   const Box.b({
     Key key,
     bool show,
     Color color,
-    double top,
-    double right,
-    double bottom,
-    double left,
-    double vertical,
-    double horizontal,
+    EdgeInsetsGeometry padding,
     double width,
     double height,
     Alignment alignment,
@@ -140,30 +107,22 @@ class Box extends StatelessWidget {
           key: key,
           show: show,
           color: Colors.blue,
-          top: top,
-          right: right,
-          bottom: bottom,
-          left: left,
-          vertical: vertical,
-          horizontal: horizontal,
+          padding: padding,
           width: width,
           height: height,
           alignment: alignment,
           child: child,
         );
 
-  // Adding `.y` to the box will make it yellow.
-  // Use this for debugging purposes only.
+  /// Adding `.y` to the box will make it yellow.
+  /// Use this for debugging purposes only.
+  /// This constructor is marked as deprecated so that you don't forget to remove it.
+  @deprecated
   const Box.y({
     Key key,
     bool show,
     Color color,
-    double top,
-    double right,
-    double bottom,
-    double left,
-    double vertical,
-    double horizontal,
+    EdgeInsetsGeometry padding,
     double width,
     double height,
     Alignment alignment,
@@ -172,52 +131,33 @@ class Box extends StatelessWidget {
           key: key,
           show: show,
           color: Colors.yellow,
-          top: top,
-          right: right,
-          bottom: bottom,
-          left: left,
-          vertical: vertical,
-          horizontal: horizontal,
+          padding: padding,
           width: width,
           height: height,
           alignment: alignment,
           child: child,
         );
 
-  // Use the `Box.rand` constructor to see when the widget rebuilds.
-  // It will change its color to a random one, whenever its build method is called.
+  /// Use the `Box.rand` constructor to see when the widget rebuilds.
+  /// It will change its color to a random one, whenever its build method is called.
+  /// This constructor is marked as deprecated so that you don't forget to remove it.
+  @deprecated
   const Box.rand({
     Key key,
     bool show,
     this.color,
-    double top,
-    double right,
-    double bottom,
-    double left,
-    double vertical,
-    double horizontal,
+    this.padding,
     this.width,
     this.height,
     this.alignment,
     this.child,
-  })  : assert(vertical == null || top == null, 'Cannot provide both vertical and top.'),
-        assert(vertical == null || bottom == null, 'Cannot provide both vertical and bottom.'),
-        assert(horizontal == null || right == null, 'Cannot provide both horizontal and right.'),
-        assert(horizontal == null || left == null, 'Cannot provide both horizontal and left.'),
-        top = top ?? vertical,
-        bottom = bottom ?? vertical,
-        right = right ?? horizontal,
-        left = left ?? horizontal,
-        show = show ?? true,
+  })  : show = show ?? true,
         _random = true,
         super(key: key);
 
   final Color color;
   final bool show;
-  final double top;
-  final double right;
-  final double bottom;
-  final double left;
+  final EdgeInsetsGeometry padding;
   final double width;
   final double height;
   final AlignmentGeometry alignment;
@@ -231,11 +171,7 @@ class Box extends StatelessWidget {
 
     if (alignment != null) current = Align(alignment: alignment, child: current);
 
-    if (child != null && (top != null || bottom != null || left != null || right != null))
-      current = Padding(
-          padding: EdgeInsets.only(
-              top: top ?? 0.0, bottom: bottom ?? 0.0, right: right ?? 0.0, left: left ?? 0.0),
-          child: current);
+    if (padding != null) current = Padding(padding: padding, child: current);
 
     if (_random) {
       var rand = Random();
@@ -260,10 +196,7 @@ class Box extends StatelessWidget {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty<Color>('color', color, defaultValue: null));
-    properties.add(DoubleProperty('top', top, defaultValue: null));
-    properties.add(DoubleProperty('right', right, defaultValue: null));
-    properties.add(DoubleProperty('bottom', bottom, defaultValue: null));
-    properties.add(DoubleProperty('left', left, defaultValue: null));
+    properties.add(DiagnosticsProperty<EdgeInsetsGeometry>('padding', padding));
     properties.add(DoubleProperty('width', width, defaultValue: null));
     properties.add(DoubleProperty('height', height, defaultValue: null));
     properties.add(DiagnosticsProperty<AlignmentGeometry>('alignment', alignment,
