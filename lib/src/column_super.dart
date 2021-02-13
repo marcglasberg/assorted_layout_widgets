@@ -14,48 +14,45 @@ class ColumnSuper extends MultiChildRenderObjectWidget {
   final double innerDistance;
   final bool invert;
   final Alignment alignment;
-  final Widget separator;
+  final Widget? separator;
   final bool separatorOnTop;
 
   ColumnSuper({
-    Key key,
-    List<Widget> children,
+    Key? key,
+    required List<Widget?> children,
     this.outerDistance = 0.0,
     this.innerDistance = 0.0,
     this.invert = false,
     this.alignment = Alignment.center,
     this.separator,
     this.separatorOnTop = true,
-  })  : assert(innerDistance != null),
-        assert(invert != null),
-        assert(alignment != null),
-        super(key: key, children: _childrenPlusSeparator(children, separator));
+  })  : super(key: key, children: _childrenPlusSeparator(children, separator));
 
-  static List<Widget> _childrenPlusSeparator(List<Widget> children, Widget separator) {
-    var list = children.where((child) => child != null).toList();
+  static List<Widget> _childrenPlusSeparator(List<Widget?> children, Widget? separator) {
+    List<Widget> list = List.of(children.where((child) => child != null).cast());
     if (separator != null && children.isNotEmpty) list.add(separator);
     return list;
   }
 
   @override
   _RenderColumnSuperBox createRenderObject(BuildContext context) => _RenderColumnSuperBox(
-        outerDistance: outerDistance ?? 0.0,
-        innerDistance: innerDistance ?? 0.0,
-        invert: invert ?? false,
-        alignment: alignment ?? Alignment.center,
+        outerDistance: outerDistance,
+        innerDistance: innerDistance,
+        invert: invert,
+        alignment: alignment,
         hasSeparator: separator != null && children.isNotEmpty,
-        separatorOnTop: separatorOnTop ?? true,
+        separatorOnTop: separatorOnTop,
       );
 
   @override
   void updateRenderObject(BuildContext context, _RenderColumnSuperBox renderObject) {
     renderObject
-      ..outerDistance = outerDistance ?? 0.0
-      ..innerDistance = innerDistance ?? 0.0
-      ..invert = invert ?? false
-      ..alignment = alignment ?? Alignment.center
+      ..outerDistance = outerDistance
+      ..innerDistance = innerDistance
+      ..invert = invert
+      ..alignment = alignment
       ..hasSeparator = separator != null && children.isNotEmpty
-      ..separatorOnTop = separatorOnTop ?? true;
+      ..separatorOnTop = separatorOnTop;
   }
 }
 
@@ -67,16 +64,13 @@ class _RenderColumnSuperBox extends RenderBox
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
   //
   _RenderColumnSuperBox({
-    RenderBox child,
-    @required double outerDistance,
-    @required double innerDistance,
-    @required bool invert,
-    @required Alignment alignment,
-    @required bool hasSeparator,
-    @required bool separatorOnTop,
-  })  : assert(innerDistance != null),
-        assert(invert != null),
-        _outerDistance = outerDistance,
+    required double outerDistance,
+    required double innerDistance,
+    required bool invert,
+    required Alignment alignment,
+    required bool hasSeparator,
+    required bool separatorOnTop,
+  })  : _outerDistance = outerDistance,
         _innerDistance = innerDistance,
         _invert = invert,
         _alignment = alignment,
@@ -145,23 +139,23 @@ class _RenderColumnSuperBox extends RenderBox
       child.parentData = MultiChildLayoutParentData();
   }
 
-  RenderBox _renderSeparator;
+  RenderBox? _renderSeparator;
 
-  RenderBox get renderSeparator => _renderSeparator;
+  RenderBox? get renderSeparator => _renderSeparator;
 
-  List<RenderBox> _children;
+  List<RenderBox>? _children;
 
-  List<RenderBox> get children => _children;
+  List<RenderBox>? get children => _children;
 
   void _findChildrenAndSeparator() {
     _children = <RenderBox>[];
     _renderSeparator = null;
-    RenderBox child = firstChild;
+    RenderBox? child = firstChild;
     while (child != null) {
-      final MultiChildLayoutParentData childParentData = child.parentData;
+      final MultiChildLayoutParentData childParentData = child.parentData as MultiChildLayoutParentData;
       var recentChild = child;
       child = childParentData.nextSibling;
-      if (!hasSeparator || child != null) _children.add(recentChild);
+      if (!hasSeparator || child != null) _children!.add(recentChild);
     }
 
     if (hasSeparator) _renderSeparator = lastChild;
@@ -186,8 +180,8 @@ class _RenderColumnSuperBox extends RenderBox
     //
     _findChildrenAndSeparator();
 
-    if (_children.isEmpty) {
-      size = constraints.constrain(Size(double.infinity, 0.0));
+    if (_children!.isEmpty) {
+      size = constraints.constrain(const Size(double.infinity, 0.0));
       return;
     } else {
       var innerConstraints = BoxConstraints(maxWidth: constraints.maxWidth);
@@ -195,22 +189,22 @@ class _RenderColumnSuperBox extends RenderBox
       double dy = outerDistance;
       double maxChildWidth = 0.0;
 
-      for (RenderBox child in _children) {
+      for (RenderBox child in _children!) {
         child.layout(innerConstraints, parentUsesSize: true);
         maxChildWidth = max(maxChildWidth, child.size.width);
       }
 
       maxChildWidth = max(min(maxChildWidth, constraints.maxWidth), constraints.minWidth);
 
-      for (RenderBox child in _children) {
-        final MultiChildLayoutParentData childParentData = child.parentData;
+      for (RenderBox child in _children!) {
+        final MultiChildLayoutParentData childParentData = child.parentData as MultiChildLayoutParentData;
         child.layout(innerConstraints, parentUsesSize: true);
         childParentData.offset = Offset(dx(child, maxChildWidth), dy);
         dy += child.size.height + innerDistance;
       }
 
       if (hasSeparator) {
-        renderSeparator.layout(innerConstraints, parentUsesSize: false);
+        renderSeparator!.layout(innerConstraints, parentUsesSize: false);
       }
 
       size = constraints.constrain(Size(maxChildWidth, dy - innerDistance + outerDistance));
@@ -225,7 +219,7 @@ class _RenderColumnSuperBox extends RenderBox
   }
 
   @override
-  bool hitTestChildren(BoxHitTestResult result, {Offset position}) {
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
     return defaultHitTestChildren(result, position: position);
   }
 
@@ -240,44 +234,44 @@ class _RenderColumnSuperBox extends RenderBox
   @override
   void defaultPaint(PaintingContext context, Offset offset) {
     if (!separatorOnTop)
-      for (int i = 0; i < _children.length; i++) {
-        final MultiChildLayoutParentData childParentData = _children[i].parentData;
+      for (int i = 0; i < _children!.length; i++) {
+        final MultiChildLayoutParentData? childParentData = _children![i].parentData as MultiChildLayoutParentData?;
         _paintSeparators(i, context, offset, childParentData);
       }
 
-    for (int i = 0; i < _children.length; i++) {
-      var child = _children[i];
-      final MultiChildLayoutParentData childParentData = child.parentData;
+    for (int i = 0; i < _children!.length; i++) {
+      var child = _children![i];
+      final MultiChildLayoutParentData childParentData = child.parentData as MultiChildLayoutParentData;
       context.paintChild(child, childParentData.offset + offset);
       if (separatorOnTop) _paintSeparators(i, context, offset, childParentData);
     }
   }
 
   void invertPaint(PaintingContext context, Offset offset) {
-    var children = _children.reversed.toList();
+    var children = _children!.reversed.toList();
 
     if (!separatorOnTop)
       for (int i = 0; i < children.length; i++) {
-        final MultiChildLayoutParentData childParentData = children[i].parentData;
+        final MultiChildLayoutParentData? childParentData = children[i].parentData as MultiChildLayoutParentData?;
         _paintSeparators(i, context, offset, childParentData);
       }
 
     for (int i = 0; i < children.length; i++) {
       var child = children[i];
-      final MultiChildLayoutParentData childParentData = child.parentData;
+      final MultiChildLayoutParentData childParentData = child.parentData as MultiChildLayoutParentData;
       context.paintChild(child, childParentData.offset + offset);
       if (separatorOnTop) _paintSeparators(i, context, offset, childParentData);
     }
   }
 
   void _paintSeparators(
-      int i, PaintingContext context, Offset offset, MultiChildLayoutParentData childParentData) {
-    if (hasSeparator && i > 0 && i < _children.length) {
+      int i, PaintingContext context, Offset offset, MultiChildLayoutParentData? childParentData) {
+    if (hasSeparator && i > 0 && i < _children!.length) {
       context.paintChild(
-          renderSeparator,
+          renderSeparator!,
           offset +
-              Offset(dx(renderSeparator, size.width),
-                  childParentData.offset.dy - (innerDistance + renderSeparator.size.height) / 2));
+              Offset(dx(renderSeparator!, size.width),
+                  childParentData!.offset.dy - (innerDistance + renderSeparator!.size.height) / 2));
     }
   }
 
@@ -285,7 +279,7 @@ class _RenderColumnSuperBox extends RenderBox
   double computeMinIntrinsicWidth(double height) {
     _findChildrenAndSeparator();
     double dx = 0.0;
-    for (RenderBox child in _children) {
+    for (RenderBox child in _children!) {
       dx = max(dx, child.computeMinIntrinsicWidth(height));
     }
     return dx;
@@ -295,7 +289,7 @@ class _RenderColumnSuperBox extends RenderBox
   double computeMaxIntrinsicWidth(double height) {
     _findChildrenAndSeparator();
     double dx = 0.0;
-    for (RenderBox child in _children) {
+    for (RenderBox child in _children!) {
       dx = max(dx, child.computeMaxIntrinsicWidth(height));
     }
     return dx;
@@ -305,10 +299,10 @@ class _RenderColumnSuperBox extends RenderBox
   double computeMinIntrinsicHeight(double width) {
     _findChildrenAndSeparator();
     double dy = 0.0;
-    for (RenderBox child in _children) {
+    for (RenderBox child in _children!) {
       dy += child.computeMinIntrinsicHeight(width);
     }
-    if (_children.isNotEmpty) dy += ((_children.length - 1) * innerDistance);
+    if (_children!.isNotEmpty) dy += ((_children!.length - 1) * innerDistance);
     dy += outerDistance * 2;
     return dy;
   }
@@ -317,10 +311,10 @@ class _RenderColumnSuperBox extends RenderBox
   double computeMaxIntrinsicHeight(double width) {
     _findChildrenAndSeparator();
     double dy = 0.0;
-    for (RenderBox child in _children) {
+    for (RenderBox child in _children!) {
       dy += child.computeMaxIntrinsicHeight(width);
     }
-    if (_children.isNotEmpty) dy += ((_children.length - 1) * innerDistance);
+    if (_children!.isNotEmpty) dy += ((_children!.length - 1) * innerDistance);
     dy += outerDistance * 2;
     return dy;
   }

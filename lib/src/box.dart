@@ -30,31 +30,31 @@ class Box extends StatelessWidget {
   /// It will then change its color to a random one, whenever its build method is called.
   ///
   const Box({
-    Key key,
-    bool show,
+    Key? key,
+    this.show = true,
     this.color,
     this.padding,
     this.width,
     this.height,
     this.alignment,
     this.child,
-  })  : show = show ?? true,
-        _random = false,
+  })  : _random = false,
         super(key: key);
 
   /// Adding `.r` to the box will make it red.
   /// Use this for debugging purposes only.
   /// This constructor is marked as deprecated so that you don't forget to remove it.
-  @deprecated
+  @Deprecated("Use this for debugging purposes only.")
   const Box.r({
-    Key key,
-    bool show,
-    Color color,
-    EdgeInsetsGeometry padding,
-    double width,
-    double height,
-    Alignment alignment,
-    Widget child,
+    Key? key,
+    bool show = true,
+    // ignore: avoid_unused_constructor_parameters
+    Color? color,
+    EdgeInsetsGeometry? padding,
+    double? width,
+    double? height,
+    Alignment? alignment,
+    Widget? child,
   }) : this(
           key: key,
           show: show,
@@ -69,16 +69,17 @@ class Box extends StatelessWidget {
   /// Adding `.g` to the box will make it green.
   /// Use this for debugging purposes only.
   /// This constructor is marked as deprecated so that you don't forget to remove it.
-  @deprecated
+  @Deprecated("Use this for debugging purposes only.")
   const Box.g({
-    Key key,
-    bool show,
-    Color color,
-    EdgeInsetsGeometry padding,
-    double width,
-    double height,
-    Alignment alignment,
-    Widget child,
+    Key? key,
+    bool show = true,
+    // ignore: avoid_unused_constructor_parameters
+    Color? color,
+    EdgeInsetsGeometry? padding,
+    double? width,
+    double? height,
+    Alignment? alignment,
+    Widget? child,
   }) : this(
           key: key,
           show: show,
@@ -93,16 +94,17 @@ class Box extends StatelessWidget {
   /// Adding `.b` to the box will make it blue.
   /// Use this for debugging purposes only.
   /// This constructor is marked as deprecated so that you don't forget to remove it.
-  @deprecated
+  @Deprecated("Use this for debugging purposes only.")
   const Box.b({
-    Key key,
-    bool show,
-    Color color,
-    EdgeInsetsGeometry padding,
-    double width,
-    double height,
-    Alignment alignment,
-    Widget child,
+    Key? key,
+    bool show = true,
+    // ignore: avoid_unused_constructor_parameters
+    Color? color,
+    EdgeInsetsGeometry? padding,
+    double? width,
+    double? height,
+    Alignment? alignment,
+    Widget? child,
   }) : this(
           key: key,
           show: show,
@@ -117,16 +119,17 @@ class Box extends StatelessWidget {
   /// Adding `.y` to the box will make it yellow.
   /// Use this for debugging purposes only.
   /// This constructor is marked as deprecated so that you don't forget to remove it.
-  @deprecated
+  @Deprecated("Use this for debugging purposes only.")
   const Box.y({
-    Key key,
-    bool show,
-    Color color,
-    EdgeInsetsGeometry padding,
-    double width,
-    double height,
-    Alignment alignment,
-    Widget child,
+    Key? key,
+    bool show = true,
+    // ignore: avoid_unused_constructor_parameters
+    Color? color,
+    EdgeInsetsGeometry? padding,
+    double? width,
+    double? height,
+    Alignment? alignment,
+    Widget? child,
   }) : this(
           key: key,
           show: show,
@@ -141,43 +144,42 @@ class Box extends StatelessWidget {
   /// Use the `Box.rand` constructor to see when the widget rebuilds.
   /// It will change its color to a random one, whenever its build method is called.
   /// This constructor is marked as deprecated so that you don't forget to remove it.
-  @deprecated
+  @Deprecated("Use this for debugging purposes only.")
   const Box.rand({
-    Key key,
-    bool show,
+    Key? key,
+    this.show = true,
     this.color,
     this.padding,
     this.width,
     this.height,
     this.alignment,
     this.child,
-  })  : show = show ?? true,
-        _random = true,
+  })  : _random = true,
         super(key: key);
 
-  final Color color;
+  final Color? color;
   final bool show;
-  final EdgeInsetsGeometry padding;
-  final double width;
-  final double height;
-  final AlignmentGeometry alignment;
-  final Widget child;
+  final EdgeInsetsGeometry? padding;
+  final double? width;
+  final double? height;
+  final AlignmentGeometry? alignment;
+  final Widget? child;
   final bool _random;
 
   @override
   Widget build(BuildContext context) {
     if (!show) return const SizedBox();
-    Widget current = child;
+    Widget? current = child;
 
-    if (alignment != null) current = Align(alignment: alignment, child: current);
+    if (alignment != null) current = Align(alignment: alignment!, child: current);
 
-    if (padding != null) current = Padding(padding: padding, child: current);
+    if (padding != null) current = Padding(padding: padding!, child: current);
 
     if (_random) {
       var rand = Random();
-      int r = (color == null) ? (30 + rand.nextInt(196)) : (color.red + rand.nextInt(256)) ~/ 2;
-      int g = (color == null) ? (30 + rand.nextInt(196)) : (color.green + rand.nextInt(256)) ~/ 2;
-      int b = (color == null) ? (30 + rand.nextInt(196)) : (color.blue + rand.nextInt(256)) ~/ 2;
+      int r = (color == null) ? (30 + rand.nextInt(196)) : (color!.red + rand.nextInt(256)) ~/ 2;
+      int g = (color == null) ? (30 + rand.nextInt(196)) : (color!.green + rand.nextInt(256)) ~/ 2;
+      int b = (color == null) ? (30 + rand.nextInt(196)) : (color!.blue + rand.nextInt(256)) ~/ 2;
       current = DecoratedBox(
           decoration: BoxDecoration(color: Color.fromARGB(255, r, g, b)), child: current);
     } else if (color != null)
@@ -189,7 +191,7 @@ class Box extends StatelessWidget {
         child: current,
       );
 
-    return current;
+    return current!;
   }
 
   @override

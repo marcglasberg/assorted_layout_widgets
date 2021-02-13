@@ -1,21 +1,22 @@
 name: assorted_layout_widgets
 description: Layout widgets that boldly go where no native Flutter widgets have gone before. ColumnSuper, RowSuper, FitHorizontally, Box, WrapSuper, TextOneLine, Delayed, Pad.
 
-version: 3.0.1
+version: 4.0.0-nullsafety.1
 author: Marcelo Glasberg <marcglasberg@gmail.com>
 homepage: https://github.com/marcglasberg/assorted_layout_widgets
 
 environment:
-  sdk: ">=2.9.0 <3.0.0"
+  sdk: '>=2.12.0-259.9.beta <3.0.0'
 
 dependencies:
-  matrix4_transform: ^1.1.3
   flutter:
     sdk: flutter
+  matrix4_transform: ^1.1.3
+
 
 dev_dependencies:
-  test: ^1.6.3
   flutter_test:
     sdk: flutter
+  test: ^1.6.3
 
 flutter:

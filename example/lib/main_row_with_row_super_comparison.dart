@@ -1,7 +1,7 @@
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 
-void main() async => runApp(MaterialApp(home: Demo()));
+void main()  => runApp(MaterialApp(home: Demo()));
 
 class Demo extends StatelessWidget {
   @override
@@ -88,9 +88,9 @@ class Demo extends StatelessWidget {
 
   Column divider() => Column(
         children: [
-          SizedBox(height: 40),
+          const SizedBox(height: 40),
           Container(color: Colors.black, height: 1, width: double.infinity),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
         ],
       );
 
@@ -106,12 +106,12 @@ class Demo extends StatelessWidget {
       ];
 
   Widget text(String text) => Box.rand(
-        padding: Pad(top: 4.0, bottom: 4.0),
+        padding: const Pad(top: 4.0, bottom: 4.0),
         child: Text(
           text,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
       );
 }

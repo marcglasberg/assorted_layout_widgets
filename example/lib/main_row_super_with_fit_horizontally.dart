@@ -1,7 +1,7 @@
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 
-void main() async => runApp(MaterialApp(home: Demo()));
+void main()  => runApp(MaterialApp(home: Demo()));
 
 class Demo extends StatelessWidget {
   @override
@@ -16,11 +16,11 @@ class Demo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               //
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               //
               for (double width = 360; width >= 0.0; width -= 100)
                 Column(children: [
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   //
                   // fitHorizontally: false
                   Container(
@@ -91,7 +91,7 @@ class Demo extends StatelessWidget {
 
   Container separator() => Container(width: 2, height: 50, color: Colors.black26);
 
-  Text text1() => Text(
+  Text text1() => const Text(
         "So long",
         overflow: TextOverflow.fade,
         style: TextStyle(fontSize: 20, color: Colors.blue),
@@ -99,7 +99,7 @@ class Demo extends StatelessWidget {
         softWrap: false,
       );
 
-  Text text2() => Text(
+  Text text2() => const Text(
         "farewell",
         overflow: TextOverflow.fade,
         style: TextStyle(fontSize: 20, color: Colors.red),
@@ -107,7 +107,7 @@ class Demo extends StatelessWidget {
         softWrap: false,
       );
 
-  Text text3() => Text(
+  Text text3() => const Text(
         "auf Wiedersehen",
         overflow: TextOverflow.fade,
         style: TextStyle(fontSize: 20, color: Colors.red),

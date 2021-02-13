@@ -1,7 +1,7 @@
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 
-void main() async => runApp(MaterialApp(home: Demo()));
+void main()  => runApp(MaterialApp(home: Demo()));
 
 class Demo extends StatefulWidget {
   @override
@@ -9,16 +9,16 @@ class Demo extends StatefulWidget {
 }
 
 class _DemoState extends State<Demo> {
-  int itemCount;
-  double height;
-  double width;
-  double outer;
-  double inner;
-  bool withSeparator;
-  Alignment alignment;
-  double separatorWidth;
-  double parentHeight;
-  bool intrinsic;
+  late int itemCount;
+  late double height;
+  late double width;
+  late double outer;
+  late double inner;
+  late bool withSeparator;
+  late Alignment alignment;
+  late double separatorWidth;
+  late double? parentHeight;
+  late bool intrinsic;
 
   @override
   void initState() {
@@ -100,7 +100,7 @@ class _DemoState extends State<Demo> {
                   children: <Widget>[
                     button("- Width", () => width -= (width > 0.0) ? 1.0 : 0.0),
                     button("+ Width", () => width += 1.0),
-                    Box(width: 10.0),
+                    const Box(width: 10.0),
                     button("- Height", () => height -= (height > 0.0) ? 1.0 : 0.0),
                     button("+ Height", () => height += 1.0),
                   ],
@@ -145,7 +145,7 @@ class _DemoState extends State<Demo> {
                         parentHeight = double.infinity;
                       else if (parentHeight == double.infinity) parentHeight = null;
                     }),
-                    Box(width: 10.0),
+                    const Box(width: 10.0),
                     button("Alignment = $alignment", () {
                       if (alignment == Alignment.center)
                         alignment = Alignment.topLeft;
@@ -180,14 +180,14 @@ class _DemoState extends State<Demo> {
     );
   }
 
-  Widget button(String label, VoidCallback func, {Color color}) => Padding(
+  Widget button(String label, VoidCallback? func, {Color color = Colors.blue}) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0),
         child: MaterialButton(
-          visualDensity: VisualDensity(vertical: -1.0, horizontal: -3.0),
+          visualDensity: const VisualDensity(vertical: -1.0, horizontal: -3.0),
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          color: color ?? Colors.blue,
-          child: Text(label),
+          color: color,
           onPressed: (func == null) ? null : () => setState(func),
+          child: Text(label),
         ),
       );
 

@@ -1,7 +1,7 @@
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 
-void main() async => runApp(MaterialApp(home: Demo()));
+void main()  => runApp(MaterialApp(home: Demo()));
 
 class Demo extends StatelessWidget {
   @override
@@ -21,7 +21,7 @@ class Demo extends StatelessWidget {
     );
   }
 
-  Widget _delayed(Duration delay) {
+  Widget _delayed(Duration? delay) {
     return Delayed(
       delay: delay,
       builder: (_, bool initialized) => AnimatedOpacity(
@@ -32,7 +32,7 @@ class Demo extends StatelessWidget {
     );
   }
 
-  Widget _myWidget(int delay) {
+  Widget _myWidget(int? delay) {
     return Box.rand(
       height: 50.0,
       child: Center(child: Text(delay.toString())),

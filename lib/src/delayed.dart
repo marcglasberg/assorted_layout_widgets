@@ -18,11 +18,11 @@ import 'package:flutter/foundation.dart';
 class Delayed extends StatefulWidget {
   //
   final Widget Function(BuildContext context, bool initialized) builder;
-  final Duration delay;
+  final Duration? delay;
 
-  Delayed({
-    Key key,
-    @required this.builder,
+  const Delayed({
+    Key? key,
+    required this.builder,
     this.delay,
   }) : super(key: key);
 
@@ -31,16 +31,16 @@ class Delayed extends StatefulWidget {
 }
 
 class _DelayedState extends State<Delayed> {
-  bool _initialized;
+  late bool _initialized;
 
   @override
   void initState() {
     super.initState();
     _initialized = false;
 
-    WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
+    WidgetsBinding.instance!.addPostFrameCallback((Duration timeStamp) {
       if (widget.delay != null)
-        Future.delayed(widget.delay, _delayedInit);
+        Future.delayed(widget.delay!, _delayedInit);
       else {
         _delayedInit();
       }

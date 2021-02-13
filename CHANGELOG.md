@@ -1,3 +1,8 @@
+## [4.0.0] - 2020/11/10
+            
+* `RowSuper` horizontal alignment now applied when there are no `RowSpacer`s 
+  and `MainAxisSize` is `max`. 
+
 ## [3.0.1] - 2020/11/10
 
 * Breaking change: The `Box` widget now has a `padding` parameter. I recommend you

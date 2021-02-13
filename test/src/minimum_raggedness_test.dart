@@ -7,7 +7,7 @@ void main() {
 
   test('Divide no boxes.', () async {
     List<List<int>> result = MinimumRaggedness.divide([], 20, spacing: 1.0);
-    expect(result, []);
+    expect(result, <List<int>>[]);
   });
 
   ///////////////////////////////////////////////////////////////////////////////

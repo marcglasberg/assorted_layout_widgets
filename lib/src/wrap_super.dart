@@ -48,14 +48,13 @@ class WrapSuper extends MultiChildRenderObjectWidget {
   /// https://xxyxyz.org/line-breaking/
   ///
   WrapSuper({
-    Key key,
+    Key? key,
     this.wrapType = WrapType.balanced,
     this.spacing = 0.0,
     this.lineSpacing = 0.0,
     this.alignment = WrapSuperAlignment.left,
     List<Widget> children = const <Widget>[],
-  })  : assert(wrapType != null),
-        super(key: key, children: children);
+  }) : super(key: key, children: children);
 
   final WrapSuperAlignment alignment;
 
@@ -95,15 +94,12 @@ class _RenderWrapSuper extends RenderBox
         RenderBoxContainerDefaultsMixin<RenderBox, ContainerBoxParentData<RenderBox>> {
   //
   _RenderWrapSuper({
-    List<RenderBox> children,
+    List<RenderBox>? children,
     double spacing = 0.0,
     double lineSpacing = 0.0,
     WrapSuperAlignment alignment = WrapSuperAlignment.left,
     WrapType wrapType = WrapType.balanced,
-  })  : assert(spacing != null),
-        assert(lineSpacing != null),
-        assert(alignment != null),
-        _spacing = spacing,
+  })  : _spacing = spacing,
         _lineSpacing = lineSpacing,
         _alignment = alignment,
         _wrapType = wrapType {
@@ -115,7 +111,6 @@ class _RenderWrapSuper extends RenderBox
   double _spacing;
 
   set spacing(double value) {
-    assert(value != null);
     if (_spacing == value) return;
     _spacing = value;
     markNeedsLayout();
@@ -126,7 +121,6 @@ class _RenderWrapSuper extends RenderBox
   double _lineSpacing;
 
   set lineSpacing(double value) {
-    assert(value != null);
     if (_lineSpacing == value) return;
     _lineSpacing = value;
     markNeedsLayout();
@@ -137,7 +131,6 @@ class _RenderWrapSuper extends RenderBox
   WrapSuperAlignment _alignment;
 
   set alignment(WrapSuperAlignment value) {
-    assert(value != null);
     if (_alignment == value) return;
     _alignment = value;
     markNeedsLayout();
@@ -147,7 +140,6 @@ class _RenderWrapSuper extends RenderBox
   WrapType _wrapType;
 
   set wrapType(WrapType value) {
-    assert(value != null);
     if (_wrapType == value) return;
     _wrapType = value;
     markNeedsLayout();
@@ -164,7 +156,7 @@ class _RenderWrapSuper extends RenderBox
     double runWidth = 0.0;
     double runHeight = 0.0;
     int childCount = 0;
-    RenderBox child = firstChild;
+    RenderBox? child = firstChild;
     while (child != null) {
       final double childWidth = child.getMaxIntrinsicWidth(double.infinity);
       final double childHeight = child.getMaxIntrinsicHeight(childWidth);
@@ -189,7 +181,7 @@ class _RenderWrapSuper extends RenderBox
   @override
   double computeMinIntrinsicWidth(double height) {
     double width = 0.0;
-    RenderBox child = firstChild;
+    RenderBox? child = firstChild;
     while (child != null) {
       width = max(width, child.getMinIntrinsicWidth(double.infinity));
       child = childAfter(child);
@@ -200,7 +192,7 @@ class _RenderWrapSuper extends RenderBox
   @override
   double computeMaxIntrinsicWidth(double height) {
     double width = 0.0;
-    RenderBox child = firstChild;
+    RenderBox? child = firstChild;
     while (child != null) {
       width += child.getMaxIntrinsicWidth(double.infinity);
       child = childAfter(child);
@@ -219,7 +211,7 @@ class _RenderWrapSuper extends RenderBox
   }
 
   @override
-  double computeDistanceToActualBaseline(TextBaseline baseline) {
+  double? computeDistanceToActualBaseline(TextBaseline baseline) {
     return defaultComputeDistanceToHighestActualBaseline(baseline);
   }
 
@@ -236,7 +228,7 @@ class _RenderWrapSuper extends RenderBox
     List<double> heights = [];
     List<_Line> lines = [];
 
-    RenderBox child = firstChild;
+    RenderBox? child = firstChild;
 
     // First save all info.
     while (child != null) {
@@ -244,7 +236,8 @@ class _RenderWrapSuper extends RenderBox
 
       final double width = child.size.width;
       final double height = child.size.height;
-      final ContainerBoxParentData childParentData = child.parentData;
+      final ContainerBoxParentData childParentData =
+          child.parentData as ContainerBoxParentData<RenderObject>;
 
       count++;
       children.add(child);
@@ -252,7 +245,7 @@ class _RenderWrapSuper extends RenderBox
       widths.add(width);
       heights.add(height);
 
-      child = childParentData.nextSibling;
+      child = childParentData.nextSibling as RenderBox?;
     }
 
     // Now calculate which widgets go in which lines.
@@ -260,7 +253,7 @@ class _RenderWrapSuper extends RenderBox
     // Will try to minimize the difference between line widths.
     if (wrapType == WrapType.balanced) {
       List<List<num>> result = MinimumRaggedness.divide(widths, availableWidth, spacing: spacing);
-      lines = result.map((List<num> indexes) => _Line()..indexes = indexes).toList();
+      lines = result.map((List<num> indexes) => _Line()..indexes = indexes as List<int>).toList();
     }
     //
     // Will fit all widgets it can in a line, and then move to the next one.
@@ -327,7 +320,7 @@ class _RenderWrapSuper extends RenderBox
   }
 
   @override
-  bool hitTestChildren(BoxHitTestResult result, {Offset position}) {
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
     return defaultHitTestChildren(result, position: position);
   }
 

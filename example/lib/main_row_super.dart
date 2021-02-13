@@ -1,7 +1,7 @@
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 
-void main() async => runApp(MaterialApp(home: Demo()));
+void main()  => runApp(MaterialApp(home: Demo()));
 
 class Demo extends StatelessWidget {
   @override
@@ -9,7 +9,7 @@ class Demo extends StatelessWidget {
     //
     return Scaffold(
       appBar: AppBar(title: const Text('RowSuper Example')),
-      body: Center(
+      body: SizedBox.expand(
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: RowSuper(
@@ -154,7 +154,7 @@ class Demo extends StatelessWidget {
           alignment: Alignment.center,
           innerDistance: -45,
           separatorOnTop: false,
-          children: [
+          children: const [
             Text("Text", style: TextStyle(fontSize: 50, color: Colors.red)),
             Text("Text", style: TextStyle(fontSize: 50, color: Colors.blue)),
             Text("Text", style: TextStyle(fontSize: 50, color: Colors.green)),
@@ -169,7 +169,7 @@ class Demo extends StatelessWidget {
           innerDistance: -45,
           invert: true,
           separatorOnTop: false,
-          children: [
+          children: const [
             Text("Text", style: TextStyle(fontSize: 50, color: Colors.red)),
             Text("Text", style: TextStyle(fontSize: 50, color: Colors.blue)),
             Text("Text", style: TextStyle(fontSize: 50, color: Colors.green)),
@@ -188,7 +188,7 @@ class Demo extends StatelessWidget {
             color: Colors.black,
           ),
           separatorOnTop: false,
-          children: [
+          children: const [
             Text("Text", style: TextStyle(fontSize: 50, color: Colors.red)),
             Text("Text", style: TextStyle(fontSize: 50, color: Colors.blue)),
             Text("Text", style: TextStyle(fontSize: 50, color: Colors.green)),
@@ -207,7 +207,7 @@ class Demo extends StatelessWidget {
             color: Colors.black,
           ),
           separatorOnTop: false,
-          children: [
+          children: const [
             Text("Text", style: TextStyle(fontSize: 50, color: Colors.red)),
             Text("Text", style: TextStyle(fontSize: 50, color: Colors.blue)),
             Text("Text", style: TextStyle(fontSize: 50, color: Colors.green)),
@@ -226,7 +226,7 @@ class Demo extends StatelessWidget {
             color: Colors.black,
           ),
           separatorOnTop: true,
-          children: [
+          children: const [
             Text("Text", style: TextStyle(fontSize: 50, color: Colors.red)),
             Text("Text", style: TextStyle(fontSize: 50, color: Colors.blue)),
             Text("Text", style: TextStyle(fontSize: 50, color: Colors.green)),

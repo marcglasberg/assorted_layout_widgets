@@ -1,7 +1,7 @@
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 
-void main() async => runApp(MaterialApp(home: Demo()));
+void main()  => runApp(MaterialApp(home: Demo()));
 
 class Demo extends StatelessWidget {
   @override
@@ -12,7 +12,7 @@ class Demo extends StatelessWidget {
       body: Column(
         children: <Widget>[
           //
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           //
           Container(
             color: Colors.yellow,
@@ -24,7 +24,7 @@ class Demo extends StatelessWidget {
             ),
           ),
           //
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           //
           Container(
             color: Colors.yellow,
@@ -37,7 +37,7 @@ class Demo extends StatelessWidget {
             ),
           ),
           //
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           //
           Container(
             color: Colors.yellow,
@@ -50,7 +50,7 @@ class Demo extends StatelessWidget {
             ),
           ),
           //
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           //
           Container(
             width: 165.0,
@@ -66,7 +66,7 @@ class Demo extends StatelessWidget {
             ),
           ),
           //
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           //
           Container(
             width: 165.0,
@@ -83,9 +83,9 @@ class Demo extends StatelessWidget {
             ),
           ),
           //
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Container(width: double.infinity, height: 2.0, color: Colors.black),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           //
           // ------------
           //
@@ -118,21 +118,21 @@ class Demo extends StatelessWidget {
   }
 
   Container text1() => Container(
-        child: Text("Hello!",
+        color: Colors.red,
+        child: const Text("Hello!",
             maxLines: 1,
             overflow: TextOverflow.fade,
             softWrap: false,
             style: TextStyle(fontSize: 27.0)),
-        color: Colors.red,
       );
 
   Container text2() => Container(
-        child: Text("How are you doing?",
+        color: Colors.blue,
+        child: const Text("How are you doing?",
             maxLines: 1,
             overflow: TextOverflow.fade,
             softWrap: false,
             style: TextStyle(fontSize: 20.0)),
-        color: Colors.blue,
       );
 
   Container box1() => Container(width: 30, height: 40, color: Colors.green);

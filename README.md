@@ -199,7 +199,7 @@ which is less verbose and can be made `const`.
 
 ```dart
 const Box({
-    bool show,
+    bool show = true,
     Color color,
     EdgeInsetsGeometry padding,
     double width,

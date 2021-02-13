@@ -21,15 +21,13 @@ import 'package:flutter/rendering.dart';
 ///
 class FitHorizontally extends SingleChildRenderObjectWidget {
   const FitHorizontally({
-    Key key,
-    Widget child,
-    double shrinkLimit,
+    Key? key,
+    Widget? child,
+    double? shrinkLimit,
     this.fitsHeight = false,
     this.alignment = Alignment.center,
   })  : assert(shrinkLimit == null || (shrinkLimit >= 0.0 && shrinkLimit <= 1.0),
             "The shrinkLimit parameter is $shrinkLimit but should be between 0.0 and 1.0."),
-        assert(alignment != null, "The alignment parameter must not be null."),
-        assert(fitsHeight != null, "The fitsHeight parameter must not be null."),
         shrinkLimit = shrinkLimit ?? defaultShrinkLimit,
         super(key: key, child: child);
 
@@ -78,20 +76,18 @@ class RenderFitHorizontally extends RenderProxyBox {
     double shrinkLimit = FitHorizontally.defaultShrinkLimit,
     bool fitsHeight = false,
     AlignmentGeometry alignment = Alignment.center,
-    TextDirection textDirection,
-    RenderBox child,
-  })  : assert(shrinkLimit != null && shrinkLimit <= 1.0),
-        assert(fitsHeight != null),
-        assert(alignment != null),
+    TextDirection? textDirection,
+    RenderBox? child,
+  })  : assert(shrinkLimit <= 1.0),
         _shrinkLimit = shrinkLimit,
         _fitsHeight = fitsHeight,
         _alignment = alignment,
         _textDirection = textDirection,
         super(child);
 
-  Alignment _resolvedAlignment;
+  Alignment? _resolvedAlignment;
 
-  double shrink;
+  double? shrink;
 
   void _resolve() {
     if (_resolvedAlignment != null) return;
@@ -108,7 +104,6 @@ class RenderFitHorizontally extends RenderProxyBox {
   double _shrinkLimit;
 
   set shrinkLimit(double value) {
-    assert(value != null);
     if (_shrinkLimit == value) return;
     _shrinkLimit = value;
     _clearPaintData();
@@ -120,7 +115,6 @@ class RenderFitHorizontally extends RenderProxyBox {
   bool _fitsHeight;
 
   set fitsHeight(bool value) {
-    assert(value != null);
     if (_fitsHeight == value) return;
     _fitsHeight = value;
     _clearPaintData();
@@ -139,7 +133,6 @@ class RenderFitHorizontally extends RenderProxyBox {
   AlignmentGeometry _alignment;
 
   set alignment(AlignmentGeometry value) {
-    assert(value != null);
     if (_alignment == value) return;
     _alignment = value;
     _clearPaintData();
@@ -150,10 +143,10 @@ class RenderFitHorizontally extends RenderProxyBox {
   ///
   /// This may be changed to null, but only after [alignment] has been changed
   /// to a value that does not depend on the direction.
-  TextDirection get textDirection => _textDirection;
-  TextDirection _textDirection;
+  TextDirection? get textDirection => _textDirection;
+  TextDirection? _textDirection;
 
-  set textDirection(TextDirection value) {
+  set textDirection(TextDirection? value) {
     if (_textDirection == value) return;
     _textDirection = value;
     _clearPaintData();
@@ -168,17 +161,17 @@ class RenderFitHorizontally extends RenderProxyBox {
       if (_fitsHeight) {
         // Special case when shrinkLimit is 1.0, we can calculate faster.
         if (shrinkLimit == 1.0) {
-          double intrinsicHeight = child.getMinIntrinsicHeight(constraints.maxWidth);
+          double intrinsicHeight = child!.getMinIntrinsicHeight(constraints.maxWidth);
           var calc = constraints.maxHeight * intrinsicHeight;
           double width = (calc == 0.0) ? 0.0 : constraints.maxWidth / calc;
 
-          child.layout(BoxConstraints(maxWidth: width, maxHeight: intrinsicHeight),
+          child!.layout(BoxConstraints(maxWidth: width, maxHeight: intrinsicHeight),
               parentUsesSize: true);
         }
         // But it's slower if there's shrink, since we also need intrinsicWidth.
         else {
-          double intrinsicWidth = child.getMinIntrinsicWidth(double.infinity);
-          double intrinsicHeight = child.getMinIntrinsicHeight(constraints.maxWidth);
+          double intrinsicWidth = child!.getMinIntrinsicWidth(double.infinity);
+          double intrinsicHeight = child!.getMinIntrinsicHeight(constraints.maxWidth);
 
           // ---
 
@@ -186,11 +179,11 @@ class RenderFitHorizontally extends RenderProxyBox {
               ? 0.0
               : ((constraints.maxWidth / constraints.maxHeight) * intrinsicHeight) / intrinsicWidth;
 
-          if (shrink > shrinkLimit)
-            child.layout(BoxConstraints(maxWidth: intrinsicWidth, maxHeight: intrinsicHeight),
+          if (shrink! > shrinkLimit)
+            child!.layout(BoxConstraints(maxWidth: intrinsicWidth, maxHeight: intrinsicHeight),
                 parentUsesSize: true);
           else
-            child.layout(
+            child!.layout(
                 BoxConstraints(
                     maxWidth: (constraints.maxHeight == 0.0 || shrinkLimit == 0.0)
                         ? 0.0
@@ -207,21 +200,21 @@ class RenderFitHorizontally extends RenderProxyBox {
         if (shrinkLimit == 1.0) {
           // Note: There must be a 1.0 pixel clearance to maxHeight,
           // because the Text widget may create a phantom fade otherwise.
-          child.layout(
+          child!.layout(
               BoxConstraints(
                   maxWidth: constraints.maxWidth, maxHeight: constraints.maxHeight + 1.0),
               parentUsesSize: true);
         }
         // But it's slower if there's shrink, since we also need intrinsicWidth.
         else {
-          double intrinsicWidth = child.getMaxIntrinsicWidth(double.infinity);
+          double intrinsicWidth = child!.getMaxIntrinsicWidth(double.infinity);
 
           shrink = (intrinsicWidth == 0.0) ? 1.0 : (constraints.maxWidth / intrinsicWidth);
 
           // Note: There must be a 1.0 pixel clearance to maxHeight,
           // because the Text widget may create a phantom fade otherwise.
-          var calc = max(shrinkLimit, min(shrink, 1.0));
-          child.layout(
+          var calc = max(shrinkLimit, min(shrink!, 1.0));
+          child!.layout(
               BoxConstraints(
                   maxWidth: (calc == 0.0) ? 0.0 : (constraints.maxWidth / calc),
                   maxHeight: constraints.maxHeight + 1.0),
@@ -230,9 +223,9 @@ class RenderFitHorizontally extends RenderProxyBox {
       }
       // ---
 
-      size = (child.size.width == 0 || child.size.height == 0)
+      size = (child!.size.width == 0 || child!.size.height == 0)
           ? Size(constraints.minWidth, constraints.minHeight)
-          : constraints.constrainSizeAndAttemptToPreserveAspectRatio(child.size);
+          : constraints.constrainSizeAndAttemptToPreserveAspectRatio(child!.size);
 
       _clearPaintData();
     }
@@ -245,7 +238,7 @@ class RenderFitHorizontally extends RenderProxyBox {
   static FittedSizes _applyBoxFit(
     Size inputSize,
     Size outputSize,
-    double shrink,
+    double? shrink,
     double shrinkLimit,
     bool fitsHeight,
   ) {
@@ -270,7 +263,7 @@ class RenderFitHorizontally extends RenderProxyBox {
             sourceSize.width *
                 outputSize.height /
                 sourceSize.height *
-                max(shrinkLimit, min(shrink, 1.0)),
+                max(shrinkLimit, min(shrink!, 1.0)),
             outputSize.height);
       }
     }
@@ -283,15 +276,15 @@ class RenderFitHorizontally extends RenderProxyBox {
       } else {
         sourceSize = inputSize;
         destinationSize =
-            Size(inputSize.width * max(shrinkLimit, min(shrink, 1.0)), inputSize.height);
+            Size(inputSize.width * max(shrinkLimit, min(shrink!, 1.0)), inputSize.height);
       }
     }
 
     return FittedSizes(sourceSize, destinationSize);
   }
 
-  bool _hasVisualOverflow;
-  Matrix4 _transform;
+  bool? _hasVisualOverflow;
+  Matrix4? _transform;
 
   void _clearPaintData() {
     _hasVisualOverflow = null;
@@ -306,39 +299,39 @@ class RenderFitHorizontally extends RenderProxyBox {
       _transform = Matrix4.identity();
     } else {
       _resolve();
-      final Size childSize = child.size;
+      final Size childSize = child!.size;
       final FittedSizes sizes = _applyBoxFit(childSize, size, shrink, shrinkLimit, _fitsHeight);
       final double scaleX =
           (sizes.source.width == 0.0) ? 0.0 : sizes.destination.width / sizes.source.width;
       final double scaleY =
           (sizes.source.height == 0.0) ? 0.0 : sizes.destination.height / sizes.source.height;
-      final Rect sourceRect = _resolvedAlignment.inscribe(sizes.source, Offset.zero & childSize);
+      final Rect sourceRect = _resolvedAlignment!.inscribe(sizes.source, Offset.zero & childSize);
       final Rect destinationRect =
-          _resolvedAlignment.inscribe(sizes.destination, Offset.zero & size);
+          _resolvedAlignment!.inscribe(sizes.destination, Offset.zero & size);
       _hasVisualOverflow =
           sourceRect.width < childSize.width || sourceRect.height < childSize.height;
       assert(scaleX.isFinite && scaleY.isFinite);
       _transform = Matrix4.translationValues(destinationRect.left, destinationRect.top, 0.0)
         ..scale(scaleX, scaleY, 1.0)
         ..translate(-sourceRect.left, -sourceRect.top);
-      assert(_transform.storage.every((double value) => value.isFinite));
+      assert(_transform!.storage.every((double value) => value.isFinite));
     }
   }
 
   void _paintChildWithTransform(PaintingContext context, Offset offset) {
-    final Offset childOffset = MatrixUtils.getAsTranslation(_transform);
+    final Offset? childOffset = MatrixUtils.getAsTranslation(_transform!);
     if (childOffset == null)
-      context.pushTransform(needsCompositing, offset, _transform, super.paint);
+      context.pushTransform(needsCompositing, offset, _transform!, super.paint);
     else
       super.paint(context, offset + childOffset);
   }
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    if (size.isEmpty || child.size.isEmpty) return;
+    if (size.isEmpty || child!.size.isEmpty) return;
     _updatePaintData();
     if (child != null) {
-      if (_hasVisualOverflow)
+      if (_hasVisualOverflow!)
         context.pushClipRect(
             needsCompositing, offset, Offset.zero & size, _paintChildWithTransform);
       else
@@ -347,12 +340,12 @@ class RenderFitHorizontally extends RenderProxyBox {
   }
 
   @override
-  bool hitTestChildren(BoxHitTestResult result, {Offset position}) {
+  bool hitTestChildren(BoxHitTestResult result, {Offset? position}) {
     if (size.isEmpty) return false;
     _updatePaintData();
     return result.addWithPaintTransform(
       transform: _transform,
-      position: position,
+      position: position!,
       hitTest: (BoxHitTestResult result, Offset position) {
         return super.hitTestChildren(result, position: position);
       },
@@ -365,10 +358,11 @@ class RenderFitHorizontally extends RenderProxyBox {
       transform.setZero();
     } else {
       _updatePaintData();
-      transform.multiply(_transform);
+      transform.multiply(_transform!);
     }
   }
 
+  @override
   bool debugHandleEvent(PointerEvent event, HitTestEntry entry) {
     return true;
   }
@@ -376,10 +370,13 @@ class RenderFitHorizontally extends RenderProxyBox {
   @override
   void debugPaint(PaintingContext context, Offset offset) {}
 
+  @override
   void debugPaintSize(PaintingContext context, Offset offset) {}
 
+  @override
   void debugPaintBaselines(PaintingContext context, Offset offset) {}
 
+  @override
   void debugPaintPointers(PaintingContext context, Offset offset) {}
 
   @override
@@ -392,7 +389,7 @@ class RenderFitHorizontally extends RenderProxyBox {
     super.debugFillProperties(properties);
     properties.add(DoubleProperty('shrink', shrink));
     properties.add(DoubleProperty('shrinkLimit', shrinkLimit));
-    properties.add(DiagnosticsProperty<Alignment>('alignment', alignment));
+    properties.add(DiagnosticsProperty<Alignment>('alignment', alignment as Alignment?));
     properties.add(EnumProperty<TextDirection>('textDirection', textDirection, defaultValue: null));
   }
 }

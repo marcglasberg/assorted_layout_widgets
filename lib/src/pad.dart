@@ -53,14 +53,14 @@ class Pad extends EdgeInsets {
   /// [Padding] widget doesn't accept `null` padding. But you can just add `.x` to
   /// the [Pad] class to remove it. It's marked as [deprecated] so that you don't
   /// forget to change it back to normal.
-  @deprecated
+  @Deprecated("Use this for debugging purposes only.")
   const Pad.x({
-    double all,
-    double vertical,
-    double horizontal,
-    double left,
-    double top,
-    double right,
-    double bottom,
+    double? all, // ignore: avoid_unused_constructor_parameters
+    double? vertical, // ignore: avoid_unused_constructor_parameters
+    double? horizontal, // ignore: avoid_unused_constructor_parameters
+    double? left, // ignore: avoid_unused_constructor_parameters
+    double? top, // ignore: avoid_unused_constructor_parameters
+    double? right, // ignore: avoid_unused_constructor_parameters
+    double? bottom, // ignore: avoid_unused_constructor_parameters
   }) : super.fromLTRB(0, 0, 0, 0);
 }

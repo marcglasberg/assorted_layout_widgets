@@ -17,7 +17,7 @@ class MinimumRaggedness {
       offsets.add(offsets.last + min(boxWidth, maxWidth));
     }
 
-    List<num> minimum = [0]..addAll(List<num>.filled(count, 9007199254740991));
+    List<num> minimum = [0, ...List<num>.filled(count, 9007199254740991)];
     List<int> breaks = List<int>.filled(count + 1, 0);
 
     num cost(int i, int j) {
@@ -60,13 +60,13 @@ class MinimumRaggedness {
     int offset = 0;
 
     while (true) {
-      int r = min(n, pow(2, i + 1));
-      int edge = pow(2, i) + offset;
+      int r = min(n, pow(2, i + 1) as int);
+      int edge = pow(2, i) + offset as int;
       search(0 + offset, edge, edge, r + offset);
       num x = minimum[r - 1 + offset];
 
       bool flag = true;
-      for (int j = pow(2, i); j < r - 1; j++) {
+      for (int j = pow(2, i) as int; j < r - 1; j++) {
         num y = cost(j + offset, r - 1 + offset);
         if (y <= x) {
           n -= j;
@@ -110,7 +110,7 @@ class MinimumRaggedness {
     List<String> result = [];
 
     for (List<num> partList in divided) {
-      String text = partList.map((part) => words[part]).join(" ");
+      String text = partList.map((part) => words[part as int]).join(" ");
       result.add(text);
     }
 
