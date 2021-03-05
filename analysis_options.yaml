@@ -135,7 +135,7 @@ linter:
 
     # Good APIs don't use ambiguous boolean parameters. Instead use named parameters
     # https://dart-lang.github.io/linter/lints/avoid_positional_boolean_parameters.html
-    - avoid_positional_boolean_parameters
+    # - avoid_positional_boolean_parameters
 
     # Don't call print in production code
     # pedantic: disabled

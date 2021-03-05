@@ -1,5 +1,6 @@
 ## [4.0.0] - 2020/11/10
-            
+
+* Nullsafety.
 * `RowSuper` horizontal alignment now applied when there are no `RowSpacer`s 
   and `MainAxisSize` is `max`. 
 
