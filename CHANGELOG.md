@@ -1,6 +1,6 @@
 ## [4.0.1] - 2021/03/22
 
-* Fixed usage of `TextOneLine` as child of an intrinsic size widget.
+* Fixed NNBD problem: `TextOneLine` as child of an intrinsic size widget.
 
 ## [4.0.0] - 2020/11/10
 
