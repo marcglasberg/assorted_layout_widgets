@@ -1,8 +1,12 @@
+## [4.0.1] - 2021/03/22
+
+* Fixed usage of `TextOneLine` as child of an intrinsic size widget.
+
 ## [4.0.0] - 2020/11/10
 
 * Nullsafety.
-* `RowSuper` horizontal alignment now applied when there are no `RowSpacer`s 
-  and `MainAxisSize` is `max`. 
+* `RowSuper` horizontal alignment now applied when there are no `RowSpacer`s
+  and `MainAxisSize` is `max`.
 
 ## [3.0.1] - 2020/11/10
 

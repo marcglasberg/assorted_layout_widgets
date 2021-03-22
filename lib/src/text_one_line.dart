@@ -545,7 +545,7 @@ class RenderParagraphX extends RenderBox
       child = childAfter(child);
       childIndex += 1;
     }
-    _textPainter.setPlaceholderDimensions(placeholderDimensions as List<PlaceholderDimensions>?);
+    _textPainter.setPlaceholderDimensions(placeholderDimensions.cast());
   }
 
   void _computeChildrenWidthWithMinIntrinsics(double height) {
@@ -564,7 +564,7 @@ class RenderParagraphX extends RenderBox
       child = childAfter(child);
       childIndex += 1;
     }
-    _textPainter.setPlaceholderDimensions(placeholderDimensions as List<PlaceholderDimensions>?);
+    _textPainter.setPlaceholderDimensions(placeholderDimensions.cast());
   }
 
   void _computeChildrenHeightWithMinIntrinsics(double width) {
@@ -583,7 +583,7 @@ class RenderParagraphX extends RenderBox
       child = childAfter(child);
       childIndex += 1;
     }
-    _textPainter.setPlaceholderDimensions(placeholderDimensions as List<PlaceholderDimensions>?);
+    _textPainter.setPlaceholderDimensions(placeholderDimensions.cast());
   }
 
   @override
