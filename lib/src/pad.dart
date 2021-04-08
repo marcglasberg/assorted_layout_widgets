@@ -63,4 +63,21 @@ class Pad extends EdgeInsets {
     double? right, // ignore: avoid_unused_constructor_parameters
     double? bottom, // ignore: avoid_unused_constructor_parameters
   }) : super.fromLTRB(0, 0, 0, 0);
+
+  /// Creates a copy of this padding but with the given fields replaced
+  /// with the new values.
+  @override
+  Pad copyWith({
+    double? left,
+    double? top,
+    double? right,
+    double? bottom,
+  }) {
+    return Pad(
+      left: left ?? this.left,
+      top: top ?? this.top,
+      right: right ?? this.right,
+      bottom: bottom ?? this.bottom,
+    );
+  }
 }

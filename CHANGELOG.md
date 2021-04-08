@@ -1,3 +1,7 @@
+## [4.0.2] - 2021/04/08
+
+* `Pad.copyWith()`.
+
 ## [4.0.1] - 2021/03/22
 
 * Fixed NNBD problem: `TextOneLine` as child of an intrinsic size widget.
