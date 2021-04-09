@@ -191,7 +191,7 @@ class Box extends StatelessWidget {
         child: current,
       );
 
-    return current!;
+    return current ?? Container();
   }
 
   @override
