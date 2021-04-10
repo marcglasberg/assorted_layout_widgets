@@ -1,4 +1,4 @@
-## [4.0.3] - 2021/04/10
+## [4.0.4] - 2021/04/10
 
 * `WrapSuper.wrapFit` parameter.
 * `ButtonBarSuper` parameter.

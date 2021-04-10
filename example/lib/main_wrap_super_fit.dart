@@ -50,7 +50,7 @@ class Demo extends StatelessWidget {
               _wrap(WrapFit.min,
                   [box(200, 200), box(120, 120), box(60, 60), box(80, 80)]),
               _wrap(WrapFit.divided,
-                  [box(200, 300), box(120, 100), box(60, 30), box(80, 100)]),
+                  [box(200, 300), box(120, 100), box(60, 100), box(80, 100)]),
               _wrap(WrapFit.proportional, [
                 box(200, 300),
                 box(120, (120 / (120 + 60 + 80) * 300).toInt()),
