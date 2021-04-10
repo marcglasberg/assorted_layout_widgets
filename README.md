@@ -11,6 +11,7 @@ Widgets and classes in this package:
 * `FitHorizontally`
 * `Box`
 * `WrapSuper`
+* `ButtonBarSuper`
 * `TextOneLine`
 * `Delayed`
 * `Pad`
