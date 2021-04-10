@@ -13,67 +13,57 @@ class Demo extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                _example(WrapType.fit, WrapFit.min),
+                _example(WrapType.fit, WrapFit.proportional),
+                _example(WrapType.fit, WrapFit.divided),
+                _example(WrapType.fit, WrapFit.larger),
+                _example(WrapType.balanced, WrapFit.min),
+                _example(WrapType.balanced, WrapFit.proportional),
+                _example(WrapType.balanced, WrapFit.divided),
+                _example(WrapType.balanced, WrapFit.larger),
                 const Box(height: 20),
-                const Text('WrapType.min'),
-                const Box(height: 6),
-                Container(
-                  width: 300,
-                  color: Colors.grey[300],
-                  child: _bar(WrapFit.min),
-                ),
-                const Box(height: 20),
-                const Text('WrapType.proportional'),
-                const Box(height: 6),
-                Container(
-                  width: 300,
-                  color: Colors.grey[300],
-                  child: _bar(WrapFit.proportional),
-                ) ,
-                const Box(height: 20),
-                const Text('WrapType.divided'),
-                const Box(height: 6),
-                Container(
-                  width: 300,
-                  color: Colors.grey[300],
-                  child: _bar(WrapFit.divided),
-                ) ,
-                const Box(height: 20),
-                const Text('WrapType.larger'),
-                const Box(height: 6),
-                Container(
-                  width: 300,
-                  color: Colors.grey[300],
-                  child: _bar(WrapFit.larger),
-                )
               ],
             ),
           ),
         ),
       );
 
-  ButtonBarSuper _bar(WrapFit wrapFit) {
+  Column _example(WrapType wrapType, WrapFit wrapFit) {
+    return Column(
+      children: [
+        const Box(height: 22),
+        Text('$wrapType | $wrapFit'),
+        const Box(height: 5),
+        Container(
+          width: 300,
+          color: Colors.grey[300],
+          child: _bar(wrapType, wrapFit),
+        ),
+      ],
+    );
+  }
+
+  ButtonBarSuper _bar(WrapType wrapType, WrapFit wrapFit) {
     return ButtonBarSuper(
-            buttonTextTheme: ButtonTextTheme.primary,
-            wrapType: WrapType.balanced,
-            wrapFit: wrapFit,
-            spacing: 5.0,
-            lineSpacing: 10.0,
-            buttonHeight: 48,
-            buttonMinWidth: 40,
-            children: [
-              RaisedButton(
-                  color: Colors.blue,
-                  onPressed: () {},
-                  child: const Text('I am a blue button like you')),
-              RaisedButton(
-                  color: Colors.blue,
-                  onPressed: () {},
-                  child: const Text('Hey')),
-              RaisedButton(
-                  color: Colors.blue,
-                  onPressed: () {},
-                  child: const Text('I am a blue button')),
-            ],
-          );
+      buttonTextTheme: ButtonTextTheme.primary,
+      wrapType: wrapType,
+      wrapFit: wrapFit,
+      spacing: 2.0,
+      lineSpacing: 10.0,
+      buttonHeight: 48,
+      buttonMinWidth: 40,
+      children: [
+        RaisedButton(
+            color: Colors.blue,
+            onPressed: () {},
+            child: const Text('I am a blue button like you')),
+        RaisedButton(
+            color: Colors.blue, onPressed: () {}, child: const Text('Hey')),
+        RaisedButton(
+            color: Colors.blue,
+            onPressed: () {},
+            child: const Text('I am a blue button')),
+      ],
+    );
   }
 }

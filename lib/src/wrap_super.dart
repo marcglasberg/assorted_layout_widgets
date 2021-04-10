@@ -286,13 +286,13 @@ class _RenderWrapSuper extends RenderBox
       // First calculate all info.
       RenderBox? child = firstChild;
       while (child != null) {
+        count++;
         child.layout(childConstraints, parentUsesSize: true);
 
         final double width = child.size.width;
         final double height = child.size.height;
         final childParentData = child.parentData as ContainerBoxParentData;
 
-        count++;
         parentDataList.add(childParentData);
         widths.add(width);
         heights.add(height);
@@ -388,6 +388,8 @@ class _RenderWrapSuper extends RenderBox
       // First calculate all info.
       RenderBox? child = firstChild;
       while (child != null) {
+        count++;
+
         children.add(child);
         final double width = child.computeMaxIntrinsicWidth(double.infinity);
         final double height = child.computeMinIntrinsicHeight(double.infinity);
