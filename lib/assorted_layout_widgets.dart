@@ -1,4 +1,5 @@
 export "src/box.dart";
+export "src/button_bar_super.dart";
 export "src/column_super.dart";
 export "src/delayed.dart";
 export "src/fit_horizontally.dart";

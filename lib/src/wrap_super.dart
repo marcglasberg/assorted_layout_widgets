@@ -19,6 +19,34 @@ enum WrapType {
 
 // ////////////////////////////////////////////////////////////////////////////
 
+enum WrapFit {
+  /// Will keep each widget's original width. This is the default.
+  min,
+
+  /// After the calculation, will make widgets fit all the available space.
+  /// All widgets in a line will have the same width, even if it makes them
+  /// smaller that their original width.
+  divided,
+
+  /// After the calculation, will make widgets larger, so that they fit all the
+  /// available space. Widgets width will be proportional to their original width.
+  proportional,
+
+  /// After the calculation, will make widgets larger, so that they fit all the
+  /// available space. Will try to make all widgets the same width,
+  /// but won't make any widgets smaller than their original width.
+  ///
+  /// The procedure is this:
+  /// 1) First, divide the available line width by the number of widgets in the
+  /// line. That is the preferred width.
+  /// 2) Keep the width of all widgets larger than that preferred width.
+  /// 3) Calculate the remaining width and divide it equally by the remaining
+  /// widgets.
+  larger,
+}
+
+// ////////////////////////////////////////////////////////////////////////////
+
 enum WrapSuperAlignment {
   left,
   right,
@@ -50,6 +78,7 @@ class WrapSuper extends MultiChildRenderObjectWidget {
   WrapSuper({
     Key? key,
     this.wrapType = WrapType.balanced,
+    this.wrapFit = WrapFit.min,
     this.spacing = 0.0,
     this.lineSpacing = 0.0,
     this.alignment = WrapSuperAlignment.left,
@@ -66,6 +95,8 @@ class WrapSuper extends MultiChildRenderObjectWidget {
 
   final WrapType wrapType;
 
+  final WrapFit wrapFit;
+
   @override
   _RenderWrapSuper createRenderObject(BuildContext context) {
     return _RenderWrapSuper(
@@ -73,6 +104,7 @@ class WrapSuper extends MultiChildRenderObjectWidget {
       lineSpacing: lineSpacing,
       alignment: alignment,
       wrapType: wrapType,
+      wrapFit: wrapFit,
     );
   }
 
@@ -82,7 +114,8 @@ class WrapSuper extends MultiChildRenderObjectWidget {
       ..spacing = spacing
       ..lineSpacing = lineSpacing
       ..alignment = alignment
-      ..wrapType = wrapType;
+      ..wrapType = wrapType
+      ..wrapFit = wrapFit;
   }
 }
 
@@ -90,8 +123,10 @@ class WrapSuper extends MultiChildRenderObjectWidget {
 
 class _RenderWrapSuper extends RenderBox
     with
-        ContainerRenderObjectMixin<RenderBox, ContainerBoxParentData<RenderBox>>,
-        RenderBoxContainerDefaultsMixin<RenderBox, ContainerBoxParentData<RenderBox>> {
+        ContainerRenderObjectMixin<RenderBox,
+            ContainerBoxParentData<RenderBox>>,
+        RenderBoxContainerDefaultsMixin<RenderBox,
+            ContainerBoxParentData<RenderBox>> {
   //
   _RenderWrapSuper({
     List<RenderBox>? children,
@@ -99,10 +134,12 @@ class _RenderWrapSuper extends RenderBox
     double lineSpacing = 0.0,
     WrapSuperAlignment alignment = WrapSuperAlignment.left,
     WrapType wrapType = WrapType.balanced,
+    WrapFit wrapFit = WrapFit.min,
   })  : _spacing = spacing,
         _lineSpacing = lineSpacing,
         _alignment = alignment,
-        _wrapType = wrapType {
+        _wrapType = wrapType,
+        _wrapFit = wrapFit {
     addAll(children);
   }
 
@@ -145,9 +182,19 @@ class _RenderWrapSuper extends RenderBox
     markNeedsLayout();
   }
 
+  WrapFit get wrapFit => _wrapFit;
+  WrapFit _wrapFit;
+
+  set wrapFit(WrapFit value) {
+    if (_wrapFit == value) return;
+    _wrapFit = value;
+    markNeedsLayout();
+  }
+
   @override
   void setupParentData(RenderBox child) {
-    if (child.parentData is! WrapParentData) child.parentData = WrapParentData();
+    if (child.parentData is! WrapParentData)
+      child.parentData = WrapParentData();
   }
 
   double _computeIntrinsicHeightForWidth(double width) {
@@ -217,43 +264,52 @@ class _RenderWrapSuper extends RenderBox
 
   @override
   void performLayout() {
+    if (wrapFit == WrapFit.min)
+      performLayoutMin();
+    else
+      performLayoutElse();
+  }
+
+  void performLayoutMin() {
     //
     double availableWidth = constraints.maxWidth;
     var childConstraints = BoxConstraints(maxWidth: availableWidth);
 
     int count = 0;
-    List<RenderBox> children = [];
-    List<ContainerBoxParentData> parentData = [];
+
+    List<ContainerBoxParentData> parentDataList = [];
     List<double> widths = [];
     List<double> heights = [];
     List<_Line> lines = [];
 
-    RenderBox? child = firstChild;
+    {
+      // First calculate all info.
+      RenderBox? child = firstChild;
+      while (child != null) {
+        child.layout(childConstraints, parentUsesSize: true);
 
-    // First save all info.
-    while (child != null) {
-      child.layout(childConstraints, parentUsesSize: true);
+        final double width = child.size.width;
+        final double height = child.size.height;
+        final childParentData = child.parentData as ContainerBoxParentData;
 
-      final double width = child.size.width;
-      final double height = child.size.height;
-      final ContainerBoxParentData childParentData =
-          child.parentData as ContainerBoxParentData<RenderObject>;
+        count++;
+        parentDataList.add(childParentData);
+        widths.add(width);
+        heights.add(height);
 
-      count++;
-      children.add(child);
-      parentData.add(childParentData);
-      widths.add(width);
-      heights.add(height);
-
-      child = childParentData.nextSibling as RenderBox?;
+        child = childParentData.nextSibling as RenderBox?;
+      }
     }
 
     // Now calculate which widgets go in which lines.
 
     // Will try to minimize the difference between line widths.
     if (wrapType == WrapType.balanced) {
-      List<List<num>> result = MinimumRaggedness.divide(widths, availableWidth, spacing: spacing);
-      lines = result.map((List<num> indexes) => _Line()..indexes = indexes as List<int>).toList();
+      List<List<num>> result =
+          MinimumRaggedness.divide(widths, availableWidth, spacing: spacing);
+      lines = result
+          .map((List<num> indexes) => _Line()..indexes = indexes as List<int>)
+          .toList();
     }
     //
     // Will fit all widgets it can in a line, and then move to the next one.
@@ -263,7 +319,6 @@ class _RenderWrapSuper extends RenderBox
       lines.add(line);
 
       for (int index = 0; index < count; index++) {
-        child = children[index];
         double width = widths[index];
 
         if (x > 0 && (x + width) > availableWidth) {
@@ -310,7 +365,7 @@ class _RenderWrapSuper extends RenderBox
         x = 0;
 
       for (int index in line.indexes) {
-        var childParentData = parentData[index];
+        var childParentData = parentDataList[index];
         childParentData.offset = Offset(x, line.top);
         x += widths[index] + spacing;
       }
@@ -319,10 +374,276 @@ class _RenderWrapSuper extends RenderBox
     size = constraints.constrain(Size(availableWidth, y - lineSpacing));
   }
 
-  @override
-  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
-    return defaultHitTestChildren(result, position: position);
+  void performLayoutElse() {
+    //
+    double availableWidth = constraints.maxWidth;
+    int count = 0;
+
+    List<double> widths = [];
+    List<double> heights = [];
+    List<_Line> lines = [];
+    List<RenderBox> children = [];
+
+    {
+      // First calculate all info.
+      RenderBox? child = firstChild;
+      while (child != null) {
+        children.add(child);
+        final double width = child.computeMaxIntrinsicWidth(double.infinity);
+        final double height = child.computeMinIntrinsicHeight(double.infinity);
+        widths.add(width);
+        heights.add(height);
+        child = (child.parentData as ContainerBoxParentData).nextSibling
+            as RenderBox?;
+      }
+    }
+
+    // Now calculate which widgets go in which lines.
+
+    // Will try to minimize the difference between line widths.
+    if (wrapType == WrapType.balanced) {
+      List<List<num>> result =
+          MinimumRaggedness.divide(widths, availableWidth, spacing: spacing);
+      lines = result
+          .map((List<num> indexes) => _Line()..indexes = indexes as List<int>)
+          .toList();
+    }
+    //
+    // Will fit all widgets it can in a line, and then move to the next one.
+    else if (wrapType == WrapType.fit) {
+      double x = 0;
+      _Line line = _Line();
+      lines.add(line);
+
+      for (int index = 0; index < count; index++) {
+        double width = widths[index];
+
+        if (x > 0 && (x + width) > availableWidth) {
+          x = 0;
+          line = _Line();
+          lines.add(line);
+        }
+
+        line.indexes.add(index);
+        x += width + spacing;
+      }
+    }
+    //
+    else
+      throw AssertionError(wrapType);
+
+    // ------------------
+
+    List<ContainerBoxParentData> parentDataList = [];
+
+    if (wrapFit == WrapFit.divided)
+      _calculateForWrapFitDivided(
+          lines, children, availableWidth, widths, parentDataList);
+    //
+    else if (wrapFit == WrapFit.proportional)
+      _calculateForWrapFitProportional(
+          lines, children, availableWidth, widths, parentDataList);
+    //
+    else if (wrapFit == WrapFit.larger)
+      _calculateForWrapFitLarger(
+          lines, children, availableWidth, widths, parentDataList);
+    //
+    else
+      throw AssertionError(wrapFit);
+
+    // ------------------
+
+    double y = 0;
+    for (_Line line in lines) {
+      double maxY = 0;
+      double x = 0;
+
+      for (int index in line.indexes) {
+        maxY = max(maxY, heights[index]);
+        x += widths[index] + spacing;
+      }
+
+      line.width = x - spacing;
+      line.top = y;
+
+      y += maxY + lineSpacing;
+    }
+
+    for (_Line line in lines) {
+      double x;
+      if (alignment == WrapSuperAlignment.left)
+        x = 0;
+      else if (alignment == WrapSuperAlignment.right)
+        x = availableWidth - line.width;
+      else if (alignment == WrapSuperAlignment.center)
+        x = (availableWidth - line.width) / 2;
+      else
+        x = 0;
+
+      for (int index in line.indexes) {
+        var childParentData = parentDataList[index];
+        childParentData.offset = Offset(x, line.top);
+        x += widths[index] + spacing;
+      }
+    }
+
+    size = constraints.constrain(Size(availableWidth, y - lineSpacing));
   }
+
+  /// After the calculation, will make widgets fit all the available space.
+  /// All widgets in a line will have the same width, even if it makes them
+  /// smaller that their original width.
+  void _calculateForWrapFitDivided(
+    List<_Line> lines,
+    List<RenderBox> children,
+    double availableWidth,
+    List<double> widths,
+    List<ContainerBoxParentData<RenderObject>> parentDataList,
+  ) {
+    for (_Line line in lines) {
+      var numberOfChildrenInLine = line.indexes.length;
+      for (int index in line.indexes) {
+        var child = children[index];
+
+        var availableWidthMinusSpacing =
+            (availableWidth - (spacing * (numberOfChildrenInLine - 1)));
+
+        var width = availableWidthMinusSpacing / numberOfChildrenInLine;
+
+        BoxConstraints childConstraints =
+            BoxConstraints(minWidth: width, maxWidth: width);
+
+        child.layout(childConstraints, parentUsesSize: true);
+
+        widths[index] = width;
+
+        final childParentData = child.parentData as ContainerBoxParentData;
+        parentDataList.add(childParentData);
+      }
+    }
+  }
+
+  /// After the calculation, will make widgets larger, so that they fit all the
+  /// available space. Widgets width will be proportional to their original width.
+  void _calculateForWrapFitProportional(
+    List<_Line> lines,
+    List<RenderBox> children,
+    double availableWidth,
+    List<double> widths,
+    List<ContainerBoxParentData<RenderObject>> parentDataList,
+  ) {
+    for (_Line line in lines) {
+      //
+      var numberOfChildrenInLine = line.indexes.length;
+
+      double sumOfWidgetsInLine = 0;
+
+      for (var index in line.indexes) {
+        sumOfWidgetsInLine += widths[index];
+      }
+
+      var availableWidthMinusSpacing =
+          (availableWidth - (spacing * (numberOfChildrenInLine - 1)));
+
+      for (int index in line.indexes) {
+        var child = children[index];
+
+        var width =
+            availableWidthMinusSpacing * (widths[index] / sumOfWidgetsInLine);
+
+        BoxConstraints childConstraints =
+            BoxConstraints(minWidth: width, maxWidth: width);
+
+        child.layout(childConstraints, parentUsesSize: true);
+
+        widths[index] = width;
+
+        final childParentData = child.parentData as ContainerBoxParentData;
+        parentDataList.add(childParentData);
+      }
+    }
+  }
+
+  /// After the calculation, will make widgets larger, so that they fit all the
+  /// available space. Will try to make all widgets the same width,
+  /// but won't make any widgets smaller than their original width.
+  ///
+  /// The procedure is this:
+  /// 1) First, divide the available line width by the number of widgets in the
+  /// line. That is the preferred width.
+  /// 2) Keep the width of all widgets larger than that preferred width.
+  /// 3) Calculate the remaining width and divide it equally by the remaining
+  /// widgets.
+  void _calculateForWrapFitLarger(
+    List<_Line> lines,
+    List<RenderBox> children,
+    double availableWidth,
+    List<double> widths,
+    List<ContainerBoxParentData<RenderObject>> parentDataList,
+  ) {
+    for (_Line line in lines) {
+      var numberOfChildrenInLine = line.indexes.length;
+
+      var availableWidthMinusSpacing =
+          (availableWidth - (spacing * (numberOfChildrenInLine - 1)));
+
+      var remainingWidth = availableWidthMinusSpacing;
+
+      // 1) First, divide the available line width by the number
+      // of widgets in the line. That is the preferred width.
+      var preferredWidth = availableWidthMinusSpacing / line.indexes.length;
+
+      // 3) Calculate the remaining width.
+      int numberOfLargerWidgets = 0;
+      for (int index in line.indexes) {
+        var childWidth = widths[index];
+
+        if (childWidth >= preferredWidth) {
+          numberOfLargerWidgets++;
+          remainingWidth -= childWidth;
+        }
+      }
+
+      // 3) Divide the remaining width by the remaining widgets.
+      var preferredWidthForRemainingWidgets =
+          remainingWidth / (line.indexes.length - numberOfLargerWidgets);
+
+      for (int index in line.indexes) {
+        var child = children[index];
+        var childWidth = widths[index];
+
+        BoxConstraints childConstraints;
+
+        // 2) Keep the width of all widgets larger than that preferred width.
+        if (childWidth >= preferredWidth) {
+          if (childWidth > availableWidthMinusSpacing) {
+            widths[index] = availableWidthMinusSpacing;
+            childConstraints = BoxConstraints(
+                minWidth: availableWidthMinusSpacing,
+                maxWidth: availableWidthMinusSpacing);
+          } else
+            childConstraints =
+                BoxConstraints(minWidth: childWidth, maxWidth: childWidth);
+        }
+        // 3) Divide the remaining width by the remaining widgets.
+        else {
+          childConstraints = BoxConstraints(
+              minWidth: preferredWidthForRemainingWidgets,
+              maxWidth: preferredWidthForRemainingWidgets);
+          widths[index] = preferredWidthForRemainingWidgets;
+        }
+
+        child.layout(childConstraints, parentUsesSize: true);
+
+        final childParentData = child.parentData as ContainerBoxParentData;
+        parentDataList.add(childParentData);
+      }
+    }
+  }
+
+  @override
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) =>
+      defaultHitTestChildren(result, position: position);
 
   @override
   void paint(PaintingContext context, Offset offset) {
