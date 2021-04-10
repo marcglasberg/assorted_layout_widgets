@@ -62,7 +62,7 @@ class Demo extends StatelessWidget {
         RaisedButton(
             color: Colors.blue,
             onPressed: () {},
-            child: const Text('I am a blue button')),
+            child: const Text('I am a blue button, ok?')),
       ],
     );
   }

@@ -68,7 +68,7 @@ class ButtonBarSuper extends StatelessWidget {
     this.buttonPadding,
     this.layoutBehavior,
     this.wrapType = WrapType.balanced,
-    this.wrapFit = WrapFit.min,
+    this.wrapFit = WrapFit.larger,
     this.spacing = 0.0,
     this.lineSpacing = 0.0,
     this.alignment = WrapSuperAlignment.left,

@@ -379,8 +379,7 @@ class _RenderWrapSuper extends RenderBox
     double availableWidth = constraints.maxWidth;
     int count = 0;
 
-    List<double> widths = [];
-    List<double> heights = [];
+    List<double> intrinsicWidths = [];
     List<_Line> lines = [];
     List<RenderBox> children = [];
 
@@ -392,9 +391,9 @@ class _RenderWrapSuper extends RenderBox
 
         children.add(child);
         final double width = child.computeMaxIntrinsicWidth(double.infinity);
-        final double height = child.computeMinIntrinsicHeight(double.infinity);
-        widths.add(width);
-        heights.add(height);
+
+        intrinsicWidths.add(width);
+
         child = (child.parentData as ContainerBoxParentData).nextSibling
             as RenderBox?;
       }
@@ -404,8 +403,9 @@ class _RenderWrapSuper extends RenderBox
 
     // Will try to minimize the difference between line widths.
     if (wrapType == WrapType.balanced) {
-      List<List<num>> result =
-          MinimumRaggedness.divide(widths, availableWidth, spacing: spacing);
+      List<List<num>> result = MinimumRaggedness.divide(
+          intrinsicWidths, availableWidth,
+          spacing: spacing);
       lines = result
           .map((List<num> indexes) => _Line()..indexes = indexes as List<int>)
           .toList();
@@ -418,7 +418,7 @@ class _RenderWrapSuper extends RenderBox
       lines.add(line);
 
       for (int index = 0; index < count; index++) {
-        double width = widths[index];
+        double width = intrinsicWidths[index];
 
         if (x > 0 && (x + width) > availableWidth) {
           x = 0;
@@ -436,22 +436,25 @@ class _RenderWrapSuper extends RenderBox
 
     // ------------------
 
-    List<ContainerBoxParentData> parentDataList = [];
+    _Result result;
 
     if (wrapFit == WrapFit.divided)
-      _calculateForWrapFitDivided(
-          lines, children, availableWidth, widths, parentDataList);
+      result = _calculateForWrapFitDivided(lines, children, availableWidth);
     //
     else if (wrapFit == WrapFit.proportional)
-      _calculateForWrapFitProportional(
-          lines, children, availableWidth, widths, parentDataList);
+      result = _calculateForWrapFitProportional(
+          lines, children, availableWidth, intrinsicWidths);
     //
     else if (wrapFit == WrapFit.larger)
-      _calculateForWrapFitLarger(
-          lines, children, availableWidth, widths, parentDataList);
+      result = _calculateForWrapFitLarger(
+          lines, children, availableWidth, intrinsicWidths);
     //
     else
       throw AssertionError(wrapFit);
+
+    List<double> heights = result.heights;
+    List<double> widths = result.widths;
+    List<ContainerBoxParentData> parentDataList = result.parentDataList;
 
     // ------------------
 
@@ -495,13 +498,15 @@ class _RenderWrapSuper extends RenderBox
   /// After the calculation, will make widgets fit all the available space.
   /// All widgets in a line will have the same width, even if it makes them
   /// smaller that their original width.
-  void _calculateForWrapFitDivided(
+  _Result _calculateForWrapFitDivided(
     List<_Line> lines,
     List<RenderBox> children,
     double availableWidth,
-    List<double> widths,
-    List<ContainerBoxParentData<RenderObject>> parentDataList,
   ) {
+    List<double> heights = [];
+    List<double> widths = [];
+    List<ContainerBoxParentData> parentDataList = [];
+
     for (_Line line in lines) {
       var numberOfChildrenInLine = line.indexes.length;
       for (int index in line.indexes) {
@@ -517,23 +522,30 @@ class _RenderWrapSuper extends RenderBox
 
         child.layout(childConstraints, parentUsesSize: true);
 
-        widths[index] = width;
+        widths.add(child.size.width);
+        heights.add(child.size.height);
 
         final childParentData = child.parentData as ContainerBoxParentData;
         parentDataList.add(childParentData);
       }
     }
+
+    return _Result(
+        heights: heights, widths: widths, parentDataList: parentDataList);
   }
 
   /// After the calculation, will make widgets larger, so that they fit all the
   /// available space. Widgets width will be proportional to their original width.
-  void _calculateForWrapFitProportional(
+  _Result _calculateForWrapFitProportional(
     List<_Line> lines,
     List<RenderBox> children,
     double availableWidth,
-    List<double> widths,
-    List<ContainerBoxParentData<RenderObject>> parentDataList,
+    List<double> intrinsicWidths,
   ) {
+    List<double> heights = [];
+    List<double> widths = [];
+    List<ContainerBoxParentData> parentDataList = [];
+
     for (_Line line in lines) {
       //
       var numberOfChildrenInLine = line.indexes.length;
@@ -541,7 +553,7 @@ class _RenderWrapSuper extends RenderBox
       double sumOfWidgetsInLine = 0;
 
       for (var index in line.indexes) {
-        sumOfWidgetsInLine += widths[index];
+        sumOfWidgetsInLine += intrinsicWidths[index];
       }
 
       var availableWidthMinusSpacing =
@@ -550,20 +562,24 @@ class _RenderWrapSuper extends RenderBox
       for (int index in line.indexes) {
         var child = children[index];
 
-        var width =
-            availableWidthMinusSpacing * (widths[index] / sumOfWidgetsInLine);
+        var width = availableWidthMinusSpacing *
+            (intrinsicWidths[index] / sumOfWidgetsInLine);
 
         BoxConstraints childConstraints =
             BoxConstraints(minWidth: width, maxWidth: width);
 
         child.layout(childConstraints, parentUsesSize: true);
 
-        widths[index] = width;
+        widths.add(child.size.width);
+        heights.add(child.size.height);
 
         final childParentData = child.parentData as ContainerBoxParentData;
         parentDataList.add(childParentData);
       }
     }
+
+    return _Result(
+        heights: heights, widths: widths, parentDataList: parentDataList);
   }
 
   /// After the calculation, will make widgets larger, so that they fit all the
@@ -576,13 +592,16 @@ class _RenderWrapSuper extends RenderBox
   /// 2) Keep the width of all widgets larger than that preferred width.
   /// 3) Calculate the remaining width and divide it equally by the remaining
   /// widgets.
-  void _calculateForWrapFitLarger(
+  _Result _calculateForWrapFitLarger(
     List<_Line> lines,
     List<RenderBox> children,
     double availableWidth,
-    List<double> widths,
-    List<ContainerBoxParentData<RenderObject>> parentDataList,
+    List<double> intrinsicWidths,
   ) {
+    List<double> heights = [];
+    List<double> widths = [];
+    List<ContainerBoxParentData> parentDataList = [];
+
     for (_Line line in lines) {
       var numberOfChildrenInLine = line.indexes.length;
 
@@ -598,7 +617,7 @@ class _RenderWrapSuper extends RenderBox
       // 3) Calculate the remaining width.
       int numberOfLargerWidgets = 0;
       for (int index in line.indexes) {
-        var childWidth = widths[index];
+        var childWidth = intrinsicWidths[index];
 
         if (childWidth >= preferredWidth) {
           numberOfLargerWidgets++;
@@ -612,14 +631,13 @@ class _RenderWrapSuper extends RenderBox
 
       for (int index in line.indexes) {
         var child = children[index];
-        var childWidth = widths[index];
+        var childWidth = intrinsicWidths[index];
 
         BoxConstraints childConstraints;
 
         // 2) Keep the width of all widgets larger than that preferred width.
         if (childWidth >= preferredWidth) {
           if (childWidth > availableWidthMinusSpacing) {
-            widths[index] = availableWidthMinusSpacing;
             childConstraints = BoxConstraints(
                 minWidth: availableWidthMinusSpacing,
                 maxWidth: availableWidthMinusSpacing);
@@ -632,15 +650,20 @@ class _RenderWrapSuper extends RenderBox
           childConstraints = BoxConstraints(
               minWidth: preferredWidthForRemainingWidgets,
               maxWidth: preferredWidthForRemainingWidgets);
-          widths[index] = preferredWidthForRemainingWidgets;
         }
 
         child.layout(childConstraints, parentUsesSize: true);
+
+        widths.add(child.size.width);
+        heights.add(child.size.height);
 
         final childParentData = child.parentData as ContainerBoxParentData;
         parentDataList.add(childParentData);
       }
     }
+
+    return _Result(
+        heights: heights, widths: widths, parentDataList: parentDataList);
   }
 
   @override
@@ -655,6 +678,20 @@ class _RenderWrapSuper extends RenderBox
 
 // ////////////////////////////////////////////////////////////////////////////
 
+/// Internal calculation helper class.
+class _Result {
+  List<double> heights;
+  List<double> widths;
+  List<ContainerBoxParentData> parentDataList;
+
+  _Result({
+    required this.heights,
+    required this.widths,
+    required this.parentDataList,
+  });
+}
+
+/// Internal calculation helper class.
 class _Line {
   List<int> indexes = [];
   double width = 0;

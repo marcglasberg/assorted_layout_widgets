@@ -19,3 +19,7 @@
 9. <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_box.dart">Box Example</a>
    
 10. <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_wrap_super.dart">WrapSuper Example</a>
+
+11. <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_wrap_super_fit.dart">WrapSuper WrapFit Example</a>
+
+12. <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_button_bar_super.dart">ButtonBarSuper Example</a>
