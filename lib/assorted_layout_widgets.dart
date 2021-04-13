@@ -3,6 +3,7 @@ export "src/button_bar_super.dart";
 export "src/column_super.dart";
 export "src/delayed.dart";
 export "src/fit_horizontally.dart";
+export "src/normalized_overflow_box.dart";
 export "src/pad.dart";
 export "src/row_super.dart";
 export "src/text_one_line.dart";

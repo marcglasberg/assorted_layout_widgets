@@ -1,3 +1,7 @@
+## [4.0.6] - 2021/04/13
+
+* `NormalizedOverflowBox` widget.
+
 ## [4.0.5] - 2021/04/10
 
 * `WrapSuper.wrapFit` parameter.
