@@ -1,4 +1,4 @@
-## [4.0.6] - 2021/04/13
+## [4.0.7] - 2021/04/13
 
 * `NormalizedOverflowBox` widget.
 

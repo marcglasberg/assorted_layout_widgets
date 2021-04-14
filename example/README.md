@@ -23,3 +23,5 @@
 11. <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_wrap_super_fit.dart">WrapSuper WrapFit Example</a>
 
 12. <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_button_bar_super.dart">ButtonBarSuper Example</a>
+
+13. <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_normalized_overflow_box.dart">NormalizedOverflowBox Example</a>

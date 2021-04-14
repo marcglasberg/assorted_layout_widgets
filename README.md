@@ -512,16 +512,22 @@ from its parent, possibly allowing the child to overflow the parent.
 
 A `NormalizedOverflowBox` is similar to an `OverflowBox`. However, then `OverflowBox` may throw
 errors if it gets constraints which are incompatible with its own constraints. For example, if an
-`OverflowBox` is inside a container with `maxWidth`, and its own `minWidth` is 150, it will throw:
+`OverflowBox` is inside a container with `maxWidth` 100, and its own `minWidth` is 150, it will
+throw:
 
 ```
 The following assertion was thrown during performLayout():
 BoxConstraints has non-normalized width constraints. 
 ```
 
-The `NormalizedOverflowBox`, on the other hand, will just make sure `maxWidth` is also 150, and
-throw no errors. In other words, a `NormalizedOverflowBox` is safer to use, and in my opinion has
-the behavior OverflowBox should have had.
+The `NormalizedOverflowBox`, on the other hand, will just make sure `maxWidth` is also 150 in the
+above example, and throw no errors. In other words, a `NormalizedOverflowBox` is safer to use, and
+in my opinion has the behavior `OverflowBox` should have had.
+
+Try running
+the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_normalized_overflow_box.dart">
+NormalizedOverflowBox Example</a>. Then substitute the `NormalizedOverflowBox`s with
+regular `OverflowBox`es and see where it fails.
 
 ## AlignPositioned
 
