@@ -1,3 +1,8 @@
+## [4.0.8] - 2021/04/05
+
+* Fixed important bug in `FitHorizontally` widget (and `RowSuper` when using the `fitHorizontally`
+  parameter).
+
 ## [4.0.7] - 2021/04/13
 
 * `NormalizedOverflowBox` widget.
@@ -7,10 +12,11 @@
 * `WrapSuper.wrapFit` parameter.
 * `ButtonBarSuper` parameter.
 * New examples:
-   <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_wrap_super_fit.dart">WrapSuper WrapFit Example</a>
-   and
-   <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_button_bar_super.dart">ButtonBarSuper Example</a>
-
+  <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_wrap_super_fit.dart">
+  WrapSuper WrapFit Example</a>
+  and
+  <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_button_bar_super.dart">
+  ButtonBarSuper Example</a>
 
 ## [4.0.2] - 2021/04/08
 
@@ -23,19 +29,19 @@
 ## [4.0.0] - 2020/11/10
 
 * Nullsafety.
-* `RowSuper` horizontal alignment now applied when there are no `RowSpacer`s
-  and `MainAxisSize` is `max`.
+* `RowSuper` horizontal alignment now applied when there are no `RowSpacer`s and `MainAxisSize`
+  is `max`.
 
 ## [3.0.1] - 2020/11/10
 
-* Breaking change: The `Box` widget now has a `padding` parameter. I recommend you
-  use it with the new `Pad` class. For example: `Box(padding: Pad(top: 4.0))`.
-  The `Pad` class solves the verbosity problem, and having a `padding` parameter 
-  makes `Box` more compatible with `Container` (remember `Box` is like a `Container` which
-  can be made `const`, so it's best if their parameters are not too different).
-  
-* The debugging constructors of the `Box` widget are now marked as deprecated 
-  so that you don't forget to remove them (they are not really deprecated).      
+* Breaking change: The `Box` widget now has a `padding` parameter. I recommend you use it with the
+  new `Pad` class. For example: `Box(padding: Pad(top: 4.0))`. The `Pad` class solves the verbosity
+  problem, and having a `padding` parameter makes `Box` more compatible with `Container` (
+  remember `Box` is like a `Container` which can be made `const`, so it's best if their parameters
+  are not too different).
+
+* The debugging constructors of the `Box` widget are now marked as deprecated so that you don't
+  forget to remove them (they are not really deprecated).
 
 ## [2.0.1] - 2020/11/09
 
@@ -64,14 +70,18 @@
 
 ## [1.2.0] - 2020/06/25
 
-* Breaking Change: `ColumnSuper` width is now the max intrinsic width of its children, just like a regular `Column`. 
-  To restore old behavior: `Container(width: double.infinity, child: ColumnSuper(...))`.
-* Breaking Change: `RowSuper` height is now the max intrinsic height of its children, just like a regular `Row`. 
-  To restore old behavior: `Container(height: double.infinity, child: RowSuper(...))`.
-* New examples: 
-<a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_column_super_playground.dart">ColumnSuper Playground</a> 
-and 
-<a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_row_super_playground.dart">RowSuper Playground</a>.   
+* Breaking Change: `ColumnSuper` width is now the max intrinsic width of its children, just like a
+  regular `Column`. To restore old
+  behavior: `Container(width: double.infinity, child: ColumnSuper(...))`.
+* Breaking Change: `RowSuper` height is now the max intrinsic height of its children, just like a
+  regular `Row`. To restore old behavior: `Container(height: double.infinity, child: RowSuper(...))`
+  .
+* New examples:
+  <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_column_super_playground.dart">
+  ColumnSuper Playground</a>
+  and
+  <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_row_super_playground.dart">
+  RowSuper Playground</a>.
 
 ## [1.1.4] - 2020/06/24
 
@@ -79,7 +89,8 @@ and
 
 ## [1.1.3] - 2020/06/15
 
-* Fix: `WrapSuper` minimum raggedness algorithm now uses the correct JavaScript's `Number.MAX_SAFE_INTEGER`.
+* Fix: `WrapSuper` minimum raggedness algorithm now uses the correct
+  JavaScript's `Number.MAX_SAFE_INTEGER`.
 * Fix: Divide by zero conditions.
 
 ## [1.1.1] - 2020/05/19

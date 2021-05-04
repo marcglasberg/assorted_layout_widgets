@@ -9,64 +9,68 @@ class Demo extends StatelessWidget {
     //
     return Scaffold(
       appBar: AppBar(title: const Text('FitHorizontally Example')),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            //
-            const SizedBox(height: 10),
-            const Text("Simple text:"),
-            const SizedBox(height: 10),
-            //
-            Container(
-              alignment: Alignment.centerLeft,
-              color: Colors.yellow,
-              width: double.infinity,
-              height: 30,
-              child: text(),
-            ),
-            Container(
-              alignment: Alignment.centerLeft,
-              color: Colors.yellow,
-              width: 250,
-              height: 30,
-              child: text(),
-            ),
-            Container(
-              alignment: Alignment.centerLeft,
-              color: Colors.yellow,
-              width: 150,
-              height: 30,
-              child: text(),
-            ),
-            //
-            const SizedBox(height: 30),
-            const Text("Text wrapped with FitHorizontally:"),
-            const SizedBox(height: 10),
-            //
-            Container(
-              alignment: Alignment.centerLeft,
-              color: Colors.yellow,
-              width: double.infinity,
-              height: 30,
-              child: FitHorizontally(child: text()),
-            ),
-            Container(
-              alignment: Alignment.centerLeft,
-              color: Colors.yellow,
-              width: 250,
-              height: 30,
-              child: FitHorizontally(child: text()),
-            ),
-            Container(
-              alignment: Alignment.centerLeft,
-              color: Colors.yellow,
-              width: 150,
-              height: 30,
-              child: FitHorizontally(child: text()),
-            ),
-          ],
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              //
+              const Box(height: 10),
+              const Text("Simple text:"),
+              const Box(height: 10),
+              //
+              Container(
+                alignment: Alignment.centerLeft,
+                color: Colors.yellow,
+                width: double.infinity,
+                height: 30,
+                child: text(),
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                color: Colors.yellow,
+                width: 250,
+                height: 30,
+                child: text(),
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                color: Colors.yellow,
+                width: 150,
+                height: 30,
+                child: text(),
+              ),
+              //
+              const Box(height: 30),
+              const Text("Text wrapped with FitHorizontally:"),
+              const Box(height: 10),
+              //
+              Container(
+                alignment: Alignment.centerLeft,
+                color: Colors.yellow,
+                width: double.infinity,
+                height: 30,
+                child: FitHorizontally(child: text()),
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                color: Colors.yellow,
+                width: 250,
+                height: 30,
+                child: FitHorizontally(child: text()),
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                color: Colors.yellow,
+                width: 150,
+                height: 30,
+                child: FitHorizontally(child: text()),
+              ),
+              const Box(height: 50),
+            ],
+          ),
         ),
       ),
     );
