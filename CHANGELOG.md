@@ -1,3 +1,8 @@
+## [4.0.9] - 2021/05/19
+
+* `showDialogSuper` method is identical to the native `showDialog`, except that it lets you define a
+  callback for when the dialog is dismissed.
+
 ## [4.0.8] - 2021/04/05
 
 * Fixed important bug in `FitHorizontally` widget (and `RowSuper` when using the `fitHorizontally`

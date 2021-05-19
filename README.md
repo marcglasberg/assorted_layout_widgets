@@ -4,7 +4,7 @@
 
 I will slowly but surely add interesting widgets to this package.
 
-Widgets and classes in this package:
+Widgets, classes and methods in this package:
 
 * `ColumnSuper`
 * `RowSuper`
@@ -16,6 +16,7 @@ Widgets and classes in this package:
 * `Delayed`
 * `Pad`
 * `NormalizedOverflowBox`
+* `showDialogSuper`
 
 <br>
 
@@ -528,6 +529,34 @@ Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_normalized_overflow_box.dart">
 NormalizedOverflowBox Example</a>. Then substitute the `NormalizedOverflowBox`s with
 regular `OverflowBox`es and see where it fails.
+
+## showDialogSuper
+
+The `showDialogSuper` is identical to the native `showDialog`, except that it lets you define a
+callback for when the dialog is dismissed:
+
+```
+showDialogSuper(
+   context: context,
+   onDismissed: () { print("Dialog dismissed"); }
+   builder: ...
+} 
+```
+
+Usually there are 3 ways to close a dialog:
+
+1) Pressing some button on the dialog that closes it (usually by calling `Navigator.pop(context)`).
+2) Tapping the barrier.
+3) Pressing the Android back button.
+
+All three ways will result in the `onDismissed` callback being called.
+
+This method was created to solve this issue: https://github.com/flutter/flutter/issues/26542
+filled by myself a long time ago.
+
+Try running
+the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_show_dialog_super.dart">
+showDialogSuper Example</a>.
 
 ## AlignPositioned
 

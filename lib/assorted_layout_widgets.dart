@@ -6,5 +6,6 @@ export "src/fit_horizontally.dart";
 export "src/normalized_overflow_box.dart";
 export "src/pad.dart";
 export "src/row_super.dart";
+export "src/show_dialog_super.dart";
 export "src/text_one_line.dart";
 export "src/wrap_super.dart";
