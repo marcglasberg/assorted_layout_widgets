@@ -1,3 +1,7 @@
+## [4.0.10] - 2021/04/24
+
+* Fixed bug in `WrapSuper` intrinsic height.
+
 ## [4.0.9] - 2021/05/19
 
 * `showDialogSuper` method is identical to the native `showDialog`, except that it lets you define a

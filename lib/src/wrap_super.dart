@@ -123,10 +123,8 @@ class WrapSuper extends MultiChildRenderObjectWidget {
 
 class _RenderWrapSuper extends RenderBox
     with
-        ContainerRenderObjectMixin<RenderBox,
-            ContainerBoxParentData<RenderBox>>,
-        RenderBoxContainerDefaultsMixin<RenderBox,
-            ContainerBoxParentData<RenderBox>> {
+        ContainerRenderObjectMixin<RenderBox, ContainerBoxParentData<RenderBox>>,
+        RenderBoxContainerDefaultsMixin<RenderBox, ContainerBoxParentData<RenderBox>> {
   //
   _RenderWrapSuper({
     List<RenderBox>? children,
@@ -193,36 +191,44 @@ class _RenderWrapSuper extends RenderBox
 
   @override
   void setupParentData(RenderBox child) {
-    if (child.parentData is! WrapParentData)
-      child.parentData = WrapParentData();
+    if (child.parentData is! WrapParentData) child.parentData = WrapParentData();
   }
 
-  double _computeIntrinsicHeightForWidth(double width) {
-    int runCount = 0;
-    double height = 0.0;
-    double runWidth = 0.0;
-    double runHeight = 0.0;
+  @override
+  Size computeDryLayout(BoxConstraints constraints) {
+    final BoxConstraints childConstraints;
+    double mainAxisLimit = 0.0;
+    childConstraints = BoxConstraints(maxWidth: constraints.maxWidth);
+    mainAxisLimit = constraints.maxWidth;
+
+    double mainAxisExtent = 0.0;
+    double crossAxisExtent = 0.0;
+    double runMainAxisExtent = 0.0;
+    double runCrossAxisExtent = 0.0;
     int childCount = 0;
     RenderBox? child = firstChild;
     while (child != null) {
-      final double childWidth = child.getMaxIntrinsicWidth(double.infinity);
-      final double childHeight = child.getMaxIntrinsicHeight(childWidth);
-      if (runWidth + childWidth > width) {
-        height += runHeight;
-        if (runCount > 0) height += lineSpacing;
-        runCount += 1;
-        runWidth = 0.0;
-        runHeight = 0.0;
+      final Size childSize = child.getDryLayout(childConstraints);
+      final double childMainAxisExtent = childSize.width;
+      final double childCrossAxisExtent = childSize.height;
+      // There must be at least one child before we move on to the next run.
+      if (childCount > 0 && runMainAxisExtent + childMainAxisExtent + spacing > mainAxisLimit) {
+        mainAxisExtent = max(mainAxisExtent, runMainAxisExtent);
+        crossAxisExtent += runCrossAxisExtent + lineSpacing;
+        runMainAxisExtent = 0.0;
+        runCrossAxisExtent = 0.0;
         childCount = 0;
       }
-      runWidth += childWidth;
-      runHeight = max(runHeight, childHeight);
-      if (childCount > 0) runWidth += spacing;
+      runMainAxisExtent += childMainAxisExtent;
+      runCrossAxisExtent = max(runCrossAxisExtent, childCrossAxisExtent);
+      if (childCount > 0) runMainAxisExtent += spacing;
       childCount += 1;
       child = childAfter(child);
     }
-    if (childCount > 0) height += runHeight + lineSpacing;
-    return height;
+    crossAxisExtent += runCrossAxisExtent;
+    mainAxisExtent = max(mainAxisExtent, runMainAxisExtent);
+
+    return constraints.constrain(Size(mainAxisExtent, crossAxisExtent));
   }
 
   @override
@@ -248,14 +254,12 @@ class _RenderWrapSuper extends RenderBox
   }
 
   @override
-  double computeMinIntrinsicHeight(double width) {
-    return _computeIntrinsicHeightForWidth(width);
-  }
+  double computeMinIntrinsicHeight(double width) =>
+      computeDryLayout(BoxConstraints(maxWidth: width)).height;
 
   @override
-  double computeMaxIntrinsicHeight(double width) {
-    return _computeIntrinsicHeightForWidth(width);
-  }
+  double computeMaxIntrinsicHeight(double width) =>
+      computeDryLayout(BoxConstraints(maxWidth: width)).height;
 
   @override
   double? computeDistanceToActualBaseline(TextBaseline baseline) {
@@ -305,11 +309,8 @@ class _RenderWrapSuper extends RenderBox
 
     // Will try to minimize the difference between line widths.
     if (wrapType == WrapType.balanced) {
-      List<List<num>> result =
-          MinimumRaggedness.divide(widths, availableWidth, spacing: spacing);
-      lines = result
-          .map((List<num> indexes) => _Line()..indexes = indexes as List<int>)
-          .toList();
+      List<List<num>> result = MinimumRaggedness.divide(widths, availableWidth, spacing: spacing);
+      lines = result.map((List<num> indexes) => _Line()..indexes = indexes as List<int>).toList();
     }
     //
     // Will fit all widgets it can in a line, and then move to the next one.
@@ -394,8 +395,7 @@ class _RenderWrapSuper extends RenderBox
 
         intrinsicWidths.add(width);
 
-        child = (child.parentData as ContainerBoxParentData).nextSibling
-            as RenderBox?;
+        child = (child.parentData as ContainerBoxParentData).nextSibling as RenderBox?;
       }
     }
 
@@ -403,12 +403,9 @@ class _RenderWrapSuper extends RenderBox
 
     // Will try to minimize the difference between line widths.
     if (wrapType == WrapType.balanced) {
-      List<List<num>> result = MinimumRaggedness.divide(
-          intrinsicWidths, availableWidth,
-          spacing: spacing);
-      lines = result
-          .map((List<num> indexes) => _Line()..indexes = indexes as List<int>)
-          .toList();
+      List<List<num>> result =
+          MinimumRaggedness.divide(intrinsicWidths, availableWidth, spacing: spacing);
+      lines = result.map((List<num> indexes) => _Line()..indexes = indexes as List<int>).toList();
     }
     //
     // Will fit all widgets it can in a line, and then move to the next one.
@@ -442,12 +439,10 @@ class _RenderWrapSuper extends RenderBox
       result = _calculateForWrapFitDivided(lines, children, availableWidth);
     //
     else if (wrapFit == WrapFit.proportional)
-      result = _calculateForWrapFitProportional(
-          lines, children, availableWidth, intrinsicWidths);
+      result = _calculateForWrapFitProportional(lines, children, availableWidth, intrinsicWidths);
     //
     else if (wrapFit == WrapFit.larger)
-      result = _calculateForWrapFitLarger(
-          lines, children, availableWidth, intrinsicWidths);
+      result = _calculateForWrapFitLarger(lines, children, availableWidth, intrinsicWidths);
     //
     else
       throw AssertionError(wrapFit);
@@ -517,8 +512,7 @@ class _RenderWrapSuper extends RenderBox
 
         var width = availableWidthMinusSpacing / numberOfChildrenInLine;
 
-        BoxConstraints childConstraints =
-            BoxConstraints(minWidth: width, maxWidth: width);
+        BoxConstraints childConstraints = BoxConstraints(minWidth: width, maxWidth: width);
 
         child.layout(childConstraints, parentUsesSize: true);
 
@@ -530,8 +524,7 @@ class _RenderWrapSuper extends RenderBox
       }
     }
 
-    return _Result(
-        heights: heights, widths: widths, parentDataList: parentDataList);
+    return _Result(heights: heights, widths: widths, parentDataList: parentDataList);
   }
 
   /// After the calculation, will make widgets larger, so that they fit all the
@@ -556,17 +549,14 @@ class _RenderWrapSuper extends RenderBox
         sumOfWidgetsInLine += intrinsicWidths[index];
       }
 
-      var availableWidthMinusSpacing =
-          (availableWidth - (spacing * (numberOfChildrenInLine - 1)));
+      var availableWidthMinusSpacing = (availableWidth - (spacing * (numberOfChildrenInLine - 1)));
 
       for (int index in line.indexes) {
         var child = children[index];
 
-        var width = availableWidthMinusSpacing *
-            (intrinsicWidths[index] / sumOfWidgetsInLine);
+        var width = availableWidthMinusSpacing * (intrinsicWidths[index] / sumOfWidgetsInLine);
 
-        BoxConstraints childConstraints =
-            BoxConstraints(minWidth: width, maxWidth: width);
+        BoxConstraints childConstraints = BoxConstraints(minWidth: width, maxWidth: width);
 
         child.layout(childConstraints, parentUsesSize: true);
 
@@ -578,8 +568,7 @@ class _RenderWrapSuper extends RenderBox
       }
     }
 
-    return _Result(
-        heights: heights, widths: widths, parentDataList: parentDataList);
+    return _Result(heights: heights, widths: widths, parentDataList: parentDataList);
   }
 
   /// After the calculation, will make widgets larger, so that they fit all the
@@ -605,8 +594,7 @@ class _RenderWrapSuper extends RenderBox
     for (_Line line in lines) {
       var numberOfChildrenInLine = line.indexes.length;
 
-      var availableWidthMinusSpacing =
-          (availableWidth - (spacing * (numberOfChildrenInLine - 1)));
+      var availableWidthMinusSpacing = (availableWidth - (spacing * (numberOfChildrenInLine - 1)));
 
       var remainingWidth = availableWidthMinusSpacing;
 
@@ -639,11 +627,9 @@ class _RenderWrapSuper extends RenderBox
         if (childWidth >= preferredWidth) {
           if (childWidth > availableWidthMinusSpacing) {
             childConstraints = BoxConstraints(
-                minWidth: availableWidthMinusSpacing,
-                maxWidth: availableWidthMinusSpacing);
+                minWidth: availableWidthMinusSpacing, maxWidth: availableWidthMinusSpacing);
           } else
-            childConstraints =
-                BoxConstraints(minWidth: childWidth, maxWidth: childWidth);
+            childConstraints = BoxConstraints(minWidth: childWidth, maxWidth: childWidth);
         }
         // 3) Divide the remaining width by the remaining widgets.
         else {
@@ -662,8 +648,7 @@ class _RenderWrapSuper extends RenderBox
       }
     }
 
-    return _Result(
-        heights: heights, widths: widths, parentDataList: parentDataList);
+    return _Result(heights: heights, widths: widths, parentDataList: parentDataList);
   }
 
   @override
