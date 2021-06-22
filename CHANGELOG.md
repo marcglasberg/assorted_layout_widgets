@@ -1,9 +1,11 @@
-## [5.0.0] - 2021/06/22
+## [5.0.1] - 2021/06/22
+
+* `showCupertinoDialogSuper`.
 
 * The `onDismissed` callback parameter for `showDialogSuper` is called when the dialog is dismissed.
   That's still the case, but now that callback gets the `result` of the dialog, when the dialog is
   popped by `Navigator.of(context).pop(result)`. That way you can differentiate between the dialog
-  being dismissed by an Ok or a Cancel button, for example. Note `result` is `null` when the dialog 
+  being dismissed by an Ok or a Cancel button, for example. Note `result` is `null` when the dialog
   is dismissed by tapping the barrier or pressing BACK in Android. Example:
 
   ```                                                                             

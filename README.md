@@ -16,7 +16,7 @@ Widgets, classes and methods in this package:
 * `Delayed`
 * `Pad`
 * `NormalizedOverflowBox`
-* `showDialogSuper`
+* `showDialogSuper` and `showCupertinoDialogSuper`
 
 <br>
 
@@ -530,10 +530,11 @@ the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master
 NormalizedOverflowBox Example</a>. Then substitute the `NormalizedOverflowBox`s with
 regular `OverflowBox`es and see where it fails.
 
-## showDialogSuper
+## showDialogSuper and showCupertinoDialogSuper
 
-The `showDialogSuper` is identical to the native `showDialog`, except that it lets you define a
-callback for when the dialog is dismissed:
+Functions `showDialogSuper` and `showCupertinoDialogSuper` are identical to the native `showDialog`
+and `showCupertinoDialog`, except that they let you define an `onDismissed` callback for when the
+dialog is dismissed:
 
 ```
 showDialogSuper(
