@@ -33,6 +33,7 @@ class Demo extends StatelessWidget {
   }
 
   Widget _myWidget(int? delay) {
+    // ignore: deprecated_member_use
     return Box.rand(
       height: 50.0,
       child: Center(child: Text(delay.toString())),

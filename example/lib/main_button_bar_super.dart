@@ -53,16 +53,20 @@ class Demo extends StatelessWidget {
       buttonHeight: 48,
       buttonMinWidth: 40,
       children: [
-        RaisedButton(
-            color: Colors.blue,
+        ElevatedButton(
+            style: ElevatedButton.styleFrom(primary: Colors.blue),
             onPressed: () {},
             child: const Text('I am a blue button like you')),
-        RaisedButton(
-            color: Colors.blue, onPressed: () {}, child: const Text('Hey')),
-        RaisedButton(
-            color: Colors.blue,
-            onPressed: () {},
-            child: const Text('I am a blue button, ok?')),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(primary: Colors.blue),
+          onPressed: () {},
+          child: const Text('Hey'),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(primary: Colors.blue),
+          onPressed: () {},
+          child: const Text('I am a blue button, ok?'),
+        ),
       ],
     );
   }
