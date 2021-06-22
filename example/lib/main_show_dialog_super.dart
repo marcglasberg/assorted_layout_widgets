@@ -39,7 +39,7 @@ class _DemoAppState extends State<DemoApp> {
             child: Center(
               child: ElevatedButton(
                 onPressed: () {
-                  showDialogSuper<dynamic>(
+                  showDialogSuper<int>(
                       context: context,
                       builder: (context) {
                         return AlertDialog(
@@ -49,14 +49,29 @@ class _DemoAppState extends State<DemoApp> {
                           actions: [
                             ElevatedButton(
                               onPressed: () {
-                                Navigator.pop(context, "aaa");
+                                Navigator.pop(context, 1);
                               },
                               child: const Text("OK"),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context, 2);
+                              },
+                              child: const Text("CANCEL"),
                             )
                           ],
                         );
                       },
-                      onDismissed: () {
+                      onDismissed: (int? result) {
+                        if (result == 1)
+                          print("Pressed the OK button.");
+                        else if (result == 2)
+                          print("Pressed the CANCEL button.");
+                        else if (result == null)
+                          print("Dismissed with BACK or tapping the barrier.");
+                        else
+                          throw AssertionError();
+
                         setState(() {
                           count++;
                         });

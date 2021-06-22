@@ -1,3 +1,26 @@
+## [5.0.0] - 2021/06/22
+
+* The `onDismissed` callback parameter for `showDialogSuper` is called when the dialog is dismissed.
+  That's still the case, but now that callback gets the `result` of the dialog, when the dialog is
+  popped by `Navigator.of(context).pop(result)`. That way you can differentiate between the dialog
+  being dismissed by an Ok or a Cancel button, for example. Note `result` is `null` when the dialog 
+  is dismissed by tapping the barrier or pressing BACK in Android. Example:
+
+  ```                                                                             
+  showDialogSuper<int>(
+  ...
+    actions: [
+      ElevatedButton( onPressed: (){Navigator.pop(context, 1);}, child: const Text("OK"),
+      ElevatedButton( onPressed: (){Navigator.pop(context, 2);}, child: const Text("CANCEL"),        
+    ]
+    ...
+    onDismissed: (int? result) {
+      if (result == 1) print("Pressed the OK button.");
+      else if (result == 2) print("Pressed the CANCEL button.");
+      else if (result == null) print("Dismissed with BACK or tapping the barrier.");  
+    });  
+  ```
+
 ## [4.0.10] - 2021/04/24
 
 * Fixed bug in `WrapSuper` intrinsic height.

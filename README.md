@@ -538,7 +538,7 @@ callback for when the dialog is dismissed:
 ```
 showDialogSuper(
    context: context,
-   onDismissed: () { print("Dialog dismissed"); }
+   onDismissed: (dynamic result) { print("Dialog dismissed"); }
    builder: ...
 } 
 ```
@@ -550,6 +550,26 @@ Usually there are 3 ways to close a dialog:
 3) Pressing the Android back button.
 
 All three ways will result in the `onDismissed` callback being called.
+
+However, when the dialog is popped by `Navigator.of(context).pop(result)` you will get the `result`
+in the `onDismissed` callback. That way you can differentiate between the dialog being dismissed by
+an Ok or a Cancel button. The `result` is `null` when the dialog is dismissed by tapping the barrier
+or pressing BACK in Android. Example:
+
+```                                                                             
+showDialogSuper<int>(
+...
+  actions: [
+    ElevatedButton( onPressed: (){Navigator.pop(context, 1);}, child: const Text("OK"),
+    ElevatedButton( onPressed: (){Navigator.pop(context, 2);}, child: const Text("CANCEL"),        
+  ]
+  ...
+  onDismissed: (int? result) {
+    if (result == 1) print("Pressed the OK button.");
+    else if (result == 2) print("Pressed the CANCEL button.");
+    else if (result == null) print("Dismissed with BACK or tapping the barrier.");  
+  });  
+```
 
 This method was created to solve this issue: https://github.com/flutter/flutter/issues/26542
 filled by myself a long time ago.

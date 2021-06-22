@@ -17,6 +17,10 @@ import 'package:flutter/material.dart';
 /// widget can be safely removed from the tree before the dialog is closed.
 ///
 /// The [onDismissed] callback will be called when the dialog is dismissed.
+/// Note: If the dialog is popped by `Navigator.of(context).pop(result)`,
+/// then the `result` will be available to the callback. That way you can
+/// differentiate between the dialog being dismissed by an Ok or a Cancel
+/// button, for example.
 ///
 /// The [barrierDismissible] argument is used to indicate whether tapping on the
 /// barrier will dismiss the dialog. It is `true` by default and can not be `null`.
@@ -127,9 +131,9 @@ Future<T?> showDialogSuper<T>({
   bool useSafeArea = true,
   bool useRootNavigator = true,
   RouteSettings? routeSettings,
-  VoidCallback? onDismissed,
+  void Function(T?)? onDismissed,
 }) async {
-  var result = await showDialog<T>(
+  T? result = await showDialog<T>(
     context: context,
     builder: builder,
     barrierDismissible: barrierDismissible,
@@ -139,7 +143,8 @@ Future<T?> showDialogSuper<T>({
     useRootNavigator: useRootNavigator,
     routeSettings: routeSettings,
   );
-  onDismissed?.call();
+
+  if (onDismissed != null) onDismissed(result);
 
   return result;
 }
