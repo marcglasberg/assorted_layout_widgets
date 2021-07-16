@@ -362,13 +362,15 @@ Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_button_bar_super.dart">
 ButtonBarSuper example</a>.
 
+<br>
+
 ## TextOneLine
 
 `TextOneLine` is a substitute for `Text` when `maxLines: 1`, to fix this issue:
 https://github.com/flutter/flutter/issues/18761 filled by myself a long time ago.
 
-It uses a special fade-with-ellipsis, which is much better than the current buggy and ugly-looking
-ellipsis-that-cuts-the-whole-word.
+It renders ellipsis as expected, much better than the current/ buggy and ugly-looking ellipsis of
+the native `Text` widget, which cuts the whole word.
 
 For example, this:
 

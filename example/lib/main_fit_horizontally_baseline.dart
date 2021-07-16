@@ -50,7 +50,7 @@ class Demo extends StatelessWidget {
           child: TextOneLine("Hello", style: TextStyle(fontSize: 60)),
         ),
         Box.y(
-          width: 45,
+          width: 56,
           child: FitHorizontally(
             alignment: Alignment.centerLeft,
             child: TextOneLine("Hello", style: TextStyle(fontSize: 60)),

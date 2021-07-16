@@ -1,3 +1,9 @@
+## [5.0.2] - 2021/07/16
+
+* I just made `TextOneLine` more similar to the native `Text` widget, in preparation for when
+  https://github.com/flutter/flutter/issues/18761 is fixed. You probably won't notice the difference
+  and may continue using it as usual.
+
 ## [5.0.1] - 2021/06/22
 
 * `showCupertinoDialogSuper`.
