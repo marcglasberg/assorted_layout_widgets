@@ -312,14 +312,13 @@ class Box extends StatelessWidget {
 
   /// Returns a box with its width or height increased by [width] or [height]
   /// (or decreased if the given [width] or [height] are negative, clamped to zero).
-  ///
   Box add({
     double? width,
     double? height,
   }) =>
       copyWith(
-        width: width == null ? this.width : max(0, (width + (this.width ?? 0.0))),
-        height: height == null ? this.height : max(0, (height + (this.height ?? 0.0))),
+        width: width == null ? this.width : max(0, ((this.height ?? 0.0) + width)),
+        height: height == null ? this.height : max(0, ((this.height ?? 0.0) + height)),
       );
 
   /// Returns a box with its width or height decreased by [width] or [height]
@@ -329,7 +328,7 @@ class Box extends StatelessWidget {
     double? height,
   }) =>
       copyWith(
-        width: width == null ? this.width : max(0, (width - (this.width ?? 0.0))),
-        height: height == null ? this.height : max(0, (height - (this.height ?? 0.0))),
+        width: width == null ? this.width : max(0, ((this.width ?? 0.0) - width)),
+        height: height == null ? this.height : max(0, ((this.height ?? 0.0) - height)),
       );
 }
