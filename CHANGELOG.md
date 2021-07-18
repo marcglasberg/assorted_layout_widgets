@@ -1,6 +1,15 @@
+## [5.0.3] - 2021/07/18
+
+* `Box.copyWith()` method.
+
+* Now `Box` can be changed by using the `operator +`. For example, to hide the
+  box: `Box(...) + false;`. To change the box color: `Box(...) + Colors.green;`. To change the box
+  padding: `Box(...) + Pad(all: 10);`. To substitute the box child: `Box(...) + Text('abc');`. To
+  put a box inside of another: `Box(...) + Box(...);`.
+
 ## [5.0.2] - 2021/07/16
 
-* I just made `TextOneLine` more similar to the native `Text` widget, in preparation for when
+* Now `TextOneLine` is more similar to the native `Text` widget, in preparation for when
   https://github.com/flutter/flutter/issues/18761 is fixed. You probably won't notice the difference
   and may continue using it as usual.
 
