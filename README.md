@@ -284,7 +284,7 @@ of `EdgeInsets`. For example:
   Box(...) + MyObj();
   ```
 
-* Other methods: `plusWidth`, `plusHeight`, `lessWidth` and `lessHeight`.
+* Methods to change width and height of the box: `add`, `subtract`.
 
 
 #### Debugging:

@@ -310,19 +310,26 @@ class Box extends StatelessWidget {
   /// Note this is not the real size of the box, since it ignores the child and the layout.
   Size get size => Size(width ?? 0.0, height ?? 0.0);
 
-  /// Returns a box with its width increased by the width of [other].
-  Box plusWidthOf(Box? other) =>
-      other == null ? this : copyWith(width: (width ?? 0.0) + (other.width ?? 0.0));
+  /// Returns a box with its width or height increased by [width] or [height]
+  /// (or decreased if the given [width] or [height] are negative, clamped to zero).
+  ///
+  Box add(
+    double? width,
+    double? height,
+  ) =>
+      copyWith(
+        width: width == null ? this.width : max(0, (width + (this.width ?? 0.0))),
+        height: height == null ? this.height : max(0, (height + (this.height ?? 0.0))),
+      );
 
-  /// Returns a box with its height increased by the height of [other].
-  Box plusHeightOf(Box? other) =>
-      other == null ? this : copyWith(height: (height ?? 0.0) + (other.height ?? 0.0));
-
-  /// Returns a box with its width subtracted by the width of [other].
-  Box lessWidthOf(Box? other) =>
-      other == null ? this : copyWith(width: (width ?? 0.0) - (other.width ?? 0.0));
-
-  /// Returns a box with its height subtracted by the height of [other].
-  Box lessHeightOf(Box? other) =>
-      other == null ? this : copyWith(height: (height ?? 0.0) - (other.height ?? 0.0));
+  /// Returns a box with its width or height decreased by [width] or [height]
+  /// (clamped to zero).
+  Box subtract(
+    double? width,
+    double? height,
+  ) =>
+      copyWith(
+        width: width == null ? this.width : max(0, (width - (this.width ?? 0.0))),
+        height: height == null ? this.height : max(0, (height - (this.height ?? 0.0))),
+      );
 }
