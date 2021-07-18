@@ -20,7 +20,7 @@ Widgets, classes and methods in this package:
 
 <br>
 
-> _Note: All these widgets are lightweight. And the ones you don't use will be removed by Flutter's tree shaking. So feel free to add the library even if you want to use only one of them._
+> _Note: The widgets you don't use will be removed by Flutter's tree shaking. So feel free to add the library even if you want to use only one of them._
 
 <br>
 
@@ -234,11 +234,11 @@ program faster and more memory efficient.
 * You can hide the box by making the `show` parameter equal to `false`.
 
 * If you make `removePaddingWhenNoChild: true`, the `padding` is only applied if the child is **not
-null**. If the `child` is `null` and `width` and `height` are also `null`, this means the box will
-occupy no space (will be hidden).
+  null**. If the `child` is `null` and `width` and `height` are also `null`, this means the box will
+  occupy no space (will be hidden).
 
 * Note: You can use the `Pad` class (provided in this package) for the `padding`, instead
-of `EdgeInsets`. For example:
+  of `EdgeInsets`. For example:
 
   ```
   Box(padding: Pad(horizontal: 8, top: 20));
@@ -251,7 +251,7 @@ of `EdgeInsets`. For example:
   ```
 
 * You can create boxes by adding a `Box` to one these types:
-`bool`, `Color`, `EdgeInsetsGeometry`, `AlignmentGeometry`, or `Widget`:
+  `bool`, `Color`, `EdgeInsetsGeometry`, `AlignmentGeometry`, or `Widget`:
 
   ```
   // To hide the box:
@@ -285,7 +285,6 @@ of `EdgeInsets`. For example:
   ```
 
 * Methods to change width and height of the box: `add`, `subtract`.
-
 
 #### Debugging:
 
