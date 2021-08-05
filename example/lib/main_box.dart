@@ -1,7 +1,7 @@
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 
-void main()  => runApp(MaterialApp(home: Demo()));
+void main() => runApp(MaterialApp(home: Demo()));
 
 class Demo extends StatelessWidget {
   @override
@@ -9,20 +9,30 @@ class Demo extends StatelessWidget {
     //
     return Scaffold(
       appBar: AppBar(title: const Text('Box Example')),
-      body: Center(
-        child: Column(
-          children: [
-            example1(),
-            example2(),
-            example3(),
-            example4(),
-            example5(),
-            example6(),
-            example7(),
-            example8(),
-            example9(),
-            example10(),
-          ],
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              example1(),
+              example2(),
+              example3(),
+              example4(),
+              example5(),
+              example6(),
+              example7(),
+              example8(),
+              example9(),
+              example10(),
+              example11(),
+              example12(),
+              example13(),
+              example14(),
+              example15(),
+              example16(),
+              example17(),
+              example18(),
+            ],
+          ),
         ),
       ),
     );
@@ -93,5 +103,61 @@ class Demo extends StatelessWidget {
   Widget example10() => const Box.rand(
         padding: Pad(vertical: 20, horizontal: 40),
         child: Text("Test 10"),
+      );
+
+  Box redBox(String text) => Box(
+        color: Colors.red,
+        padding: const Pad(vertical: 5, horizontal: 5),
+        width: 280,
+        height: 35,
+        child: Text(text),
+      );
+
+  Widget example11() => Padding(
+        padding: const Pad(all: 2.0),
+        child: redBox('box'),
+      );
+
+  Widget example12() => Padding(
+        padding: const Pad(all: 2.0),
+        child: redBox('box + Colors.blue') + Colors.blue,
+      );
+
+  Widget example13() => Padding(
+        padding: const Pad(all: 2.0),
+        child: redBox('box + Pad(left: 10)') + Pad(left: 10),
+      );
+
+  Widget example14() => Padding(
+        padding: const Pad(all: 2.0),
+        child: redBox('box + Alignment.bottomRight') + Alignment.bottomRight,
+      );
+
+  Widget example15() => Padding(
+        padding: const Pad(all: 2.0),
+        child: const Box.b(padding: Pad(all: 8.0)) + redBox('Box.b(padding: Pad(all: 8.0)) + box'),
+      );
+
+  // Must remove padding when has no child. But has child, so don't remove padding.
+  Widget example16() => const Box(
+        color: Colors.red,
+        padding: Pad(all: 20.0),
+        removePaddingWhenNoChild: true,
+        child: Text('Has padding'),
+      );
+
+  // Not visible:
+  // Must remove padding when has no child. Has child, so removes padding.
+  Widget example17() => const Box(
+        color: Colors.green,
+        padding: Pad(all: 20.0),
+        removePaddingWhenNoChild: true,
+      );
+
+  // Must NOT remove padding when has no child. Has no child, but don't remove padding.
+  Widget example18() => const Box(
+        color: Colors.green,
+        padding: Pad(all: 20.0),
+        removePaddingWhenNoChild: false,
       );
 }

@@ -38,7 +38,22 @@ class Box extends StatelessWidget {
     this.height,
     this.alignment,
     this.child,
+    this.removePaddingWhenNoChild = false,
   })  : _random = false,
+        super(key: key);
+
+  const Box._({
+    Key? key,
+    this.show = true,
+    this.color,
+    this.padding,
+    this.width,
+    this.height,
+    this.alignment,
+    this.child,
+    this.removePaddingWhenNoChild = false,
+    bool? random,
+  })  : _random = random ?? false,
         super(key: key);
 
   /// Adding `.r` to the box will make it red.
@@ -55,6 +70,7 @@ class Box extends StatelessWidget {
     double? height,
     Alignment? alignment,
     Widget? child,
+    bool removePaddingWhenNoChild = false,
   }) : this(
           key: key,
           show: show,
@@ -64,6 +80,7 @@ class Box extends StatelessWidget {
           height: height,
           alignment: alignment,
           child: child,
+          removePaddingWhenNoChild: removePaddingWhenNoChild,
         );
 
   /// Adding `.g` to the box will make it green.
@@ -80,6 +97,7 @@ class Box extends StatelessWidget {
     double? height,
     Alignment? alignment,
     Widget? child,
+    bool removePaddingWhenNoChild = false,
   }) : this(
           key: key,
           show: show,
@@ -89,6 +107,7 @@ class Box extends StatelessWidget {
           height: height,
           alignment: alignment,
           child: child,
+          removePaddingWhenNoChild: removePaddingWhenNoChild,
         );
 
   /// Adding `.b` to the box will make it blue.
@@ -105,6 +124,7 @@ class Box extends StatelessWidget {
     double? height,
     Alignment? alignment,
     Widget? child,
+    bool removePaddingWhenNoChild = false,
   }) : this(
           key: key,
           show: show,
@@ -114,6 +134,7 @@ class Box extends StatelessWidget {
           height: height,
           alignment: alignment,
           child: child,
+          removePaddingWhenNoChild: removePaddingWhenNoChild,
         );
 
   /// Adding `.y` to the box will make it yellow.
@@ -130,6 +151,7 @@ class Box extends StatelessWidget {
     double? height,
     Alignment? alignment,
     Widget? child,
+    bool removePaddingWhenNoChild = false,
   }) : this(
           key: key,
           show: show,
@@ -139,6 +161,7 @@ class Box extends StatelessWidget {
           height: height,
           alignment: alignment,
           child: child,
+          removePaddingWhenNoChild: removePaddingWhenNoChild,
         );
 
   /// Use the `Box.rand` constructor to see when the widget rebuilds.
@@ -154,6 +177,7 @@ class Box extends StatelessWidget {
     this.height,
     this.alignment,
     this.child,
+    this.removePaddingWhenNoChild = false,
   })  : _random = true,
         super(key: key);
 
@@ -165,6 +189,7 @@ class Box extends StatelessWidget {
   final AlignmentGeometry? alignment;
   final Widget? child;
   final bool _random;
+  final bool removePaddingWhenNoChild;
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +198,8 @@ class Box extends StatelessWidget {
 
     if (alignment != null) current = Align(alignment: alignment!, child: current);
 
-    if (padding != null) current = Padding(padding: padding!, child: current);
+    if (padding != null && (child != null || !removePaddingWhenNoChild))
+      current = Padding(padding: padding!, child: current);
 
     if (_random) {
       var rand = Random();
@@ -204,4 +230,105 @@ class Box extends StatelessWidget {
     properties.add(DiagnosticsProperty<AlignmentGeometry>('alignment', alignment,
         showName: false, defaultValue: null));
   }
+
+  /// Creates a copy of this Box but with the given fields replaced
+  /// with the new values.
+  Box copyWith({
+    Key? key,
+    bool? show,
+    Color? color,
+    EdgeInsetsGeometry? padding,
+    double? width,
+    double? height,
+    AlignmentGeometry? alignment,
+    bool? random,
+    Widget? child,
+  }) {
+    return Box._(
+      key: key ?? this.key,
+      show: show ?? this.show,
+      color: color ?? this.color,
+      padding: padding ?? this.padding,
+      width: width ?? this.width,
+      height: height ?? this.height,
+      alignment: alignment ?? this.alignment,
+      random: random ?? _random,
+      child: child ?? this.child,
+    );
+  }
+
+  /// You can create boxes by adding a [Box] to one these types:
+  /// [bool], [Color], [EdgeInsetsGeometry], [AlignmentGeometry], or [Widget].
+  ///
+  /// Examples:
+  ///
+  /// ```
+  /// // To hide the box:
+  /// Box(...) + false;
+  ///
+  /// // To show the box:
+  /// Box(...) + true;
+  ///
+  /// // To change the box color:
+  /// Box(...) + Colors.green;
+  ///
+  /// // To change the box padding:
+  /// Box(...) + Pad(all: 10);
+  ///
+  /// // To substitute the box child:
+  /// Box(...) + Text('abc');
+  ///
+  /// // To put a box inside of another:
+  /// Box(...) + Box(...);
+  /// ```
+  ///
+  /// Note: If you add null, that's not an error. It will simply return the same Box.
+  /// However, if you add an invalid type it will throw an error in RUNTIME.
+  ///
+  Box operator +(Object? obj) {
+    if (obj == null) return this;
+
+    bool isBool = obj is bool;
+    bool isColor = obj is Color;
+    bool isEdgeInsetsGeometry = obj is EdgeInsetsGeometry;
+    bool isAlignmentGeometry = obj is AlignmentGeometry;
+    bool isWidget = obj is Widget;
+
+    if (!isBool && !isColor && !isEdgeInsetsGeometry && !isAlignmentGeometry && !isWidget)
+      throw ArgumentError("Can't add Box to ${obj.runtimeType}.");
+    else
+      return copyWith(
+        show: isBool ? obj : null,
+        color: isColor ? obj : null,
+        padding: isEdgeInsetsGeometry ? obj : null,
+        alignment: isAlignmentGeometry ? obj : null,
+        child: isWidget ? obj : null,
+      );
+  }
+
+  /// Return the width/height of the box, if set.
+  /// Note this is not the real size of the box, since it ignores the child and the layout.
+  Size get size => Size(width ?? 0.0, height ?? 0.0);
+
+  /// Returns a box with its width or height increased by [width] or [height]
+  /// (or decreased if the given [width] or [height] are negative, clamped to zero).
+  Box add({
+    double? width,
+    double? height,
+  }) =>
+      copyWith(
+        width: width == null ? this.width : max(0, ((this.height ?? 0.0) + width)),
+        height: height == null ? this.height : max(0, ((this.height ?? 0.0) + height)),
+      );
+
+  /// Returns a box with its width or height decreased by [width] or [height]
+  /// (clamped to zero).
+  Box subtract({
+    double? width,
+    double? height,
+  }) =>
+      copyWith(
+        width: width == null ? this.width : max(0, ((this.width ?? 0.0) - width)),
+        height: height == null ? this.height : max(0, ((this.height ?? 0.0) - height)),
+      );
 }

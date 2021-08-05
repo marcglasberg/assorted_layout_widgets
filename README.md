@@ -20,7 +20,7 @@ Widgets, classes and methods in this package:
 
 <br>
 
-> _Note: All these widgets are lightweight. And the ones you don't use will be removed by Flutter's tree shaking. So feel free to add the library even if you want to use only one of them._
+> _Note: The widgets you don't use will be removed by Flutter's tree shaking. So feel free to add the library even if you want to use only one of them._
 
 <br>
 
@@ -229,15 +229,62 @@ them. Also, all const objects of the same type with the same parameters are the 
 you don't waste memory creating more than one of them. In other words, const objects make your
 program faster and more memory efficient.
 
-The `padding` is only applied if the child is **not null**. If the `child` is `null`
-and `width` and `height` are also `null`, this means the box will occupy no space
-(will be hidden). **Note:** This will be extended in the future, so that it ignores horizontal
-padding when the child has zero width, and ignores vertical padding when the child has zero height.
+#### Extra Box features
 
-You can also hide the box by making the `show` parameter equal to `false`.
+* You can hide the box by making the `show` parameter equal to `false`.
 
-Note: You can use the `Pad` class (provided in this package)
-for the `padding`, instead of `EdgeInsets`.
+* If you make `removePaddingWhenNoChild: true`, the `padding` is only applied if the child is **not
+  null**. If the `child` is `null` and `width` and `height` are also `null`, this means the box will
+  occupy no space (will be hidden).
+
+* Note: You can use the `Pad` class (provided in this package) for the `padding`, instead
+  of `EdgeInsets`. For example:
+
+  ```
+  Box(padding: Pad(horizontal: 8, top: 20));
+  ```
+
+* You can change a box with the `copyWith` method. For example:
+
+  ```
+  myBox.copyWith(color: Colors.blue);
+  ```
+
+* You can create boxes by adding a `Box` to one these types:
+  `bool`, `Color`, `EdgeInsetsGeometry`, `AlignmentGeometry`, or `Widget`:
+
+  ```
+  // To hide the box:
+  Box(...) + false;
+  
+  // To show the box:
+  Box(...) + true;
+  
+  // To change the box color:
+  Box(...) + Colors.green;
+  
+  // To change the box padding:
+  Box(...) + Pad(all: 10);
+  
+  // To substitute the box child:
+  Box(...) + Text('abc');
+  
+  // To put a box inside of another:
+  Box(...) + Box(...);
+  ```
+
+  Note: If you add `null`, that's not an error. It will simply return the same Box. However, if you
+  add an invalid type it will throw an error in RUNTIME.
+
+  ```
+  // Not an error:
+  Box(...) + null;
+  
+  // Throws:
+  Box(...) + MyObj();
+  ```
+
+* Methods to change width and height of the box: `add`, `subtract`.
 
 #### Debugging:
 
@@ -362,13 +409,15 @@ Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_button_bar_super.dart">
 ButtonBarSuper example</a>.
 
+<br>
+
 ## TextOneLine
 
 `TextOneLine` is a substitute for `Text` when `maxLines: 1`, to fix this issue:
 https://github.com/flutter/flutter/issues/18761 filled by myself a long time ago.
 
-It uses a special fade-with-ellipsis, which is much better than the current buggy and ugly-looking
-ellipsis-that-cuts-the-whole-word.
+It renders ellipsis as expected, much better than the current/ buggy and ugly-looking ellipsis of
+the native `Text` widget, which cuts the whole word.
 
 For example, this:
 
