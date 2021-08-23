@@ -224,10 +224,29 @@ padding:
 const Box(color: Colors.red, width: 50, height:30);
 ```                            
 
+It allows you to make `const` large blocks of code. For example, the following code uses a `Box`,
+and couldn't be `const` if we were to use a `SizedBox` or a `Container`:
+
+```
+static const progressIndicator =
+  Opacity(
+    opacity: 0.6,
+    child: Box( // Can't use SizedBox or Container here. 
+      color: Colors.blue,
+      alignment: Alignment.center,
+      child: Padding(
+          padding: Pad(all: 5.0),
+          child: AspectRatio(
+              aspectRatio: 1,
+              child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white)))),),);}
+```                            
+
 Const objects are final/immutable and created in compile time. So you don't waste time creating
 them. Also, all const objects of the same type with the same parameters are the same instance. So
 you don't waste memory creating more than one of them. In other words, const objects make your
-program faster and more memory efficient.
+program faster and more memory efficient. They can also be used as default values in constructors,
+and they work well with hot-reload, while `final` values do not.
 
 #### Extra Box features
 
