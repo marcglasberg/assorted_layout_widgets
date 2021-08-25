@@ -91,7 +91,12 @@ class TimeBuilder extends StatefulWidget {
     this.isFinished,
   }) : super(key: key);
 
-  /// Creates a countdown, from the given [reference] DateTime.
+  /// Rebuilds in every frame.
+  const TimeBuilder.animate({Key? key, required this.builder, this.isFinished})
+      : ifRebuilds = _always,
+        super(key: key);
+
+  /// Creates a countdown, from the given [start] DateTime.
   /// Will call the [builder], which is a [CountdownWidgetBuilder], once per second,
   /// util the countdown reaches zero.
   ///
@@ -105,7 +110,7 @@ class TimeBuilder extends StatefulWidget {
   ///
   factory TimeBuilder.countdown({
     Key? key,
-    required DateTime reference,
+    required DateTime start,
     required int seconds,
     required CountdownWidgetBuilder builder,
   }) {
@@ -126,10 +131,10 @@ class TimeBuilder extends StatefulWidget {
         required DateTime lastTime,
         required int ticks,
       }) {
+
         if (currentTime.second == lastTime.second) return false;
 
-        int _seconds =
-            (reference.add(Duration(seconds: seconds))).difference(currentTime).inSeconds;
+        int _seconds = (start.add(Duration(seconds: seconds))).difference(currentTime).inSeconds;
 
         return _seconds <= 0;
       },
@@ -140,7 +145,7 @@ class TimeBuilder extends StatefulWidget {
         int ticks,
         bool isFinished,
       ) {
-        int _seconds = (reference.add(Duration(seconds: seconds))).difference(now).inSeconds;
+        int _seconds = (start.add(Duration(seconds: seconds))).difference(now).inSeconds;
         return builder(context, now, ticks, isFinished, countdown: _seconds);
       },
       //
@@ -162,40 +167,51 @@ class TimeBuilder extends StatefulWidget {
   ///       => ClockRenderer(dateTime: now);
   /// )
   /// ```
+  /// If you pass [seconds] it will stop when reaching that number of ticks.
   ///
-  const TimeBuilder.eachSecond({Key? key, required this.builder})
+  TimeBuilder.eachSecond({Key? key, int? seconds, required this.builder})
       : ifRebuilds = _eachSecond,
-        isFinished = null,
+        isFinished = _ifFinished(seconds),
         super(key: key);
 
   /// Rebuilds each minute.
-  const TimeBuilder.eachMinute({Key? key, required this.builder})
-      : ifRebuilds = _eachMinute,
-        isFinished = null,
-        super(key: key);
-
-  /// Rebuilds each hour.
-  const TimeBuilder.eachHour({Key? key, required this.builder})
-      : ifRebuilds = _eachHour,
-        isFinished = null,
-        super(key: key);
-
-  /// Rebuilds each second, for the given number of seconds.
-  /// For example, this will show a clock that runs for 10 seconds, then stops:
+  /// For example, this will show a clock that rebuilds each minute:
   ///
   /// ```
-  /// TimerWidget.seconds(
-  ///    seconds: 10,
+  /// TimerWidget.eachMinute(
   ///    builder: (BuildContext context, DateTime now, int ticks)
   ///       => ClockRenderer(dateTime: now);
   /// )
   /// ```
+  /// If you pass [minutes] it will stop when reaching that number of ticks.
   ///
-  ///
-  TimeBuilder.seconds({Key? key, required int seconds, required this.builder})
-      : ifRebuilds = _eachSecond,
-        isFinished = _ifFinished(seconds),
+  TimeBuilder.eachMinute({Key? key, int? minutes, required this.builder})
+      : ifRebuilds = _eachMinute,
+        isFinished = _ifFinished(minutes),
         super(key: key);
+
+  /// Rebuilds each hour.
+  /// For example, this will show a clock that rebuilds each hour:
+  ///
+  /// ```
+  /// TimerWidget.eachHour(
+  ///    builder: (BuildContext context, DateTime now, int ticks)
+  ///       => ClockRenderer(dateTime: now);
+  /// )
+  /// ```
+  /// If you pass [hours] it will stop when reaching that number of ticks.
+  ///
+  TimeBuilder.eachHour({Key? key, int? hours, required this.builder})
+      : ifRebuilds = _eachHour,
+        isFinished = _ifFinished(hours),
+        super(key: key);
+
+  static bool _always({
+    required DateTime currentTime,
+    required DateTime lastTime,
+    required int ticks,
+  }) =>
+      true;
 
   static bool _eachMillisecond({
     required DateTime currentTime,
@@ -225,13 +241,12 @@ class TimeBuilder extends StatefulWidget {
   }) =>
       currentTime.hour != lastTime.hour;
 
-  static IsFinished _ifFinished(int seconds) => ({
+  static IsFinished _ifFinished(int? numberOfTicks) => ({
         required DateTime currentTime,
         required DateTime lastTime,
         required int ticks,
-      }) {
-        return (ticks > seconds);
-      };
+      }) =>
+          (numberOfTicks != null) && (ticks > numberOfTicks);
 
   @override
   _TimeBuilderState createState() => _TimeBuilderState();

@@ -82,7 +82,7 @@ class MyHomePage extends StatelessWidget {
   TimeBuilder widget1() {
     return TimeBuilder.countdown(
       //
-      reference: DateTime.now(),
+      start: DateTime.now(),
       //
       seconds: 15,
       //
@@ -105,7 +105,7 @@ class MyHomePage extends StatelessWidget {
   }
 
   TimeBuilder widget2() {
-    return TimeBuilder.seconds(
+    return TimeBuilder.eachSecond(
       seconds: 15,
       builder: (BuildContext context, DateTime now, int ticks, bool isFinished) {
         print('2) now = $now, ticks = $ticks, finished = $isFinished');
