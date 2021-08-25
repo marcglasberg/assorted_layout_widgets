@@ -1,3 +1,7 @@
+## [5.0.4] - 2021/08/24
+
+* `TimeBuilder` widget.
+
 ## [5.0.3] - 2021/07/18
 
 * `Box.copyWith()` method.

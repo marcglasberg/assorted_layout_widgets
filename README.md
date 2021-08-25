@@ -17,6 +17,7 @@ Widgets, classes and methods in this package:
 * `Pad`
 * `NormalizedOverflowBox`
 * `showDialogSuper` and `showCupertinoDialogSuper`
+* `TimeBuilder`
 
 <br>
 
@@ -646,6 +647,11 @@ filled by myself a long time ago.
 Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_show_dialog_super.dart">
 showDialogSuper Example</a>.
+
+## TimeBuilder
+
+> // MARCELO:
+> Still need to explain this widget (WIP).
 
 ## AlignPositioned
 
