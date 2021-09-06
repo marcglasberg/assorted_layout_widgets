@@ -11,18 +11,55 @@ import 'package:flutter/rendering.dart';
 /// For more info, see: https://pub.dartlang.org/packages/assorted_layout_widgets
 class RowSuper extends MultiChildRenderObjectWidget {
   //
+
+  /// The distance in pixels before the first and after the last widget.
+  /// It can be negative, in which case the cells will overflow the column
+  /// (without any overflow warnings).
   final double outerDistance;
+
+  /// The distance in pixels between the cells.
+  /// It can be negative, in which case the cells will overlap.
   final double innerDistance;
+
+  /// If true will paint the cells that come later on top of the ones that came before.
+  /// This is specially useful when cells overlap (negative innerDistance).
   final bool invert;
+
+  /// How to align the cells horizontally, if they are smaller than the available horizontal space.
   final Alignment alignment;
+
+  /// The [separator] is a widget which will be painted between each cells.
+  /// Its height doesn't matter, since the distance between cells is given by innerDistance
+  /// (in other words, separators don't occupy space).
+  /// The separator may overflow if its width is larger than the column's width.
   final Widget? separator;
+
+  /// If true (the default) will paint the separator on top of the cells.
+  /// If false will paint the separator below the cells.
   final bool separatorOnTop;
+
+  /// If true will shrink the children, horizontally only, until the shrinkLimit is reached.
+  /// This parameter is only useful if the children are not wide enough to fill the whole row
+  /// width. Avoid using fitHorizontally together with [fill] true.
   final bool fitHorizontally;
+
+  /// The shrink limit by default is 67%, which means the cell contents will shrink until
+  /// 67% of their original width, and then overflow. Make the shrink limit equal to 0.0 if you
+  /// want the cell contents to shrink with no limits. Note, if [fitHorizontally] is false,
+  /// the limit is not used.
   final double? shrinkLimit;
+
+  /// How much space should be occupied in the main axis. The default is [MainAxisSize.min],
+  /// which means the row will occupy no more than its content's width. Make it [MainAxisSize.max]
+  /// to expand the row to occupy the whole horizontal space. Note: When [fill] is true,
+  /// [mainAxisSize] is ignored because it will expand anyway.
   final MainAxisSize mainAxisSize;
 
-  /// If true, will force the row items to fill the whole row width.
-  /// The default is false.
+  /// If true will force the children to grow their widths proportionately to their minimum
+  /// intrinsic width, so that they fill the whole row width. This parameter is only useful
+  /// if the children are not wide enough to fill the whole row width. In case the children are
+  /// larger than the row width, they will always shrink proportionately to their minimum
+  /// intrinsic width, and the fill parameter will be ignored.
   final bool fill;
 
   RowSuper({
@@ -102,7 +139,7 @@ class _RenderRowSuperBox extends RenderBox
     required bool separatorOnTop,
     required MainAxisSize mainAxisSize,
     required bool fill,
-  })   : _outerDistance = outerDistance,
+  })  : _outerDistance = outerDistance,
         _innerDistance = innerDistance,
         _invert = invert,
         _alignment = alignment,
@@ -289,10 +326,11 @@ class _RenderRowSuperBox extends RenderBox
 
     maxChildHeight = max(min(maxChildHeight, constraints.maxHeight), constraints.minHeight);
 
-    // Apply horizontal alignment only if there are no RowSpacers.
+    // Apply horizontal alignment only if there are no RowSpacers and should not fill.
     double alignmentDisplacement = ((numberOfSpacers == 0) &&
-            (availableWidth > totalChildrenWidth) &&
-            (mainAxisSize == MainAxisSize.max))
+                (availableWidth > totalChildrenWidth) &&
+                (mainAxisSize == MainAxisSize.max)) &&
+            !fill
         ? (availableWidth - totalChildrenWidth) * ((alignment.x + 1) / 2)
         : 0.0;
 

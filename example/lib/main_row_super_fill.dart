@@ -19,6 +19,44 @@ class Demo extends StatelessWidget {
             Container(
               color: Colors.yellow,
               child: RowSuper(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    color: Colors.red,
+                    child: const Text("MainAxisSize.max"),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    color: Colors.blue.withOpacity(0.80),
+                    child: const Text("MainAxisSize.max"),
+                  )
+                ],
+              ),
+            ),
+            const SizedBox(height: 10.0),
+            Container(
+              color: Colors.yellow,
+              child: RowSuper(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    color: Colors.red,
+                    child: const Text("MainAxisSize.min"),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    color: Colors.blue.withOpacity(0.80),
+                    child: const Text("MainAxisSize.min"),
+                  )
+                ],
+              ),
+            ),
+            const SizedBox(height: 10.0),
+            Container(
+              color: Colors.yellow,
+              child: RowSuper(
                 children: [
                   Container(
                     alignment: Alignment.center,
@@ -28,42 +66,30 @@ class Demo extends StatelessWidget {
                   Container(
                     alignment: Alignment.center,
                     color: Colors.blue.withOpacity(0.80),
-                    child: const Text("Hello"),
+                    child: const Text("This is some larger text"),
                   )
                 ],
               ),
             ),
             const SizedBox(height: 10.0),
-            RowSuper(
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  color: Colors.red,
-                  child: const Text("Hello"),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  color: Colors.blue.withOpacity(0.80),
-                  child: const Text("This is some larger text"),
-                )
-              ],
-            ),
-            const SizedBox(height: 10.0),
-            RowSuper(
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  color: Colors.red,
-                  child: const Text("Hello"),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  color: Colors.blue.withOpacity(0.80),
-                  child: const Text("This is some really very, "
-                      "extremely large text "
-                      "that won't fit a single line at all"),
-                )
-              ],
+            Container(
+              color: Colors.yellow,
+              child: RowSuper(
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    color: Colors.red,
+                    child: const Text("Hello"),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    color: Colors.blue.withOpacity(0.80),
+                    child: const Text("This is some really very, "
+                        "extremely large text "
+                        "that won't fit a single line at all"),
+                  )
+                ],
+              ),
             ),
             //
             // -------------------
@@ -73,55 +99,85 @@ class Demo extends StatelessWidget {
             const SizedBox(height: 40.0),
             const Text("fill: true"),
             const SizedBox(height: 10.0),
-            RowSuper(
-              fill: true,
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  color: Colors.red,
-                  child: const Text("Hello"),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  color: Colors.blue.withOpacity(0.80),
-                  child: const Text("Hello"),
-                )
-              ],
+            Container(
+              color: Colors.yellow,
+              child: RowSuper(
+                fill: true,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    color: Colors.red,
+                    child: const Text("MainAxisSize.max"),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    color: Colors.blue.withOpacity(0.80),
+                    child: const Text("MainAxisSize.max"),
+                  )
+                ],
+              ),
             ),
             const SizedBox(height: 10.0),
-            RowSuper(
-              fill: true,
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  color: Colors.red,
-                  child: const Text("Hello"),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  color: Colors.blue.withOpacity(0.80),
-                  child: const Text("This is some larger text"),
-                ),
-              ],
+            Container(
+              color: Colors.yellow,
+              child: RowSuper(
+                fill: true,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    color: Colors.red,
+                    child: const Text("MainAxisSize.min"),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    color: Colors.blue.withOpacity(0.80),
+                    child: const Text("MainAxisSize.min"),
+                  )
+                ],
+              ),
             ),
             const SizedBox(height: 10.0),
-            RowSuper(
-              fill: true,
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  color: Colors.red,
-                  child: const Text("Hello"),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  color: Colors.blue.withOpacity(0.80),
-                  child: const Text("This is some really very, "
-                      "extremely large text "
-                      "that won't fit a single line at all"),
-                )
-              ],
-            )
+            Container(
+              color: Colors.yellow,
+              child: RowSuper(
+                fill: true,
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    color: Colors.red,
+                    child: const Text("Hello"),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    color: Colors.blue.withOpacity(0.80),
+                    child: const Text("This is some larger text"),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10.0),
+            Container(
+              color: Colors.yellow,
+              child: RowSuper(
+                fill: true,
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    color: Colors.red,
+                    child: const Text("Hello"),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    color: Colors.blue.withOpacity(0.80),
+                    child: const Text("This is some really very, "
+                        "extremely large text "
+                        "that won't fit a single line at all"),
+                  )
+                ],
+              ),
+            ),
           ],
         ),
       ),

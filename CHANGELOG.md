@@ -1,3 +1,7 @@
+## [5.1.1] - 2021/09/06
+
+* Fixed alignment bug in `RowSuper` when `fill: true` and `MainAxisSize.max` and `Alignment.center`.
+
 ## [5.1.0] - 2021/08/27
 
 * `TimeBuilder` widget.
