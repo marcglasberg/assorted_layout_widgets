@@ -659,7 +659,7 @@ The `TimeBuilder` widget gives you the correct implementation of periodic rebuil
 code</a> and you can <a href="https://dash-overflow.net/articles/why_vsync/">read all about it
 here</a>.
 
-Apart from performance problems, using the `TimeBuilder` widget has the following advantages:
+Apart from better performance, using the `TimeBuilder` widget has the following advantages:
 
 * Compatible with DevTools "slow animations", which reduce the speed of `AnimationController`s.
 
