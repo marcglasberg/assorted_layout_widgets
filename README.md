@@ -801,6 +801,7 @@ should be part of this package, but will remain in their own package for histori
 * <a href="https://pub.dev/packages/animated_size_and_fade">animated_size_and_fade</a>
 * <a href="https://pub.dev/packages/assorted_layout_widgets">assorted_layout_widgets</a>
 * <a href="https://pub.dev/packages/weak_map">weak_map</a>
+* <a href="https://pub.dev/packages/themed">themed</a>
 
 *My Medium Articles:*
 
