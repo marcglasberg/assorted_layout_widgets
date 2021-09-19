@@ -1,3 +1,7 @@
+## [5.1.2] - 2021/09/19
+
+* Upgrade to Flutter 2.5.1
+
 ## [5.1.1] - 2021/09/06
 
 * Fixed alignment bug in `RowSuper` when `fill: true` and `MainAxisSize.max` and `Alignment.center`.

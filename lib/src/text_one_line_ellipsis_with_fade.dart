@@ -1,5 +1,6 @@
 import 'dart:math' as math;
-import 'dart:ui' as ui show Gradient, Shader, TextBox, PlaceholderAlignment, TextHeightBehavior, BoxHeightStyle, BoxWidthStyle;
+import 'dart:ui' as ui
+    show Gradient, Shader, TextBox, PlaceholderAlignment, BoxHeightStyle, BoxWidthStyle;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -993,10 +994,10 @@ class RenderParagraphX extends RenderBox
   /// Valid only after [layout].
   @override
   List<ui.TextBox> getBoxesForSelection(
-      TextSelection selection, {
-        ui.BoxHeightStyle boxHeightStyle = ui.BoxHeightStyle.tight,
-        ui.BoxWidthStyle boxWidthStyle = ui.BoxWidthStyle.tight,
-      }) {
+    TextSelection selection, {
+    ui.BoxHeightStyle boxHeightStyle = ui.BoxHeightStyle.tight,
+    ui.BoxWidthStyle boxWidthStyle = ui.BoxWidthStyle.tight,
+  }) {
     assert(!debugNeedsLayout);
     _layoutTextWithConstraints(constraints);
     return _textPainter.getBoxesForSelection(

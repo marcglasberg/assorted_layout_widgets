@@ -125,7 +125,7 @@ class Demo extends StatelessWidget {
 
   Widget example13() => Padding(
         padding: const Pad(all: 2.0),
-        child: redBox('box + Pad(left: 10)') + Pad(left: 10),
+        child: redBox('box + Pad(left: 10)') + const Pad(left: 10),
       );
 
   Widget example14() => Padding(
