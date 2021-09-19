@@ -816,6 +816,8 @@ should be part of this package, but will remain in their own package for histori
 * <a href="https://medium.com/flutter-community/flutter-the-advanced-layout-rule-even-beginners-must-know-edc9516d1a2">
   Flutter: The Advanced Layout Rule Even Beginners Must Know</a> (
   versions: <a href="https://habr.com/ru/post/500210/">русский</a>)
+* <a href="https://medium.com/flutter-community/the-new-way-to-create-themes-in-your-flutter-app-7fdfc4f3df5f">
+  The New Way to create Themes in your Flutter App</a> 
 
 *My article in the official Flutter documentation*:
 
