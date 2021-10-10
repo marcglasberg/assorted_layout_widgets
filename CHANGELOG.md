@@ -1,3 +1,7 @@
+## [5.2.0] - 2021/10/10
+
+* `GlobalValueKey` and `GlobalStringKey`.
+
 ## [5.1.3] - 2021/09/19
 
 * Upgrade to Flutter 2.5.1

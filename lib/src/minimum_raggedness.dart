@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'dart:math';
 
+// ignore: avoid_classes_with_only_static_members
 class MinimumRaggedness {
   /// Given some [boxWidths], break it into the smallest possible number
   /// of lines such as each line has width not larger than [maxWidth].

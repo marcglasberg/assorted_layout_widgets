@@ -2,9 +2,9 @@
 
 # assorted_layout_widgets
 
-I will slowly but surely add interesting widgets to this package.
+I will slowly but surely add interesting widgets, classes and methods to this package.
 
-Widgets, classes and methods in this package:
+Despite the package name, they are not only related to layout. Here they are:
 
 * `ColumnSuper`
 * `RowSuper`
@@ -18,6 +18,7 @@ Widgets, classes and methods in this package:
 * `NormalizedOverflowBox`
 * `showDialogSuper` and `showCupertinoDialogSuper`
 * `TimeBuilder`
+* `GlobalValueKey` and `GlobalStringKey`
 
 <br>
 
@@ -25,7 +26,7 @@ Widgets, classes and methods in this package:
 
 <br>
 
-## ColumnSuper
+# ColumnSuper
 
 Given a list of children widgets, this will arrange them in a column. It can overlap cells, add
 separators and more.
@@ -82,7 +83,7 @@ ColumnSuper Playground</a>.
 
 <br>
 
-## RowSuper
+# RowSuper
 
 Given a list of children widgets, this will arrange them in a row. It can overlap cells, add
 separators and more.
@@ -165,7 +166,7 @@ overlapping cells, or when you need to scale the contents of the cells when they
 
 <br>
 
-## FitHorizontally
+# FitHorizontally
 
 ```
 FitHorizontally({
@@ -201,7 +202,7 @@ FitHorizontally example</a>.
 
 <br>
 
-## Box
+# Box
 
 `Box` is something between a `Container` and a `SizedBox`, which is less verbose and can be
 made `const`.
@@ -249,7 +250,7 @@ you don't waste memory creating more than one of them. In other words, const obj
 program faster and more memory efficient. They can also be used as default values in constructors,
 and they work well with hot-reload, while `final` values do not.
 
-#### Extra Box features
+### Extra Box features
 
 * You can hide the box by making the `show` parameter equal to `false`.
 
@@ -306,7 +307,7 @@ and they work well with hot-reload, while `final` values do not.
 
 * Methods to change width and height of the box: `add`, `subtract`.
 
-#### Debugging:
+### Debugging:
 
 * If need to quickly and temporarily add a color to your box so that you can see it, you can use the
   constructors
@@ -331,7 +332,7 @@ All these debugging constructors are marked as deprecated so that you don't forg
 
 <br>
 
-## WrapSuper
+# WrapSuper
 
 `WrapSuper` is similar to the native `Wrap` widget with `direction = Axis.horizontal`, but it allows
 you to choose different algorithms for the
@@ -378,7 +379,7 @@ For example:
 - Add your thumbs up <a href="https://github.com/flutter/flutter/issues/53549">here</a> if you want
   native `Text` widgets to also allow for better line-breaks.
 
-### WrapFit
+## WrapFit
 
 After `WrapSuper` distributes its children in each line, the `wrapFit` parameter defines the width
 of the widgets:
@@ -413,7 +414,7 @@ WrapFit example</a>.
 
 <br>
 
-## ButtonBarSuper
+# ButtonBarSuper
 
 `ButtonBarSuper` has a similar API to a regular `ButtonBar`, but will distribute its buttons by
 using a `WrapSuper`.
@@ -431,7 +432,7 @@ ButtonBarSuper example</a>.
 
 <br>
 
-## TextOneLine
+# TextOneLine
 
 `TextOneLine` is a substitute for `Text` when `maxLines: 1`, to fix this issue:
 https://github.com/flutter/flutter/issues/18761 filled by myself a long time ago.
@@ -465,7 +466,7 @@ This isAVeryLongWordToDemonst...
 
 <br>
 
-## Delayed
+# Delayed
 
 `Delayed` can be used to give a widget some initial value, and then, after some delay, change it to
 another value. As we'll see, `Delayed` is specially useful when used with *implicitly animated
@@ -540,7 +541,7 @@ Delayed example</a>.
 
 <br>
 
-## Pad
+# Pad
 
 `Pad` is an `EdgeInsetsGeometry` which is easy to type and remember.
 
@@ -575,7 +576,9 @@ normal:
 padding: Pad.x(top: 8, bottom: 8, left: 4)
 ```
 
-## NormalizedOverflowBox
+<br>
+
+# NormalizedOverflowBox
 
 A `NormalizedOverflowBox` is a widget that imposes different constraints on its child than it gets
 from its parent, possibly allowing the child to overflow the parent.
@@ -599,7 +602,9 @@ the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master
 NormalizedOverflowBox Example</a>. Then substitute the `NormalizedOverflowBox`s with
 regular `OverflowBox`es and see where it fails.
 
-## showDialogSuper and showCupertinoDialogSuper
+<br>
+
+# showDialogSuper and showCupertinoDialogSuper
 
 Functions `showDialogSuper` and `showCupertinoDialogSuper` are identical to the native `showDialog`
 and `showCupertinoDialog`, except that they let you define an `onDismissed` callback for when the
@@ -648,7 +653,9 @@ Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_show_dialog_super.dart">
 showDialogSuper Example</a>.
 
-## TimeBuilder
+<br>
+
+# TimeBuilder
 
 If you need some widget to change periodically (clocks, countdowns, stopwatches etc), one way of
 implementing this is using a `Timer` to rebuild it. This is, however, very inefficient and may make
@@ -672,7 +679,7 @@ Apart from better performance, using the `TimeBuilder` widget has the following 
 
 Let's see some examples.
 
-### Periodical
+## Periodical
 
 To create a clock that ticks once per second, you can use the `.eachSecond` constructor:
 
@@ -695,7 +702,7 @@ TimeBuilder.eachSecond(
 
 There are also `.eachMillisecond`, `.eachMinute` and `.eachHour` constructors.
 
-### Countdown
+## Countdown
 
 You can also create a seconds **countdown** from a certain `DateTime`:
 
@@ -710,7 +717,7 @@ TimeBuilder.countdown(
 );
 ```
 
-### General animation
+## General animation
 
 You can also create a general animation with the `.animate` constructor:
 
@@ -723,7 +730,7 @@ TimeBuilder.animate(
 );
 ```
 
-### Creating your own
+## Creating your own
 
 And, finally, you can also create your own `TimeBuilder` using the default constructor:
 
@@ -776,7 +783,130 @@ typedef TimerWidgetBuilder = Widget Function(
 There is also an optional `isFinished` callback. Returning `true` here will generate one last
 rebuild, and then stop the animation for good (no more rebuilds).
 
-## AlignPositioned
+<br>
+
+# GlobalValueKey and GlobalStringKey
+
+For **local** keys, Flutter provides `ObjectKey` and `ValueKey`.
+
+But for **global** keys, it provides only `GlobalObjectKey`, which compares by **identity**:
+
+```
+Key keyA = GlobalObjectKey('1' + '23');
+Key keyB = GlobalObjectKey('12' + '3');
+
+keyA == keyA; // true
+keyA == keyB; // false   
+```
+
+Sometimes, this creates <a href='https://github.com/flutter/flutter/issues/91557'>problems</a>.
+
+## What this package provides:
+
+It provides `GlobalValueKey` to compare by **equality** (using `operator ==`).
+
+For example:
+
+```
+Key keyA = GlobalValueKey('1' + '23');
+Key keyB = GlobalValueKey('12' + '3');
+
+keyA == keyA; // true
+keyA == keyB; // also true   
+```
+
+If your key value is a `String`, you can also use a `GlobalStringKey`:
+
+```
+Key keyA = GlobalStringKey('1' + '23');
+Key keyB = GlobalStringKey('12' + '3');
+
+keyA == keyA; // true
+keyA == keyB; // also true   
+```
+
+## Advanced
+
+There are many use cases for the `GlobalValueKey`, but I'd like to point out two in particular:
+
+### 1) Creating keys inside the build method
+
+Flutter's documentation for global keys states that:
+
+```
+/// Creating a new GlobalKey on every build will throw away the state of the
+/// subtree associated with the old key and create a new fresh subtree for the
+/// new key. Besides harming performance, this can also cause unexpected
+/// behavior in widgets in the subtree. For example, a [GestureDetector] in the
+/// subtree will be unable to track ongoing gestures since it will be recreated
+/// on each build.
+///
+/// Instead, a good practice is to let a State object own the GlobalKey, and
+/// instantiate it outside the build method, such as in [State.initState].
+```
+
+However, this is only correct for Flutter's native `GlobalObjectKey`. The keys provided here in this
+package can indeed be recreated on every build with no problems (as long, of course, as the value
+you use to create the key has a well-behaved `operator ==`).
+
+### 2) Global keys from data classes
+
+Suppose you want to derive keys from data classes, and then find widgets that correspond to them.
+For example, you have a `User` data class:
+
+```
+class User {
+  final String name;
+  User(this.name);  
+  bool operator ==(Object other) => identical(this, other) || other is User && runtimeType == other.runtimeType && name == other.name;
+  int get hashCode => name.hashCode;
+}
+```
+
+Then you create a widget class from it:
+
+```
+class UserWidget extends StatefulWidget {
+  final User user;
+  UserWidget({required this.user});
+  State<UserWidget> createState() => UserWidgetState();
+}
+
+class UserWidgetState extends State<UserWidget> {
+  Widget build(BuildContext context) => Text(widget.user.name);  
+}
+```
+
+To be able to find the user widget in the tree, modify your constructor as to create keys
+automatically, from the user:
+
+```
+UserWidget({required this.user}) : super(key: GlobalValueKey<UserWidgetState>(user));
+```
+
+And then, create a `static` method for easy access to the widget state:
+
+```
+static UserWidgetState? currentState(User user) =>
+  GlobalValueKey<UserWidgetState>(user).currentState; 
+```
+
+You now have easy access to your widget state, from anywhere: `UserWidget.currentState(someUser)`
+
+You can find a <a href="https://github.com/marcglasberg/global_keys/example/lib/main.dart">complete
+working example here</a>.
+
+### Some thoughts about global keys
+
+Global keys much more powerful than local keys, but in general, should not be used extensively. They
+are workarounds. I guess that's why Flutter does not provide a `GlobalValueKey` out of the box: Not
+to make global keys even more useful. Flutter has this philosophy that things that are useful, but
+can be used wrong, should be made difficult. In any case, I found that `GlobalValueKey` can
+sometimes make complex code orders of magnitude simpler.
+
+<br>
+
+# AlignPositioned
 
 See package <a href="https://pub.dev/packages/align_positioned">align_positioned</a>
 for widgets `AlignPositioned` and its siblings `AnimatedAlignPositioned` and `AnimChain`. They
