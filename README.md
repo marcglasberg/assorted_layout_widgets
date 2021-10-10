@@ -787,9 +787,8 @@ rebuild, and then stop the animation for good (no more rebuilds).
 
 # GlobalValueKey and GlobalStringKey
 
-For **local** keys, Flutter provides `ObjectKey` and `ValueKey`.
-
-But for **global** keys, it provides only `GlobalObjectKey`, which compares by **identity**:
+For **local** keys, Flutter provides `ObjectKey` and `ValueKey`. But for **global** keys, it
+provides only `GlobalObjectKey`, which compares by **identity**:
 
 ```
 Key keyA = GlobalObjectKey('1' + '23');
@@ -799,11 +798,7 @@ keyA == keyA; // true
 keyA == keyB; // false   
 ```
 
-Sometimes, this creates <a href='https://github.com/flutter/flutter/issues/91557'>problems</a>.
-
-## What this package provides:
-
-It provides `GlobalValueKey` to compare by **equality** (using `operator ==`).
+This package provides a `GlobalValueKey` to compare by **equality** (using `operator ==`).
 
 For example:
 

@@ -1,4 +1,4 @@
-## [5.2.0] - 2021/10/10
+## [5.2.1] - 2021/10/10
 
 * `GlobalValueKey` and `GlobalStringKey`.
 
