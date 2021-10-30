@@ -1,7 +1,7 @@
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 
-void main()  => runApp(MaterialApp(home: Demo()));
+void main() => runApp(MaterialApp(home: Demo()));
 
 class Demo extends StatefulWidget {
   @override
@@ -171,6 +171,7 @@ class _DemoState extends State<Demo> {
         separator: withSeparator ? separator() : null,
         innerDistance: inner,
         outerDistance: outer,
+        removeChildrenWithNoHeight: true,
         children: [
           for (int i = 0; i < itemCount; i++) coloredBox(i),
         ],

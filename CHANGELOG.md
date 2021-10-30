@@ -1,3 +1,9 @@
+## [5.3.0-dev0] - 2021/10/10
+
+* `ColumnSuper` parameter: `removeChildrenWithNoHeight`.
+  See <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_column_removing_zero_height.dart">
+  this example</a>.
+
 ## [5.2.1] - 2021/10/10
 
 * `GlobalValueKey` and `GlobalStringKey`.

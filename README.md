@@ -39,7 +39,8 @@ ColumnSuper({
   bool invert,
   Alignment alignment,
   Widget separator,
-  bool separatorOnTop,
+  bool separatorOnTop,  
+  bool removeChildrenWithNoHeight,
 });
 ```                   
 
@@ -66,6 +67,13 @@ ColumnSuper({
 
 * **`separatorOnTop`** if `true` (the default) will paint the separator on top of the cells.
   If `false` will paint the separator below the cells.
+
+* **`removeChildrenWithNoHeight`** if true, children with zero height will not result in an
+  extra `innerDistance` and `separator`. If all children have zero height, the `outerDistance` will
+  also be removed. In other words, it's as if children with zero height are removed, except for the
+  fact they still occupy width. The default is false.
+  See <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_column_removing_zero_height.dart">
+  this example</a>.
 
 *Note: This is not a substitute for Flutter's native `Column`, it doesn't try to have a similar API,
 and it doesn't do all that `Column` does. In special, `Expanded` and `Flexible` widgets don't work

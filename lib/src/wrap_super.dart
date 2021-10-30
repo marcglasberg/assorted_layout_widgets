@@ -82,7 +82,7 @@ class WrapSuper extends MultiChildRenderObjectWidget {
     this.spacing = 0.0,
     this.lineSpacing = 0.0,
     this.alignment = WrapSuperAlignment.left,
-    List<Widget> children = const <Widget>[],
+    List<Widget> children = const [],
   }) : super(key: key, children: children);
 
   final WrapSuperAlignment alignment;
