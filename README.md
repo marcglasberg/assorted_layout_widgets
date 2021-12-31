@@ -62,7 +62,7 @@ ColumnSuper({
 * **`alignment`** will align the cells horizontally if they are smaller than the available
   horizontal space.
 
-* **`separator`** is a widget which will be painted between each cells. Its height doesn't matter,
+* **`separator`** is a widget which will be painted between each cell. Its height doesn't matter,
   since the distance between cells is given by `innerDistance` (in other words, separators don't
   occupy space). The separator may overflow if its width is larger than the column's width.
 
@@ -318,9 +318,8 @@ and they work well with hot-reload, while `final` values do not.
 
 ### Debugging:
 
-* If need to quickly and temporarily add a color to your box so that you can see it, you can use the
-  constructors
-  `Box.r` for red, `Box.g` for green, `Box.b` for blue, and `Box.y` for yellow.
+* If you need to quickly and temporarily add a color to your box so that you can see it, you can use
+  the constructors `Box.r` for red, `Box.g` for green, `Box.b` for blue, and `Box.y` for yellow.
 
   ```
   Box(child: myChild);
@@ -574,7 +573,7 @@ padding: Pad(vertical: 12, horizontal: 6)
 You can also compose paddings. For example, if you want 40 pixels of padding in all directions,
 except the top with 50 pixels: `padding: Pad(all: 40, top: 10)`.
 
-During development you sometimes need to temporarily remove the padding, for debugging reasons.
+During development, you sometimes need to temporarily remove the padding, for debugging reasons.
 Unfortunately you can't just comment the padding parameter, because the
 `Padding` widget doesn't accept `null` padding. But you can just add `.x` to the
 `Pad` class to remove it. It's marked as `deprecated` so that you don't forget to change it back to
@@ -666,7 +665,7 @@ showDialogSuper Example</a>.
 
 # TimeBuilder
 
-If you need some widget to change periodically (clocks, countdowns, stopwatches etc), one way of
+If you need some widget to change periodically (clocks, countdowns, stopwatches etc.), one way of
 implementing this is using a `Timer` to rebuild it. This is, however, very inefficient and may make
 your app slow.
 
