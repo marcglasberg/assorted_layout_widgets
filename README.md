@@ -19,6 +19,7 @@ Despite the package name, they are not only related to layout. Here they are:
 * `showDialogSuper` and `showCupertinoDialogSuper`
 * `TimeBuilder`
 * `GlobalValueKey` and `GlobalStringKey`
+* `MaskFunctionTextInputFormatter`
 
 <br>
 
@@ -908,6 +909,76 @@ can be used wrong, should be made difficult. In any case, I found that `GlobalVa
 sometimes make complex code orders of magnitude simpler.
 
 <br>
+
+# MaskFunctionTextInputFormatter
+
+The `MaskFunctionTextInputFormatter` is a special `TextInputFormatter` that lets you format the text
+in a `TextField` or `TextFormField` as the user types, according to a mask; as well as also change
+that mask according to what is typed.
+
+To use it, create your formatter and pass it to a `TextField` or `TextFormField`:
+
+```
+TextField(
+  inputFormatters: [myFormatter],
+);
+```
+
+This code is adapted from another package
+called <a href="https://pub.dev/packages/mask_text_input_formatter">mask_text_input_formatter</a>
+by <a href="https://github.com/siqwin">Sergey</a>. The difference here is that instead of providing
+a `mask`, you provide a `maskFunction` that can change the mask automatically as the user types.
+
+The `maskFunction` is of type `MaskFunction`:
+
+```
+typedef MaskFunction = String? Function({
+   required TextEditingValue oldValue,
+   required TextEditingValue newValue,
+});
+```
+
+For example, suppose you want to format the text as `######` (where each `#` is a number) while the
+user typed less than 7 numbers, but you want to format it as `###.###.###-##` for more chars than
+that:
+
+```
+var myFormatter = MaskFunctionTextInputFormatter(mask: _myFormatter);
+
+String? _myFormatter({
+   required TextEditingValue oldValue,
+   required TextEditingValue newValue,
+}) {
+   if (newValue.text.length <= 6) return '######';
+   else return '###.###.###-##';
+}
+```
+
+When you create the formatter, you can also provide a `filter` parameter, to define the possible
+characters in the mask. If you don't provide the `filter` parameter, the default is that `#` matches
+a number, and `A` matches a letter:
+
+```
+var myFormatter = MaskFunctionTextInputFormatter(
+   mask: _myFormatter,
+   filter: {"#": RegExp('[0-9]'), "A": RegExp('[^0-9]')});
+```
+
+The `getMaskedText` and `getUnmaskedText` methods can be used if necessary:
+
+```
+// Get masked text:
+print(maskFormatter.getMaskedText()); // -> "+0 (123) 456-78-90"
+
+// Get unmasked text:
+print(maskFormatter.getUnmaskedText()); // -> 01234567890
+```
+
+**Important:** Once again, please note all the above code is based
+upon <a href="https://pub.dev/packages/mask_text_input_formatter">mask_text_input_formatter</a>
+by <a href="https://github.com/siqwin">Sergey</a>. The ONLY thing I added was the possibility of
+using a function that changes the mask. All the rest is from the original package, and credit
+belongs to their authors.
 
 # AlignPositioned
 

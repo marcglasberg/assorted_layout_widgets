@@ -1,3 +1,7 @@
+## [5.4.0] - 2021/12/31
+
+* `MaskFunctionTextInputFormatter`.
+ 
 ## [5.3.0-dev0] - 2021/10/10
 
 * `ColumnSuper` parameter: `removeChildrenWithNoHeight`.
