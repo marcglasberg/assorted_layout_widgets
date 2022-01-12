@@ -1,6 +1,10 @@
+## [5.5.0] - 2021/01/11
+
+* `SideBySide` widget.
+ 
 ## [5.4.1] - 2021/12/31
 
-* `MaskFunctionTextInputFormatter`.
+* `MaskFunctionTextInputFormatter` input formatter (for `Text` widgets).
  
 ## [5.3.0-dev0] - 2021/10/10
 

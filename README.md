@@ -20,6 +20,7 @@ Despite the package name, they are not only related to layout. Here they are:
 * `TimeBuilder`
 * `GlobalValueKey` and `GlobalStringKey`
 * `MaskFunctionTextInputFormatter`
+* `SideBySide`
 
 <br>
 
@@ -978,6 +979,48 @@ upon <a href="https://pub.dev/packages/mask_text_input_formatter">mask_text_inpu
 by <a href="https://github.com/siqwin">Sergey</a>. The ONLY thing I added was the possibility of
 using a function that changes the mask. All the rest is from the original package, and credit
 belongs to their authors.
+
+<br>
+
+# SideBySide
+
+The `SideBySide` widget disposes 2 widgets horizontally, while achieving a layout which is
+impossible for both the native `Row` and the `RowSuper` widgets.
+
+* The `startChild` will be on the left, and will occupy as much space as it wants, up to the
+  available horizontal space.
+
+* The `endChild` will be on the right of the `startChild` widget, and it will occupy the rest of the
+  available space. Note: This means, if the `startChild` widget occupies all the available space,
+  then `endChild` widget will not be displayed (since it will be sized as `0` width).
+
+For example, suppose you want to create a title with a divider that occupies the rest of the space:
+
+```
+return SideBySide(
+  startChild: Text("First Chapter", textWidthBasis: TextWidthBasis.longestLine),
+  endChild: Divider(color: Colors.grey),
+  innerDistance: 8,
+  minEndChildWidth: 20,
+);
+```
+
+![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/sideBySide.png)
+
+You can add an `innerDistance`, in pixels, between the `startChild` and `endChild`. The default is
+zero. It can be negative, in which case the widgets will overlap. The `innerDistance` is only used
+if the `endChild` is actually displayed.
+
+You can define the `minEndChildWidth`, which is the minimum width, in pixels, that the `endChild`
+should occupy. The default is zero.
+
+The `crossAxisAlignment` parameter specifies how to align the `startChild` and `endChild`
+vertically. The default is to center them. At the moment, only
+`CrossAxisAlignment.start`, `CrossAxisAlignment.end` and `CrossAxisAlignment.center` work.
+
+Try running
+the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_side_by_side.dart">
+SideBySide example</a>.
 
 # AlignPositioned
 

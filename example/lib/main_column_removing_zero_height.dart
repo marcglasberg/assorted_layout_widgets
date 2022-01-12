@@ -14,12 +14,12 @@ class Demo extends StatelessWidget {
         children: [
           const Padding(
             padding: Pad(all: 20),
-            child: Text(
-                "Click the colored boxes to turn their height to zero (they keep their width)."
-                "\n\n"
-                "The left column has removeChildrenWithNoHeight: false"
-                "\n\n"
-                "The right column has removeChildrenWithNoHeight: true"),
+            child:
+                Text("Click the colored boxes to turn their height to zero (they keep their width)."
+                    "\n\n"
+                    "The left column has removeChildrenWithNoHeight: false"
+                    "\n\n"
+                    "The right column has removeChildrenWithNoHeight: true"),
           ),
           Expanded(
             child: Center(
@@ -87,7 +87,7 @@ class _ColoredColumnState extends State<ColoredColumn> {
         },
         child: Container(
           color: color.withOpacity(0.8),
-          width: 50+index*20,
+          width: 50 + index * 20,
           height: height,
         ),
       );
