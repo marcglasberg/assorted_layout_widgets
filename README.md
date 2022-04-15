@@ -21,10 +21,12 @@ Despite the package name, they are not only related to layout. Here they are:
 * `GlobalValueKey` and `GlobalStringKey`
 * `MaskFunctionTextInputFormatter`
 * `SideBySide`
+* `Button` and `CircleButton`
 
 <br>
 
-> _Note: The widgets you don't use will be removed by Flutter's tree shaking. So feel free to add the library even if you want to use only one of them._
+> _Note: The widgets you don't use will be removed by Flutter's tree shaking. So feel free to add
+the library even if you want to use only one of them._
 
 <br>
 
@@ -1021,6 +1023,72 @@ vertically. The default is to center them. At the moment, only
 Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_side_by_side.dart">
 SideBySide example</a>.
+
+<br>
+
+# Button
+
+The `Button` widget transforms any widget into a button with some immediate visual response to a
+tap. It provides you with a `builder`, and the `isPressed` boolean which tells you if the widget is
+being touched or not. It can also expand the click-area, show the click-area (for debug purposes),
+sustain the visual effect of the tap for some duration, and accepts a throttle period between taps:
+
+```
+Button(
+    onTap: () {...},
+    minVisualTapDuration: Duration(milliseconds: 200),
+    tapThrottle: Duration(milliseconds: 500),
+    clickAreaMargin: const Pad(horizontal: 40.0, vertical: 20),
+    debugShowClickableArea: true,
+    builder: ({required bool isPressed}) => 
+      Text('Click Me', style: TextStyle(color: isPressed ? Colors.black : Colors.white)),        
+);
+```
+
+* When the user taps the button, the `isPressed` boolean will be true for at least
+  `minVisualTapDuration`.
+
+* The widget will only feel another tap if `tapThrottle` duration has passed since the last tap.
+
+* The click-area can be expanded by a margin given by `clickAreaMargin`, thus making the widget
+  easier to tap.
+
+* If `debugShowClickableArea` is true, the click-area will be shown in red.
+
+# CircleButton
+
+The `CircleButton` is similar to Flutter's native `IconButton`, but with a few differences.
+Since circular buttons are small, the user's finger usually hides it during the tap. For this
+reason,
+the `CircleButton` will:
+
+* Show an immediate visual feedback to a tap, and then sustain that feedback for about 100
+  milliseconds, enough time for the user to remove the finger and see it.
+* You can expand the click-area, to make the button easier to tap. You can also show the click-area,
+  for debug purposes.
+
+```
+CircleButton(
+    onTap: () {...},
+    icon: Icon(Icons.shopping_cart, color: Colors.white),
+    clickAreaMargin: const Pad(left: 30, right: 50, vertical: 20),
+    debugShowClickableArea: true,
+    backgroundColor: Colors.white30,
+    tapColor: Colors.black,
+    border: Border.all(width: 1, color: Colors.black),
+    size: 56,                
+);
+```
+
+* When the user taps the button, the `isPressed` boolean will be true for at least
+  `minVisualTapDuration`.
+
+* The widget will only feel another tap if `tapThrottle` duration has passed since the last tap.
+
+* The click-area can be expanded by a margin given by `clickAreaMargin`, thus making the widget
+  easier to tap.
+
+* If `debugShowClickableArea` is true, the click-area will be shown in red.
 
 # AlignPositioned
 

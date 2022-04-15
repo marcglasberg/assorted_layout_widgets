@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 
 // Developed by Marcelo Glasberg (copyright Aug 2020)
 

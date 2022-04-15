@@ -1,3 +1,7 @@
+## [5.6.0] - 2021/04/14
+
+* `Button` and `CircleButton` widgets.
+
 ## [5.5.0] - 2021/01/11
 
 * `SideBySide` widget.
