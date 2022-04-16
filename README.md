@@ -1055,6 +1055,12 @@ Button(
 
 * If `debugShowClickableArea` is true, the click-area will be shown in red.
 
+Try running
+the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_button_and_circle_button.dart">
+Button and CircleButton example</a>.
+
+<br>
+
 # CircleButton
 
 The `CircleButton` is similar to Flutter's native `IconButton`, but with a few differences.
@@ -1089,6 +1095,12 @@ CircleButton(
   easier to tap.
 
 * If `debugShowClickableArea` is true, the click-area will be shown in red.
+
+Try running
+the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_button_and_circle_button.dart">
+Button and CircleButton example</a>.
+
+<br>
 
 # AlignPositioned
 
