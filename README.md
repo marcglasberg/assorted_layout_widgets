@@ -1128,6 +1128,7 @@ should be part of this package, but will remain in their own package for histori
 * <a href="https://pub.dev/packages/assorted_layout_widgets">assorted_layout_widgets</a>
 * <a href="https://pub.dev/packages/weak_map">weak_map</a>
 * <a href="https://pub.dev/packages/themed">themed</a>
+* <a href="https://pub.dev/packages/bdd_framework">bdd_framework</a>
 
 *My Medium Articles:*
 
@@ -1151,6 +1152,7 @@ should be part of this package, but will remain in their own package for histori
 
 <br>_Marcelo Glasberg:_<br>
 _https://github.com/marcglasberg_<br>
+_https://linkedin.com/in/marcglasberg/_<br>
 _https://twitter.com/glasbergmarcelo_<br>
 _https://stackoverflow.com/users/3411681/marcg_<br>
 _https://medium.com/@marcglasberg_<br>
