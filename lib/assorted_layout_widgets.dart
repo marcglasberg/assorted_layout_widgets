@@ -1,6 +1,7 @@
 export "src/box.dart";
 export "src/button.dart";
 export "src/button_bar_super.dart";
+export "src/capture_gestures.dart";
 export "src/circle_button.dart";
 export "src/column_super.dart";
 export "src/delayed.dart";

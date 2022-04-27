@@ -1,3 +1,7 @@
+## [5.7.0] - 2021/04/27
+
+* `CaptureGestures` widget.
+
 ## [5.6.1] - 2021/04/14
 
 * `Button` and `CircleButton` widgets.

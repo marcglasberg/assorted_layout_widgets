@@ -22,6 +22,7 @@ Despite the package name, they are not only related to layout. Here they are:
 * `MaskFunctionTextInputFormatter`
 * `SideBySide`
 * `Button` and `CircleButton`
+* `CaptureGestures`
 
 <br>
 
@@ -1099,6 +1100,76 @@ CircleButton(
 Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_button_and_circle_button.dart">
 Button and CircleButton example</a>.
+
+<br>
+
+# CaptureGestures
+
+A widget that captures gestures, preventing its parent (and ascending subtree) to feel them.
+
+How is this different from `IgnorePointer` and `AbsorbPointer`?
+
+`IgnorePointer` makes itself and its **child** (and the descending subtree) invisible to touches.
+This means, for example, if you put the `IgnorePointer` and its child above some widget inside a
+Stack, the touches will "pass through" the `IgnorePointer` and be felt by the widget below it.
+The gesture can also be felt by the `IgnorePointer`'s parent.
+
+`AbsorbPointer` also makes its **child** invisible to touches, but it will also prevent the touch to
+be felt by widgets below it in a Stack. But the gesture can be felt by the `AbsorbPointer`'s parent.
+
+As you can see, `IgnorePointer` and `AbsorbPointer` act on their children and on widgets below them
+in a Stack. However, in both cases the gesture can be felt by their parents.
+
+For example, if you put `IgnorePointer` or `AbsorbPointer` inside a `ListView`, none of them will
+prevent the `ListView` to be scrolled, because the `ListView` is in the **ascending** subtree).
+
+The `CaptureGestures` however, will let its child feel the touches it cares about,
+and then capture and cancel other touches that reach the `CaptureGestures` itself. This means
+the `CaptureGestures` **parent** (and all the ascending subtree) will not feel the touches below
+the `CaptureGestures` area.
+
+The parameters for the `CaptureGestures.only()` constructor are:
+
+* **`capturingTap`** turns on/off the capturing of tap gestures.
+* **`capturingDoubleTap`** turns on/off the capturing of double-tap gestures.
+* **`capturingLongPress`**  turns on/off the capturing of long-press gestures.
+* **`capturingVerticalDrag`**  turns on/off the capturing of vertical-drag gestures.
+* **`capturingHorizontal`**  turns on/off the capturing of horizontal-drag gestures.
+* **`capturingForcePress`**  turns on/off the capturing of force-press gestures.
+* **`display`** prints the captured events to the console (for debug reasons only).
+
+The `CaptureGestures.all()` constructor will capture all gestures.
+
+The `CaptureGestures.tap()` constructor will capture only single tap gestures.
+
+### Preventing scroll
+
+The `CaptureGestures.scroll()` constructor will capture only drag gestures (preventing both vertical
+and horizontal scroll).
+
+Consider this code:
+
+```
+ListView(
+   children: [
+      CaptureGestures.scroll(child: ElevatedButton(...)),
+      ...   
+      ...   
+   ]
+);   
+```
+
+Here, the `ElevatedButton` can feel the `onTap` gesture that it cares about. But the user cannot
+scroll the list by touching the button and dragging it up or down, because the drag gestures are
+getting captured by the `CaptureGestures`, never reaching the `ListView`.
+
+Note: Setting the scrollable's physics to `NeverScrollableScrollPhysics()` is also an option, but
+sometimes you can't do that. Also, `CaptureGestures` allows you to choose just a part of the
+widget tree to cancel the scroll.
+
+Try running
+the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_capture_gestures.dart">
+CaptureGestures example</a>.
 
 <br>
 
