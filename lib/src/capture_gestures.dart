@@ -22,7 +22,7 @@ class CaptureGestures extends StatelessWidget {
   final bool capturingVerticalDrag;
 
   /// Turns on/off the capturing of horizontal-drag gestures.
-  final bool capturingHorizontal;
+  final bool capturingHorizontalDrag;
 
   /// Turns on/off the capturing of force-press gestures.
   final bool capturingForcePress;
@@ -39,7 +39,7 @@ class CaptureGestures extends StatelessWidget {
     this.capturingDoubleTap = false,
     this.capturingLongPress = false,
     this.capturingVerticalDrag = false,
-    this.capturingHorizontal = false,
+    this.capturingHorizontalDrag = false,
     this.capturingForcePress = false,
     this.display = false,
   }) : super(key: key);
@@ -52,7 +52,7 @@ class CaptureGestures extends StatelessWidget {
     this.capturingDoubleTap = true,
     this.capturingLongPress = true,
     this.capturingVerticalDrag = true,
-    this.capturingHorizontal = true,
+    this.capturingHorizontalDrag = true,
     this.capturingForcePress = true,
     this.display = false,
   }) : super(key: key);
@@ -61,12 +61,13 @@ class CaptureGestures extends StatelessWidget {
   const CaptureGestures.tap({
     Key? key,
     this.child,
+    bool capturing = true,
     this.display = false,
-  })  : capturingTap = true,
+  })  : capturingTap = capturing,
         capturingDoubleTap = false,
         capturingLongPress = false,
         capturingVerticalDrag = false,
-        capturingHorizontal = false,
+        capturingHorizontalDrag = false,
         capturingForcePress = false,
         super(key: key);
 
@@ -74,12 +75,13 @@ class CaptureGestures extends StatelessWidget {
   const CaptureGestures.scroll({
     Key? key,
     this.child,
+    bool capturing = true,
     this.display = false,
   })  : capturingTap = false,
         capturingDoubleTap = false,
         capturingLongPress = false,
-        capturingVerticalDrag = true,
-        capturingHorizontal = true,
+        capturingVerticalDrag = capturing,
+        capturingHorizontalDrag = capturing,
         capturingForcePress = false,
         super(key: key);
 
@@ -139,11 +141,13 @@ class CaptureGestures extends StatelessWidget {
       onVerticalDragUpdate: capturingVerticalDrag ? (_) => print('onVerticalDragUpdate') : null,
       onVerticalDragEnd: capturingVerticalDrag ? (_) => print('onVerticalDragEnd') : null,
       onVerticalDragCancel: capturingVerticalDrag ? () => print('onVerticalDragCancel') : null,
-      onHorizontalDragDown: capturingHorizontal ? (_) => print('onHorizontalDragDown') : null,
-      onHorizontalDragStart: capturingHorizontal ? (_) => print('onHorizontalDragStart') : null,
-      onHorizontalDragUpdate: capturingHorizontal ? (_) => print('onHorizontalDragUpdate') : null,
-      onHorizontalDragEnd: capturingHorizontal ? (_) => print('onHorizontalDragEnd') : null,
-      onHorizontalDragCancel: capturingHorizontal ? () => print('onHorizontalDragCancel') : null,
+      onHorizontalDragDown: capturingHorizontalDrag ? (_) => print('onHorizontalDragDown') : null,
+      onHorizontalDragStart: capturingHorizontalDrag ? (_) => print('onHorizontalDragStart') : null,
+      onHorizontalDragUpdate:
+          capturingHorizontalDrag ? (_) => print('onHorizontalDragUpdate') : null,
+      onHorizontalDragEnd: capturingHorizontalDrag ? (_) => print('onHorizontalDragEnd') : null,
+      onHorizontalDragCancel:
+          capturingHorizontalDrag ? () => print('onHorizontalDragCancel') : null,
       //
       onForcePressStart: capturingForcePress ? (_) => print('onForcePressStart') : null,
       onForcePressPeak: capturingForcePress ? (_) => print('onForcePressPeak') : null,
