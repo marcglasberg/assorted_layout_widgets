@@ -39,8 +39,8 @@ class RowSuper extends MultiChildRenderObjectWidget {
   final bool separatorOnTop;
 
   /// If true will shrink the children, horizontally only, until the shrinkLimit is reached.
-  /// This parameter is only useful if the children are not wide enough to fill the whole row
-  /// width. Avoid using fitHorizontally together with [fill] true.
+  /// This parameter is only useful if the children are too wide to fit the row width.
+  /// Avoid using fitHorizontally together with [fill] true.
   final bool fitHorizontally;
 
   /// The shrink limit by default is 67%, which means the cell contents will shrink until

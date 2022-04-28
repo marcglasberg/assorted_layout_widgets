@@ -141,7 +141,7 @@ Most parameters are the same as the ones of `ColumnSuper`, except:
   RowSuper Fill example</a>.
 
 * **`fitHorizontally`** if true will shrink the children, horizontally only, until the `shrinkLimit`
-  is reached. This parameter is only useful if the children are not wide enough to fill the whole
+  is reached. This parameter is only useful if the children are too wide to fit the row width.
   row width. Avoid using `fitHorizontally` together with `fill: true`.
 
 * **`shrinkLimit`** by default is 67%, which means the cell contents will shrink until 67% of their
