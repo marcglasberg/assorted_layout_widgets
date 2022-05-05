@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
@@ -12,8 +11,6 @@ import 'package:flutter/material.dart';
 ///
 /// * You can to hide some of the sides, by setting [hideTopSide],
 /// [hideBottomSide], [hideRightSide] and [hideLeftSide] to false.
-///
-/// * A single [radius] will be used for the corners of all non-hidden sides.
 ///
 /// See also:
 ///
@@ -43,7 +40,7 @@ class NonUniformOutlineInputBorder extends InputBorder {
   ///
   const NonUniformOutlineInputBorder({
     BorderSide borderSide = const BorderSide(),
-    this.radius = 4.0,
+    this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
     this.hideTopSide = false,
     this.hideBottomSide = false,
     this.hideRightSide = false,
@@ -51,15 +48,15 @@ class NonUniformOutlineInputBorder extends InputBorder {
   }) : super(borderSide: borderSide);
 
   /// The radii of the border's rounded rectangle corners.
-  final double radius;
+  final BorderRadius borderRadius;
 
-  double get topLeftRadius => (showTopSide && showLeftSide) ? radius : 0.0;
+  double get topLeftRadius => borderRadius.topLeft.x;
 
-  double get topRightRadius => (showTopSide && showRightSide) ? radius : 0.0;
+  double get topRightRadius => borderRadius.topRight.x;
 
-  double get bottomLeftRadius => (showBottomSide && showLeftSide) ? radius : 0.0;
+  double get bottomLeftRadius => borderRadius.bottomLeft.x;
 
-  double get bottomRightRadius => (showBottomSide && showRightSide) ? radius : 0.0;
+  double get bottomRightRadius => borderRadius.bottomRight.x;
 
   @override
   bool get isOutline => true;
@@ -87,7 +84,7 @@ class NonUniformOutlineInputBorder extends InputBorder {
   @override
   NonUniformOutlineInputBorder copyWith({
     BorderSide? borderSide,
-    double? radius,
+    BorderRadius? borderRadius,
     double? gapPadding,
     bool? hideTopSide,
     bool? hideBottomSide,
@@ -96,7 +93,7 @@ class NonUniformOutlineInputBorder extends InputBorder {
   }) {
     return NonUniformOutlineInputBorder(
       borderSide: borderSide ?? this.borderSide,
-      radius: radius ?? this.radius,
+      borderRadius: borderRadius ?? this.borderRadius,
       hideTopSide: hideTopSide ?? this.hideTopSide,
       hideBottomSide: hideBottomSide ?? this.hideBottomSide,
       hideRightSide: hideRightSide ?? this.hideRightSide,
@@ -113,7 +110,7 @@ class NonUniformOutlineInputBorder extends InputBorder {
   NonUniformOutlineInputBorder scale(double t) {
     return NonUniformOutlineInputBorder(
       borderSide: borderSide.scale(t),
-      radius: radius * t,
+      borderRadius: borderRadius * t,
       hideTopSide: hideTopSide,
       hideBottomSide: hideBottomSide,
       hideRightSide: hideRightSide,
@@ -126,7 +123,7 @@ class NonUniformOutlineInputBorder extends InputBorder {
     if (a is NonUniformOutlineInputBorder) {
       final NonUniformOutlineInputBorder outline = a;
       return NonUniformOutlineInputBorder(
-        radius: lerpDouble(outline.radius, radius, t)!,
+        borderRadius: BorderRadius.lerp(a.borderRadius, borderRadius, t)!,
         borderSide: BorderSide.lerp(outline.borderSide, borderSide, t),
         hideTopSide: hideTopSide,
         hideBottomSide: hideBottomSide,
@@ -142,8 +139,8 @@ class NonUniformOutlineInputBorder extends InputBorder {
     if (b is NonUniformOutlineInputBorder) {
       final NonUniformOutlineInputBorder outline = b;
       return NonUniformOutlineInputBorder(
-        radius: lerpDouble(radius, outline.radius, t)!,
         borderSide: BorderSide.lerp(borderSide, outline.borderSide, t),
+        borderRadius: BorderRadius.lerp(borderRadius, b.borderRadius, t)!,
         hideTopSide: hideTopSide,
         hideBottomSide: hideBottomSide,
         hideRightSide: hideRightSide,
@@ -167,13 +164,16 @@ class NonUniformOutlineInputBorder extends InputBorder {
 
   BorderRadius _borderRadius(Rect rect) {
     //
-    var radius = min(this.radius, rect.shortestSide / 2);
+    var tlRadius = min(topLeftRadius, rect.shortestSide / 2);
+    var trRadius = min(topRightRadius, rect.shortestSide / 2);
+    var blRadius = min(bottomLeftRadius, rect.shortestSide / 2);
+    var brRadius = min(bottomRightRadius, rect.shortestSide / 2);
 
     return BorderRadius.only(
-      topLeft: (showTopSide && showLeftSide) ? Radius.circular(radius) : Radius.zero,
-      topRight: (showTopSide && showRightSide) ? Radius.circular(radius) : Radius.zero,
-      bottomLeft: (showBottomSide && showLeftSide) ? Radius.circular(radius) : Radius.zero,
-      bottomRight: (showBottomSide && showRightSide) ? Radius.circular(radius) : Radius.zero,
+      topLeft: (showTopSide && showLeftSide) ? Radius.circular(tlRadius) : Radius.zero,
+      topRight: (showTopSide && showRightSide) ? Radius.circular(trRadius) : Radius.zero,
+      bottomLeft: (showBottomSide && showLeftSide) ? Radius.circular(blRadius) : Radius.zero,
+      bottomRight: (showBottomSide && showRightSide) ? Radius.circular(brRadius) : Radius.zero,
     );
   }
 
@@ -201,186 +201,166 @@ class NonUniformOutlineInputBorder extends InputBorder {
 
   Path _path(Canvas canvas, Rect rect) {
     //
-    rect = rect.deflate(borderSide.width / 2.0);
-    final halfWidth = borderSide.width / 2;
-    var radius = max(0.0, this.radius - halfWidth);
-    bool noRadius = (radius == 0.0);
+    final side = borderSide;
+
+    rect = rect.deflate(side.width / 2.0);
+    final halfWidth = side.width / 2;
+
+    var tlRadius = max(0.0, this.topLeftRadius - halfWidth);
+    var trRadius = max(0.0, this.topRightRadius - halfWidth);
+    var blRadius = max(0.0, this.bottomLeftRadius - halfWidth);
+    var brRadius = max(0.0, this.bottomRightRadius - halfWidth);
 
     final Path path = Path();
 
-    // No radius will be used.
-    if (noRadius) {
-      if (showTopSide)
-        path
-          ..moveTo(rect.left - halfWidth, rect.top)
-          ..lineTo(rect.right + halfWidth, rect.top);
+    // Scale each radius to not exceed the size of the width/height of the Rect.
+    double topLeftRadius = min(tlRadius, rect.shortestSide / 2);
+    double topRightRadius = min(trRadius, rect.shortestSide / 2);
+    double bottomLeftRadius = min(blRadius, rect.shortestSide / 2);
+    double bottomRightRadius = min(brRadius, rect.shortestSide / 2);
 
-      if (showRightSide)
-        path
-          ..moveTo(rect.right, rect.top - halfWidth)
-          ..lineTo(rect.right, rect.bottom + halfWidth);
+    final Rect topLeftCorner = Rect.fromLTWH(
+      rect.left,
+      rect.top,
+      topLeftRadius * 2,
+      topLeftRadius * 2,
+    );
 
-      if (showBottomSide)
-        path
-          ..moveTo(rect.left - halfWidth, rect.bottom)
-          ..lineTo(rect.right + halfWidth, rect.bottom);
+    final Rect topRightCorner = Rect.fromLTWH(
+      rect.right - topRightRadius * 2,
+      rect.top,
+      topRightRadius * 2,
+      topRightRadius * 2,
+    );
 
-      if (showLeftSide)
-        path
-          ..moveTo(rect.left, rect.top - halfWidth)
-          ..lineTo(rect.left, rect.bottom + halfWidth);
+    final Rect bottomRightCorner = Rect.fromLTWH(
+      rect.right - bottomRightRadius * 2,
+      rect.bottom - bottomRightRadius * 2,
+      bottomRightRadius * 2,
+      bottomRightRadius * 2,
+    );
 
-      return path;
-    }
+    final Rect bottomLeftCorner = Rect.fromLTWH(
+      rect.left,
+      rect.bottom - bottomLeftRadius * 2,
+      bottomLeftRadius * 2,
+      bottomLeftRadius * 2,
+    );
+
+    double initialGap = (topLeftRadius == 0.0 ? -halfWidth : 0);
+
+    if (showTopSide && showRightSide && showBottomSide && showLeftSide)
+      path
+        ..moveTo(rect.left + topLeftRadius + initialGap, rect.top)
+        ..lineTo(rect.right - topRightRadius, rect.top)
+        ..arcToIf(topRightCorner, -pi / 2, pi / 2, true, ifRadiusNonZero: topRightRadius)
+        ..lineTo(rect.right, rect.bottom - bottomRightRadius)
+        ..arcToIf(bottomRightCorner, 0, pi / 2, true, ifRadiusNonZero: bottomRightRadius)
+        ..lineTo(rect.left + bottomLeftRadius, rect.bottom)
+        ..arcToIf(bottomLeftCorner, pi / 2, pi / 2, true, ifRadiusNonZero: bottomLeftRadius)
+        ..lineTo(rect.left, rect.top + topLeftRadius)
+        ..arcToIf(topLeftCorner, pi, pi / 2, true, ifRadiusNonZero: topLeftRadius);
     //
-    // The given radius will be used.
-    else {
-      // Scale each radius to not exceed the size of the width/height of the Rect.
-      double topLeftRadius = min(radius, rect.shortestSide / 2);
-      double topRightRadius = min(radius, rect.shortestSide / 2);
-      double bottomLeftRadius = min(radius, rect.shortestSide / 2);
-      double bottomRightRadius = min(radius, rect.shortestSide / 2);
-
-      final Rect topLeftCorner = Rect.fromLTWH(
-        rect.left,
-        rect.top,
-        topLeftRadius * 2,
-        topLeftRadius * 2,
-      );
-
-      final Rect topRightCorner = Rect.fromLTWH(
-        rect.right - topRightRadius * 2,
-        rect.top,
-        topRightRadius * 2,
-        topRightRadius * 2,
-      );
-
-      final Rect bottomRightCorner = Rect.fromLTWH(
-        rect.right - bottomRightRadius * 2,
-        rect.bottom - bottomRightRadius * 2,
-        bottomRightRadius * 2,
-        bottomRightRadius * 2,
-      );
-
-      final Rect bottomLeftCorner = Rect.fromLTWH(
-        rect.left,
-        rect.bottom - bottomLeftRadius * 2,
-        bottomLeftRadius * 2,
-        bottomLeftRadius * 2,
-      );
-
-      if (showTopSide && showRightSide && showBottomSide && showLeftSide)
-        path
-          ..moveTo(rect.left + topLeftRadius, rect.top)
-          ..lineTo(rect.right - topRightRadius, rect.top)
-          ..arcTo(topRightCorner, -pi / 2, pi / 2, true)
-          ..lineTo(rect.right, rect.bottom - bottomRightRadius)
-          ..arcTo(bottomRightCorner, 0, pi / 2, true)
-          ..lineTo(rect.left + bottomLeftRadius, rect.bottom)
-          ..arcTo(bottomLeftCorner, pi / 2, pi / 2, true)
-          ..lineTo(rect.left, rect.top + topLeftRadius)
-          ..arcTo(topLeftCorner, pi, pi / 2, true);
-      //
-      else if (showTopSide && !showRightSide && showBottomSide && showLeftSide)
-        path
-          ..moveTo(rect.left + topLeftRadius, rect.top)
-          ..lineTo(rect.right + halfWidth, rect.top)
-          ..moveTo(rect.right + halfWidth, rect.bottom)
-          ..lineTo(rect.left + bottomLeftRadius, rect.bottom)
-          ..arcTo(bottomLeftCorner, pi / 2, pi / 2, true)
-          ..lineTo(rect.left, rect.top + topLeftRadius)
-          ..arcTo(topLeftCorner, pi, pi / 2, true);
-      //
-      else if (showTopSide && showRightSide && !showBottomSide && showLeftSide)
-        path
-          ..moveTo(rect.left + topLeftRadius, rect.top)
-          ..lineTo(rect.right - topRightRadius, rect.top)
-          ..arcTo(topRightCorner, -pi / 2, pi / 2, true)
-          ..lineTo(rect.right, rect.bottom + halfWidth)
-          ..moveTo(rect.left, rect.bottom + halfWidth)
-          ..lineTo(rect.left, rect.top + topLeftRadius)
-          ..arcTo(topLeftCorner, pi, pi / 2, true);
-      //
-      else if (showTopSide && showRightSide && showBottomSide && !showLeftSide)
-        path
-          ..moveTo(rect.left - halfWidth, rect.top)
-          ..lineTo(rect.right - topRightRadius, rect.top)
-          ..arcTo(topRightCorner, -pi / 2, pi / 2, true)
-          ..lineTo(rect.right, rect.bottom - bottomRightRadius)
-          ..arcTo(bottomRightCorner, 0, pi / 2, true)
-          ..lineTo(rect.left - halfWidth, rect.bottom);
-      //
-      else if (!showTopSide && showRightSide && showBottomSide && showLeftSide)
-        path
-          ..moveTo(rect.right, rect.top - halfWidth)
-          ..lineTo(rect.right, rect.bottom - bottomRightRadius)
-          ..arcTo(bottomRightCorner, 0, pi / 2, true)
-          ..lineTo(rect.left + bottomLeftRadius, rect.bottom)
-          ..arcTo(bottomLeftCorner, pi / 2, pi / 2, true)
-          ..lineTo(rect.left, rect.top - halfWidth);
-      //
-      else if (!showTopSide && !showRightSide && showBottomSide && showLeftSide)
-        path
-          ..moveTo(rect.right + halfWidth, rect.bottom)
-          ..lineTo(rect.left + bottomLeftRadius, rect.bottom)
-          ..arcTo(bottomLeftCorner, pi / 2, pi / 2, true)
-          ..lineTo(rect.left, rect.top - halfWidth);
-      //
-      else if (!showTopSide && showRightSide && !showBottomSide && showLeftSide)
-        path
-          ..moveTo(rect.right, rect.top - halfWidth)
-          ..lineTo(rect.right, rect.bottom + halfWidth)
-          ..moveTo(rect.left, rect.bottom + halfWidth)
-          ..lineTo(rect.left, rect.top - halfWidth);
-      //
-      else if (!showTopSide && showRightSide && showBottomSide && !showLeftSide)
-        path
-          ..moveTo(rect.right, rect.top - halfWidth)
-          ..lineTo(rect.right, rect.bottom - bottomRightRadius)
-          ..arcTo(bottomRightCorner, 0, pi / 2, true)
-          ..lineTo(rect.left - halfWidth, rect.bottom);
-      //
-      else if (showTopSide && !showRightSide && !showBottomSide && showLeftSide)
-        path
-          ..moveTo(rect.left, rect.bottom + halfWidth)
-          ..lineTo(rect.left, rect.top + topLeftRadius)
-          ..arcTo(topLeftCorner, pi, pi / 2, true)
-          ..lineTo(rect.right + halfWidth, rect.top);
-      //
-      else if (showTopSide && !showRightSide && showBottomSide && !showLeftSide)
-        path
-          ..moveTo(rect.left - halfWidth, rect.top)
-          ..lineTo(rect.right + halfWidth, rect.top)
-          ..moveTo(rect.right + halfWidth, rect.bottom)
-          ..lineTo(rect.left - halfWidth, rect.bottom);
-      //
-      else if (showTopSide && showRightSide && !showBottomSide && !showLeftSide)
-        path
-          ..moveTo(rect.left - halfWidth, rect.top)
-          ..lineTo(rect.right - topRightRadius, rect.top)
-          ..arcTo(topRightCorner, -pi / 2, pi / 2, true)
-          ..lineTo(rect.right, rect.bottom + halfWidth);
-      //
-      else if (showTopSide && !showRightSide && !showBottomSide && !showLeftSide)
-        path
-          ..moveTo(rect.left - halfWidth, rect.top)
-          ..lineTo(rect.right + halfWidth, rect.top);
-      //
-      else if (!showTopSide && showRightSide && !showBottomSide && !showLeftSide)
-        path
-          ..moveTo(rect.right, rect.top - halfWidth)
-          ..lineTo(rect.right, rect.bottom + halfWidth);
-      //
-      else if (!showTopSide && !showRightSide && showBottomSide && !showLeftSide)
-        path
-          ..moveTo(rect.left - halfWidth, rect.bottom)
-          ..lineTo(rect.right + halfWidth, rect.bottom);
-      //
-      else if (!showTopSide && !showRightSide && !showBottomSide && showLeftSide)
-        path
-          ..moveTo(rect.left, rect.top - halfWidth)
-          ..lineTo(rect.left, rect.bottom + halfWidth);
-    }
+    else if (showTopSide && !showRightSide && showBottomSide && showLeftSide)
+      path
+        ..moveTo(rect.left + topLeftRadius + initialGap, rect.top)
+        ..lineTo(rect.right + halfWidth, rect.top)
+        ..moveTo(rect.right + halfWidth, rect.bottom)
+        ..lineTo(rect.left + bottomLeftRadius, rect.bottom)
+        ..arcToIf(bottomLeftCorner, pi / 2, pi / 2, true, ifRadiusNonZero: bottomLeftRadius)
+        ..lineTo(rect.left, rect.top + topLeftRadius)
+        ..arcToIf(topLeftCorner, pi, pi / 2, true, ifRadiusNonZero: topLeftRadius);
+    //
+    else if (showTopSide && showRightSide && !showBottomSide && showLeftSide)
+      path
+        ..moveTo(rect.left + topLeftRadius + initialGap, rect.top)
+        ..lineTo(rect.right - topRightRadius, rect.top)
+        ..arcToIf(topRightCorner, -pi / 2, pi / 2, true, ifRadiusNonZero: topRightRadius)
+        ..lineTo(rect.right, rect.bottom + halfWidth)
+        ..moveTo(rect.left, rect.bottom + halfWidth)
+        ..lineTo(rect.left, rect.top + topLeftRadius)
+        ..arcToIf(topLeftCorner, pi, pi / 2, true, ifRadiusNonZero: topLeftRadius);
+    //
+    else if (showTopSide && showRightSide && showBottomSide && !showLeftSide)
+      path
+        ..moveTo(rect.left - halfWidth, rect.top)
+        ..lineTo(rect.right - topRightRadius, rect.top)
+        ..arcToIf(topRightCorner, -pi / 2, pi / 2, true, ifRadiusNonZero: topRightRadius)
+        ..lineTo(rect.right, rect.bottom - bottomRightRadius)
+        ..arcToIf(bottomRightCorner, 0, pi / 2, true, ifRadiusNonZero: bottomRightRadius)
+        ..lineTo(rect.left - halfWidth, rect.bottom);
+    //
+    else if (!showTopSide && showRightSide && showBottomSide && showLeftSide)
+      path
+        ..moveTo(rect.right, rect.top - halfWidth)
+        ..lineTo(rect.right, rect.bottom - bottomRightRadius)
+        ..arcToIf(bottomRightCorner, 0, pi / 2, true, ifRadiusNonZero: bottomRightRadius)
+        ..lineTo(rect.left + bottomLeftRadius, rect.bottom)
+        ..arcToIf(bottomLeftCorner, pi / 2, pi / 2, true, ifRadiusNonZero: bottomLeftRadius)
+        ..lineTo(rect.left, rect.top - halfWidth);
+    //
+    else if (!showTopSide && !showRightSide && showBottomSide && showLeftSide)
+      path
+        ..moveTo(rect.right + halfWidth, rect.bottom)
+        ..lineTo(rect.left + bottomLeftRadius, rect.bottom)
+        ..arcToIf(bottomLeftCorner, pi / 2, pi / 2, true, ifRadiusNonZero: bottomLeftRadius)
+        ..lineTo(rect.left, rect.top - halfWidth);
+    //
+    else if (!showTopSide && showRightSide && !showBottomSide && showLeftSide)
+      path
+        ..moveTo(rect.right, rect.top - halfWidth)
+        ..lineTo(rect.right, rect.bottom + halfWidth)
+        ..moveTo(rect.left, rect.bottom + halfWidth)
+        ..lineTo(rect.left, rect.top - halfWidth);
+    //
+    else if (!showTopSide && showRightSide && showBottomSide && !showLeftSide)
+      path
+        ..moveTo(rect.right, rect.top - halfWidth)
+        ..lineTo(rect.right, rect.bottom - bottomRightRadius)
+        ..arcToIf(bottomRightCorner, 0, pi / 2, true, ifRadiusNonZero: bottomRightRadius)
+        ..lineTo(rect.left - halfWidth, rect.bottom);
+    //
+    else if (showTopSide && !showRightSide && !showBottomSide && showLeftSide)
+      path
+        ..moveTo(rect.left, rect.bottom + halfWidth)
+        ..lineTo(rect.left, rect.top + topLeftRadius)
+        ..arcToIf(topLeftCorner, pi, pi / 2, true, ifRadiusNonZero: topLeftRadius)
+        ..lineTo(rect.right + halfWidth, rect.top);
+    //
+    else if (showTopSide && !showRightSide && showBottomSide && !showLeftSide)
+      path
+        ..moveTo(rect.left - halfWidth, rect.top)
+        ..lineTo(rect.right + halfWidth, rect.top)
+        ..moveTo(rect.right + halfWidth, rect.bottom)
+        ..lineTo(rect.left - halfWidth, rect.bottom);
+    //
+    else if (showTopSide && showRightSide && !showBottomSide && !showLeftSide)
+      path
+        ..moveTo(rect.left - halfWidth, rect.top)
+        ..lineTo(rect.right - topRightRadius, rect.top)
+        ..arcToIf(topRightCorner, -pi / 2, pi / 2, true, ifRadiusNonZero: topRightRadius)
+        ..lineTo(rect.right, rect.bottom + halfWidth);
+    //
+    else if (showTopSide && !showRightSide && !showBottomSide && !showLeftSide)
+      path
+        ..moveTo(rect.left - halfWidth, rect.top)
+        ..lineTo(rect.right + halfWidth, rect.top);
+    //
+    else if (!showTopSide && showRightSide && !showBottomSide && !showLeftSide)
+      path
+        ..moveTo(rect.right, rect.top - halfWidth)
+        ..lineTo(rect.right, rect.bottom + halfWidth);
+    //
+    else if (!showTopSide && !showRightSide && showBottomSide && !showLeftSide)
+      path
+        ..moveTo(rect.left - halfWidth, rect.bottom)
+        ..lineTo(rect.right + halfWidth, rect.bottom);
+    //
+    else if (!showTopSide && !showRightSide && !showBottomSide && showLeftSide)
+      path
+        ..moveTo(rect.left, rect.top - halfWidth)
+        ..lineTo(rect.left, rect.bottom + halfWidth);
+    // }
 
     return path;
   }
@@ -391,7 +371,7 @@ class NonUniformOutlineInputBorder extends InputBorder {
       other is NonUniformOutlineInputBorder &&
           runtimeType == other.runtimeType &&
           borderSide == other.borderSide && // Must explicitly check borderSide.
-          radius == other.radius &&
+          borderRadius == other.borderRadius &&
           hideTopSide == other.hideTopSide &&
           hideBottomSide == other.hideBottomSide &&
           hideRightSide == other.hideRightSide &&
@@ -399,10 +379,21 @@ class NonUniformOutlineInputBorder extends InputBorder {
 
   @override
   int get hashCode =>
-      radius.hashCode ^
+      borderRadius.hashCode ^
       borderSide.hashCode ^
       hideTopSide.hashCode ^
       hideBottomSide.hashCode ^
       hideRightSide.hashCode ^
       hideLeftSide.hashCode;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+extension _PathExtension on Path {
+  void arcToIf(Rect rect, double startAngle, double sweepAngle, bool forceMoveTo,
+      {required double ifRadiusNonZero}) {
+    if (ifRadiusNonZero != 0.0) arcTo(rect, startAngle, sweepAngle, forceMoveTo);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////

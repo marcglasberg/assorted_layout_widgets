@@ -1177,10 +1177,28 @@ CaptureGestures example</a>.
 
 # NonUniformOutlineInputBorder
 
+Can be used to style **text-fields** and containers.
+
 Similar to an `OutlineInputBorder` but you can hide some of the sides, by setting `hideTopSide`,
 `hideBottomSide`, `hideRightSide` and `hideLeftSide` to false.
 
-This may be used to style text-fields.
+Usage for buttons:
+
+```
+ElevatedButton(
+   style: ElevatedButton.styleFrom(
+      shape: NonUniformRoundedRectangleBorder(...),
+      ...
+```
+
+Usage for containers:
+
+```
+Container(
+   decoration: ShapeDecoration(
+      shape: NonUniformOutlineInputBorder(...)),
+   ...
+```
 
 Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_non_uniform_outline_input_border.dart">
@@ -1190,10 +1208,28 @@ NonUniformOutlineInputBorder example</a>.
 
 # NonUniformRoundedRectangleBorder
 
+This may be used to style **buttons** and containers.
+
 Similar to a `RoundedRectangleBorder` but you can hide some of the sides, by setting `hideTopSide`,
 `hideBottomSide`, `hideRightSide` and `hideLeftSide` to false.
 
-This may be used to style buttons.
+Usage for text-fields:
+
+```
+TextField(
+   decoration: InputDecoration(
+      border: NonUniformRoundedRectangleBorder(...),
+      ...
+```
+
+Usage for containers:
+
+```
+Container(
+   decoration: ShapeDecoration(
+      shape: NonUniformRoundedRectangleBorder(...)),
+   ...
+```
 
 ![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/non_uniform_borders.png)
 
