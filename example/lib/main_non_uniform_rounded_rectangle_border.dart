@@ -88,11 +88,4 @@ class Demo extends StatelessWidget {
       hideLeftSide: hideLeftSide,
     );
   }
-
-  RoundedRectangleBorder _uniformShape() {
-    return RoundedRectangleBorder(
-      side: BorderSide(color: Colors.black87, width: 5.0),
-      borderRadius: BorderRadius.all(Radius.circular(15)),
-    );
-  }
 }
