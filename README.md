@@ -1180,6 +1180,8 @@ CaptureGestures example</a>.
 Similar to an `OutlineInputBorder` but you can hide some of the sides, by setting `hideTopSide`,
 `hideBottomSide`, `hideRightSide` and `hideLeftSide` to false.
 
+This may be used to style text-fields.
+
 Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_non_uniform_outline_input_border.dart">
 NonUniformOutlineInputBorder example</a>.
@@ -1190,6 +1192,10 @@ NonUniformOutlineInputBorder example</a>.
 
 Similar to a `RoundedRectangleBorder` but you can hide some of the sides, by setting `hideTopSide`,
 `hideBottomSide`, `hideRightSide` and `hideLeftSide` to false.
+
+This may be used to style buttons.
+
+![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/non_uniform_borders.png)
 
 Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_non_uniform_rounded_rectangle_border.dart">

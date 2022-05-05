@@ -1,4 +1,4 @@
-## [5.8.0] - 2022/05/05
+## [5.8.2] - 2022/05/06
 
 * `NonUniformOutlineInputBorder` and `NonUniformRoundedRectangleBorder` widgets.
 

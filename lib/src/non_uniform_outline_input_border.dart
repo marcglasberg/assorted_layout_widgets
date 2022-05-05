@@ -44,10 +44,10 @@ class NonUniformOutlineInputBorder extends InputBorder {
   const NonUniformOutlineInputBorder({
     BorderSide borderSide = const BorderSide(),
     this.radius = 4.0,
-    this.hideTopSide = true,
-    this.hideBottomSide = true,
-    this.hideRightSide = true,
-    this.hideLeftSide = true,
+    this.hideTopSide = false,
+    this.hideBottomSide = false,
+    this.hideRightSide = false,
+    this.hideLeftSide = false,
   }) : super(borderSide: borderSide);
 
   /// The radii of the border's rounded rectangle corners.

@@ -28,10 +28,10 @@ class NonUniformRoundedRectangleBorder extends OutlinedBorder {
   const NonUniformRoundedRectangleBorder({
     BorderSide side = const BorderSide(color: Colors.black, width: 2.0),
     this.radius = 4.0,
-    this.hideTopSide = true,
-    this.hideBottomSide = true,
-    this.hideRightSide = true,
-    this.hideLeftSide = true,
+    this.hideTopSide = false,
+    this.hideBottomSide = false,
+    this.hideRightSide = false,
+    this.hideLeftSide = false,
   }) : super(side: side);
 
   /// The radii of the border's rounded rectangle corners.
