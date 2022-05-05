@@ -27,3 +27,13 @@
 13. <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_normalized_overflow_box.dart">NormalizedOverflowBox Example</a>
  
 14. <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_timer_builder.dart">TimeBuilder Example</a>
+ 
+15. <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_side_by_side.dart">SideBySide Example</a>
+
+16. <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_button_and_circle_button.dart">Button and CircleButton Example Example</a>
+ 
+17. <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_capture_gestures.dart">CaptureGesture Example</a>
+ 
+18. <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_non_uniform_outline_input_border.dart">NonUniformOutlineInputBorder Example</a>
+
+19. <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_non_uniform_rounded_rectangle_border.dart">NonUniformRoundedRectangleBorder Example</a>

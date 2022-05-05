@@ -23,6 +23,8 @@ Despite the package name, they are not only related to layout. Here they are:
 * `SideBySide`
 * `Button` and `CircleButton`
 * `CaptureGestures`
+* `NonUniformOutlineInputBorder`
+* `NonUniformRoundedRectangleBorder`
 
 <br>
 
@@ -1170,6 +1172,28 @@ widget tree to cancel the scroll.
 Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_capture_gestures.dart">
 CaptureGestures example</a>.
+
+<br>
+
+# NonUniformOutlineInputBorder
+
+Similar to an `OutlineInputBorder` but you can hide some of the sides, by setting `hideTopSide`,
+`hideBottomSide`, `hideRightSide` and `hideLeftSide` to false.
+
+Try running
+the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_non_uniform_outline_input_border.dart">
+NonUniformOutlineInputBorder example</a>.
+
+<br>
+
+# NonUniformRoundedRectangleBorder
+
+Similar to a `RoundedRectangleBorder` but you can hide some of the sides, by setting `hideTopSide`,
+`hideBottomSide`, `hideRightSide` and `hideLeftSide` to false.
+
+Try running
+the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_non_uniform_rounded_rectangle_border.dart">
+NonUniformRoundedRectangleBorder example</a>.
 
 <br>
 
