@@ -87,8 +87,6 @@ class NonUniformRoundedRectangleBorder extends OutlinedBorder {
       );
     }
 
-    print('a.runtimeType = ${a.runtimeType}\n\n');
-
     return super.lerpFrom(a, t);
   }
 
@@ -104,8 +102,6 @@ class NonUniformRoundedRectangleBorder extends OutlinedBorder {
         hideLeftSide: hideLeftSide,
       );
     }
-
-    print('b.runtimeType = ${b.runtimeType}\n\n');
 
     return super.lerpTo(b, t);
   }
@@ -133,14 +129,12 @@ class NonUniformRoundedRectangleBorder extends OutlinedBorder {
 
   @override
   Path getInnerPath(Rect rect, {TextDirection? textDirection}) {
-    print('---------- NonUniformRoundedRectangleBorder.getInnerPath ----------\n\n');
     return Path()
       ..addRRect(_borderRadius(rect).resolve(textDirection).toRRect(rect).deflate(side.width));
   }
 
   @override
   Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
-    print('---------- NonUniformRoundedRectangleBorder.getOuterPath ----------\n\n');
     return Path()..addRRect(_borderRadius(rect).resolve(textDirection).toRRect(rect));
   }
 
