@@ -1200,9 +1200,7 @@ Container(
          hideLeftSide: true,
          borderSide: BorderSide(width: 10),
          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30),
             topRight: Radius.circular(15),
-            bottomLeft: Radius.circular(10),
             bottomRight: Radius.circular(35),
          ),          
    ...
@@ -1231,9 +1229,7 @@ ElevatedButton(
          side: BorderSide(color: Colors.black87, width: 15.0),
          borderRadius: BorderRadius.only(
             topLeft: Radius.circular(30),
-            topRight: Radius.circular(15),
             bottomLeft: Radius.circular(10),
-            bottomRight: Radius.circular(35),
          ), 
       ...
 ```
