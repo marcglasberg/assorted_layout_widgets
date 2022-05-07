@@ -9,8 +9,10 @@ class Demo extends StatelessWidget {
     //
     return Scaffold(
       appBar: AppBar(
-        title:
-            const Text('NonUniformRoundedRectangleBorder Example', style: TextStyle(fontSize: 15)),
+        title: const Text(
+          'NonUniformRoundedRectangleBorder Example',
+          style: TextStyle(fontSize: 15),
+        ),
       ),
       body: SizedBox.expand(
         child: SingleChildScrollView(
@@ -69,9 +71,7 @@ class Demo extends StatelessWidget {
               primary: Colors.lightGreen,
               onPrimary: Colors.white,
               textStyle: TextStyle(fontSize: 18),
-              //
-              // shape: _uniformShape(),
-              shape: _nonUniformShape(hideTopSide, hideBottomSide, hideRightSide, hideLeftSide),
+              shape: shape(hideTopSide, hideBottomSide, hideRightSide, hideLeftSide),
             ),
             onPressed: () {},
             child: Text(label),
@@ -79,13 +79,12 @@ class Demo extends StatelessWidget {
         ),
       );
 
-  NonUniformRoundedRectangleBorder _nonUniformShape(
+  NonUniformRoundedRectangleBorder shape(
     bool hideTopSide,
     bool hideBottomSide,
     bool hideRightSide,
     bool hideLeftSide,
   ) {
-    RoundedRectangleBorder;
     return NonUniformRoundedRectangleBorder(
       side: BorderSide(color: Colors.black87, width: 15.0),
       borderRadius: BorderRadius.only(

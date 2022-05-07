@@ -1177,17 +1177,17 @@ CaptureGestures example</a>.
 
 # NonUniformOutlineInputBorder
 
-Can be used to style **text-fields** and containers.
+Can be used to style **text-fields** and **containers**.
 
-Similar to an `OutlineInputBorder` but you can hide some of the sides, by setting `hideTopSide`,
-`hideBottomSide`, `hideRightSide` and `hideLeftSide` to false.
+Similar to Flutter's native `OutlineInputBorder` but you can hide some of the sides, by
+setting `hideTopSide`, `hideBottomSide`, `hideRightSide` and `hideLeftSide` to true.
 
-Usage for buttons:
+Usage for text-fields:
 
 ```
-ElevatedButton(
-   style: ElevatedButton.styleFrom(
-      shape: NonUniformRoundedRectangleBorder(...),
+TextField(
+   decoration: InputDecoration(
+      enabledBorder: NonUniformOutlineInputBorder(hideLeftSide: true, ...),
       ...
 ```
 
@@ -1196,7 +1196,15 @@ Usage for containers:
 ```
 Container(
    decoration: ShapeDecoration(
-      shape: NonUniformOutlineInputBorder(...)),
+      shape: NonUniformOutlineInputBorder(
+         hideLeftSide: true,
+         borderSide: BorderSide(width: 10),
+         borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(15),
+            bottomLeft: Radius.circular(10),
+            bottomRight: Radius.circular(35),
+         ),          
    ...
 ```
 
@@ -1208,17 +1216,25 @@ NonUniformOutlineInputBorder example</a>.
 
 # NonUniformRoundedRectangleBorder
 
-This may be used to style **buttons** and containers.
+This may be used to style **buttons** and **containers**.
 
-Similar to a `RoundedRectangleBorder` but you can hide some of the sides, by setting `hideTopSide`,
-`hideBottomSide`, `hideRightSide` and `hideLeftSide` to false.
+Similar to Flutter's native `RoundedRectangleBorder` but you can hide some of the sides, by
+setting `hideTopSide`, `hideBottomSide`, `hideRightSide` and `hideLeftSide` to false.
 
-Usage for text-fields:
+Usage for buttons:
 
 ```
-TextField(
-   decoration: InputDecoration(
-      border: NonUniformRoundedRectangleBorder(...),
+ElevatedButton(
+   style: ElevatedButton.styleFrom(
+      shape: NonUniformRoundedRectangleBorder(
+         hideLeftSide: true,
+         side: BorderSide(color: Colors.black87, width: 15.0),
+         borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(15),
+            bottomLeft: Radius.circular(10),
+            bottomRight: Radius.circular(35),
+         ), 
       ...
 ```
 

@@ -9,7 +9,10 @@ class Demo extends StatelessWidget {
     //
     return Scaffold(
       appBar: AppBar(
-        title: const Text('NonUniformOutlineInputBorder Example', style: TextStyle(fontSize: 18)),
+        title: const Text(
+          'NonUniformOutlineInputBorder Example',
+          style: TextStyle(fontSize: 18),
+        ),
       ),
       body: SizedBox.expand(
         child: SingleChildScrollView(
@@ -67,20 +70,30 @@ class Demo extends StatelessWidget {
               contentPadding: Pad(horizontal: 30, vertical: 40),
               fillColor: Colors.yellow,
               filled: true,
-              enabledBorder: NonUniformOutlineInputBorder(
-                  hideTopSide: hideTopSide,
-                  hideBottomSide: hideBottomSide,
-                  hideRightSide: hideRightSide,
-                  hideLeftSide: hideLeftSide,
-                  borderSide: BorderSide(width: 10),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(38),
-                    topRight: Radius.circular(38),
-                    bottomLeft: Radius.circular(38),
-                    bottomRight: Radius.circular(38),
-                  )),
+              enabledBorder: border(hideTopSide, hideBottomSide, hideRightSide, hideLeftSide),
             ),
           ),
         ),
       );
+
+  NonUniformOutlineInputBorder border(
+    bool hideTopSide,
+    bool hideBottomSide,
+    bool hideRightSide,
+    bool hideLeftSide,
+  ) {
+    return NonUniformOutlineInputBorder(
+      hideTopSide: hideTopSide,
+      hideBottomSide: hideBottomSide,
+      hideRightSide: hideRightSide,
+      hideLeftSide: hideLeftSide,
+      borderSide: BorderSide(width: 10),
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(38),
+        topRight: Radius.circular(38),
+        bottomLeft: Radius.circular(38),
+        bottomRight: Radius.circular(38),
+      ),
+    );
+  }
 }
