@@ -37,7 +37,7 @@ class _DelayedState extends State<Delayed> {
     super.initState();
     _initialized = false;
 
-    WidgetsBinding.instance!.addPostFrameCallback((Duration timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
       if (widget.delay != null)
         Future.delayed(widget.delay!, _delayedInit);
       else {

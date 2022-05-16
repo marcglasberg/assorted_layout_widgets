@@ -1,3 +1,7 @@
+## [6.0.0] - 2022/05/16
+
+* Flutter 3.0.
+
 ## [5.8.5] - 2022/05/06
 
 * `NonUniformOutlineInputBorder` and `NonUniformRoundedRectangleBorder` widgets.
