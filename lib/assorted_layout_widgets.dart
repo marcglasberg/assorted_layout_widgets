@@ -3,6 +3,7 @@ export "src/button.dart";
 export "src/button_bar_super.dart";
 export "src/capture_gestures.dart";
 export "src/circle_button.dart";
+export "src/close_keyboard.dart";
 export "src/column_super.dart";
 export "src/delayed.dart";
 export "src/fit_horizontally.dart";
