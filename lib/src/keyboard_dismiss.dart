@@ -3,7 +3,7 @@ import 'dart:io';
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 
-/// Wrap your widget tree with a [CloseKeyboard] so that:
+/// Wrap your widget tree with a [KeyboardDismiss] so that:
 ///
 /// 1) In iOS, if [iOS] is true (the default), the keyboard will follow iOS's default behavior:
 /// - Keyboard closes when the user taps an empty area of the screen.
@@ -21,26 +21,26 @@ import 'package:flutter/services.dart';
 ///
 /// # Placement
 ///
-/// The [CloseKeyboard] must be put in a place where it has the same size of the screen.
+/// The [KeyboardDismiss] must be put in a place where it has the same size of the screen.
 ///
-/// For example, if you use a [Scaffold], the [CloseKeyboard] should be *above* the scaffold, and
+/// For example, if you use a [Scaffold], the [KeyboardDismiss] should be *above* the scaffold, and
 /// not inside the scaffold's body.
 ///
-/// A good place to put the [CloseKeyboard] widget is in the [MaterialApp.builder] method.
+/// A good place to put the [KeyboardDismiss] widget is in the [MaterialApp.builder] method.
 /// For example:
 ///
 /// ```
 /// MaterialApp(
-///   builder: (BuildContext context, Widget? child) => CloseKeyboard(child: child);
+///   builder: (BuildContext context, Widget? child) => KeyboardDismiss(child: child);
 /// ```
 ///
-class CloseKeyboard extends StatelessWidget {
+class KeyboardDismiss extends StatelessWidget {
   //
   final Widget child;
   final bool iOS;
   final bool androidCloseWhenTap, androidCloseWhenSwipe, androidLoseFocus;
 
-  const CloseKeyboard({
+  const KeyboardDismiss({
     Key? key,
     required this.child,
     this.iOS = true,
@@ -82,7 +82,7 @@ class CloseKeyboard extends StatelessWidget {
   GestureDetector tappingAnywhere(BuildContext context, Widget content) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: () => closeKeyboard(context),
+      onTap: () => keyboardDismiss(context),
       child: content,
     );
   }
@@ -108,20 +108,20 @@ class CloseKeyboard extends StatelessWidget {
           /// and the user finger is passing through the bottom 16 pixels above the keyboard.
           if (bottom > 0.0 &&
               (fingerPosition > keyboardEdgePosition) &&
-              (fingerPosition - dy <= keyboardEdgePosition)) _closeKeyboard(context);
+              (fingerPosition - dy <= keyboardEdgePosition)) _keyboardDismiss(context);
         }
       },
       child: content,
     );
   }
 
-  void _closeKeyboard(BuildContext context) {
+  void _keyboardDismiss(BuildContext context) {
     //
     if (Platform.isIOS)
-      closeKeyboard(context, ifRemovesFocus: true);
+      keyboardDismiss(context, ifRemovesFocus: true);
     //
     else if (Platform.isAndroid)
-      closeKeyboard(context, ifRemovesFocus: androidLoseFocus);
+      keyboardDismiss(context, ifRemovesFocus: androidLoseFocus);
     //
     else {
       // Don't do anything for other platforms.
@@ -130,7 +130,7 @@ class CloseKeyboard extends StatelessWidget {
 
   /// Closes the keyboard.
   /// If [ifRemovesFocus] is true (the default) it also removes focus from whatever widget has it.
-  static void closeKeyboard(BuildContext context, {bool ifRemovesFocus = true}) {
+  static void keyboardDismiss(BuildContext context, {bool ifRemovesFocus = true}) {
     /// How to Dismiss the Keyboard in Flutter the Right Way.
     /// https://flutterigniter.com/dismiss-keyboard-form-lose-focus/
 

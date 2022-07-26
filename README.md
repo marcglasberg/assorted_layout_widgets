@@ -25,7 +25,7 @@ Despite the package name, they are not only related to layout. Here they are:
 * `CaptureGestures`
 * `NonUniformOutlineInputBorder`
 * `NonUniformRoundedRectangleBorder`
-* `CloseKeyboard`
+* `KeyboardDismiss`
 
 <br>
 
@@ -1252,9 +1252,9 @@ NonUniformRoundedRectangleBorder example</a>.
 
 <br>
 
-# CloseKeyboard
+# KeyboardDismiss
 
-Wrap your widget tree with a `CloseKeyboard` so that:
+Wrap your widget tree with a `KeyboardDismiss` so that:
 
 1) In iOS, if parameter `iOS` is true (the default), the keyboard will follow iOS's default
    behavior:
@@ -1275,15 +1275,15 @@ Wrap your widget tree with a `CloseKeyboard` so that:
 
 ### Placement
 
-The `CloseKeyboard` widget must be put in a place where it has the same size of the screen.
-For example, if you use a `Scaffold`, the `CloseKeyboard` should be **above** the scaffold, and
+The `KeyboardDismiss` widget must be put in a place where it has the same size of the screen.
+For example, if you use a `Scaffold`, the `KeyboardDismiss` should be **above** the scaffold, and
 not inside the scaffold's body.
 
-A good place to put the `CloseKeyboard` widget is in the `MaterialApp.builder` method, like so:
+A good place to put the `KeyboardDismiss` widget is in the `MaterialApp.builder` method, like so:
 
 ```
 MaterialApp(
-   builder: (BuildContext context, Widget? child) => CloseKeyboard(child: child);
+   builder: (BuildContext context, Widget? child) => KeyboardDismiss(child: child);
 ```
 
 <br>
