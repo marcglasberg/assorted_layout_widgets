@@ -501,7 +501,7 @@ with `initialized==false`. Then:
 For example, this shows a widget after a 2 seconds delay:
 
 ```
-Delayed(delay: const Duration(seconds: 1),
+Delayed(delay: const Duration(seconds: 2),
   builder: (context, bool initialized) =>
     initialized
       ? Container(color: Colors.red, width: 50, height: 50)
