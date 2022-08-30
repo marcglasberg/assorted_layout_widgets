@@ -350,7 +350,7 @@ class NonUniformRoundedRectangleBorder extends OutlinedBorder {
           hideLeftSide == other.hideLeftSide;
 
   @override
-  int get hashCode => hashValues(
+  int get hashCode => Object.hash(
         borderRadius,
         side,
         hideTopSide,

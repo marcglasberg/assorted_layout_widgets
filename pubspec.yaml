@@ -1,11 +1,11 @@
 name: assorted_layout_widgets
 description: A lot of widgets like ColumnSuper, RowSuper, FitHorizontally, Box, WrapSuper, TextOneLine, Delayed, Pad, ButtonBarSuper, NormalizedOverflowBox, showDialogSuper, and much more.
-version: 6.1.1
+version: 7.0.0
 homepage: https://github.com/marcglasberg/assorted_layout_widgets
 # author: Marcelo Glasberg <marcglasberg@gmail.com>
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.18.0 <3.0.0'
 
 dependencies:
   clock: ^1.1.0

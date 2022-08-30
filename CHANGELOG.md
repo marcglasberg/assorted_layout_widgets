@@ -1,3 +1,9 @@
+## [7.0.0] - 2022/06/20
+
+* Flutter 3.3.0 (Dart 2.18.0).
+
+* `TextOneLineEllipsisWithFade` deprecated. Please use `TextOneLine` instead.
+
 ## [6.1.1] - 2022/06/20
 
 * `KeyboardDismiss`.

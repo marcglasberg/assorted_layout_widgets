@@ -68,8 +68,8 @@ class Demo extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               elevation: 0,
               shadowColor: Colors.transparent,
-              primary: Colors.lightGreen,
-              onPrimary: Colors.white,
+              backgroundColor: Colors.lightGreen,
+              foregroundColor: Colors.white,
               textStyle: TextStyle(fontSize: 18),
               shape: shape(hideTopSide, hideBottomSide, hideRightSide, hideLeftSide),
             ),
