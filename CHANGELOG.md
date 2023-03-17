@@ -1,3 +1,7 @@
+## [8.0.0] - 2023/03/17
+
+* Removed deprecated `TextOneLineEllipsisWithFade` widget. Please use `TextOneLine` instead.
+
 ## [7.0.1] - 2023/03/17
 
 * Fixed letter-spacing for TextOneLine, whe the style is defined inline.
