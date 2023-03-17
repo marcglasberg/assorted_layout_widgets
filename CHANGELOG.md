@@ -1,3 +1,7 @@
+## [7.0.1] - 2023/03/17
+
+* Fixed letter-spacing for TextOneLine, whe the style is defined inline.
+
 ## [7.0.0] - 2022/08/30
 
 * Flutter 3.3.0 (Dart 2.18.0).
