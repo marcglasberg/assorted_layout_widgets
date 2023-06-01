@@ -18,8 +18,8 @@ Despite the package name, they are not only related to layout. Here they are:
 | <tt>[SideBySide](#sidebyside)</tt> <i>arranges two widgets horizontally. It does things Row and RowSuper can't do</i>.        | <tt>[TimeBuilder](#timebuilder)</tt> <i>lets you implement clocks, countdowns, stopwatches etc, the right way.</i>                                                     |                                                                                                                                                          |                                                                                                                                                                                      |
 | <tt>[NormalizedOverflowBox](#normalizedoverflowbox)</tt> <i>is an OverflowBox that throws no errors and is easier to use</i>. |                                                                                                                                                                        |                                                                                                                                                          |                                                                                                                                                                                      |
 
-> _Note: The widgets you don't use will be removed by Flutter's tree shaking. So feel free to add
-the library even if you want to use only one of them._
+<sub>Note the widgets you don't use will be removed by Flutter's tree shaking. So feel free to add
+this package to your project even if you want to use only a few of its widgets.</sub>
 
 <br>
 
