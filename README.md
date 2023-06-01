@@ -2,32 +2,17 @@
 
 # assorted_layout_widgets
 
-I will slowly but surely add interesting widgets, classes and methods to this package.
+I'm always adding widgets, classes and methods to this package, not only related to layout:
 
-Despite the package name, they are not only related to layout. Here they are:
-
-* `ColumnSuper`
-* `RowSuper`
-* `FitHorizontally`
-* `Box`
-* `WrapSuper`
-* `ButtonBarSuper`
-* `TextOneLine`
-* `Delayed`
-* `Pad`
-* `NormalizedOverflowBox`
-* `showDialogSuper` and `showCupertinoDialogSuper`
-* `TimeBuilder`
-* `GlobalValueKey` and `GlobalStringKey`
-* `MaskFunctionTextInputFormatter`
-* `SideBySide`
-* `Button` and `CircleButton`
-* `CaptureGestures`
-* `NonUniformOutlineInputBorder`
-* `NonUniformRoundedRectangleBorder`
-* `KeyboardDismiss`
-
-<br>
+| Layout                                                                                                                | Behavioral                                                                                                                                             | Special                                                                                                                                  | Formatting and Styling                                                                                                                                               |
+|-----------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [ColumnSuper](#columnsuper) for column layout. It does things the original Column can't do.                           | [Delayed](#delayed) gives a widget some initial value, then change it to another value after some delay.                                               | [Button](#button) turns any widget into a button, with configurable click-area and the visual feedback.                                  | [MaskFunctionTextInputFormatter](#maskfunctiontextinputformatter) formats the text to a mask, as the user types, but the mask may change according to what is typed. |
+| [RowSuper](#rowsuper) for row layout. It does things the original Row can't do.                                       | [CaptureGestures](#capturegestures) captures gestures, preventing its parent to feel them.                                                             | [CircleButton](#circlebutton) is a circular icon-button that lets you have a larger click-area and prolong the visual feedback.          | [NonUniformOutlineInputBorder](#nonuniformoutlineinputborder) can be used to style the borders of TextFields and Containers, but hiding some of the borders.         |
+| [WrapSuper](#wrapsuper) is similar to the original Wrap, but you can choose different algorithms for the line-breaks. | [KeyboardDismiss](#keyboarddismiss) implements iOS and Android keyboard dismissing behavior.                                                           | [ButtonBarSuper](#buttonbarsuper) is a button-bar that places its buttons differently.                                                   | [NonUniformRoundedRectangleBorder](#nonuniformroundedrectangleborder) can be used to style the borders of Buttons and Containers, but hiding some of the borders.    |
+| [Box](#box) is between a Container and a SizedBox, but is less verbose and can be made const.                         | [showDialogSuper](#showdialogsuper-and-showCupertinodialogsuper) creates a dialog with a callback for when the dialog is dismissed.                    | [GlobalValueKey](#globalvaluekey-and-globalstringkey) is a global key that uses equality instead of identity. Like ValueKey, but global. | [FitHorizontally](#fithorizontally) shrinks its child horizontally only, until a shrink limit is reached.                                                            |
+| [Pad](#pad) is an EdgeInsetsGeometry which is easier to type and remember.                                            | [showCupertinoDialogSuper](#showdialogsuper-and-showCupertinodialogsuper) creates a Cupertino dialog with a callback for when the dialog is dismissed. | [GlobalStringKey](#globalvaluekey-and-globalstringkey) is a global key created from a String.                                            | [TextOneLine](#textoneline) fixes this issue: https://github.com/flutter/flutter/issues/18761                                                                        |
+| [SideBySide](#sidebyside) disposes 2 widgets horizontally. It does things Row and RowSuper can't do.                  | [TimeBuilder](#timebuilder) lets you implement clocks, countdowns, stopwatches etc, the right way.                                                     |                                                                                                                                          |                                                                                                                                                                      |
+| [NormalizedOverflowBox](#normalizedoverflowbox) is an OverflowBox that throws no errors and is easier to use.         |                                                                                                                                                        |                                                                                                                                          |                                                                                                                                                                      |
 
 > _Note: The widgets you don't use will be removed by Flutter's tree shaking. So feel free to add
 the library even if you want to use only one of them._
@@ -220,8 +205,13 @@ FitHorizontally example</a>.
 
 # Box
 
-`Box` is something between a `Container` and a `SizedBox`, which is less verbose and can be
-made `const`.
+`Box` is a widget between a `Container`, a `SizedBox` and a `ColoredBox`:
+
+<ul>
+<li>Unlike a `Container` it can be `const`.</li>
+<li>Unlike a `ColoredBox` it can have size and padding.</li>
+<li>Unlike a `SizedBox` it can have color and padding.</li>
+</ul>
 
 ```
 const Box({
@@ -235,21 +225,20 @@ const Box({
 });
 ```          
 
-Since `Box` can be made `const`, it's good for creating colored boxes, with or without a child and
-padding:
+Usage example:
 
 ```
 const Box(color: Colors.red, width: 50, height:30);
 ```                            
 
-It allows you to make `const` large blocks of code. For example, the following code uses a `Box`,
-and couldn't be `const` if we were to use a `SizedBox` or a `Container`:
+`Box` allows you to make `const` large blocks of code. For example, the following code couldn't
+be `const` if we were to use a `Container`, a `SizedBox` or a `ColoredBox`:
 
 ```
 static const progressIndicator =
   Opacity(
     opacity: 0.6,
-    child: Box( // Can't use SizedBox or Container here. 
+    child: Box( // Can't use Container, SizedBox or ColoredBox. 
       color: Colors.blue,
       alignment: Alignment.center,
       child: Padding(
@@ -260,15 +249,15 @@ static const progressIndicator =
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white)))),),);}
 ```                            
 
-Const objects are final/immutable and created in compile time. So you don't waste time creating
-them. Also, all const objects of the same type with the same parameters are the same instance. So
-you don't waste memory creating more than one of them. In other words, const objects make your
-program faster and more memory efficient. They can also be used as default values in constructors,
-and they work well with hot-reload, while `final` values do not.
+Note: Const objects are final/immutable and created in compile time. So you don't waste time
+creating them. Also, all const objects of the same type with the same parameters are the same
+instance. So you don't waste memory creating more than one of them. In other words, const objects
+make your program faster and more memory efficient. They can also be used as default values in
+constructors, and they work well with hot-reload, while `final` values do not.
 
 ### Extra Box features
 
-* You can hide the box by making the `show` parameter equal to `false`.
+* You can hide the box and its contents, by making the `show: false`.
 
 * If you make `removePaddingWhenNoChild: true`, the `padding` is only applied if the child is **not
   null**. If the `child` is `null` and `width` and `height` are also `null`, this means the box will
@@ -343,7 +332,7 @@ and they work well with hot-reload, while `final` values do not.
   Box.rand(child: myChild);  
   ```  
 
-All these debugging constructors are marked as deprecated so that you don't forget to remove them.
+All these debugging constructors are marked as _deprecated_ so that you don't forget to remove them.
 
 <br>
 
@@ -1069,13 +1058,12 @@ Button and CircleButton example</a>.
 
 The `CircleButton` is similar to Flutter's native `IconButton`, but with a few differences.
 Since circular buttons are small, the user's finger usually hides it during the tap. For this
-reason,
-the `CircleButton` will:
+reason, the `CircleButton` will:
 
 * Show an immediate visual feedback to a tap, and then sustain that feedback for about 100
   milliseconds, enough time for the user to remove the finger and see it.
-* You can expand the click-area, to make the button easier to tap. You can also show the click-area,
-  for debug purposes.
+* You can expand the click-area, to make the button easier to tap and improve usability. You can
+  also show the click-area, for debug purposes.
 
 ```
 CircleButton(
