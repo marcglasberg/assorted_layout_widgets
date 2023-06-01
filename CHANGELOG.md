@@ -1,4 +1,4 @@
-## [8.0.3] - 2023/03/17
+## [8.0.4] - 2023/03/17
 
 * Removed deprecated `TextOneLineEllipsisWithFade` widget. Please use `TextOneLine` instead.
 
