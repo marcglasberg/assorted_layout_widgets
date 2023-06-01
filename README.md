@@ -8,7 +8,7 @@ I'm always adding widgets, classes and methods to this package. And it's not onl
 | Layout                                                                                                                         | Behavioral                                                                                                                                                             | Special                                                                                                                                                  | Format and Style                                                                                                                                                                     |
 |--------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | <tt>[ColumnSuper](#columnsuper)</tt> <i>for column layout. It does things the original Column can't do</i>.                    | <tt>[Delayed](#delayed)</tt> <i>gives a widget some initial value, then change it to another value after some delay.</i>                                               | <tt>[Button](#button)</tt> <i>turns any widget into a button, with configurable click-area and the visual feedback.</i>                                  | <tt>[MaskFunctionTextInputFormatter](#maskfunctiontextinputformatter)</tt> <i>formats the text to a mask, as the user types, but the mask may change according to what is typed.</i> |
-| <tt>[RowSuper](#rowsuper)</tt> <i>for row layout. It does things the original Row can't do</i>.                                | <tt>[CaptureGestures](#capturegestures)</tt> <i>captures gestures, preventing its parent to feel them.</i>                                                             | <tt>[CircleButton](#circlebutton)</tt> <i>is a circular icon-button that lets you have a larger click-area and prolong the visual feedback.</i>          | <tt>[NonUniformOutlineInputBorder](#nonuniformoutlineinputborder)</tt> <i>can be used to style the borders of TextFields and Containers, but hiding some of the borders.</i>         |
+| <tt>[RowSuper](#rowsuper)</tt> <i>for row layout. It does things the original Row can't do</i>.                                | <tt>[CaptureGestures](#capturegestures)</tt> <i>captures gestures, preventing its parent and ascending subtree to detect them.</i>                                     | <tt>[CircleButton](#circlebutton)</tt> <i>is a circular icon-button that lets you have a larger click-area and prolong the visual feedback.</i>          | <tt>[NonUniformOutlineInputBorder](#nonuniformoutlineinputborder)</tt> <i>can be used to style the borders of TextFields and Containers, but hiding some of the borders.</i>         |
 | <tt>[WrapSuper](#wrapsuper)</tt> <i>is similar to the original Wrap, but you can choose the algorithm for the line-breaks</i>. | <tt>[KeyboardDismiss](#keyboarddismiss)</tt> <i>implements iOS and Android keyboard dismissing behavior.</i>                                                           | <tt>[ButtonBarSuper](#buttonbarsuper)</tt> <i>is a button-bar that places its buttons differently.</i>                                                   | <tt>[NonUniformRoundedRectangleBorder](#nonuniformroundedrectangleborder)</tt> <i>can be used to style the borders of Buttons and Containers, but hiding some of the borders.</i>    |
 | <tt>[Box](#box)</tt> <i>has features of Container, SizedBox and ColoredBox, but less verbose and can be made const</i>.        | <tt>[showDialogSuper](#showdialogsuper-and-showCupertinodialogsuper)</tt> <i>creates a dialog with a callback for when the dialog is dismissed.</i>                    | <tt>[GlobalValueKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key that uses equality instead of identity. Like ValueKey, but global.</i> | <tt>[FitHorizontally](#fithorizontally)</tt> <i>shrinks its child horizontally only, until a shrink limit is reached.</i>                                                            |
 | <tt>[Pad](#pad)</tt> <i>is an EdgeInsetsGeometry which is easier to type and remember</i>.                                     | <tt>[showCupertinoDialogSuper](#showdialogsuper-and-showCupertinodialogsuper)</tt> <i>creates a Cupertino dialog with a callback for when the dialog is dismissed.</i> | <tt>[GlobalStringKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key created from a String.</i>                                            | <tt>[TextOneLine](#textoneline)</tt> is a text widget that <i>fixes <a href="https://github.com/flutter/flutter/issues/18761">this issue</a>.</i>                                    |
@@ -1097,7 +1097,7 @@ Button and CircleButton example</a>.
 
 # CaptureGestures
 
-A widget that captures gestures, preventing its parent (and ascending subtree) to feel them.
+A widget that captures gestures, preventing its parent (and ascending subtree) to detect them.
 
 How is this different from `IgnorePointer` and `AbsorbPointer`?
 
@@ -1248,19 +1248,19 @@ Wrap your widget tree with a `KeyboardDismiss` so that:
 1) In iOS, if parameter `iOS` is true (the default), the keyboard will follow iOS's default
    behavior:
 
-- Keyboard closes when the user taps an empty area of the screen.
-- Keyboard closes when the user swipes down from just above the keyboard edge.
-- Any focused element will lose focus.
+    - Keyboard closes when the user taps an empty area of the screen.
+    - Keyboard closes when the user swipes down from just above the keyboard edge.
+    - Any focused element will lose focus.
 
 2) In Android, the default behavior is that the keyboard only closes when the user taps
    the back button or executes the back gesture. However, if you want, you can force the
    Android to follow some iOS behaviors:
 
-- Pass `androidCloseWhenTap` true, if you want the keyboard to close when the user taps an
-  empty area of the screen.
-- Pass `androidCloseWhenSwipe` true, if you want the keyboard to close when the user swipes
-  down from just above the keyboard edge.
-- Pass `androidLoseFocus` true, if you want any focused element will lose focus.
+    - Pass `androidCloseWhenTap` true, if you want the keyboard to close when the user taps an
+      empty area of the screen.
+    - Pass `androidCloseWhenSwipe` true, if you want the keyboard to close when the user swipes
+      down from just above the keyboard edge.
+    - Pass `androidLoseFocus` true, if you want any focused element will lose focus.
 
 ### Placement
 
