@@ -1,9 +1,10 @@
 analyzer:
-  strong-mode:
-    # Will become the default once non-nullable types land
-    # https://github.com/dart-lang/sdk/issues/31410#issuecomment-510683629
-    implicit-casts: false
-    implicit-dynamic: false
+  language:
+    # Analysis language modes, documented at:
+    # https://dart.dev/guides/language/analysis-options#enabling-additional-type-checks
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
   errors:
     # treat missing required parameters as a warning (not a hint)
     missing_required_param: warning
