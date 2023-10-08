@@ -138,5 +138,3 @@ class KeyboardDismiss extends StatelessWidget {
     SystemChannels.textInput.invokeMethod<dynamic>('TextInput.hide');
   }
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -4,8 +4,6 @@ import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-// /////////////////////////////////////////////////////////////////////////////////////////////////
-
 // Developed by Marcelo Glasberg (nov 2019).
 
 /// For more info, see: https://pub.dartlang.org/packages/assorted_layout_widgets
@@ -122,8 +120,6 @@ class RowSuper extends MultiChildRenderObjectWidget {
       ..fill = fill;
   }
 }
-
-// /////////////////////////////////////////////////////////////////////////////////////////////////
 
 class _RenderRowSuperBox extends RenderBox
     with
@@ -474,8 +470,6 @@ class _RenderRowSuperBox extends RenderBox
   }
 }
 
-// /////////////////////////////////////////////////////////////////////////////////////////////////
-
 class RowSpacer extends MultiChildRenderObjectWidget {
   @override
   RenderObject createRenderObject(BuildContext context) {
@@ -490,5 +484,3 @@ class RenderRowSpacer extends RenderBox
     size = constraints.constrain(const Size(0.0, 0.0));
   }
 }
-
-// /////////////////////////////////////////////////////////////////////////////////////////////////

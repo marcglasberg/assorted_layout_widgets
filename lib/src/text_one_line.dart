@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
 /// [TextOneLine] is a substitute for [Text] when [maxLines] is 1.
 ///
 /// It renders ellipsis as expected, much better than the current

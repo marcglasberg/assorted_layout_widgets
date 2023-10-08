@@ -3,8 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-// /////////////////////////////////////////////////////////////////////////////////////////////////
-
 // Developed by Marcelo Glasberg (jan 2022).
 
 /// The [SideBySide] widget disposes 2 widgets horizontally, while achieving a layout which is
@@ -91,8 +89,6 @@ class SideBySide extends MultiChildRenderObjectWidget {
       ..minEndChildWidth = minEndChildWidth;
   }
 }
-
-// /////////////////////////////////////////////////////////////////////////////////////////////////
 
 class _RenderSideBySide extends RenderBox
     with
@@ -271,5 +267,3 @@ class _RenderSideBySide extends RenderBox
     );
   }
 }
-
-// /////////////////////////////////////////////////////////////////////////////////////////////////

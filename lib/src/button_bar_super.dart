@@ -1,8 +1,6 @@
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 
-// ////////////////////////////////////////////////////////////////////////////
-
 class ButtonBarSuper extends StatelessWidget {
   //
   /// Overrides the surrounding [ButtonBarThemeData.buttonTextTheme] to define a
@@ -80,17 +78,12 @@ class ButtonBarSuper extends StatelessWidget {
     final ButtonBarThemeData barTheme = ButtonBarTheme.of(context);
 
     final ButtonThemeData buttonTheme = parentButtonTheme.copyWith(
-      textTheme: buttonTextTheme ??
-          barTheme.buttonTextTheme ??
-          ButtonTextTheme.primary,
+      textTheme: buttonTextTheme ?? barTheme.buttonTextTheme ?? ButtonTextTheme.primary,
       minWidth: buttonMinWidth ?? barTheme.buttonMinWidth ?? 64.0,
       height: buttonHeight ?? barTheme.buttonHeight ?? 36.0,
-      padding: buttonPadding ??
-          barTheme.buttonPadding ??
-          const EdgeInsets.symmetric(horizontal: 8.0),
-      layoutBehavior: layoutBehavior ??
-          barTheme.layoutBehavior ??
-          ButtonBarLayoutBehavior.padded,
+      padding:
+          buttonPadding ?? barTheme.buttonPadding ?? const EdgeInsets.symmetric(horizontal: 8.0),
+      layoutBehavior: layoutBehavior ?? barTheme.layoutBehavior ?? ButtonBarLayoutBehavior.padded,
     );
 
     // We divide by 4.0 because we want half of the average of the left and right padding.

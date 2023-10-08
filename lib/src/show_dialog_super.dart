@@ -150,8 +150,6 @@ Future<T?> showDialogSuper<T>({
   return result;
 }
 
-// /////////////////////////////////////////////////////////////////////////////////////////////////
-
 /// Displays an iOS-style dialog above the current contents of the app, with
 /// iOS-style entrance and exit animations, modal barrier color, and modal
 /// barrier behavior (by default, the dialog is not dismissible with a tap on

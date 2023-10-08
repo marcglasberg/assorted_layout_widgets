@@ -3,8 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-// /////////////////////////////////////////////////////////////////////////////////////////////////
-
 // Developed by Marcelo Glasberg (nov 2019).
 
 /// For more info, see: https://pub.dartlang.org/packages/assorted_layout_widgets
@@ -64,8 +62,6 @@ class ColumnSuper extends MultiChildRenderObjectWidget {
       ..removeChildrenWithNoHeight = removeChildrenWithNoHeight;
   }
 }
-
-// /////////////////////////////////////////////////////////////////////////////////////////////////
 
 class _RenderColumnSuperBox extends RenderBox
     with
@@ -384,5 +380,3 @@ class _RenderColumnSuperBox extends RenderBox
     return dy;
   }
 }
-
-// /////////////////////////////////////////////////////////////////////////////////////////////////

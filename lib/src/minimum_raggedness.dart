@@ -1,5 +1,4 @@
 import 'dart:collection';
-
 import 'dart:math';
 
 // ignore: avoid_classes_with_only_static_members

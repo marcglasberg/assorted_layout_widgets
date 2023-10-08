@@ -1,3 +1,7 @@
+## [8.0.5] - 2023/10/08
+
+* const WrapSuper.
+
 ## [8.0.4] - 2023/03/17
 
 * Removed deprecated `TextOneLineEllipsisWithFade` widget. Please use `TextOneLine` instead.

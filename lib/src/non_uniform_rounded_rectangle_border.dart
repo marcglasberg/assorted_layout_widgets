@@ -365,13 +365,9 @@ class NonUniformRoundedRectangleBorder extends OutlinedBorder {
   }
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
 extension _PathExtension on Path {
   void arcToIf(Rect rect, double startAngle, double sweepAngle, bool forceMoveTo,
       {required double ifRadiusNonZero}) {
     if (ifRadiusNonZero != 0.0) arcTo(rect, startAngle, sweepAngle, forceMoveTo);
   }
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////

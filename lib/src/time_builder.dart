@@ -2,72 +2,61 @@ import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-// /////////////////////////////////////////////////////////////////////////////////////////////////
-
 typedef TimerWidgetBuilder = Widget Function(
-    BuildContext context,
+  BuildContext context,
 
-    /// The time of the current tick.
-    DateTime dateTime,
+  /// The time of the current tick.
+  DateTime dateTime,
 
-    /// The number of ticks since the timer started.
-    int ticks,
+  /// The number of ticks since the timer started.
+  int ticks,
 
-    /// This is false while the timer is on, and becomes true as soon as it ends.
-    bool isFinished,
-    );
-
-// /////////////////////////////////////////////////////////////////////////////////////////////////
+  /// This is false while the timer is on, and becomes true as soon as it ends.
+  bool isFinished,
+);
 
 typedef CountdownWidgetBuilder = Widget Function(
-    BuildContext context,
+  BuildContext context,
 
-    /// The time of the current tick.
-    DateTime dateTime,
+  /// The time of the current tick.
+  DateTime dateTime,
 
-    /// The number of ticks since the timer started.
-    int ticks,
+  /// The number of ticks since the timer started.
+  int ticks,
 
-    /// This is false during the countdown, and becomes true as soon as it ends.
-    bool isFinished, {
-
-    /// The number of seconds in the countdown. When this gets to zero, [isFinished] will be true.
-    required int countdown,
-    });
-
-// /////////////////////////////////////////////////////////////////////////////////////////////////
+  /// This is false during the countdown, and becomes true as soon as it ends.
+  bool isFinished, {
+  /// The number of seconds in the countdown. When this gets to zero, [isFinished] will be true.
+  required int countdown,
+});
 
 /// Return true if the widget should rebuild.
 /// Return false if it should not rebuild.
 typedef IfRebuilds = bool Function({
 //
-/// The current time.
-required DateTime currentTime,
+  /// The current time.
+  required DateTime currentTime,
 
-/// The time of the last tick (may be null for the first tick).
-required DateTime? lastTime,
+  /// The time of the last tick (may be null for the first tick).
+  required DateTime? lastTime,
 
-/// The number of ticks since the timer started.
-required int ticks,
+  /// The number of ticks since the timer started.
+  required int ticks,
 });
-
-// /////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// Return true to end the timer.
 /// Returning true here will generate one last rebuild, and then stop.
 typedef IsFinished = bool Function({
 //
-/// This is the current time.
-required DateTime currentTime,
+  /// This is the current time.
+  required DateTime currentTime,
 
-/// This is the time of the last tick (may be null for the first tick).
-required DateTime? lastTime,
+  /// This is the time of the last tick (may be null for the first tick).
+  required DateTime? lastTime,
 
-/// This is the number of ticks since the timer started.
-required int ticks,
+  /// This is the number of ticks since the timer started.
+  required int ticks,
 });
-
-// /////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// Very efficient timer, which rebuilds only when needed:
 ///
@@ -139,11 +128,11 @@ class TimeBuilder extends StatefulWidget {
       },
       //
       builder: (
-          BuildContext context,
-          DateTime now,
-          int ticks,
-          bool isFinished,
-          ) {
+        BuildContext context,
+        DateTime now,
+        int ticks,
+        bool isFinished,
+      ) {
         int _seconds = (start.add(Duration(seconds: seconds))).difference(now).inSeconds;
         return builder(context, now, ticks, isFinished, countdown: _seconds);
       },
@@ -241,17 +230,15 @@ class TimeBuilder extends StatefulWidget {
       (lastTime == null || (currentTime.hour != lastTime.hour));
 
   static IsFinished _ifFinished(int? numberOfTicks) => ({
-    required DateTime currentTime,
-    required DateTime? lastTime,
-    required int ticks,
-  }) =>
-  (numberOfTicks != null) && (ticks > numberOfTicks);
+        required DateTime currentTime,
+        required DateTime? lastTime,
+        required int ticks,
+      }) =>
+          (numberOfTicks != null) && (ticks > numberOfTicks);
 
   @override
   _TimeBuilderState createState() => _TimeBuilderState();
 }
-
-// /////////////////////////////////////////////////////////////////////////////////////////////////
 
 class _TimeBuilderState extends State<TimeBuilder> with SingleTickerProviderStateMixin {
   late Ticker _ticker;
@@ -304,5 +291,3 @@ class _TimeBuilderState extends State<TimeBuilder> with SingleTickerProviderStat
   @override
   Widget build(BuildContext context) => widget.builder(context, _now, _ticks, !_ticker.isActive);
 }
-
-// /////////////////////////////////////////////////////////////////////////////////////////////////

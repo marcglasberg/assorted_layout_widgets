@@ -1,15 +1,12 @@
 import "dart:async";
+
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
 
 typedef ButtonBuilder = Widget Function({
   /// True when the button is tapped-down.
   required bool isPressed,
 });
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// Transforms any widget in a button, with visual feedback in the onPointerDown.
 /// The widget must be created with a [builder] of type [ButtonBuilder], which provides an
@@ -77,8 +74,6 @@ class Button extends StatefulWidget {
   @override
   _ButtonState createState() => _ButtonState();
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class _ButtonState extends State<Button> {
   //
@@ -251,5 +246,3 @@ class _ButtonState extends State<Button> {
     }
   }
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////

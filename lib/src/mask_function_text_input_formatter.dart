@@ -1,14 +1,11 @@
 import 'dart:math';
-import 'package:flutter/services.dart';
 
-// ////////////////////////////////////////////////////////////////////////////
+import 'package:flutter/services.dart';
 
 typedef MaskFunction = String? Function({
   required TextEditingValue oldValue,
   required TextEditingValue newValue,
 });
-
-// ////////////////////////////////////////////////////////////////////////////
 
 /// A [TextInputFormatter] based on the [maskFunction] formatter,
 /// for using in [TextField]s.
@@ -317,8 +314,6 @@ class MaskFunctionTextInputFormatter implements TextInputFormatter {
   }
 }
 
-// ////////////////////////////////////////////////////////////////////////////
-
 class _TextMatcher {
   final List<String> _symbolArray = <String>[];
 
@@ -350,5 +345,3 @@ class _TextMatcher {
     }
   }
 }
-
-// ////////////////////////////////////////////////////////////////////////////
