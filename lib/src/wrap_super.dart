@@ -5,8 +5,6 @@ import 'package:flutter/rendering.dart';
 
 import 'minimum_raggedness.dart';
 
-// ////////////////////////////////////////////////////////////////////////////
-
 enum WrapType {
   /// Will fit all widgets it can in a line, and then move to the next one.
   fit,
@@ -15,8 +13,6 @@ enum WrapType {
   /// however, it will try to minimize the difference between line widths.
   balanced,
 }
-
-// ////////////////////////////////////////////////////////////////////////////
 
 enum WrapFit {
   /// Will keep each widget's original width. This is the default.
@@ -44,15 +40,11 @@ enum WrapFit {
   larger,
 }
 
-// ////////////////////////////////////////////////////////////////////////////
-
 enum WrapSuperAlignment {
   left,
   right,
   center,
 }
-
-// ////////////////////////////////////////////////////////////////////////////
 
 class WrapSuper extends MultiChildRenderObjectWidget {
   /// `WrapSuper` is a `Wrap` with a better, minimum raggedness algorithm
@@ -74,7 +66,7 @@ class WrapSuper extends MultiChildRenderObjectWidget {
   /// And you can see the algorithm I am using here (Divide and Conquer):
   /// https://xxyxyz.org/line-breaking/
   ///
-  WrapSuper({
+  const WrapSuper({
     Key? key,
     this.wrapType = WrapType.balanced,
     this.wrapFit = WrapFit.min,
@@ -117,8 +109,6 @@ class WrapSuper extends MultiChildRenderObjectWidget {
       ..wrapFit = wrapFit;
   }
 }
-
-// ////////////////////////////////////////////////////////////////////////////
 
 class _RenderWrapSuper extends RenderBox
     with
@@ -660,8 +650,6 @@ class _RenderWrapSuper extends RenderBox
   }
 }
 
-// ////////////////////////////////////////////////////////////////////////////
-
 /// Internal calculation helper class.
 class _Result {
   List<double> heights;
@@ -681,5 +669,3 @@ class _Line {
   double width = 0;
   double top = 0;
 }
-
-// ////////////////////////////////////////////////////////////////////////////
