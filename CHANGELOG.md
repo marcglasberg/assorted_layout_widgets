@@ -1,3 +1,7 @@
+## [9.0.0] - 2022/11/16
+
+* Flutter 3.16.0 compatible.
+
 ## [8.0.5] - 2023/10/08
 
 * const WrapSuper.

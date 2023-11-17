@@ -21,7 +21,15 @@ class TextOneLine extends Text {
     TextDirection? textDirection,
     Locale? locale,
     TextOverflow? overflow = TextOverflow.ellipsis,
+    //
+    @Deprecated(
+      'Use textScaler instead. '
+      'Use of textScaleFactor was deprecated in preparation for the upcoming nonlinear text scaling support. '
+      'This feature was deprecated after v3.12.0-2.0.pre.',
+    )
     double? textScaleFactor,
+    //
+    TextScaler? textScaler,
     String? semanticsLabel,
     TextWidthBasis textWidthBasis = TextWidthBasis.parent,
     TextHeightBehavior? textHeightBehavior,
@@ -35,7 +43,11 @@ class TextOneLine extends Text {
           locale: locale,
           softWrap: false,
           overflow: overflow,
+          //
+          // ignore: deprecated_member_use
           textScaleFactor: textScaleFactor,
+          //
+          textScaler: textScaler,
           maxLines: 1,
           semanticsLabel: semanticsLabel,
           textWidthBasis: textWidthBasis,

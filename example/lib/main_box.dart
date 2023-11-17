@@ -1,3 +1,4 @@
+// ignore_for_file: deprecated_member_use
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -43,54 +44,46 @@ class Demo extends StatelessWidget {
         child: Text("Test 1"),
       );
 
-  // ignore: deprecated_member_use
   Widget example2() => const Box.r(
         child: Text("Test 2"),
       );
 
   // This is hidden because of show: false.
-  // ignore: deprecated_member_use
   Widget example3() => const Box.g(
         show: false,
         padding: Pad(top: 20),
         child: Text("Test 3"),
       );
 
-  // ignore: deprecated_member_use
   Widget example4() => const Box.b(
         padding: Pad(top: 10, bottom: 10),
         child: Text("Test 4"),
       );
 
   // This is hidden because child is null. Padding is applied.
-  // ignore: deprecated_member_use
   Widget example5() => const Box.y(
         color: Colors.purple,
         padding: Pad(top: 20),
       );
 
   // This is the same as top:10, bottom:10.
-  // ignore: deprecated_member_use
   Widget example6() => const Box.r(
         padding: Pad(vertical: 10),
         child: Text("Test 6"),
       );
 
   // This is the same as right:10, left:10.
-  // ignore: deprecated_member_use
   Widget example7() => const Box.g(
         padding: Pad(horizontal: 10),
         child: Text("Test 7"),
       );
 
-  // ignore: deprecated_member_use
   Widget example8() => const Box.b(
         width: 200,
         height: 100,
         child: Text("Test 8"),
       );
 
-  // ignore: deprecated_member_use
   Widget example9() => const Box.y(
         padding: Pad(vertical: 20, horizontal: 40),
         width: 200,
@@ -99,7 +92,6 @@ class Demo extends StatelessWidget {
       );
 
   // This will change color in each rebuild.
-  // ignore: deprecated_member_use
   Widget example10() => const Box.rand(
         padding: Pad(vertical: 20, horizontal: 40),
         child: Text("Test 10"),
