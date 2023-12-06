@@ -1,9 +1,11 @@
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MaterialApp(home: Demo()));
+void main() => runApp(const MaterialApp(home: Demo()));
 
 class Demo extends StatelessWidget {
+  const Demo({super.key});
+
   @override
   Widget build(BuildContext context) {
     //
@@ -70,7 +72,7 @@ class Demo extends StatelessWidget {
               shadowColor: Colors.transparent,
               backgroundColor: Colors.lightGreen,
               foregroundColor: Colors.white,
-              textStyle: TextStyle(fontSize: 18),
+              textStyle: const TextStyle(fontSize: 18),
               shape: shape(hideTopSide, hideBottomSide, hideRightSide, hideLeftSide),
             ),
             onPressed: () {},
@@ -86,8 +88,8 @@ class Demo extends StatelessWidget {
     bool hideLeftSide,
   ) {
     return NonUniformRoundedRectangleBorder(
-      side: BorderSide(color: Colors.black87, width: 15.0),
-      borderRadius: BorderRadius.only(
+      side: const BorderSide(color: Colors.black87, width: 15.0),
+      borderRadius: const BorderRadius.only(
         topLeft: Radius.circular(30),
         topRight: Radius.circular(30),
         bottomLeft: Radius.circular(30),

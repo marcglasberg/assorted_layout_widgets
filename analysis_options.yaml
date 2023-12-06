@@ -34,12 +34,6 @@ linter:
     # http://dart-lang.github.io/linter/lints/always_declare_return_types.html
     # - always_put_required_named_parameters_first
 
-    # All non nullable named parameters should be and annotated with @required.
-    # This allows API consumers to get warnings via lint rather than a crash a runtime.
-    # Might become obsolete with Non-Nullable types
-    # http://dart-lang.github.io/linter/lints/always_require_non_null_named_parameters.html
-    - always_require_non_null_named_parameters
-
     # Since dart 2.0 dart is a sound language, specifying types is not required anymore.
     # `var foo = 10;` is enough information for the compiler to make foo a int.
     # Violates Effective Dart "AVOID type annotating initialized local variables".
@@ -172,11 +166,6 @@ linter:
     # pedantic: disabled
     # https://dart-lang.github.io/linter/lints/avoid_returning_null.html
     # - avoid_returning_null
-
-    # Don't use `Future?`, therefore never return null instead of a Future.
-    # Will become obsolete one Non-Nullable types land
-    # https://dart-lang.github.io/linter/lints/avoid_returning_null_for_future.html
-    - avoid_returning_null_for_future
 
     # Use empty returns, don't show off with you knowledge about dart internals.
     # https://dart-lang.github.io/linter/lints/avoid_returning_null_for_void.html

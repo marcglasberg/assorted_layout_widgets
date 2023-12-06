@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 void main() => runApp(const MaterialApp(home: Demo()));
 
 class Demo extends StatelessWidget {
-  const Demo({Key? key}) : super(key: key);
+  const Demo({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('ColumnSuper Remove Children')),
-      body: Column(
+      body: const Column(
         children: [
-          const Padding(
+          Padding(
             padding: Pad(all: 20),
             child:
                 Text("Click the colored boxes to turn their height to zero (they keep their width)."
@@ -25,7 +25,7 @@ class Demo extends StatelessWidget {
             child: Center(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
+                children: [
                   ColoredColumn(removeChildrenWithNoHeight: false),
                   Box(width: 50),
                   ColoredColumn(removeChildrenWithNoHeight: true),
@@ -48,10 +48,10 @@ class Demo extends StatelessWidget {
 class ColoredColumn extends StatefulWidget {
   final bool removeChildrenWithNoHeight;
 
-  const ColoredColumn({required this.removeChildrenWithNoHeight});
+  const ColoredColumn({super.key, required this.removeChildrenWithNoHeight});
 
   @override
-  _ColoredColumnState createState() => _ColoredColumnState();
+  State<ColoredColumn> createState() => _ColoredColumnState();
 }
 
 class _ColoredColumnState extends State<ColoredColumn> {

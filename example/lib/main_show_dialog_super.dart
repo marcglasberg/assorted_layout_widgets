@@ -1,9 +1,11 @@
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MaterialApp(home: Demo()));
+void main() => runApp(const MaterialApp(home: Demo()));
 
 class Demo extends StatelessWidget {
+  const Demo({super.key});
+
   @override
   Widget build(BuildContext context) {
     //
@@ -19,10 +21,10 @@ class Demo extends StatelessWidget {
 }
 
 class DemoApp extends StatefulWidget {
-  const DemoApp({Key? key}) : super(key: key);
+  const DemoApp({super.key});
 
   @override
-  _DemoAppState createState() => _DemoAppState();
+  State<DemoApp> createState() => _DemoAppState();
 }
 
 class _DemoAppState extends State<DemoApp> {
@@ -63,15 +65,15 @@ class _DemoAppState extends State<DemoApp> {
                         );
                       },
                       onDismissed: (int? result) {
-                        if (result == 1)
+                        if (result == 1) {
                           print("Pressed the OK button.");
-                        else if (result == 2)
+                        } else if (result == 2) {
                           print("Pressed the CANCEL button.");
-                        else if (result == null)
+                        } else if (result == null) {
                           print("Dismissed with BACK or tapping the barrier.");
-                        else
+                        } else {
                           throw AssertionError();
-
+                        }
                         setState(() {
                           count++;
                         });

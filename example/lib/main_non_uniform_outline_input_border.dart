@@ -2,9 +2,11 @@
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MaterialApp(home: Demo()));
+void main() => runApp(const MaterialApp(home: Demo()));
 
 class Demo extends StatelessWidget {
+  const Demo({super.key});
+
   @override
   Widget build(BuildContext context) {
     //
@@ -65,10 +67,10 @@ class Demo extends StatelessWidget {
         padding: const Pad(bottom: 20.0),
         child: Box.g(
           child: TextField(
-            style: TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16),
             controller: TextEditingController(text: label),
             decoration: InputDecoration(
-              contentPadding: Pad(horizontal: 30, vertical: 40),
+              contentPadding: const Pad(horizontal: 30, vertical: 40),
               fillColor: Colors.yellow,
               filled: true,
               enabledBorder: border(hideTopSide, hideBottomSide, hideRightSide, hideLeftSide),
@@ -88,8 +90,8 @@ class Demo extends StatelessWidget {
       hideBottomSide: hideBottomSide,
       hideRightSide: hideRightSide,
       hideLeftSide: hideLeftSide,
-      borderSide: BorderSide(width: 10),
-      borderRadius: BorderRadius.only(
+      borderSide: const BorderSide(width: 10),
+      borderRadius: const BorderRadius.only(
         topLeft: Radius.circular(38),
         topRight: Radius.circular(38),
         bottomLeft: Radius.circular(38),
