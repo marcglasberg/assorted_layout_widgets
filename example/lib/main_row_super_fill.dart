@@ -1,9 +1,11 @@
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MaterialApp(home: Demo()));
+void main() => runApp(const MaterialApp(home: Demo()));
 
 class Demo extends StatelessWidget {
+  const Demo({super.key});
+
   @override
   Widget build(BuildContext context) {
     //

@@ -1,11 +1,13 @@
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MaterialApp(home: Demo()));
+void main() => runApp(const MaterialApp(home: Demo()));
 
 class Demo extends StatefulWidget {
+  const Demo({super.key});
+
   @override
-  _DemoState createState() => _DemoState();
+  State<Demo> createState() => _DemoState();
 }
 
 class _DemoState extends State<Demo> {
@@ -137,19 +139,23 @@ class _DemoState extends State<Demo> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     button("Parent Width = $parentWidth", () {
-                      if (parentWidth == null)
+                      if (parentWidth == null) {
                         parentWidth = 70.0;
-                      else if (parentWidth == 70.0)
+                      } else if (parentWidth == 70.0) {
                         parentWidth = double.infinity;
-                      else if (parentWidth == double.infinity) parentWidth = null;
+                      } else if (parentWidth == double.infinity) {
+                        parentWidth = null;
+                      }
                     }),
                     const Box(width: 10.0),
                     button("Alignment = $alignment", () {
-                      if (alignment == Alignment.center)
+                      if (alignment == Alignment.center) {
                         alignment = Alignment.topLeft;
-                      else if (alignment == Alignment.topLeft)
+                      } else if (alignment == Alignment.topLeft) {
                         alignment = Alignment.topRight;
-                      else if (alignment == Alignment.topRight) alignment = Alignment.center;
+                      } else if (alignment == Alignment.topRight) {
+                        alignment = Alignment.center;
+                      }
                     }),
                   ],
                 ),

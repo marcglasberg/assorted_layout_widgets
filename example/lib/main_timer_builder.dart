@@ -6,19 +6,23 @@ import 'package:flutter/material.dart';
 /// Based on:
 /// https://dash-overflow.net/articles/why_vsync/
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -157,7 +161,7 @@ class MyHomePage extends StatelessWidget {
 class TickerRendered extends StatelessWidget {
   final int ticker;
 
-  const TickerRendered(this.ticker);
+  const TickerRendered(this.ticker, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -177,9 +181,9 @@ class TickerRendered extends StatelessWidget {
 
 class ClockRenderer extends StatelessWidget {
   const ClockRenderer({
-    Key? key,
+    super.key,
     required this.dateTime,
-  }) : super(key: key);
+  });
 
   final DateTime dateTime;
 

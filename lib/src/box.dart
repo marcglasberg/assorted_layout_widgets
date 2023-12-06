@@ -51,9 +51,9 @@ class Box extends StatelessWidget {
     this.height,
     this.alignment,
     this.child,
-    this.removePaddingWhenNoChild = false,
     bool? random,
   })  : _random = random ?? false,
+        removePaddingWhenNoChild = false,
         super(key: key);
 
   /// Adding `.r` to the box will make it red.

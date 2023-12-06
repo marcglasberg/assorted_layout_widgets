@@ -1,14 +1,16 @@
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MaterialApp(home: Demo()));
+void main() => runApp(const MaterialApp(home: Demo()));
 
 class Demo extends StatelessWidget {
+  const Demo({ super.key });
+
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(title: const Text('CaptureGestures Example')),
         body: ListView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           children: [
             const Box(height: 30),
             _greenArea(),
@@ -36,10 +38,10 @@ class Demo extends StatelessWidget {
               children: [
                 ElevatedButton(
                   onPressed: () {},
-                  child: Text('Button'),
+                  child: const Text('Button'),
                 ),
                 const Box(height: 20),
-                Text('CaptureGestures.only()\n\n'
+                const Text('CaptureGestures.only()\n\n'
                     'This green area can be used to scroll.\n'
                     'The Button (child) feels taps.\n'
                     'The green area (parent) feels taps.'),
@@ -68,11 +70,11 @@ class Demo extends StatelessWidget {
                 Center(
                   child: ElevatedButton(
                     onPressed: () {},
-                    child: Text('Button'),
+                    child: const Text('Button'),
                   ),
                 ),
                 const Box(height: 20),
-                Text('CaptureGestures.scroll()\n\n'
+                const Text('CaptureGestures.scroll()\n\n'
                     'This yellow area CANNOT be used to scroll.\n'
                     'The Button (child) feels taps.\n'
                     'The yellow area (parent) feels taps.'),
