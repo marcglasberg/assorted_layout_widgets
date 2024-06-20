@@ -1,22 +1,25 @@
 import "package:flutter/material.dart";
 
 /// [Pad] is an [EdgeInsetsGeometry] which is easy to type and remember.
+/// It can be used in all widgets that accept `padding`,
+/// like `Container`, `Padding` and `Box`.
 ///
-/// Instead of `padding: EdgeInsets.all(12)`
-/// You can write this `padding: Pad(all: 12)`
+/// Instead of `EdgeInsets.all(12)`,
+/// write `Pad(all: 12)`
 ///
-/// Instead of `padding: EdgeInsets.only(top: 8, bottom: 8, left: 4)`
-/// You can write this `padding: Pad(top: 8, bottom: 8, left: 4)`
+/// Instead of `EdgeInsets.only(top: 8, bottom: 8, left: 4)`,
+/// write `Pad(top: 8, bottom: 8, left: 4)`
 ///
-/// Instead of `padding: EdgeInsets.symmetric(vertical: 12)`
-/// You can write this `padding: Pad(vertical: 12)`
+/// Instead of `EdgeInsets.symmetric(vertical: 12)`,
+/// write `Pad(vertical: 12)`
 ///
 /// You can also compose paddings. For example, if you want 40 pixels of
-/// padding in all directions, except the top with 50 pixels:
-/// `padding: Pad(all: 40, top: 10)`.
-///
+/// padding in all directions, but you want the top with 50 pixels,
+/// write `Pad(all: 40, top: 10)`.
 ///
 class Pad extends EdgeInsets {
+  //
+
   /// Creates insets with the given values:
   /// * `top`, `bottom`, `left` and `right` pixels.
   /// * `all` pixels will be added to the top, bottom, left and right.
@@ -27,17 +30,25 @@ class Pad extends EdgeInsets {
   /// with 40 pixels of padding, except the top with 50 pixels:
   ///
   /// ```dart
-  /// const Pad(all: 40.0, top: 10);
+  /// Pad(all: 40, top: 10);
+  /// ```
+  ///
+  /// Note constructor parameters `all`, `vertical` and `horizontal` are used only to compose
+  /// the final padding value. The resulting `Pad` object contains only left/right/top/bottom.
+  /// For example:
+  ///
+  /// ```dart
+  /// Pad(all: 40, vertical: 5, top: 10).top == (40 + 5 + 10) == 55;
   /// ```
   ///
   const Pad({
-    double all = 0.0,
-    double vertical = 0.0,
-    double horizontal = 0.0,
-    double left = 0.0,
-    double top = 0.0,
-    double right = 0.0,
-    double bottom = 0.0,
+    double all = 0,
+    double vertical = 0,
+    double horizontal = 0,
+    double left = 0,
+    double top = 0,
+    double right = 0,
+    double bottom = 0,
   }) : super.fromLTRB(
           all + left + horizontal,
           all + top + vertical,
@@ -64,8 +75,74 @@ class Pad extends EdgeInsets {
     double? bottom, // ignore: avoid_unused_constructor_parameters
   }) : super.fromLTRB(0, 0, 0, 0);
 
+  /// Creates a copy of this padding, plus the given parameters.
+  ///
+  /// Example:
+  /// ```dart
+  /// // Same as Pad(all: 40, top: 10)
+  /// Pad(all: 40).plus(top: 10);
+  /// ```
+  ///
+  Pad plus({
+    double? left,
+    double? top,
+    double? right,
+    double? bottom,
+    double? all = 0,
+    double? vertical = 0,
+    double? horizontal = 0,
+  }) {
+    return Pad(
+      left: this.left + (left ?? 0),
+      top: this.top + (top ?? 0),
+      right: this.right + (right ?? 0),
+      bottom: this.bottom + (bottom ?? 0),
+      all: all ?? 0,
+      vertical: vertical ?? 0,
+      horizontal: horizontal ?? 0,
+    );
+  }
+
+  /// Creates a copy of this padding, minus the given parameters.
+  ///
+  /// Example:
+  /// ```dart
+  /// // Same as Pad(all: 40, top: -10)
+  /// Pad(all: 40).minus(top: 10);
+  /// ```
+  ///
+  Pad minus({
+    double? left,
+    double? top,
+    double? right,
+    double? bottom,
+    double? all = 0,
+    double? vertical = 0,
+    double? horizontal = 0,
+  }) {
+    return Pad(
+      left: this.left - (left ?? 0),
+      top: this.top - (top ?? 0),
+      right: this.right - (right ?? 0),
+      bottom: this.bottom - (bottom ?? 0),
+      all: (all != null) ? -all : 0,
+      vertical: (vertical != null) ? -vertical : 0,
+      horizontal: (horizontal != null) ? -horizontal : 0,
+    );
+  }
+
   /// Creates a copy of this padding but with the given fields replaced
   /// with the new values.
+  ///
+  /// IMPORTANT:
+  /// This will replace the final value of the resulting padding left/right/top/bottom,
+  /// after applying `all`, `vertical` and `horizontal`.
+  /// For example:
+  ///
+  /// ```
+  /// // Same as Pad(left: 40, right: 40, top: 40, bottom: 10)
+  /// Pad(all: 40).copyWith(bottom: 10);
+  /// ```
   @override
   Pad copyWith({
     double? left,

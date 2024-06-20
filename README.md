@@ -552,22 +552,28 @@ Delayed example</a>.
 # Pad
 
 `Pad` is an `EdgeInsetsGeometry` which is easy to type and remember.
+It can be used in all widgets that accept `padding`, like `Container`, `Padding` and `Box`.
 
 For example, instead of writing `padding: EdgeInsets.symmetric(vertical: 12)`
 you can write simply `padding: Pad(vertical: 12)`.
 
+More examples:
+
 ```
+// Zero padding
+Pad()
+
 // Instead of EdgeInsets.all(12)
-padding: Pad(all: 12)
+Pad(all: 12)
 
 // Instead of EdgeInsets.only(top: 8, bottom: 8, left: 4, right: 2)
-padding: Pad(top: 8, bottom: 8, left: 4, right: 2)
+Pad(top: 8, bottom: 8, left: 4, right: 2)
 
 // Instead of EdgeInsets.symmetric(vertical: 12)
-padding: Pad(vertical: 12)
+Pad(vertical: 12)
 
 // Instead of EdgeInsets.symmetric(vertical: 12, horizontal: 6)
-padding: Pad(vertical: 12, horizontal: 6)
+Pad(vertical: 12, horizontal: 6)
 ```
 
 You can also compose paddings. For example, if you want 40 pixels of padding in all directions,
@@ -582,6 +588,19 @@ normal:
 ```
 // This is the same as Pad.zero.
 padding: Pad.x(top: 8, bottom: 8, left: 4)
+```
+
+You can also use `plus` and `minus` and `copyWith`:
+
+```
+// Same as Pad(all: 40, bottom: 10)
+Pad(all: 40).plus(bottom: 10);
+
+// Same as Pad(all: 40, bottom: -10)
+Pad(all: 40).minus(bottom: 10);
+
+// Same as Pad(left: 40, right: 40, top: 40, bottom: 10) 
+Pad(all: 40).copyWith(bottom: 10);
 ```
 
 <br>
@@ -1035,7 +1054,7 @@ Button(
     onTap: () {...},
     minVisualTapDuration: Duration(milliseconds: 200),
     tapThrottle: Duration(milliseconds: 500),
-    clickAreaMargin: const Pad(horizontal: 40.0, vertical: 20),
+    clickAreaMargin: const Pad(horizontal: 40, vertical: 20),
     debugShowClickableArea: true,
     builder: ({required bool isPressed}) => 
       Text('Click Me', style: TextStyle(color: isPressed ? Colors.black : Colors.white)),        
@@ -1219,7 +1238,7 @@ ElevatedButton(
    style: ElevatedButton.styleFrom(
       shape: NonUniformRoundedRectangleBorder(
          hideLeftSide: true,
-         side: BorderSide(color: Colors.black87, width: 15.0),
+         side: BorderSide(color: Colors.black87, width: 15),
          borderRadius: BorderRadius.only(
             topLeft: Radius.circular(30),
             bottomLeft: Radius.circular(10),
