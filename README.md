@@ -1085,6 +1085,7 @@ reason, the `CircleButton` will:
 
 * Show an immediate visual feedback to a tap, and then sustain that feedback for about 100
   milliseconds, enough time for the user to remove the finger and see it.
+
 * You can expand the click-area, to make the button easier to tap and improve usability. You can
   also show the click-area, for debug purposes.
 
@@ -1096,15 +1097,11 @@ CircleButton(
     debugShowClickableArea: true,
     backgroundColor: Colors.white30,
     tapColor: Colors.black,
+    hoverColor: Colors.grey, 
     border: Border.all(width: 1, color: Colors.black),
     size: 56,                
 );
 ```
-
-* When the user taps the button, the `isPressed` boolean will be true for at least
-  `minVisualTapDuration`.
-
-* The widget will only feel another tap if `tapThrottle` duration has passed since the last tap.
 
 * The click-area can be expanded by a margin given by `clickAreaMargin`, thus making the widget
   easier to tap.

@@ -1,3 +1,9 @@
+## 9.1.0-dev.1
+
+* Now `CircleButton` can specify `hoverColor` (default is no color),
+  and `cursor` (the default is `SystemMouseCursors.click`, but you can pass `null` to
+  set it as `MouseCursor.defer`.
+
 ## 9.0.2
 
 * Added `Pad.addValues` and `Pad.subtractValues`.

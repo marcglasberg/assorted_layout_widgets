@@ -3,14 +3,10 @@ import 'package:test/test.dart';
 
 void main() {
   //
-  ///////////////////////////////////////////////////////////////////////////////
-
   test('Divide no boxes.', () async {
     List<List<int>> result = MinimumRaggedness.divide([], 20, spacing: 1.0);
     expect(result, <List<int>>[]);
   });
-
-  ///////////////////////////////////////////////////////////////////////////////
 
   test('Divide boxes.', () async {
     List<List<int>> result = MinimumRaggedness.divide([14, 3, 7, 5, 7, 5], 20, spacing: 1.0);
@@ -20,8 +16,6 @@ void main() {
       [4, 5]
     ]);
   });
-
-  ///////////////////////////////////////////////////////////////////////////////
 
   test('Divide boxes of fractional size.', () async {
     //
@@ -77,8 +71,6 @@ void main() {
     ]);
   });
 
-  ///////////////////////////////////////////////////////////////////////////////
-
   test('Divide boxes, some with 0 length.', () async {
     List<List<int>> result =
         MinimumRaggedness.divide([14, 0, 3, 0, 7, 5, 0, 7, 5, 0], 20, spacing: 1.0);
@@ -89,8 +81,6 @@ void main() {
     ]);
   });
 
-  ///////////////////////////////////////////////////////////////////////////////
-
   test('Divide boxes with maximum size.', () async {
     List<List<int>> result = MinimumRaggedness.divide([14, 13, 12], 14, spacing: 1.0);
     expect(result, [
@@ -99,8 +89,6 @@ void main() {
       [2]
     ]);
   });
-
-  ///////////////////////////////////////////////////////////////////////////////
 
   /// If a box has more than the maximum width,
   /// it is considered as having the maximum width.
@@ -111,8 +99,6 @@ void main() {
       [1],
     ]);
   });
-
-  ///////////////////////////////////////////////////////////////////////////////
 
   /// If a box has more than the maximum width,
   /// it is considered as having the maximum width.
@@ -158,13 +144,9 @@ void main() {
     ]);
   });
 
-  ///////////////////////////////////////////////////////////////////////////////
-
   test('Divide words.', () async {
     List<String> result =
         MinimumRaggedness.divideWords("aaaaaaaaaaaaaa bbb ccccccc ddddd eeeeeee fffff", 20);
     expect(result, ['aaaaaaaaaaaaaa', 'bbb ccccccc ddddd', 'eeeeeee fffff']);
   });
-
-  ///////////////////////////////////////////////////////////////////////////////
 }
