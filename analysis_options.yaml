@@ -121,11 +121,6 @@ linter:
     # https://dart-lang.github.io/linter/lints/avoid_js_rounded_ints.html
     # - avoid_js_rounded_ints
 
-    # Null checks aren't required in ==() operators
-    # pedantic: enabled
-    # https://dart-lang.github.io/linter/lints/avoid_null_checks_in_equality_operators.html
-    - avoid_null_checks_in_equality_operators
-
     # Good APIs don't use ambiguous boolean parameters. Instead use named parameters
     # https://dart-lang.github.io/linter/lints/avoid_positional_boolean_parameters.html
     # - avoid_positional_boolean_parameters
