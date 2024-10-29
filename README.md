@@ -1,8 +1,11 @@
+[![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
+
 [![pub package](https://img.shields.io/pub/v/assorted_layout_widgets.svg)](https://pub.dartlang.org/packages/assorted_layout_widgets)
 
 # assorted_layout_widgets
 
-I will slowly but surely add interesting **widgets**, **classes** and **methods** to this package.
+I will slowly but surely add interesting **widgets**, **classes** and **methods** to this
+package.
 
 Despite the package name, they are not only related to layout. Here they are:
 
@@ -18,15 +21,16 @@ Despite the package name, they are not only related to layout. Here they are:
 | <tt>[SideBySide](#sidebyside)</tt> <i>arranges two widgets horizontally. It does things Row and RowSuper can't do</i>.        | <tt>[TimeBuilder](#timebuilder)</tt> <i>lets you implement clocks, countdowns, stopwatches etc, the right way.</i>                                                     |                                                                                                                                                          |                                                                                                                                                                                      |
 | <tt>[NormalizedOverflowBox](#normalizedoverflowbox)</tt> <i>is an OverflowBox that throws no errors and is easier to use</i>. |                                                                                                                                                                        |                                                                                                                                                          |                                                                                                                                                                                      |
 
-<sub>Note the widgets you don't use will be removed by Flutter's tree shaking. So feel free to add
-this package to your project even if you want to use only a few of its widgets.</sub>
+<sub>Note the widgets you don't use will be removed by Flutter's tree shaking. So feel
+free to add this package to your project even if you want to use only a few of its
+widgets.</sub>
 
 <br>
 
 # ColumnSuper
 
-Given a list of children widgets, this will arrange them in a column. It can overlap cells, add
-separators and more.
+Given a list of children widgets, this will arrange them in a column. It can overlap
+cells, add separators and more.
 
 ```
 ColumnSuper({
@@ -46,37 +50,39 @@ ColumnSuper({
 * **`children`** is the list of widgets that represent the column cells, just like in a
   regular `Column` widget. However, the list may contain `null`s, which will be ignored.
 
-* **`outerDistance`** is the distance in pixels before the first and after the last widget. It can
-  be negative, in which case the cells will overflow the column (without any overflow warnings).
+* **`outerDistance`** is the distance in pixels before the first and after the last
+  widget. It can be negative, in which case the cells will overflow the column (without
+  any overflow warnings).
 
-* **`innerDistance`** is the distance in pixels between the cells. It can be negative, in which case
-  the cells will overlap.
+* **`innerDistance`** is the distance in pixels between the cells. It can be negative, in
+  which case the cells will overlap.
 
-* **`invert`** if true will paint the cells that come later on top of the ones that came before.
-  This is specially useful when cells overlap (negative `innerDistance`).
+* **`invert`** if true will paint the cells that come later on top of the ones that came
+  before. This is specially useful when cells overlap (negative `innerDistance`).
 
 * **`alignment`** will align the cells horizontally if they are smaller than the available
   horizontal space.
 
-* **`separator`** is a widget which will be painted between each cell. Its height doesn't matter,
-  since the distance between cells is given by `innerDistance` (in other words, separators don't
-  occupy space). The separator may overflow if its width is larger than the column's width.
+* **`separator`** is a widget which will be painted between each cell. Its height doesn't
+  matter, since the distance between cells is given by `innerDistance` (in other words,
+  separators don't occupy space). The separator may overflow if its width is larger than
+  the column's width.
 
-* **`separatorOnTop`** if `true` (the default) will paint the separator on top of the cells.
-  If `false` will paint the separator below the cells.
+* **`separatorOnTop`** if `true` (the default) will paint the separator on top of the
+  cells. If `false` will paint the separator below the cells.
 
-* **`removeChildrenWithNoHeight`** if true, children with zero height will not result in an
-  extra `innerDistance` and `separator`. If all children have zero height, the `outerDistance` will
-  also be removed. In other words, it's as if children with zero height are removed, except for the
-  fact they still occupy width. The default is false.
+* **`removeChildrenWithNoHeight`** if true, children with zero height will not result in
+  an extra `innerDistance` and `separator`. If all children have zero height,
+  the `outerDistance` will also be removed. In other words, it's as if children with zero
+  height are removed, except for the fact they still occupy width. The default is false.
   See <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_column_removing_zero_height.dart">
   this interactive example</a>.
 
-*Note: This is not a substitute for Flutter's native `Column`, it doesn't try to have a similar API,
-and it doesn't do all that `Column` does. In special, `Expanded` and `Flexible` widgets don't work
-inside of `ColumnSuper`, and it will overflow if the column is not big enough to fit its contents.
-`ColumnSuper` is meant only for certain use cases where `Column` won't work, like when you need
-overlapping cells or separators.*
+*Note: This is not a substitute for Flutter's native `Column`, it doesn't try to have a
+similar API, and it doesn't do all that `Column` does. In special, `Expanded`
+and `Flexible` widgets don't work inside of `ColumnSuper`, and it will overflow if the
+column is not big enough to fit its contents. `ColumnSuper` is meant only for certain use
+cases where `Column` won't work, like when you need overlapping cells or separators.*
 
 Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_column_super.dart">
@@ -90,8 +96,8 @@ ColumnSuper Playground</a>.
 
 # RowSuper
 
-Given a list of children widgets, this will arrange them in a row. It can overlap cells, add
-separators and more.
+Given a list of children widgets, this will arrange them in a row. It can overlap cells,
+add separators and more.
 
 ```
 RowSuper({
@@ -124,27 +130,29 @@ RowSuper Playground</a>.
 
 Most parameters are the same as the ones of `ColumnSuper`, except:
 
-* **`fill`** if true will force the children to **grow their widths proportionately** to their
-  minimum intrinsic width, so that they fill the whole row width. This parameter is only useful if
-  the children are not wide enough to fill the whole row width. In case the children are larger than
-  the row width, they will always **shrink proportionately**
+* **`fill`** if true will force the children to **grow their widths proportionately** to
+  their minimum intrinsic width, so that they fill the whole row width. This parameter is
+  only useful if the children are not wide enough to fill the whole row width. In case the
+  children are larger than the row width, they will always **shrink proportionately**
   to their minimum intrinsic width, and the `fill` parameter will be ignored.
   See: <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_row_super_fill.dart">
   RowSuper Fill example</a>.
 
-* **`fitHorizontally`** if true will shrink the children, horizontally only, until the `shrinkLimit`
-  is reached. This parameter is only useful if the children are too wide to fit the row width.
-  row width. Avoid using `fitHorizontally` together with `fill: true`.
+* **`fitHorizontally`** if true will shrink the children, horizontally only,
+  until the `shrinkLimit` is reached. This parameter is only useful if the children are
+  too wide to fit the row width. Avoid using `fitHorizontally` together with `fill: true`.
 
-* **`shrinkLimit`** by default is 67%, which means the cell contents will shrink until 67% of their
-  original width, and then overflow. Make `shrinkLimit` equal to `0.0` if you want the cell contents
-  to shrink with no limits. Note, if `fitHorizontally` is false, the `shrinkLimit` is not used.
+* **`shrinkLimit`** by default is 67%, which means the cell contents will shrink until 67%
+  of their original width, and then overflow. Make `shrinkLimit` equal to `0.0` if you
+  want the cell contents to shrink with no limits. Note, if `fitHorizontally` is false,
+  the `shrinkLimit` is not used.
 
-* **`mainAxisSize`** by default is `MainAxisSize.min`, which means the row will occupy no more than
-  its content's width. Make it `MainAxisSize.max` to expand the row to occupy the whole horizontal
-  space.
+* **`mainAxisSize`** by default is `MainAxisSize.min`, which means the row will occupy no
+  more than its content's width. Make it `MainAxisSize.max` to expand the row to occupy
+  the whole horizontal space.
 
-You can also use a `RowSpacer` to add empty space (if available) between cells. For example:
+You can also use a `RowSpacer` to add empty space (if available) between cells.
+For example:
 
 ```
 RowSuper(
@@ -163,11 +171,12 @@ Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_row_super_with_fit_horizontally.dart">
 RowSuper with FitHorizontally example</a>.
 
-*Note: This is not a substitute for Flutter's native `Row`, it doesn't try to have a similar API,
-and it doesn't do all that `Row` does. In special, `Expanded` and `Flexible` widgets don't work
-inside of `RowSuper`, since `RowSuper` will resize cells proportionately when content doesn't fit.
-`RowSuper` is meant only for certain use cases where `Row` won't work, like when you need
-overlapping cells, or when you need to scale the contents of the cells when they don't fit.*
+*Note: This is not a substitute for Flutter's native `Row`, it doesn't try to have a
+similar API, and it doesn't do all that `Row` does. In special, `Expanded` and `Flexible`
+widgets don't work inside of `RowSuper`, since `RowSuper` will resize cells
+proportionately when content doesn't fit. `RowSuper` is meant only for certain use cases
+where `Row` won't work, like when you need overlapping cells, or when you need to scale
+the contents of the cells when they don't fit.*
 
 <br>
 
@@ -184,22 +193,23 @@ FitHorizontally({
 
 ![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/fitHorizontally.png)
 
-The `child` will be asked to define its own intrinsic height. If `fitsHeight` is true, the child
-will be proportionately resized (keeping its aspect ratio)
+The `child` will be asked to define its own intrinsic height. If `fitsHeight` is true, the
+child will be proportionately resized (keeping its aspect ratio)
 to fit the available height.
 
-Then, if the child doesn't fit the width, it will be shrinked horizontally only (not keeping its
-aspect ratio) until it fits, unless `shrinkLimit` is larger than zero, in which case it will shrink
-only until that limit. Note if `shrinkLimit` is 1.0 the child will not shrink at all. The default is
-0.67 (67%).
+Then, if the child doesn't fit the width, it will be shrinked horizontally only (not
+keeping its aspect ratio) until it fits, unless `shrinkLimit` is larger than zero, in
+which case it will shrink only until that limit. Note if `shrinkLimit` is 1.0 the child
+will not shrink at all. The default is 0.67 (67%).
 
-This is specially useful for text that is displayed in a single line. When text doesn't fit the
-container it will shrink only horizontally, until it reaches the shrink limit. From that point on it
-will clip, display ellipsis or fade, according to the text's `Text.overflow` property.
+This is specially useful for text that is displayed in a single line. When text doesn't
+fit the container it will shrink only horizontally, until it reaches the shrink limit.
+From that point on it will clip, display ellipsis or fade, according to the
+text's `Text.overflow` property.
 
 *Note: `FitHorizontally` with `shrinkLimit` 0.0 is **not** the same as `FittedBox`
-with `BoxFit.fitWidth`, because `FitHorizontally` will only scale horizontally, while `FittedBox`
-will maintain the aspect ratio.*
+with `BoxFit.fitWidth`, because `FitHorizontally` will only scale horizontally,
+while `FittedBox` will maintain the aspect ratio.*
 
 Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_fit_horizontally.dart">
@@ -235,8 +245,8 @@ Usage example:
 const Box(color: Colors.red, width: 50, height:30);
 ```                            
 
-`Box` allows you to make `const` large blocks of code. For example, the following code couldn't
-be `const` if we were to use a `Container`, a `SizedBox` or a `ColoredBox`:
+`Box` allows you to make `const` large blocks of code. For example, the following code
+couldn't be `const` if we were to use a `Container`, a `SizedBox` or a `ColoredBox`:
 
 ```
 static const progressIndicator =
@@ -253,19 +263,20 @@ static const progressIndicator =
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white)))),),);}
 ```                            
 
-Note: Const objects are final/immutable and created in compile time. So you don't waste time
-creating them. Also, all const objects of the same type with the same parameters are the same
-instance. So you don't waste memory creating more than one of them. In other words, const objects
-make your program faster and more memory efficient. They can also be used as default values in
-constructors, and they work well with hot-reload, while `final` values do not.
+Note: Const objects are final/immutable and created in compile time. So you don't waste
+time creating them. Also, all const objects of the same type with the same parameters are
+the same instance. So you don't waste memory creating more than one of them. In other
+words, const objects make your program faster and more memory efficient. They can also be
+used as default values in constructors, and they work well with hot-reload, while `final`
+values do not.
 
 ### Extra Box features
 
 * You can hide the box and its contents, by making the `show: false`.
 
-* If you make `removePaddingWhenNoChild: true`, the `padding` is only applied if the child is **not
-  null**. If the `child` is `null` and `width` and `height` are also `null`, this means the box will
-  occupy no space (will be hidden).
+* If you make `removePaddingWhenNoChild: true`, the `padding` is only applied if the child
+  is **not null**. If the `child` is `null` and `width` and `height` are also `null`,
+  this means the box will occupy no space (will be hidden).
 
 * Note: You can use the `Pad` class (provided in this package) for the `padding`, instead
   of `EdgeInsets`. For example:
@@ -303,8 +314,8 @@ constructors, and they work well with hot-reload, while `final` values do not.
   Box(...) + Box(...);
   ```
 
-  Note: If you add `null`, that's not an error. It will simply return the same Box. However, if you
-  add an invalid type it will throw an error in RUNTIME.
+  Note: If you add `null`, that's not an error. It will simply return the same Box.
+  However, if you add an invalid type it will throw an error in RUNTIME.
 
   ```
   // Not an error:
@@ -318,8 +329,9 @@ constructors, and they work well with hot-reload, while `final` values do not.
 
 ### Debugging:
 
-* If you need to quickly and temporarily add a color to your box so that you can see it, you can use
-  the constructors `Box.r` for red, `Box.g` for green, `Box.b` for blue, and `Box.y` for yellow.
+* If you need to quickly and temporarily add a color to your box so that you can see it,
+  you can use the constructors `Box.r` for red, `Box.g` for green, `Box.b` for blue,
+  and `Box.y` for yellow.
 
   ```
   Box(child: myChild);
@@ -329,27 +341,29 @@ constructors, and they work well with hot-reload, while `final` values do not.
   Box.y(child: myChild);
   ```
 
-* If you want to see rebuilds, you can use the `Box.rand` constructor. It will then change its color
-  to a random one, whenever its build method is called.
+* If you want to see rebuilds, you can use the `Box.rand` constructor. It will then change
+  its color to a random one, whenever its build method is called.
 
   ```
   Box.rand(child: myChild);  
   ```  
 
-All these debugging constructors are marked as _deprecated_ so that you don't forget to remove them.
+All these debugging constructors are marked as _deprecated_ so that you don't forget to
+remove them.
 
 <br>
 
 # WrapSuper
 
-`WrapSuper` is similar to the native `Wrap` widget with `direction = Axis.horizontal`, but it allows
-you to choose between different
-<a href="https://en.wikipedia.org/wiki/Line_wrap_and_word_wrap">line-breaking algorithms</a>.
+`WrapSuper` is similar to the native `Wrap` widget with `direction = Axis.horizontal`, but
+it allows you to choose between different
+<a href="https://en.wikipedia.org/wiki/Line_wrap_and_word_wrap">line-breaking
+algorithms</a>.
 
-`WrapSuper` displays its children in lines. It will leave `spacing` horizontal space between each
-child, and it will leave `lineSpacing` vertical space between each line. The contents of each line
-will then be aligned according to the `alignment`. The algorithm for the line-breaks is chosen
-by `wrapType`.
+`WrapSuper` displays its children in lines. It will leave `spacing` horizontal space
+between each child, and it will leave `lineSpacing` vertical space between each line. The
+contents of each line will then be aligned according to the `alignment`. The algorithm for
+the line-breaks is chosen by `wrapType`.
 
 ```
 WrapSuper({
@@ -363,14 +377,14 @@ WrapSuper({
 ```          
 
 `WrapSuper` with `WrapType.fit` uses a
-<a href="https://en.wikipedia.org/wiki/Greedy_algorithm">greedy algorithm</a> for line breaks, which
-is the same one used by the native `Wrap` widget.
+<a href="https://en.wikipedia.org/wiki/Greedy_algorithm">greedy algorithm</a> for line
+breaks, which is the same one used by the native `Wrap` widget.
 
 However, `WrapSuper` with `WrapType.balanced` (the default) uses a
 <a href="https://en.wikipedia.org/wiki/Line_wrap_and_word_wrap#Minimum_raggedness">minimum
 raggedness algorithm</a>
-for line breaks. It will position its child widgets in the same number of lines as the greedy
-algorithm, but these lines will tend to be more similar in width.
+for line breaks. It will position its child widgets in the same number of lines as the
+greedy algorithm, but these lines will tend to be more similar in width.
 
 For example:
 
@@ -379,32 +393,33 @@ For example:
 - <a href="https://stackoverflow.com/questions/51679895/in-flutter-how-to-balance-the-children-of-the-wrap-widget">
   Here</a> is my original StackOverflow question that resulted in this widget.
 
-- The algorithm I used was based on <a href="https://xxyxyz.org/line-breaking/">this one</a>
-  (Divide and Conquer), which always considers `spacing: 1.0`. It was changed (with the help
-  of <a href="https://cs.stackexchange.com/users/114242/codechef">CodeChef</a>)
-  to allow for other spacings.
+- The algorithm I used was based on <a href="https://xxyxyz.org/line-breaking/">this
+  one</a> (Divide and Conquer), which always considers `spacing: 1.0`. It was changed
+  (with the help of <a href="https://cs.stackexchange.com/users/114242/codechef">
+  CodeChef</a>) to allow for other spacings.
 
-- Add your thumbs up <a href="https://github.com/flutter/flutter/issues/53549">here</a> if you want
-  native `Text` widgets to also allow for better line-breaks.
+- Add your thumbs up <a href="https://github.com/flutter/flutter/issues/53549">here</a> if
+  you want native `Text` widgets to also allow for better line-breaks.
 
 ## WrapFit
 
-After `WrapSuper` distributes its children in each line, the `wrapFit` parameter defines the width
-of the widgets:
+After `WrapSuper` distributes its children in each line, the `wrapFit` parameter defines
+the width of the widgets:
 
 * **`min`** (the default) will keep each widget's original width.
 
-* **`divided`** will make widgets fit all the available horizontal space. All widgets in a line will
-  have the same width, even if it makes them smaller that their original width.
+* **`divided`** will make widgets fit all the available horizontal space. All widgets in a
+  line will have the same width, even if it makes them smaller that their original width.
 
-* **`proportional`** will make widgets larger, so that they fit all the available space. Each widget
-  width will be proportional to their original width.
+* **`proportional`** will make widgets larger, so that they fit all the available space.
+  Each widget width will be proportional to their original width.
 
-* **`larger`** will make widgets larger, so that they fit all the available space. Will try to make
-  all widgets the same width, but won't make any widgets smaller than their original width. In more
-  detail: 1) First, divide the available line width by the number of widgets in the line. That is
-  the preferred width. 2) Keep the width of all widgets larger than that preferred width. 3)
-  Calculate the remaining width and divide it equally by the remaining widgets.
+* **`larger`** will make widgets larger, so that they fit all the available space. Will
+  try to make all widgets the same width, but won't make any widgets smaller than their
+  original width. In more detail: 1) First, divide the available line width by the number
+  of widgets in the line. That is the preferred width. 2) Keep the width of all widgets
+  larger than that preferred width. 3) Calculate the remaining width and divide it equally
+  by the remaining widgets.
 
 Some examples:
 
@@ -424,15 +439,16 @@ WrapFit example</a>.
 
 # ButtonBarSuper
 
-`ButtonBarSuper` has a similar API to a regular `ButtonBar`, but will distribute its buttons by
+`ButtonBarSuper` has a similar API to a regular `ButtonBar`, but will distribute its
+buttons by
 using a `WrapSuper`.
 
 ![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/buttonBar.png)
 
-The default (which may be changed) is `WrapType.balanced` and `WrapFit.larger`, which means it will
-distribute the buttons in as little lines as possible in a balanced way; will make the buttons fill
-all the available horizontal space; and will try to make buttons have similar width in each line,
-without reducing their widths.
+The default (which may be changed) is `WrapType.balanced` and `WrapFit.larger`, which
+means it will distribute the buttons in as little lines as possible in a balanced way;
+will make the buttons fill all the available horizontal space; and will try to make
+buttons have similar width in each line, without reducing their widths.
 
 Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_button_bar_super.dart">
@@ -445,8 +461,8 @@ ButtonBarSuper example</a>.
 `TextOneLine` is a substitute for `Text` when `maxLines: 1`, to fix this issue:
 https://github.com/flutter/flutter/issues/18761 filled by myself a long time ago.
 
-It renders ellipsis as expected, much better than the current/ buggy and ugly-looking ellipsis of
-the native `Text` widget, which cuts the whole word.
+It renders ellipsis as expected, much better than the current/ buggy and ugly-looking
+ellipsis of the native `Text` widget, which cuts the whole word.
 
 For example, this:
 
@@ -476,12 +492,12 @@ This isAVeryLongWordToDemonst...
 
 # Delayed
 
-`Delayed` can be used to give a widget some initial value, and then, after some delay, change it to
-another value. As we'll see, `Delayed` is specially useful when used with *implicitly animated
-widgets*.
+`Delayed` can be used to give a widget some initial value, and then, after some delay,
+change it to another value. As we'll see, `Delayed` is specially useful when used
+with *implicitly animated widgets*.
 
-As soon as `Delayed` is inserted into the tree, it will build the widget returned by `builder`
-with `initialized==false`. Then:
+As soon as `Delayed` is inserted into the tree, it will build the widget returned
+by `builder` with `initialized==false`. Then:
 
 * If `delay` is `null`, it will rebuild with `initialized==true`
   in the next frame (usually 16 milliseconds later).
@@ -552,7 +568,8 @@ Delayed example</a>.
 # Pad
 
 `Pad` is an `EdgeInsetsGeometry` which is easy to type and remember.
-It can be used in all widgets that accept `padding`, like `Container`, `Padding` and `Box`.
+It can be used in all widgets that accept `padding`, like `Container`, `Padding` and
+`Box`.
 
 For example, instead of writing `padding: EdgeInsets.symmetric(vertical: 12)`
 you can write simply `padding: Pad(vertical: 12)`.
@@ -576,14 +593,15 @@ Pad(vertical: 12)
 Pad(vertical: 12, horizontal: 6)
 ```
 
-You can also compose paddings. For example, if you want 40 pixels of padding in all directions,
-except the top with 50 pixels: `padding: Pad(all: 40, top: 10)`.
+You can also compose paddings. For example, if you want 40 pixels of padding in all
+directions, except the top with 50 pixels: `padding: Pad(all: 40, top: 10)`.
 
-During development, you sometimes need to temporarily remove the padding, for debugging reasons.
+During development, you sometimes need to temporarily remove the padding, for debugging
+reasons.
 Unfortunately you can't just comment the padding parameter, because the
 `Padding` widget doesn't accept `null` padding. But you can just add `.x` to the
-`Pad` class to remove it. It's marked as `deprecated` so that you don't forget to change it back to
-normal:
+`Pad` class to remove it. It's marked as `deprecated` so that you don't forget to change
+it back to normal:
 
 ```
 // This is the same as Pad.zero.
@@ -607,22 +625,22 @@ Pad(all: 40).copyWith(bottom: 10);
 
 # NormalizedOverflowBox
 
-A `NormalizedOverflowBox` is a widget that imposes different constraints on its child than it gets
-from its parent, possibly allowing the child to overflow the parent.
+A `NormalizedOverflowBox` is a widget that imposes different constraints on its child than
+it gets from its parent, possibly allowing the child to overflow the parent.
 
-A `NormalizedOverflowBox` is similar to an `OverflowBox`. However, then `OverflowBox` may throw
-errors if it gets constraints which are incompatible with its own constraints. For example, if an
-`OverflowBox` is inside a container with `maxWidth` 100, and its own `minWidth` is 150, it will
-throw:
+A `NormalizedOverflowBox` is similar to an `OverflowBox`. However, then `OverflowBox` may
+throw errors if it gets constraints which are incompatible with its own constraints. For
+example, if an `OverflowBox` is inside a container with `maxWidth` 100, and its
+own `minWidth` is 150, it will throw:
 
 ```
 The following assertion was thrown during performLayout():
 BoxConstraints has non-normalized width constraints. 
 ```
 
-The `NormalizedOverflowBox`, on the other hand, will just make sure `maxWidth` is also 150 in the
-above example, and throw no errors. In other words, a `NormalizedOverflowBox` is safer to use, and
-in my opinion has the behavior `OverflowBox` should have had.
+The `NormalizedOverflowBox`, on the other hand, will just make sure `maxWidth` is also 150
+in the above example, and throw no errors. In other words, a `NormalizedOverflowBox` is
+safer to use, and in my opinion has the behavior `OverflowBox` should have had.
 
 Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_normalized_overflow_box.dart">
@@ -633,9 +651,9 @@ regular `OverflowBox`es and see where it fails.
 
 # showDialogSuper and showCupertinoDialogSuper
 
-Functions `showDialogSuper` and `showCupertinoDialogSuper` are identical to the native `showDialog`
-and `showCupertinoDialog`, except that they let you define an `onDismissed` callback for when the
-dialog is dismissed:
+Functions `showDialogSuper` and `showCupertinoDialogSuper` are identical to the
+native `showDialog` and `showCupertinoDialog`, except that they let you define
+an `onDismissed` callback for when the dialog is dismissed:
 
 ```
 showDialogSuper(
@@ -647,16 +665,17 @@ showDialogSuper(
 
 Usually there are 3 ways to close a dialog:
 
-1) Pressing some button on the dialog that closes it (usually by calling `Navigator.pop(context)`).
+1) Pressing some button on the dialog that closes it (usually by calling
+   `Navigator.pop(context)`).
 2) Tapping the barrier.
 3) Pressing the Android back button.
 
 All three ways will result in the `onDismissed` callback being called.
 
-However, when the dialog is popped by `Navigator.of(context).pop(result)` you will get the `result`
-in the `onDismissed` callback. That way you can differentiate between the dialog being dismissed by
-an Ok or a Cancel button. The `result` is `null` when the dialog is dismissed by tapping the barrier
-or pressing BACK in Android. Example:
+However, when the dialog is popped by `Navigator.of(context).pop(result)` you will get
+the `result` in the `onDismissed` callback. That way you can differentiate between the
+dialog being dismissed by an Ok or a Cancel button. The `result` is `null` when the dialog
+is dismissed by tapping the barrier or pressing BACK in Android. Example:
 
 ```                                                                             
 showDialogSuper<int>(
@@ -673,7 +692,8 @@ showDialogSuper<int>(
   });  
 ```
 
-This method was created to solve this issue: https://github.com/flutter/flutter/issues/26542
+This method was created to solve this
+issue: https://github.com/flutter/flutter/issues/26542
 filled by myself a long time ago.
 
 Try running
@@ -684,25 +704,29 @@ showDialogSuper Example</a>.
 
 # TimeBuilder
 
-If you need some widget to change periodically (clocks, countdowns, stopwatches etc.), one way of
-implementing this is using a `Timer` to rebuild it. This is, however, very inefficient and may make
-your app slow.
+If you need some widget to change periodically (clocks, countdowns, stopwatches etc.), one
+way of implementing this is using a `Timer` to rebuild it. This is, however, very
+inefficient and may make your app slow.
 
-The `TimeBuilder` widget gives you the correct implementation of periodic rebuilds. It's based on
-<a href="https://gist.github.com/rrousselGit/beaf7442a20ea7e2ed3f13bbd40984a8">Remi Rousselet's
-code</a> and you can <a href="https://dash-overflow.net/articles/why_vsync/">read all about it
-here</a>.
+The `TimeBuilder` widget gives you the correct implementation of periodic rebuilds. It's
+based on
+<a href="https://gist.github.com/rrousselGit/beaf7442a20ea7e2ed3f13bbd40984a8">Remi
+Rousselet's code</a> and you can <a href="https://dash-overflow.net/articles/why_vsync/">
+read all about it here</a>.
 
-Apart from better performance, using the `TimeBuilder` widget has the following advantages:
+Apart from better performance, using the `TimeBuilder` widget has the following
+advantages:
 
-* Compatible with DevTools "slow animations", which reduce the speed of `AnimationController`s.
+* Compatible with DevTools "slow animations", which reduce the speed of
+  `AnimationController`s.
 
-* Compatible with `Clock` changes, allowing for testing (skip frames to target a specific moment in
+* Compatible with `Clock` changes, allowing for testing (skip frames to target a specific
+  moment in
   time).
 
-* The `TimeBuilder` widget animation is "muted" when the widget is not visible. For example, when
-  the widget is a route that is currently not visible, or because of an ancestor widget such
-  as `Visibility`.
+* The `TimeBuilder` widget animation is "muted" when the widget is not visible. For
+  example, when the widget is a route that is currently not visible, or because of an
+  ancestor widget such as `Visibility`.
 
 Let's see some examples.
 
@@ -772,8 +796,8 @@ const TimeBuilder({
 
 You must provide the `builder` and `ifRebuilds` callbacks.
 
-For each frame, Flutter will first call your `ifRebuilds` callback, which may return `true`
-or `false`:
+For each frame, Flutter will first call your `ifRebuilds` callback, which may
+return `true` or `false`:
 
 ```
 typedef IfRebuilds = bool Function({
@@ -789,8 +813,8 @@ typedef IfRebuilds = bool Function({
 });
 ```
 
-Only when it returns `true`, the `builder` will be asked to generate a widget. The `builder`
-callback is of type `TimerWidgetBuilder`:
+Only when it returns `true`, the `builder` will be asked to generate a widget.
+The `builder` callback is of type `TimerWidgetBuilder`:
 
 ```
 typedef TimerWidgetBuilder = Widget Function(
@@ -807,15 +831,15 @@ typedef TimerWidgetBuilder = Widget Function(
 );
 ```
 
-There is also an optional `isFinished` callback. Returning `true` here will generate one last
-rebuild, and then stop the animation for good (no more rebuilds).
+There is also an optional `isFinished` callback. Returning `true` here will generate one
+last rebuild, and then stop the animation for good (no more rebuilds).
 
 <br>
 
 # GlobalValueKey and GlobalStringKey
 
-For **local** keys, Flutter provides `ObjectKey` and `ValueKey`. But for **global** keys, it
-provides only `GlobalObjectKey`, which compares by **identity**:
+For **local** keys, Flutter provides `ObjectKey` and `ValueKey`. But for **global** keys,
+it provides only `GlobalObjectKey`, which compares by **identity**:
 
 ```
 Key keyA = GlobalObjectKey('1' + '23');
@@ -849,7 +873,8 @@ keyA == keyB; // also true
 
 ## Advanced
 
-There are many use cases for the `GlobalValueKey`, but I'd like to point out two in particular:
+There are many use cases for the `GlobalValueKey`, but I'd like to point out two in
+particular:
 
 ### 1) Creating keys inside the build method
 
@@ -867,14 +892,14 @@ Flutter's documentation for global keys states that:
 /// instantiate it outside the build method, such as in [State.initState].
 ```
 
-However, this is only correct for Flutter's native `GlobalObjectKey`. The keys provided here in this
-package can indeed be recreated on every build with no problems (as long, of course, as the value
-you use to create the key has a well-behaved `operator ==`).
+However, this is only correct for Flutter's native `GlobalObjectKey`. The keys provided
+here in this package can indeed be recreated on every build with no problems (as long, of
+course, as the value you use to create the key has a well-behaved `operator ==`).
 
 ### 2) Global keys from data classes
 
-Suppose you want to derive keys from data classes, and then find widgets that correspond to them.
-For example, you have a `User` data class:
+Suppose you want to derive keys from data classes, and then find widgets that correspond
+to them. For example, you have a `User` data class:
 
 ```
 class User {
@@ -913,26 +938,31 @@ static UserWidgetState? currentState(User user) =>
   GlobalValueKey<UserWidgetState>(user).currentState; 
 ```
 
-You now have easy access to your widget state, from anywhere: `UserWidget.currentState(someUser)`
+You now have easy access to your widget state, from anywhere:
+`UserWidget.currentState(someUser)`
 
-You can find a <a href="https://github.com/marcglasberg/global_keys/example/lib/main.dart">complete
+You can find
+a <a href="https://github.com/marcglasberg/global_keys/example/lib/main.dart">complete
 working example here</a>.
 
 ### Some thoughts about global keys
 
-Global keys much more powerful than local keys, but in general, should not be used extensively. They
-are workarounds. I guess that's why Flutter does not provide a `GlobalValueKey` out of the box: Not
-to make global keys even more useful. Flutter has this philosophy that things that are useful, but
-can be used wrong, should be made difficult. In any case, I found that `GlobalValueKey` can
-sometimes make complex code orders of magnitude simpler.
+Global keys much more powerful than local keys, but in general, should not be used
+extensively. They
+are workarounds. I guess that's why Flutter does not provide a `GlobalValueKey` out of the
+box: Not to make global keys even more useful. Flutter has this philosophy that things
+that are useful, but can be used wrong, should be made difficult.
+In any case, I found that `GlobalValueKey` can sometimes make complex code orders of
+magnitude simpler.
 
 <br>
 
 # MaskFunctionTextInputFormatter
 
-The `MaskFunctionTextInputFormatter` is a special `TextInputFormatter` that lets you format the text
-in a `TextField` or `TextFormField` as the user types, according to a mask; as well as also change
-that mask according to what is typed.
+The `MaskFunctionTextInputFormatter` is a special `TextInputFormatter` that lets you
+format the text
+in a `TextField` or `TextFormField` as the user types, according to a mask; as well as
+also change that mask according to what is typed.
 
 To use it, create your formatter and pass it to a `TextField` or `TextFormField`:
 
@@ -943,9 +973,11 @@ TextField(
 ```
 
 This code is adapted from another package
-called <a href="https://pub.dev/packages/mask_text_input_formatter">mask_text_input_formatter</a>
-by <a href="https://github.com/siqwin">Sergey</a>. The difference here is that instead of providing
-a `mask`, you provide a `maskFunction` that can change the mask automatically as the user types.
+called <a href="https://pub.dev/packages/mask_text_input_formatter">
+mask_text_input_formatter</a>
+by <a href="https://github.com/siqwin">Sergey</a>. The difference here is that instead of
+providing a `mask`, you provide a `maskFunction` that can change the mask automatically as
+the user types.
 
 The `maskFunction` is of type `MaskFunction`:
 
@@ -956,9 +988,9 @@ typedef MaskFunction = String? Function({
 });
 ```
 
-For example, suppose you want to format the text as `######` (where each `#` is a number) while the
-user typed less than 7 numbers, but you want to format it as `###.###.###-##` for more chars than
-that:
+For example, suppose you want to format the text as `######` (where each `#` is a number)
+while the user typed less than 7 numbers, but you want to format it as `###.###.###-##`
+for more chars than that:
 
 ```
 var myFormatter = MaskFunctionTextInputFormatter(mask: _myFormatter);
@@ -972,9 +1004,9 @@ String? _myFormatter({
 }
 ```
 
-When you create the formatter, you can also provide a `filter` parameter, to define the possible
-characters in the mask. If you don't provide the `filter` parameter, the default is that `#` matches
-a number, and `A` matches a letter:
+When you create the formatter, you can also provide a `filter` parameter, to define the
+possible characters in the mask. If you don't provide the `filter` parameter, the default
+is that `#` matches a number, and `A` matches a letter:
 
 ```
 var myFormatter = MaskFunctionTextInputFormatter(
@@ -993,26 +1025,29 @@ print(maskFormatter.getUnmaskedText()); // -> 01234567890
 ```
 
 **Important:** Once again, please note all the above code is based
-upon <a href="https://pub.dev/packages/mask_text_input_formatter">mask_text_input_formatter</a>
-by <a href="https://github.com/siqwin">Sergey</a>. The ONLY thing I added was the possibility of
-using a function that changes the mask. All the rest is from the original package, and credit
-belongs to their authors.
+upon <a href="https://pub.dev/packages/mask_text_input_formatter">
+mask_text_input_formatter</a>
+by <a href="https://github.com/siqwin">Sergey</a>. The ONLY thing I added was the
+possibility of using a function that changes the mask. All the rest is from the original
+package, and credit belongs to their authors.
 
 <br>
 
 # SideBySide
 
-The `SideBySide` widget arranges two widgets horizontally, while achieving a layout which is
-impossible for both the native `Row` and the `RowSuper` widgets.
+The `SideBySide` widget arranges two widgets horizontally, while achieving a layout which
+is impossible for both the native `Row` and the `RowSuper` widgets.
 
-* The `startChild` will be on the left, and will occupy as much space as it wants, up to the
-  available horizontal space.
+* The `startChild` will be on the left, and will occupy as much space as it wants, up to
+  the available horizontal space.
 
-* The `endChild` will be on the right of the `startChild` widget, and it will occupy the rest of the
-  available space. Note: This means, if the `startChild` widget occupies all the available space,
-  then `endChild` widget will not be displayed (since it will be sized as `0` width).
+* The `endChild` will be on the right of the `startChild` widget, and it will occupy the
+  rest of the available space. Note: This means, if the `startChild` widget occupies all
+  the available space, then `endChild` widget will not be displayed (since it will be
+  sized as `0` width).
 
-For example, suppose you want to create a title with a divider that occupies the rest of the space:
+For example, suppose you want to create a title with a divider that occupies the rest of
+the space:
 
 ```
 return SideBySide(
@@ -1025,12 +1060,12 @@ return SideBySide(
 
 ![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/sideBySide.png)
 
-You can add an `innerDistance`, in pixels, between the `startChild` and `endChild`. The default is
-zero. It can be negative, in which case the widgets will overlap. The `innerDistance` is only used
-if the `endChild` is actually displayed.
+You can add an `innerDistance`, in pixels, between the `startChild` and `endChild`. The
+default is zero. It can be negative, in which case the widgets will overlap. The
+`innerDistance` is only used if the `endChild` is actually displayed.
 
-You can define the `minEndChildWidth`, which is the minimum width, in pixels, that the `endChild`
-should occupy. The default is zero.
+You can define the `minEndChildWidth`, which is the minimum width, in pixels, that the
+`endChild` should occupy. The default is zero.
 
 The `crossAxisAlignment` parameter specifies how to align the `startChild` and `endChild`
 vertically. The default is to center them. At the moment, only
@@ -1044,10 +1079,11 @@ SideBySide example</a>.
 
 # Button
 
-The `Button` widget transforms any widget into a button with some immediate visual response to a
-tap. It provides you with a `builder`, and the `isPressed` boolean which tells you if the widget is
-being touched or not. It can also expand the click-area, show the click-area (for debug purposes),
-sustain the visual effect of the tap for some duration, and accepts a throttle period between taps:
+The `Button` widget transforms any widget into a button with some immediate visual
+response to a tap. It provides you with a `builder`, and the `isPressed` boolean which
+tells you if the widget is being touched or not. It can also expand the click-area, show
+the click-area (for debug purposes), sustain the visual effect of the tap for some
+duration, and accepts a throttle period between taps:
 
 ```
 Button(
@@ -1064,10 +1100,11 @@ Button(
 * When the user taps the button, the `isPressed` boolean will be true for at least
   `minVisualTapDuration`.
 
-* The widget will only feel another tap if `tapThrottle` duration has passed since the last tap.
+* The widget will only feel another tap if `tapThrottle` duration has passed since the
+  last tap.
 
-* The click-area can be expanded by a margin given by `clickAreaMargin`, thus making the widget
-  easier to tap.
+* The click-area can be expanded by a margin given by `clickAreaMargin`, thus making the
+  widget easier to tap.
 
 * If `debugShowClickableArea` is true, the click-area will be shown in red.
 
@@ -1079,14 +1116,15 @@ Button and CircleButton example</a>.
 
 # CircleButton
 
-The `CircleButton` is similar to Flutter's native `IconButton`, but with a few differences.
-Since circular buttons are small, the user's finger usually hides it during the tap. For this
-reason, the `CircleButton` will:
+The `CircleButton` is similar to Flutter's native `IconButton`, but with a few
+differences. Since circular buttons are small, the user's finger usually hides it during
+the tap. For this reason, the `CircleButton` will:
 
 * Show an immediate visual feedback to a tap, and then sustain that feedback for about 100
   milliseconds, enough time for the user to remove the finger and see it.
 
-* You can expand the click-area, to make the button easier to tap and improve usability. You can
+* You can expand the click-area, to make the button easier to tap and improve usability.
+  You can
   also show the click-area, for debug purposes.
 
 ```
@@ -1103,8 +1141,8 @@ CircleButton(
 );
 ```
 
-* The click-area can be expanded by a margin given by `clickAreaMargin`, thus making the widget
-  easier to tap.
+* The click-area can be expanded by a margin given by `clickAreaMargin`, thus making the
+  widget easier to tap.
 
 * If `debugShowClickableArea` is true, the click-area will be shown in red.
 
@@ -1116,28 +1154,31 @@ Button and CircleButton example</a>.
 
 # CaptureGestures
 
-A widget that captures gestures, preventing its parent (and ascending subtree) to detect them.
+A widget that captures gestures, preventing its parent (and ascending subtree) to detect
+them.
 
 How is this different from `IgnorePointer` and `AbsorbPointer`?
 
-`IgnorePointer` makes itself and its **child** (and the descending subtree) invisible to touches.
-This means, for example, if you put the `IgnorePointer` and its child above some widget inside a
-Stack, the touches will "pass through" the `IgnorePointer` and be felt by the widget below it.
-The gesture can also be felt by the `IgnorePointer`'s parent.
+`IgnorePointer` makes itself and its **child** (and the descending subtree) invisible to
+touches. This means, for example, if you put the `IgnorePointer` and its child above some
+widget inside a Stack, the touches will "pass through" the `IgnorePointer` and be felt by
+the widget below it. The gesture can also be felt by the `IgnorePointer`'s parent.
 
-`AbsorbPointer` also makes its **child** invisible to touches, but it will also prevent the touch to
-be felt by widgets below it in a Stack. But the gesture can be felt by the `AbsorbPointer`'s parent.
+`AbsorbPointer` also makes its **child** invisible to touches, but it will also prevent
+the touch to be felt by widgets below it in a Stack. But the gesture can be felt by
+the `AbsorbPointer`'s parent.
 
-As you can see, `IgnorePointer` and `AbsorbPointer` act on their children and on widgets below them
-in a Stack. However, in both cases the gesture can be felt by their parents.
+As you can see, `IgnorePointer` and `AbsorbPointer` act on their children and on widgets
+below them in a Stack. However, in both cases the gesture can be felt by their parents.
 
-For example, if you put `IgnorePointer` or `AbsorbPointer` inside a `ListView`, none of them will
-prevent the `ListView` to be scrolled, because the `ListView` is in the **ascending** subtree).
+For example, if you put `IgnorePointer` or `AbsorbPointer` inside a `ListView`, none of
+them will prevent the `ListView` to be scrolled, because the `ListView` is
+in the **ascending** subtree).
 
 The `CaptureGestures` however, will let its child feel the touches it cares about,
-and then capture and cancel other touches that reach the `CaptureGestures` itself. This means
-the `CaptureGestures` **parent** (and all the ascending subtree) will not feel the touches below
-the `CaptureGestures` area.
+and then capture and cancel other touches that reach the `CaptureGestures` itself. This
+means the `CaptureGestures` **parent** (and all the ascending subtree) will not feel the
+touches below the `CaptureGestures` area.
 
 The parameters for the `CaptureGestures.only()` constructor are:
 
@@ -1155,8 +1196,8 @@ The `CaptureGestures.tap()` constructor will capture only single tap gestures.
 
 ### Preventing scroll
 
-The `CaptureGestures.scroll()` constructor will capture only drag gestures (preventing both vertical
-and horizontal scroll).
+The `CaptureGestures.scroll()` constructor will capture only drag gestures (preventing
+both vertical and horizontal scroll).
 
 Consider this code:
 
@@ -1170,13 +1211,14 @@ ListView(
 );   
 ```
 
-Here, the `ElevatedButton` can feel the `onTap` gesture that it cares about. But the user cannot
-scroll the list by touching the button and dragging it up or down, because the drag gestures are
-getting captured by the `CaptureGestures`, never reaching the `ListView`.
+Here, the `ElevatedButton` can feel the `onTap` gesture that it cares about. But the user
+cannot scroll the list by touching the button and dragging it up or down, because the drag
+gestures are getting captured by the `CaptureGestures`, never reaching the `ListView`.
 
-Note: Setting the scrollable's physics to `NeverScrollableScrollPhysics()` is also an option, but
-sometimes you can't do that. Also, `CaptureGestures` allows you to choose just a part of the
-widget tree to cancel the scroll.
+Note: Setting the scrollable's physics to `NeverScrollableScrollPhysics()` is also an
+option, but sometimes you can't do that. Also, `CaptureGestures` allows you to choose just
+a part of
+the widget tree to cancel the scroll.
 
 Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_capture_gestures.dart">
@@ -1225,7 +1267,8 @@ NonUniformOutlineInputBorder example</a>.
 
 This may be used to style **buttons** and **containers**.
 
-Similar to Flutter's native `RoundedRectangleBorder` but you can hide some of the sides, by
+Similar to Flutter's native `RoundedRectangleBorder` but you can hide some of the sides,
+by
 setting `hideTopSide`, `hideBottomSide`, `hideRightSide` and `hideLeftSide` to false.
 
 Usage for buttons:
@@ -1264,7 +1307,8 @@ NonUniformRoundedRectangleBorder example</a>.
 
 Wrap your widget tree with a `KeyboardDismiss` so that:
 
-1) In iOS, if parameter `iOS` is true (the default), the keyboard will follow iOS's default
+1) In iOS, if parameter `iOS` is true (the default), the keyboard will follow iOS's
+   default
    behavior:
 
     - Keyboard closes when the user taps an empty area of the screen.
@@ -1275,19 +1319,21 @@ Wrap your widget tree with a `KeyboardDismiss` so that:
    the back button or executes the back gesture. However, if you want, you can force the
    Android to follow some iOS behaviors:
 
-    - Pass `androidCloseWhenTap` true, if you want the keyboard to close when the user taps an
-      empty area of the screen.
-    - Pass `androidCloseWhenSwipe` true, if you want the keyboard to close when the user swipes
-      down from just above the keyboard edge.
+    - Pass `androidCloseWhenTap` true, if you want the keyboard to close when the user
+      taps an empty area of the screen.
+    - Pass `androidCloseWhenSwipe` true, if you want the keyboard to close when the user
+      swipes down from just above the keyboard edge.
     - Pass `androidLoseFocus` true, if you want any focused element will lose focus.
 
 ### Placement
 
-The `KeyboardDismiss` widget must be put in a place where it has the same size of the screen.
-For example, if you use a `Scaffold`, the `KeyboardDismiss` should be **above** the scaffold, and
-not inside the scaffold's body.
+The `KeyboardDismiss` widget must be put in a place where it has the same size of the
+screen.
+For example, if you use a `Scaffold`, the `KeyboardDismiss` should be **above** the
+scaffold, and not inside the scaffold's body.
 
-A good place to put the `KeyboardDismiss` widget is in the `MaterialApp.builder` method, like so:
+A good place to put the `KeyboardDismiss` widget is in the `MaterialApp.builder` method,
+like so:
 
 ```
 MaterialApp(
@@ -1299,8 +1345,9 @@ MaterialApp(
 # AlignPositioned
 
 See package <a href="https://pub.dev/packages/align_positioned">align_positioned</a>
-for widgets `AlignPositioned` and its siblings `AnimatedAlignPositioned` and `AnimChain`. They
-should be part of this package, but will remain in their own package for historical reasons.
+for widgets `AlignPositioned` and its siblings `AnimatedAlignPositioned` and `AnimChain`.
+They should be part of this package, but will remain in their own package for historical
+reasons.
 
 <br>
 
@@ -1309,7 +1356,8 @@ should be part of this package, but will remain in their own package for histori
 *The Flutter packages I've authored:*
 
 * <a href="https://pub.dev/packages/async_redux">async_redux</a>
-* <a href="https://pub.dev/packages/fast_immutable_collections">fast_immutable_collections</a>
+* <a href="https://pub.dev/packages/fast_immutable_collections">
+  fast_immutable_collections</a>
 * <a href="https://pub.dev/packages/provider_for_redux">provider_for_redux</a>
 * <a href="https://pub.dev/packages/i18n_extension">i18n_extension</a>
 * <a href="https://pub.dev/packages/align_positioned">align_positioned</a>
@@ -1342,7 +1390,8 @@ should be part of this package, but will remain in their own package for histori
 
 *My article in the official Flutter documentation*:
 
-* <a href="https://flutter.dev/docs/development/ui/layout/constraints">Understanding constraints</a>
+* <a href="https://flutter.dev/docs/development/ui/layout/constraints">Understanding
+  constraints</a>
 
 <br>_Marcelo Glasberg:_<br>
 _https://github.com/marcglasberg_<br>
@@ -1350,4 +1399,3 @@ _https://linkedin.com/in/marcglasberg/_<br>
 _https://twitter.com/glasbergmarcelo_<br>
 _https://stackoverflow.com/users/3411681/marcg_<br>
 _https://medium.com/@marcglasberg_<br>
-

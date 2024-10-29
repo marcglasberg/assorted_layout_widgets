@@ -1,4 +1,8 @@
-## 9.1.0-dev.1
+## 10.0.0
+
+* Sponsored by [MyText.ai](https://mytext.ai)
+
+[![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
 * Now `CircleButton` can specify `hoverColor` (default is no color),
   and `cursor` (the default is `SystemMouseCursors.click`, but you can pass `null` to
@@ -260,4 +264,3 @@
 ## 1.0.0
 
 * `RowSuper` and `ColumnSuper` widgets.
-
