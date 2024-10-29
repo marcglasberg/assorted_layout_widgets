@@ -1,8 +1,11 @@
-## 10.0.0
+## 10.0.2
 
 * Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
+
+* Removed `KeyboardDismiss` dependency on `dart:io` to make it compatible with platform
+  web.
 
 * Now `CircleButton` can specify `hoverColor` (default is no color),
   and `cursor` (the default is `SystemMouseCursors.click`, but you can pass `null` to
@@ -22,7 +25,8 @@
 
 ## 8.0.4
 
-* Removed deprecated `TextOneLineEllipsisWithFade` widget. Please use `TextOneLine` instead.
+* Removed deprecated `TextOneLineEllipsisWithFade` widget. Please use `TextOneLine`
+  instead.
 
 ## 7.0.1
 
@@ -78,7 +82,8 @@
 
 ## 5.1.1
 
-* Fixed alignment bug in `RowSuper` when `fill: true` and `MainAxisSize.max` and `Alignment.center`.
+* Fixed alignment bug in `RowSuper` when `fill: true` and `MainAxisSize.max` and
+  `Alignment.center`.
 
 ## 5.1.0
 
@@ -89,24 +94,31 @@
 * `Box.copyWith()` method.
 
 * Now `Box` can be changed by using the `operator +`. For example, to hide the
-  box: `Box(...) + false;`. To change the box color: `Box(...) + Colors.green;`. To change the box
-  padding: `Box(...) + Pad(all: 10);`. To substitute the box child: `Box(...) + Text('abc');`. To
+  box: `Box(...) + false;`. To change the box color: `Box(...) + Colors.green;`. To change
+  the box
+  padding: `Box(...) + Pad(all: 10);`. To substitute the box child:
+  `Box(...) + Text('abc');`. To
   put a box inside of another: `Box(...) + Box(...);`.
 
 ## 5.0.2
 
 * Now `TextOneLine` is more similar to the native `Text` widget, in preparation for when
-  https://github.com/flutter/flutter/issues/18761 is fixed. You probably won't notice the difference
+  https://github.com/flutter/flutter/issues/18761 is fixed. You probably won't notice the
+  difference
   and may continue using it as usual.
 
 ## 5.0.1
 
 * `showCupertinoDialogSuper`.
 
-* The `onDismissed` callback parameter for `showDialogSuper` is called when the dialog is dismissed.
-  That's still the case, but now that callback gets the `result` of the dialog, when the dialog is
-  popped by `Navigator.of(context).pop(result)`. That way you can differentiate between the dialog
-  being dismissed by an Ok or a Cancel button, for example. Note `result` is `null` when the dialog
+* The `onDismissed` callback parameter for `showDialogSuper` is called when the dialog is
+  dismissed.
+  That's still the case, but now that callback gets the `result` of the dialog, when the
+  dialog is
+  popped by `Navigator.of(context).pop(result)`. That way you can differentiate between
+  the dialog
+  being dismissed by an Ok or a Cancel button, for example. Note `result` is `null` when
+  the dialog
   is dismissed by tapping the barrier or pressing BACK in Android. Example:
 
   ```                                                                             
@@ -130,12 +142,14 @@
 
 ## 4.0.9
 
-* `showDialogSuper` method is identical to the native `showDialog`, except that it lets you define a
+* `showDialogSuper` method is identical to the native `showDialog`, except that it lets
+  you define a
   callback for when the dialog is dismissed.
 
 ## 4.0.8
 
-* Fixed important bug in `FitHorizontally` widget (and `RowSuper` when using the `fitHorizontally`
+* Fixed important bug in `FitHorizontally` widget (and `RowSuper` when using the
+  `fitHorizontally`
   parameter).
 
 ## 4.0.7
@@ -164,18 +178,23 @@
 ## 4.0.0
 
 * Nullsafety.
-* `RowSuper` horizontal alignment now applied when there are no `RowSpacer`s and `MainAxisSize`
+* `RowSuper` horizontal alignment now applied when there are no `RowSpacer`s and
+  `MainAxisSize`
   is `max`.
 
 ## 3.0.1
 
-* Breaking change: The `Box` widget now has a `padding` parameter. I recommend you use it with the
-  new `Pad` class. For example: `Box(padding: Pad(top: 4.0))`. The `Pad` class solves the verbosity
+* Breaking change: The `Box` widget now has a `padding` parameter. I recommend you use it
+  with the
+  new `Pad` class. For example: `Box(padding: Pad(top: 4.0))`. The `Pad` class solves the
+  verbosity
   problem, and having a `padding` parameter makes `Box` more compatible with `Container` (
-  remember `Box` is like a `Container` which can be made `const`, so it's best if their parameters
+  remember `Box` is like a `Container` which can be made `const`, so it's best if their
+  parameters
   are not too different).
 
-* The debugging constructors of the `Box` widget are now marked as deprecated so that you don't
+* The debugging constructors of the `Box` widget are now marked as deprecated so that you
+  don't
   forget to remove them (they are not really deprecated).
 
 ## 2.0.1
@@ -205,11 +224,14 @@
 
 ## 1.2.0
 
-* Breaking Change: `ColumnSuper` width is now the max intrinsic width of its children, just like a
+* Breaking Change: `ColumnSuper` width is now the max intrinsic width of its children,
+  just like a
   regular `Column`. To restore old
   behavior: `Container(width: double.infinity, child: ColumnSuper(...))`.
-* Breaking Change: `RowSuper` height is now the max intrinsic height of its children, just like a
-  regular `Row`. To restore old behavior: `Container(height: double.infinity, child: RowSuper(...))`
+* Breaking Change: `RowSuper` height is now the max intrinsic height of its children, just
+  like a
+  regular `Row`. To restore old behavior:
+  `Container(height: double.infinity, child: RowSuper(...))`
   .
 * New examples:
   <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_column_super_playground.dart">

@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 
@@ -52,30 +51,38 @@ class KeyboardDismiss extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //
-    // IOS ---------
-    if (Platform.isIOS && iOS)
-      return swipingDownJustAboveKeyboard(context, tappingAnywhere(context, child));
-    //
-    // ANDROID -----
-    else if (Platform.isAndroid) {
-      //
-      if (androidCloseWhenTap && androidCloseWhenSwipe)
-        return swipingDownJustAboveKeyboard(context, tappingAnywhere(context, child));
-      //
-      else if (androidCloseWhenSwipe)
-        return swipingDownJustAboveKeyboard(context, child);
-      //
-      else if (androidCloseWhenTap)
-        return tappingAnywhere(context, child);
-      //
-      else
-        return child;
+    // WEB ------
+    if (kIsWeb) {
+      // Don't do anything for web.
+      return child;
     }
     //
-    // OTHERS ------
     else {
-      // Don't do anything for other platforms.
-      return child;
+      // IOS ---------
+      if (defaultTargetPlatform == TargetPlatform.iOS && iOS)
+        return swipingDownJustAboveKeyboard(context, tappingAnywhere(context, child));
+      //
+      // ANDROID -----
+      else if (defaultTargetPlatform == TargetPlatform.android) {
+        //
+        if (androidCloseWhenTap && androidCloseWhenSwipe)
+          return swipingDownJustAboveKeyboard(context, tappingAnywhere(context, child));
+        //
+        else if (androidCloseWhenSwipe)
+          return swipingDownJustAboveKeyboard(context, child);
+        //
+        else if (androidCloseWhenTap)
+          return tappingAnywhere(context, child);
+        //
+        else
+          return child;
+      }
+      //
+      // OTHERS ------
+      else {
+        // Don't do anything for other platforms.
+        return child;
+      }
     }
   }
 
@@ -117,10 +124,10 @@ class KeyboardDismiss extends StatelessWidget {
 
   void _keyboardDismiss(BuildContext context) {
     //
-    if (Platform.isIOS)
+    if (defaultTargetPlatform == TargetPlatform.iOS)
       keyboardDismiss(context, ifRemovesFocus: true);
     //
-    else if (Platform.isAndroid)
+    else if (defaultTargetPlatform == TargetPlatform.android)
       keyboardDismiss(context, ifRemovesFocus: androidLoseFocus);
     //
     else {
