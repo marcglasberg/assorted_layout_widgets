@@ -1,8 +1,13 @@
-## 10.0.3
-
-* Sponsored by [MyText.ai](https://mytext.ai)
+Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
+
+## 10.0.4
+
+* Fixed `GestureDetector` ordering issue for `RowSuper` and `ColumnSuper` when
+  the `invert` param is `true`.
+
+## 10.0.3
 
 * Removed `KeyboardDismiss` dependency on `dart:io` to make it compatible with platform
   web.

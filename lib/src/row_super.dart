@@ -6,10 +6,16 @@ import 'package:flutter/rendering.dart';
 
 // Developed by Marcelo Glasberg (nov 2019).
 
+/// Given a list of children widgets, this will arrange them in a row.
+/// It can overlap cells, add separators and more.
+///
+/// On contrary to `ColumnSuper` and the native `Row` (which will overflow if the
+/// children are too large to fit the available free space), `RowSuper` may resize its
+/// children proportionately to their minimum intrinsic width.
+///
 /// For more info, see: https://pub.dartlang.org/packages/assorted_layout_widgets
 class RowSuper extends MultiChildRenderObjectWidget {
   //
-
   /// The distance in pixels before the first and after the last widget.
   /// It can be negative, in which case the cells will overflow the column
   /// (without any overflow warnings).
@@ -23,7 +29,8 @@ class RowSuper extends MultiChildRenderObjectWidget {
   /// This is specially useful when cells overlap (negative innerDistance).
   final bool invert;
 
-  /// How to align the cells horizontally, if they are smaller than the available horizontal space.
+  /// How to align the cells horizontally,
+  /// if they are smaller than the available horizontal space.
   final Alignment alignment;
 
   /// The [separator] is a widget which will be painted between each cells.
@@ -42,9 +49,9 @@ class RowSuper extends MultiChildRenderObjectWidget {
   final bool fitHorizontally;
 
   /// The shrink limit by default is 67%, which means the cell contents will shrink until
-  /// 67% of their original width, and then overflow. Make the shrink limit equal to 0.0 if you
-  /// want the cell contents to shrink with no limits. Note, if [fitHorizontally] is false,
-  /// the limit is not used.
+  /// 67% of their original width, and then overflow. Make the shrink limit equal to 0.0
+  /// if you want the cell contents to shrink with no limits. Note, if [fitHorizontally]
+  /// is false, the limit is not used.
   final double? shrinkLimit;
 
   /// How much space should be occupied in the main axis. The default is [MainAxisSize.min],
@@ -60,6 +67,14 @@ class RowSuper extends MultiChildRenderObjectWidget {
   /// intrinsic width, and the fill parameter will be ignored.
   final bool fill;
 
+  /// Given a list of children widgets, this will arrange them in a row.
+  /// It can overlap cells, add separators and more.
+  ///
+  /// On contrary to `ColumnSuper` and the native `Row` (which will overflow if the
+  /// children are too large to fit the available free space), `RowSuper` may resize its
+  /// children proportionately to their minimum intrinsic width.
+  ///
+  /// For more info, see: https://pub.dartlang.org/packages/assorted_layout_widgets
   RowSuper({
     Key? key,
     required List<Widget?> children,
@@ -75,7 +90,8 @@ class RowSuper extends MultiChildRenderObjectWidget {
     this.fill = false,
   }) : super(
             key: key,
-            children: _childrenPlusSeparator(children, separator, fitHorizontally, shrinkLimit));
+            children: _childrenPlusSeparator(
+                children, separator, fitHorizontally, shrinkLimit));
 
   static List<Widget> _childrenPlusSeparator(
     List<Widget?> children,
@@ -279,7 +295,9 @@ class _RenderRowSuperBox extends RenderBox
     //
     var availableWidth = max(
       0.0,
-      constraints.maxWidth - (outerDistance * 2) - (innerDistance * (_children!.length - 1)),
+      constraints.maxWidth -
+          (outerDistance * 2) -
+          (innerDistance * (_children!.length - 1)),
     );
 
     int numberOfSpacers = 0;
@@ -313,14 +331,17 @@ class _RenderRowSuperBox extends RenderBox
       double width = maxChildWidth[i];
 
       BoxConstraints innerConstraints = BoxConstraints(
-          maxHeight: constraints.maxHeight, maxWidth: width, minWidth: fill ? width : 0.0);
+          maxHeight: constraints.maxHeight,
+          maxWidth: width,
+          minWidth: fill ? width : 0.0);
 
       var child = _children![i];
       child.layout(innerConstraints, parentUsesSize: true);
       maxChildHeight = max(maxChildHeight, child.size.height);
     }
 
-    maxChildHeight = max(min(maxChildHeight, constraints.maxHeight), constraints.minHeight);
+    maxChildHeight =
+        max(min(maxChildHeight, constraints.maxHeight), constraints.minHeight);
 
     // Apply horizontal alignment only if there are no RowSpacers and should not fill.
     double alignmentDisplacement = ((numberOfSpacers == 0) &&
@@ -364,7 +385,53 @@ class _RenderRowSuperBox extends RenderBox
 
   @override
   bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
-    return defaultHitTestChildren(result, position: position);
+    return invert
+        ? _invertedHitTestChildren(result, position: position)
+        : _normalHitTestChildren(result, position: position);
+  }
+
+  bool _normalHitTestChildren(BoxHitTestResult result, {required Offset position}) {
+    RenderBox? child = lastChild;
+    while (child != null) {
+      // The x, y parameters have the top left of the node's box as the origin.
+      final childParentData = child.parentData! as ContainerBoxParentData<RenderBox>;
+      final bool isHit = result.addWithPaintOffset(
+        offset: childParentData.offset,
+        position: position,
+        hitTest: (BoxHitTestResult result, Offset transformed) {
+          assert(transformed == position - childParentData.offset);
+          return child!.hitTest(result, position: transformed);
+        },
+      );
+      if (isHit) {
+        return true;
+      }
+      child = childParentData.previousSibling;
+    }
+    return false;
+  }
+
+  bool _invertedHitTestChildren(BoxHitTestResult result, {required Offset position}) {
+    RenderBox? child = firstChild;
+
+    while (child != null) {
+      // The x, y parameters have the top left of the node's box as the origin.
+      final childParentData = child.parentData! as ContainerBoxParentData<RenderBox>;
+
+      final bool isHit = result.addWithPaintOffset(
+        offset: childParentData.offset,
+        position: position,
+        hitTest: (BoxHitTestResult result, Offset transformed) {
+          assert(transformed == position - childParentData.offset);
+          return child!.hitTest(result, position: transformed);
+        },
+      );
+      if (isHit) {
+        return true;
+      }
+      child = childParentData.nextSibling;
+    }
+    return false;
   }
 
   @override
@@ -412,14 +479,15 @@ class _RenderRowSuperBox extends RenderBox
     }
   }
 
-  void _paintSeparators(
-      int i, PaintingContext context, Offset offset, MultiChildLayoutParentData? childParentData) {
+  void _paintSeparators(int i, PaintingContext context, Offset offset,
+      MultiChildLayoutParentData? childParentData) {
     if (hasSeparator && i > 0 && i < _children!.length) {
       context.paintChild(
           renderSeparator!,
           offset +
               Offset(
-                childParentData!.offset.dx - (innerDistance + renderSeparator!.size.width) / 2,
+                childParentData!.offset.dx -
+                    (innerDistance + renderSeparator!.size.width) / 2,
                 dy(renderSeparator!, maxChildHeight),
               ));
     }
@@ -478,7 +546,8 @@ class RowSpacer extends MultiChildRenderObjectWidget {
 }
 
 class RenderRowSpacer extends RenderBox
-    with ContainerRenderObjectMixin<RenderObject, ContainerParentDataMixin<RenderObject>> {
+    with
+        ContainerRenderObjectMixin<RenderObject, ContainerParentDataMixin<RenderObject>> {
   @override
   void performLayout() {
     size = constraints.constrain(const Size(0.0, 0.0));

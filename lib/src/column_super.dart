@@ -5,22 +5,63 @@ import 'package:flutter/rendering.dart';
 
 // Developed by Marcelo Glasberg (nov 2019).
 
+/// Given a list of children widgets, this will arrange them in a column.
+/// It can overlap cells, add separators and more.
+///
+/// Note this is not a substitute for Flutter's native `Column`, it doesn't try to
+/// have a similar API, and it doesn't do all that `Column` does. In special,
+/// `Expanded` and `Flexible` widgets don't work inside of `ColumnSuper`, and it will
+/// overflow if the column is not big enough to fit its contents.
+/// `ColumnSuper` is meant only for certain use cases where `Column` won't work,
+/// like when you need overlapping cells or separators.
+///
 /// For more info, see: https://pub.dartlang.org/packages/assorted_layout_widgets
 class ColumnSuper extends MultiChildRenderObjectWidget {
   //
+  /// The distance in pixels before the first and after the last widget.
+  /// It can be negative, in which case the cells will overflow the column
+  /// (without any overflow warnings).
   final double outerDistance;
+
+  /// The distance in pixels between the cells. It can be negative,
+  /// in which case the cells will overlap.
   final double innerDistance;
+
+  /// If `true` will paint the cells that come later on top of the ones that came before.
+  /// This is specially useful when cells overlap (negative innerDistance).
   final bool invert;
+
+  /// How to align the cells horizontally,
+  /// if they are smaller than the available horizontal space.
   final Alignment alignment;
+
+  /// The separator is a widget which will be painted between each cell.
+  /// Its height doesn't matter, since the distance between cells is given by
+  /// innerDistance (in other words, separators don't occupy space).
+  /// The separator may overflow if its width is larger than the column's width.
   final Widget? separator;
+
+  /// If `true` (the default) will paint the separator on top of the cells.
+  /// If `false` will paint the separator below the cells.
   final bool separatorOnTop;
 
-  /// If true, children with zero height will not result in an extra [innerDistance]
-  /// and [separator]. If all children have zero height, the [outerDistance] will also be removed.
-  /// In other words, it's as if children with zero height are removed, except for the fact
-  /// they still occupy width. The default is false.
+  /// If `true`, children with zero height will not result in an extra [innerDistance]
+  /// and [separator]. If all children have zero height, the [outerDistance] will also
+  /// be removed. In other words, it's as if children with zero height are removed,
+  /// except for the fact they still occupy width. The default is `false`.
   final bool removeChildrenWithNoHeight;
 
+  /// Given a list of children widgets, this will arrange them in a column.
+  /// It can overlap cells, add separators and more.
+  ///
+  /// Note this is not a substitute for Flutter's native `Column`, it doesn't try to
+  /// have a similar API, and it doesn't do all that `Column` does. In special,
+  /// `Expanded` and `Flexible` widgets don't work inside of `ColumnSuper`, and it will
+  /// overflow if the column is not big enough to fit its contents.
+  /// `ColumnSuper` is meant only for certain use cases where `Column` won't work,
+  /// like when you need overlapping cells or separators.
+  ///
+  /// For more info, see: https://pub.dartlang.org/packages/assorted_layout_widgets
   ColumnSuper({
     Key? key,
     required List<Widget?> children,
@@ -203,9 +244,11 @@ class _RenderColumnSuperBox extends RenderBox
       child.layout(innerConstraints, parentUsesSize: true);
     }
 
-    if (removeChildrenWithNoHeight && _children.every((child) => child.size.height == 0)) {
+    if (removeChildrenWithNoHeight &&
+        _children.every((child) => child.size.height == 0)) {
       double width = 0;
-      for (RenderBox child in _children) if (child.size.width > width) width = child.size.width;
+      for (RenderBox child in _children)
+        if (child.size.width > width) width = child.size.width;
       size = constraints.constrain(Size(width, 0.0));
       return;
     }
@@ -237,7 +280,8 @@ class _RenderColumnSuperBox extends RenderBox
         renderSeparator!.layout(innerConstraints, parentUsesSize: false);
       }
 
-      size = constraints.constrain(Size(maxChildWidth, dy - innerDistance + outerDistance));
+      size =
+          constraints.constrain(Size(maxChildWidth, dy - innerDistance + outerDistance));
     }
   }
 
@@ -250,8 +294,56 @@ class _RenderColumnSuperBox extends RenderBox
 
   @override
   bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
-    return defaultHitTestChildren(result, position: position);
+    return invert
+        ? _invertedHitTestChildren(result, position: position)
+        : _normalHitTestChildren(result, position: position);
   }
+
+  bool _normalHitTestChildren(BoxHitTestResult result, {required Offset position}) {
+    RenderBox? child = lastChild;
+
+    while (child != null) {
+      // The x, y parameters have the top left of the node's box as the origin.
+      final childParentData = child.parentData! as ContainerBoxParentData<RenderBox>;
+
+      final bool isHit = result.addWithPaintOffset(
+        offset: childParentData.offset,
+        position: position,
+        hitTest: (BoxHitTestResult result, Offset transformed) {
+          assert(transformed == position - childParentData.offset);
+          return child!.hitTest(result, position: transformed);
+        },
+      );
+      if (isHit) {
+        return true;
+      }
+      child = childParentData.previousSibling;
+    }
+    return false;
+  }
+
+  bool _invertedHitTestChildren(BoxHitTestResult result, {required Offset position}) {
+  RenderBox? child = firstChild;
+
+  while (child != null) {
+    // The x, y parameters have the top left of the node's box as the origin.
+    final childParentData = child.parentData! as ContainerBoxParentData<RenderBox>;
+
+    final bool isHit = result.addWithPaintOffset(
+      offset: childParentData.offset,
+      position: position,
+      hitTest: (BoxHitTestResult result, Offset transformed) {
+        assert(transformed == position - childParentData.offset);
+        return child!.hitTest(result, position: transformed);
+      },
+    );
+    if (isHit) {
+      return true;
+    }
+    child = childParentData.nextSibling;
+  }
+  return false;
+}
 
   @override
   void paint(PaintingContext context, Offset offset) {
