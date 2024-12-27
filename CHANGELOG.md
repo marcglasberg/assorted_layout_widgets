@@ -2,6 +2,25 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 10.1.0
+
+* The `Box` widget can now have a `decoration`, as well as a `decorationPosition`.
+  Previously, if a `Container` had a decoration you could not replace it with a `Box`,
+  but now you can. Note the `Box` is a little more flexible than the `Container` when you
+  define a `color` and a `BoxDecoration` or a `ShapeDecoration` at the same time, as 
+  the `Box` will only throw an error if the `color` is defined twice.
+
+* You can use `Box.gap()` to create a small gap between widgets:
+
+  ```
+  Column(
+    children: [
+      Text('A'),
+      const Box.gap(8), // 8.0 pixel gap
+      Text('B'),
+    ]);
+  ```
+
 ## 10.0.4
 
 * Fixed `GestureDetector` ordering issue for `RowSuper` and `ColumnSuper` when

@@ -39,8 +39,26 @@ class Box extends StatelessWidget {
     this.alignment,
     this.child,
     this.removePaddingWhenNoChild = false,
+    this.decoration,
+    this.decorationPosition = DecorationPosition.background,
   })  : _random = false,
+        _fixedColor = false,
         super(key: key);
+
+  /// Creates a square box with [gap] by [gap] pixels.
+  /// This may be used for small gaps between widgets. For example:
+  ///
+  /// ```
+  /// Column(
+  ///   children: [
+  ///    Text('A'),
+  ///    const Box.gap(10),
+  ///    Text('B'),
+  ///   ],
+  /// );
+  ///  ```
+  ///
+  const Box.gap(double gap) : this(width: gap, height: gap);
 
   const Box._({
     Key? key,
@@ -52,8 +70,13 @@ class Box extends StatelessWidget {
     this.alignment,
     this.child,
     bool? random,
+    bool? removePaddingWhenNoChild,
+    this.decoration,
+    this.decorationPosition = DecorationPosition.background,
+    required bool fixedColor,
   })  : _random = random ?? false,
-        removePaddingWhenNoChild = false,
+        removePaddingWhenNoChild = removePaddingWhenNoChild ?? false,
+        _fixedColor = fixedColor,
         super(key: key);
 
   /// Adding `.r` to the box will make it red.
@@ -71,7 +94,9 @@ class Box extends StatelessWidget {
     Alignment? alignment,
     Widget? child,
     bool removePaddingWhenNoChild = false,
-  }) : this(
+    Decoration? decoration,
+    DecorationPosition decorationPosition = DecorationPosition.background,
+  }) : this._(
           key: key,
           show: show,
           color: Colors.red,
@@ -81,6 +106,9 @@ class Box extends StatelessWidget {
           alignment: alignment,
           child: child,
           removePaddingWhenNoChild: removePaddingWhenNoChild,
+          decoration: decoration,
+          decorationPosition: decorationPosition,
+          fixedColor: true,
         );
 
   /// Adding `.g` to the box will make it green.
@@ -98,7 +126,9 @@ class Box extends StatelessWidget {
     Alignment? alignment,
     Widget? child,
     bool removePaddingWhenNoChild = false,
-  }) : this(
+    Decoration? decoration,
+    DecorationPosition decorationPosition = DecorationPosition.background,
+  }) : this._(
           key: key,
           show: show,
           color: Colors.green,
@@ -108,6 +138,9 @@ class Box extends StatelessWidget {
           alignment: alignment,
           child: child,
           removePaddingWhenNoChild: removePaddingWhenNoChild,
+          decoration: decoration,
+          decorationPosition: decorationPosition,
+          fixedColor: true,
         );
 
   /// Adding `.b` to the box will make it blue.
@@ -125,7 +158,9 @@ class Box extends StatelessWidget {
     Alignment? alignment,
     Widget? child,
     bool removePaddingWhenNoChild = false,
-  }) : this(
+    Decoration? decoration,
+    DecorationPosition decorationPosition = DecorationPosition.background,
+  }) : this._(
           key: key,
           show: show,
           color: Colors.blue,
@@ -135,6 +170,9 @@ class Box extends StatelessWidget {
           alignment: alignment,
           child: child,
           removePaddingWhenNoChild: removePaddingWhenNoChild,
+          decoration: decoration,
+          decorationPosition: decorationPosition,
+          fixedColor: true,
         );
 
   /// Adding `.y` to the box will make it yellow.
@@ -152,7 +190,9 @@ class Box extends StatelessWidget {
     Alignment? alignment,
     Widget? child,
     bool removePaddingWhenNoChild = false,
-  }) : this(
+    Decoration? decoration,
+    DecorationPosition decorationPosition = DecorationPosition.background,
+  }) : this._(
           key: key,
           show: show,
           color: Colors.yellow,
@@ -162,6 +202,9 @@ class Box extends StatelessWidget {
           alignment: alignment,
           child: child,
           removePaddingWhenNoChild: removePaddingWhenNoChild,
+          decoration: decoration,
+          decorationPosition: decorationPosition,
+          fixedColor: true,
         );
 
   /// Use the `Box.rand` constructor to see when the widget rebuilds.
@@ -178,7 +221,10 @@ class Box extends StatelessWidget {
     this.alignment,
     this.child,
     this.removePaddingWhenNoChild = false,
+    this.decoration,
+    this.decorationPosition = DecorationPosition.background,
   })  : _random = true,
+        _fixedColor = true,
         super(key: key);
 
   final Color? color;
@@ -190,6 +236,9 @@ class Box extends StatelessWidget {
   final Widget? child;
   final bool _random;
   final bool removePaddingWhenNoChild;
+  final Decoration? decoration;
+  final DecorationPosition decorationPosition;
+  final bool _fixedColor;
 
   @override
   Widget build(BuildContext context) {
@@ -201,15 +250,76 @@ class Box extends StatelessWidget {
     if (padding != null && (child != null || !removePaddingWhenNoChild))
       current = Padding(padding: padding!, child: current);
 
+    var color = this.color;
+
     if (_random) {
       var rand = Random();
-      int r = (color == null) ? (30 + rand.nextInt(196)) : (color!.red + rand.nextInt(256)) ~/ 2;
-      int g = (color == null) ? (30 + rand.nextInt(196)) : (color!.green + rand.nextInt(256)) ~/ 2;
-      int b = (color == null) ? (30 + rand.nextInt(196)) : (color!.blue + rand.nextInt(256)) ~/ 2;
+
+      double r = (color == null)
+          ? (30 + rand.nextInt(196)) / 255.0
+          : (color.r + rand.nextDouble()) / 2;
+
+      double g = (color == null)
+          ? (30 + rand.nextInt(196)) / 255.0
+          : (color.g + rand.nextDouble()) / 2;
+
+      double b = (color == null)
+          ? (30 + rand.nextInt(196)) / 255.0
+          : (color.b + rand.nextDouble()) / 2;
+
+      color = Color.from(alpha: 1.0, red: r, green: g, blue: b);
+    }
+
+    if (decoration != null) {
+      if (color != null) {
+        if (decoration is BoxDecoration) {
+          BoxDecoration boxDecoration = (decoration as BoxDecoration);
+
+          if (boxDecoration.color != null && !_fixedColor)
+            throw ArgumentError(
+                "You can't set both 'color' and a 'BoxDecoration' at the same time.");
+
+          current = DecoratedBox(
+            decoration: boxDecoration.copyWith(color: color),
+            position: decorationPosition,
+            child: current,
+          );
+        }
+        //
+        else if (decoration is ShapeDecoration) {
+          ShapeDecoration shapeDecoration = (decoration as ShapeDecoration);
+
+          if (shapeDecoration.color != null && !_fixedColor)
+            throw ArgumentError(
+                "You can't set both 'color' and a 'ShapeDecoration' at the same time.");
+
+          current = DecoratedBox(
+            decoration: shapeDecoration.copyWith(color: color),
+            position: decorationPosition,
+            child: current,
+          );
+        }
+        //
+        else
+          throw ArgumentError(
+              "You can't set both 'color' and 'decoration' at the same time. Use only one of them.");
+      }
+      //
+      // Color is null.
+      else {
+        current = DecoratedBox(
+          decoration: decoration!,
+          position: decorationPosition,
+          child: current,
+        );
+      }
+    }
+    //
+    else if (color != null)
       current = DecoratedBox(
-          decoration: BoxDecoration(color: Color.fromARGB(255, r, g, b)), child: current);
-    } else if (color != null)
-      current = DecoratedBox(decoration: BoxDecoration(color: color), child: current);
+        decoration: BoxDecoration(color: color),
+        child: current,
+      );
 
     if (width != null || height != null)
       current = ConstrainedBox(
@@ -242,6 +352,8 @@ class Box extends StatelessWidget {
     double? height,
     AlignmentGeometry? alignment,
     bool? random,
+    Decoration? decoration,
+    DecorationPosition? decorationPosition,
     Widget? child,
   }) {
     return Box._(
@@ -253,6 +365,9 @@ class Box extends StatelessWidget {
       height: height ?? this.height,
       alignment: alignment ?? this.alignment,
       random: random ?? _random,
+      decoration: decoration ?? this.decoration,
+      decorationPosition: decorationPosition ?? this.decorationPosition,
+      fixedColor: _fixedColor,
       child: child ?? this.child,
     );
   }
@@ -331,4 +446,22 @@ class Box extends StatelessWidget {
         width: width == null ? this.width : max(0, ((this.width ?? 0.0) - width)),
         height: height == null ? this.height : max(0, ((this.height ?? 0.0) - height)),
       );
+}
+
+extension ShapeDecorationCopyWithExtension on ShapeDecoration {
+  ShapeDecoration copyWith({
+    Color? color,
+    DecorationImage? image,
+    Gradient? gradient,
+    List<BoxShadow>? shadows,
+    ShapeBorder? shape,
+  }) {
+    return ShapeDecoration(
+      color: color ?? this.color,
+      image: image ?? this.image,
+      gradient: gradient ?? this.gradient,
+      shadows: shadows ?? this.shadows,
+      shape: shape ?? this.shape,
+    );
+  }
 }

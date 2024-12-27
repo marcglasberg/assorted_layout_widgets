@@ -236,6 +236,8 @@ const Box({
   double height,
   Alignment alignment,
   Widget child,
+  Decoration decoration,
+  DecorationPosition decorationPosition,
 });
 ```          
 
@@ -255,6 +257,10 @@ static const progressIndicator =
     child: Box( // Can't use Container, SizedBox or ColoredBox. 
       color: Colors.blue,
       alignment: Alignment.center,
+      decoration: BoxDecoration(
+          border: Border.symmetric(
+            horizontal: BorderSide(color: Colors.green, width: 16),
+          ),
       child: Padding(
           padding: Pad(all: 5.0),
           child: AspectRatio(
@@ -270,20 +276,42 @@ words, const objects make your program faster and more memory efficient. They ca
 used as default values in constructors, and they work well with hot-reload, while `final`
 values do not.
 
+Note: The `Box` is a little more flexible than the `Container` when you define both a
+`color` and a `BoxDecoration` (or `ShapeDecoration`) at the same time. The `Box` will
+only throw an error if the color is defined twice. If you define it only once, you can do
+it inside or outside the decoration:
+
+```
+// Both are valid:
+Box(color: Colors.blue, decoration: BoxDecoration(border: Border.all()));
+Box(decoration: BoxDecoration(color: Colors.blue, border: Border.all()));
+``` 
+
 ### Extra Box features
+
+* You can use `Box.gap()` to create a small square as a gap between widgets:
+
+  ```
+  Column(
+    children: [
+      Text('A'),
+      const Box.gap(8), // 8.0 pixel gap
+      Text('B'),
+    ]);
+  ```
+
+* You can use the `Pad` class (provided in this package) for the `padding`, instead
+  of `EdgeInsets`. For example:
+
+  ```
+  Box(padding: Pad(horizontal: 8, top: 20));
+  ```
 
 * You can hide the box and its contents, by making the `show: false`.
 
 * If you make `removePaddingWhenNoChild: true`, the `padding` is only applied if the child
   is **not null**. If the `child` is `null` and `width` and `height` are also `null`,
   this means the box will occupy no space (will be hidden).
-
-* Note: You can use the `Pad` class (provided in this package) for the `padding`, instead
-  of `EdgeInsets`. For example:
-
-  ```
-  Box(padding: Pad(horizontal: 8, top: 20));
-  ```
 
 * You can change a box with the `copyWith` method. For example:
 
@@ -312,20 +340,17 @@ values do not.
   
   // To put a box inside of another:
   Box(...) + Box(...);
-  ```
-
-  Note: If you add `null`, that's not an error. It will simply return the same Box.
-  However, if you add an invalid type it will throw an error in RUNTIME.
-
-  ```
-  // Not an error:
-  Box(...) + null;
   
-  // Throws:
-  Box(...) + MyObj();
-  ```
+  // Adding null returns the same box:
+  Box(...) + null;
+  ```  
 
-* Methods to change width and height of the box: `add`, `subtract`.
+* You can use methods `Box.add()` and `Box.subtract()` to add or remove width and height
+  from the box. For example:
+
+    ```
+    Box(width: 100, height: 100).add(width: 20);
+    ```
 
 ### Debugging:
 
