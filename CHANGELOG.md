@@ -2,7 +2,7 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
-## 10.1.0
+## 10.1.1
 
 * The `Box` widget can now have a `decoration`, as well as a `decorationPosition`.
   Previously, if a `Container` had a decoration you could not replace it with a `Box`,

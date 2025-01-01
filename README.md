@@ -1,6 +1,18 @@
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
-[![pub package](https://img.shields.io/pub/v/assorted_layout_widgets.svg)](https://pub.dartlang.org/packages/assorted_layout_widgets)
+[![Pub popularity](https://badgen.net/pub/popularity/assorted_layout_widgets)](https://pub.dev/packages/assorted_layout_widgets)
+[![Pub Version](https://img.shields.io/pub/v/assorted_layout_widgets?style=flat-square&logo=dart)](https://pub.dev/packages/assorted_layout_widgets)
+[![GitHub stars](https://img.shields.io/github/stars/marcglasberg/assorted_layout_widgets?style=social)](https://github.com/woltapp/assorted_layout_widgets)
+![Code Climate issues](https://img.shields.io/github/issues/marcglasberg/assorted_layout_widgets?style=flat-square)
+![GitHub closed issues](https://img.shields.io/github/issues-closed/marcglasberg/assorted_layout_widgets?style=flat-square)
+![GitHub contributors](https://img.shields.io/github/contributors/marcglasberg/assorted_layout_widgets?style=flat-square)
+![GitHub repo size](https://img.shields.io/github/repo-size/marcglasberg/assorted_layout_widgets?style=flat-square)
+![GitHub forks](https://img.shields.io/github/forks/marcglasberg/assorted_layout_widgets?style=flat-square)
+![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)
+[![Developed by Marcelo Glasberg](https://img.shields.io/badge/Developed%20by%20Marcelo%20Glasberg-blue.svg)](https://glasberg.dev/)
+[![Wolt on pub.dev](https://img.shields.io/pub/publisher/assorted_layout_widgets.svg)](https://pub.dev/packages/glasberg.dev/publisher)
+[![Platforms](https://badgen.net/pub/flutter-platform/assorted_layout_widgets)](https://pub.dev/packages/assorted_layout_widgets)
+
 
 # assorted_layout_widgets
 
