@@ -2,12 +2,56 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
-## 10.1.1
+## 10.2.0
+
+* `SideBySide` widget now allows for any number of children, not just two. Example:
+
+  ```
+  SideBySide(
+     children: [
+       Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
+       Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
+       Text("I'm good, thank you.", textWidthBasis: TextWidthBasis.longestLine),
+     ],
+     gaps: [8.0, 12.0],
+  );
+  ```
+
+  The `SideBySide` widget achieves layouts that are not possible with `Row` or `RowSuper`
+  widgets. Read the documentation for more information.
+
+  **Deprecated usage:** The `startChild` and `endChild` parameters are deprecated.
+  Use the `children` parameter instead. The `innerDistance` parameter is also deprecated.
+  Use the `gaps` parameter instead.
+
+  For example, this deprecated code:
+
+  ```
+  return SideBySide(
+    startChild: Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
+    endChild: Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
+    innerDistance: 8.0,
+  );
+  ```
+
+  Should be replaced with:
+
+  ```
+  return SideBySide(
+    children: [
+      Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
+      Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
+    ],
+    gaps: [8.0],
+  );
+  ```
+
+## 10.1.2
 
 * The `Box` widget can now have a `decoration`, as well as a `decorationPosition`.
   Previously, if a `Container` had a decoration you could not replace it with a `Box`,
   but now you can. Note the `Box` is a little more flexible than the `Container` when you
-  define a `color` and a `BoxDecoration` or a `ShapeDecoration` at the same time, as 
+  define a `color` and a `BoxDecoration` or a `ShapeDecoration` at the same time, as
   the `Box` will only throw an error if the `color` is defined twice.
 
 * You can use `Box.gap()` to create a small gap between widgets:

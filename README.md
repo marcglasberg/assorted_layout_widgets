@@ -2,7 +2,7 @@
 
 [![Pub popularity](https://badgen.net/pub/popularity/assorted_layout_widgets)](https://pub.dev/packages/assorted_layout_widgets)
 [![Pub Version](https://img.shields.io/pub/v/assorted_layout_widgets?style=flat-square&logo=dart)](https://pub.dev/packages/assorted_layout_widgets)
-[![GitHub stars](https://img.shields.io/github/stars/marcglasberg/assorted_layout_widgets?style=social)](https://github.com/woltapp/assorted_layout_widgets)
+[![GitHub stars](https://img.shields.io/github/stars/marcglasberg/assorted_layout_widgets?style=social)](https://github.com/marcglasberg/assorted_layout_widgets)
 ![Code Climate issues](https://img.shields.io/github/issues/marcglasberg/assorted_layout_widgets?style=flat-square)
 ![GitHub closed issues](https://img.shields.io/github/issues-closed/marcglasberg/assorted_layout_widgets?style=flat-square)
 ![GitHub contributors](https://img.shields.io/github/contributors/marcglasberg/assorted_layout_widgets?style=flat-square)
@@ -10,9 +10,8 @@
 ![GitHub forks](https://img.shields.io/github/forks/marcglasberg/assorted_layout_widgets?style=flat-square)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)
 [![Developed by Marcelo Glasberg](https://img.shields.io/badge/Developed%20by%20Marcelo%20Glasberg-blue.svg)](https://glasberg.dev/)
-[![Wolt on pub.dev](https://img.shields.io/pub/publisher/assorted_layout_widgets.svg)](https://pub.dev/packages/glasberg.dev/publisher)
+[![Glasberg.dev on pub.dev](https://img.shields.io/pub/publisher/async_redux.svg)](https://pub.dev/publishers/glasberg.dev/packages)
 [![Platforms](https://badgen.net/pub/flutter-platform/assorted_layout_widgets)](https://pub.dev/packages/assorted_layout_widgets)
-
 
 # assorted_layout_widgets
 
@@ -25,17 +24,135 @@ Despite the package name, they are not only related to layout. Here they are:
 
 | Layout                                                                                                                        | Behavioral                                                                                                                                                             | Special                                                                                                                                                  | Format and Style                                                                                                                                                                     |
 |-------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <tt>[ColumnSuper](#columnsuper)</tt> <i>is a column layout that does things the Column widget can't do</i>.                   | <tt>[Delayed](#delayed)</tt> <i>gives a widget some initial value, then change it to another value after some delay.</i>                                               | <tt>[Button](#button)</tt> <i>turns any widget into a button, with configurable click-area and the visual feedback.</i>                                  | <tt>[MaskFunctionTextInputFormatter](#maskfunctiontextinputformatter)</tt> <i>formats the text to a mask, as the user types, but the mask may change according to what is typed.</i> |
-| <tt>[RowSuper](#rowsuper)</tt> <i>is a row layout that does things the Row widget can't do</i>.                               | <tt>[CaptureGestures](#capturegestures)</tt> <i>captures gestures, preventing its parent and ascending subtree to detect them.</i>                                     | <tt>[CircleButton](#circlebutton)</tt> <i>is a circular icon-button that lets you have a larger click-area and prolong the visual feedback.</i>          | <tt>[NonUniformOutlineInputBorder](#nonuniformoutlineinputborder)</tt> <i>can be used to style the borders of TextFields and Containers, but hiding some of the borders.</i>         |
-| <tt>[WrapSuper](#wrapsuper)</tt> <i>is similar to the Wrap widget, but you can choose the line-breaking algorithm</i>.        | <tt>[KeyboardDismiss](#keyboarddismiss)</tt> <i>implements iOS and Android keyboard dismissing behavior.</i>                                                           | <tt>[ButtonBarSuper](#buttonbarsuper)</tt> <i>is a button-bar that places its buttons differently.</i>                                                   | <tt>[NonUniformRoundedRectangleBorder](#nonuniformroundedrectangleborder)</tt> <i>can be used to style the borders of Buttons and Containers, but hiding some of the borders.</i>    |
-| <tt>[Box](#box)</tt> <i>has features of Container, SizedBox and ColoredBox, but less verbose and can be made const</i>.       | <tt>[showDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a dialog with a callback for when the dialog is dismissed.</i>                    | <tt>[GlobalValueKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key that uses equality instead of identity. Like ValueKey, but global.</i> | <tt>[FitHorizontally](#fithorizontally)</tt> <i>shrinks its child horizontally only, until a shrink limit is reached.</i>                                                            |
-| <tt>[Pad](#pad)</tt> <i>is an EdgeInsetsGeometry which is easier to type and remember</i>.                                    | <tt>[showCupertinoDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a Cupertino dialog with a callback for when the dialog is dismissed.</i> | <tt>[GlobalStringKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key created from a String.</i>                                            | <tt>[TextOneLine](#textoneline)</tt> is a text widget that <i>fixes <a href="https://github.com/flutter/flutter/issues/18761">this issue</a>.</i>                                    |
-| <tt>[SideBySide](#sidebyside)</tt> <i>arranges two widgets horizontally. It does things Row and RowSuper can't do</i>.        | <tt>[TimeBuilder](#timebuilder)</tt> <i>lets you implement clocks, countdowns, stopwatches etc, the right way.</i>                                                     |                                                                                                                                                          |                                                                                                                                                                                      |
+| <tt>[SideBySide](#sidebyside)</tt> <i>arranges widgets horizontally. It does things Row and RowSuper can't do</i>.            | <tt>[Delayed](#delayed)</tt> <i>gives a widget some initial value, then change it to another value after some delay.</i>                                               | <tt>[Button](#button)</tt> <i>turns any widget into a button, with configurable click-area and the visual feedback.</i>                                  | <tt>[MaskFunctionTextInputFormatter](#maskfunctiontextinputformatter)</tt> <i>formats the text to a mask, as the user types, but the mask may change according to what is typed.</i> |
+| <tt>[ColumnSuper](#columnsuper)</tt> <i>is a column layout that does things the Column widget can't do</i>.                   | <tt>[CaptureGestures](#capturegestures)</tt> <i>captures gestures, preventing its parent and ascending subtree to detect them.</i>                                     | <tt>[CircleButton](#circlebutton)</tt> <i>is a circular icon-button that lets you have a larger click-area and prolong the visual feedback.</i>          | <tt>[NonUniformOutlineInputBorder](#nonuniformoutlineinputborder)</tt> <i>can be used to style the borders of TextFields and Containers, but hiding some of the borders.</i>         |
+| <tt>[RowSuper](#rowsuper)</tt> <i>is a row layout that does things the Row widget can't do</i>.                               | <tt>[KeyboardDismiss](#keyboarddismiss)</tt> <i>implements iOS and Android keyboard dismissing behavior.</i>                                                           | <tt>[ButtonBarSuper](#buttonbarsuper)</tt> <i>is a button-bar that places its buttons differently.</i>                                                   | <tt>[NonUniformRoundedRectangleBorder](#nonuniformroundedrectangleborder)</tt> <i>can be used to style the borders of Buttons and Containers, but hiding some of the borders.</i>    |
+| <tt>[WrapSuper](#wrapsuper)</tt> <i>is similar to the Wrap widget, but you can choose the line-breaking algorithm</i>.        | <tt>[showDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a dialog with a callback for when the dialog is dismissed.</i>                    | <tt>[GlobalValueKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key that uses equality instead of identity. Like ValueKey, but global.</i> | <tt>[FitHorizontally](#fithorizontally)</tt> <i>shrinks its child horizontally only, until a shrink limit is reached.</i>                                                            |
+| <tt>[Box](#box)</tt> <i>has features of Container, SizedBox and ColoredBox, but less verbose and can be made const</i>.       | <tt>[showCupertinoDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a Cupertino dialog with a callback for when the dialog is dismissed.</i> | <tt>[GlobalStringKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key created from a String.</i>                                            | <tt>[TextOneLine](#textoneline)</tt> is a text widget that <i>fixes <a href="https://github.com/flutter/flutter/issues/18761">this issue</a>.</i>                                    |
+| <tt>[Pad](#pad)</tt> <i>is an EdgeInsetsGeometry which is easier to type and remember</i>.                                    | <tt>[TimeBuilder](#timebuilder)</tt> <i>lets you implement clocks, countdowns, stopwatches etc, the right way.</i>                                                     |                                                                                                                                                          |                                                                                                                                                                                      |
 | <tt>[NormalizedOverflowBox](#normalizedoverflowbox)</tt> <i>is an OverflowBox that throws no errors and is easier to use</i>. |                                                                                                                                                                        |                                                                                                                                                          |                                                                                                                                                                                      |
 
 <sub>Note the widgets you don't use will be removed by Flutter's tree shaking. So feel
 free to add this package to your project even if you want to use only a few of its
 widgets.</sub>
+
+<br>
+
+# SideBySide
+
+The `SideBySide` widget arranges it children widgets horizontally,
+achieving a layout that is not possible with `Row` or `RowSuper` widgets.
+
+* The first widget in its `children` will be on the left, and will occupy as much
+  horizontal space as it wants, up to the available horizontal space. Then, the
+  next widget will be displayed to the right of the previous widget, and so on,
+  one by one, until they run out of available space. After the available space
+  is occupied, the widgets that did not fit will not be displayed (or, more
+  precisely, will be sized as `0` width).
+
+### Why this layout is not possible with a `Row`?
+
+Suppose you want to display two texts is a row, such as they occupy the
+available space: `Row(children: [Text("One"), Text("Two")])`. If the available
+horizontal space is not enough, the texts will overflow. You can fix this by
+wrapping the texts in `Expanded` widgets, but then they will each occupy half of
+the available space. If instead you use `Flexible` to wrap the texts, they will
+occupy the available space only if there is enough space for both of them,
+otherwise they will each occupy half of the available space.
+If instead you use `SideBySide(children: [Text("One"), Text("Two")])`, the first
+text will occupy as much space as it wants, and the second text will occupy the
+remaining space, if there is any.
+
+## Example
+
+Suppose you want to create a title aligned to the left, with a divider that
+occupies the rest of the space. You want the distance between the title and
+the divider to be at least 8 pixels, and you want the divider to occupy at
+least 20 pixels of horizontal space:
+
+```
+return SideBySide(
+  children: [
+    Text("First Chapter", textWidthBasis: TextWidthBasis.longestLine),
+    Divider(color: Colors.grey),
+  ],
+  gaps: [8.0],
+  minEndChildWidth: 20.0,
+);
+```
+
+Another example, with 3 widgets:
+
+```
+return SideBySide(
+   children: [
+     Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
+     Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
+     Text("I'm good, thank you.", textWidthBasis: TextWidthBasis.longestLine),
+   ],
+   gaps: [8.0, 12.0],
+);
+```
+
+![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/sideBySide.png)
+
+## The last widget
+
+The last widget in `children` is an is a special case, for two reasons. First,
+it will be given all the remaining horizontal space, after the previous widgets
+have been displayed. This means you can align it to the right if you want:
+
+```
+SideBySide(
+   children: [
+      const Text("Some text", textWidthBasis: TextWidthBasis.longestLine),
+      Align(
+         alignment: Alignment.centerRight,
+         child: const Text("more text", textWidthBasis: TextWidthBasis.longestLine),
+      ),
+   ],
+);
+```
+
+Second, you can specify the minimum width that it should occupy, using
+the `minEndChildWidth` parameter. This means that the last widget will occupy
+AT LEAST that width, even if it means that the previous widgets will be pushed out
+of the available space. However, if the total available space is less
+than `minEndChildWidth`, then the last widget will be displayed only up to the
+available space.
+
+## Gaps
+
+You can add gaps between the children widgets, by using the `gaps` parameter.
+The gaps are a list of doubles representing pixels. If you have two children, you should
+provide one gap. If you have three children, you should provide two gaps, and so on.
+
+Note the gaps can be negative, in which case the widgets will overlap.
+
+If you provide less than the required number of gaps, the last gap will be used
+for all the remaining widgets. If you provide more gaps than required, the extra
+gaps will be ignored.
+
+## Cross alignment
+
+The `crossAxisAlignment` parameter specifies how to align the widgets vertically.
+The default is to center them. At the moment, only `CrossAxisAlignment.start`,
+`CrossAxisAlignment.end` and `CrossAxisAlignment.center` work. If you provide
+`CrossAxisAlignment.baseline` or `CrossAxisAlignment.stretch`, you'll get
+an `UnimplementedError`.
+
+## Using Text as children
+
+When you use `Text` widgets in your children, it's strongly recommended that
+you use parameter `textWidthBasis: TextWidthBasis.longestLine`. The default
+`textWidthBasis` is usually `textWidthBasis: TextWidthBasis.parent`, which
+is almost never what you want. For example, instead of writing:
+`Text("Hello")`, you should write:
+`Text("Hello", textWidthBasis: TextWidthBasis.longestLine)`.
+
+Try running
+the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_side_by_side.dart">
+SideBySide example</a>.
 
 <br>
 
@@ -1067,50 +1184,6 @@ mask_text_input_formatter</a>
 by <a href="https://github.com/siqwin">Sergey</a>. The ONLY thing I added was the
 possibility of using a function that changes the mask. All the rest is from the original
 package, and credit belongs to their authors.
-
-<br>
-
-# SideBySide
-
-The `SideBySide` widget arranges two widgets horizontally, while achieving a layout which
-is impossible for both the native `Row` and the `RowSuper` widgets.
-
-* The `startChild` will be on the left, and will occupy as much space as it wants, up to
-  the available horizontal space.
-
-* The `endChild` will be on the right of the `startChild` widget, and it will occupy the
-  rest of the available space. Note: This means, if the `startChild` widget occupies all
-  the available space, then `endChild` widget will not be displayed (since it will be
-  sized as `0` width).
-
-For example, suppose you want to create a title with a divider that occupies the rest of
-the space:
-
-```
-return SideBySide(
-  startChild: Text("First Chapter", textWidthBasis: TextWidthBasis.longestLine),
-  endChild: Divider(color: Colors.grey),
-  innerDistance: 8,
-  minEndChildWidth: 20,
-);
-```
-
-![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/sideBySide.png)
-
-You can add an `innerDistance`, in pixels, between the `startChild` and `endChild`. The
-default is zero. It can be negative, in which case the widgets will overlap. The
-`innerDistance` is only used if the `endChild` is actually displayed.
-
-You can define the `minEndChildWidth`, which is the minimum width, in pixels, that the
-`endChild` should occupy. The default is zero.
-
-The `crossAxisAlignment` parameter specifies how to align the `startChild` and `endChild`
-vertically. The default is to center them. At the moment, only
-`CrossAxisAlignment.start`, `CrossAxisAlignment.end` and `CrossAxisAlignment.center` work.
-
-Try running
-the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_side_by_side.dart">
-SideBySide example</a>.
 
 <br>
 

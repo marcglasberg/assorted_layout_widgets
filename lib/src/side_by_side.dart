@@ -1,68 +1,378 @@
 import 'dart:math';
 
+import 'package:assorted_layout_widgets/src/row_super.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 // Developed by Marcelo Glasberg (jan 2022).
 
-/// The [SideBySide] widget disposes 2 widgets horizontally, while achieving a layout which is
-/// impossible for both the native [Row] and the [RowSuper] widgets.
+/// The [SideBySide] widget arranges its [children] widgets horizontally, achieving a
+/// layout that is not possible with [Row] or [RowSuper] widgets.
 ///
-/// * The [startChild]  will be on the left, and will occupy as much space as it wants, up to the
-/// available horizontal space.
+/// The first widget in [children] will be on the left, and will occupy as much
+/// horizontal space as it wants, up to the available horizontal space. Then, the
+/// next widget will be displayed to the right of the previous widget, and so on,
+/// one by one, until they run out of available space. After the available space
+/// is occupied, the widgets that did not fit will not be displayed (or, more
+/// precisely, will be sized as `0` width).
 ///
-/// * The [endChild]  will be on the right of the [startChild] , and it will occupy the endChild of
-/// the available space. Note: This means, if the `start` widget occupies all the available space,
-/// then endChild widget will not be displayed (since it will be sized as `0` width).
+/// ## Why this layout is not possible with [Row]?
 ///
-/// For example, suppose you want to create a title, with a divider that occupies the endChild of
-/// the space. You want the distance between the [startChild] and the divider widgets to be at
-/// least 8 pixels, and you want the divider to occupy at least 15 pixels of horizontal space:
+/// Suppose you want to display two texts is a row, such as they occupy the
+/// available space: `Row(children: [Text("One"), Text("Two")])`. If the available
+/// horizontal space is not enough, the texts will overflow. You can fix this by
+/// wrapping the texts in `Expanded` widgets, but then they will each occupy half of
+/// the available space. If instead you use `Flexible` to wrap the texts, they will
+/// occupy the available space only if there is enough space for both of them,
+/// otherwise they will each occupy half of the available space.
 ///
-/// ```
-/// return SideBySide(
-///   startChild: Text("First Chapter", textWidthBasis: TextWidthBasis.longestLine),
-///   endChild: Divider(color: Colors.grey),
-///   innerDistance: 8,
-///   minEndChildWidth: 20,
+/// If instead you use `SideBySide(children: [Text("One"), Text("Two")])`, the first
+/// text will occupy as much space as it wants, and the second text will occupy the
+/// remaining space, if there is any.
+///
+/// ## The last widget
+///
+/// The last widget in [children] is an is a special case, for two reasons. First,
+/// it will be given all the remaining horizontal space, after the previous widgets
+/// have been displayed. This means you can align it to the right if you want:
+///
+/// ```dart
+/// SideBySide(
+///    children: [
+///       const Text("Some text", textWidthBasis: TextWidthBasis.longestLine),
+///       Align(
+///          alignment: Alignment.centerRight,
+///          child: const Text("more text", textWidthBasis: TextWidthBasis.longestLine),
+///       ),
+///    ],
 /// );
 /// ```
 ///
-/// You can add an [innerDistance], in pixels, between the [startChild] and [endChild] s. It can be
-/// negative, in which case the widgets will overlap.
+/// Second, you can specify the minimum width that it should occupy, using
+/// the [minEndChildWidth] parameter. This means that the last widget will occupy
+/// AT LEAST that width, even if it means that the previous widgets will be pushed out
+/// of the available space. However, if the total available space is less
+/// than [minEndChildWidth], then the last widget will be displayed only up to the
+/// available space.
 ///
-/// The [crossAxisAlignment] parameter specifies how to align the [startChild] and [endChild]
-/// widgets vertically. The default is to center them. At the moment, only
-/// `CrossAxisAlignment.start`, `CrossAxisAlignment.end` and `CrossAxisAlignment.center` work.
+/// ## Gaps
+///
+/// You can add gaps between the widgets, using the [gaps] parameter. The gaps are
+/// a list of doubles representing pixels. If you have two children, you should
+/// provide one gap. If you have three children, you should provide two gaps, and so on.
+///
+/// Note the gaps can be negative, in which case the widgets will overlap.
+///
+/// If you provide less than the required number of gaps, the last gap will be used
+/// for all the remaining widgets. If you provide more gaps than required, the extra
+/// gaps will be ignored.
+///
+/// ## Cross alignment
+///
+/// The [crossAxisAlignment] parameter specifies how to align the widgets vertically.
+/// The default is to center them. At the moment, only [CrossAxisAlignment.start],
+/// [CrossAxisAlignment.end] and [CrossAxisAlignment.center] work. If you provide
+/// [CrossAxisAlignment.baseline] or [CrossAxisAlignment.stretch], you'll get
+/// an [UnimplementedError].
+///
+/// ## Using Text as children
+///
+/// When you use [Text] widgets in your children, it's strongly recommended that
+/// you use parameter `textWidthBasis: TextWidthBasis.longestLine`. The default
+/// `textWidthBasis` is usually `textWidthBasis: TextWidthBasis.parent`, which
+/// is almost never what you want. For example, instead of writing:
+/// `Text("Hello")`, you should write:
+/// `Text("Hello", textWidthBasis: TextWidthBasis.longestLine)`.
+///
+/// ## Examples
+///
+/// Suppose you want to create a title aligned to the left, with a divider that
+/// occupies the rest of the space. You want the distance between the title and
+/// the divider to be at least 8 pixels, and you want the divider to occupy at
+/// least 20 pixels of horizontal space:
+///
+/// ```
+/// return SideBySide(
+///   children: [
+///     Text("First Chapter", textWidthBasis: TextWidthBasis.longestLine),
+///     Divider(color: Colors.grey),
+///   ],
+///   gaps: [8.0],
+///   minEndChildWidth: 20.0,
+/// );
+/// ```
+///
+/// Another example, with 3 widgets:
+///
+/// ```
+/// return SideBySide(
+///   children: [
+///     Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
+///     Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
+///     Text("I'm good, thank you.", textWidthBasis: TextWidthBasis.longestLine),
+///   ],
+///   gaps: [8.0, 12.0],
+/// );
+/// ```
+///
+/// ## Deprecated usage
+///
+/// The `startChild` and `endChild` parameters are deprecated. Use the `children`
+/// parameter instead. The `innerDistance` parameter is also deprecated. Use the `gaps`
+/// parameter instead.
+///
+/// For example, this deprecated code:
+///
+/// ```
+/// return SideBySide(
+///   startChild: Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
+///   endChild: Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
+///   innerDistance: 8.0,
+/// );
+/// ```
+///
+/// Should be replaced with:
+///
+/// ```
+/// return SideBySide(
+///   children: [
+///     Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
+///     Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
+///   ],
+///   gaps: [8.0],
+/// );
+/// ```
 ///
 /// For more info, see: https://pub.dartlang.org/packages/assorted_layout_widgets
 ///
 class SideBySide extends MultiChildRenderObjectWidget {
   //
+  /// The [SideBySide] widget arranges its [children] widgets horizontally, achieving a
+  /// layout that is not possible with [Row] or [RowSuper] widgets.
+  ///
+  /// The first widget in [children] will be on the left, and will occupy as much
+  /// horizontal space as it wants, up to the available horizontal space. Then, the
+  /// next widget will be displayed to the right of the previous widget, and so on,
+  /// one by one, until they run out of available space. After the available space
+  /// is occupied, the widgets that did not fit will not be displayed (or, more
+  /// precisely, will be sized as `0` width).
+  ///
+  /// ## Why this layout is not possible with [Row]?
+  ///
+  /// Suppose you want to display two texts is a row, such as they occupy the
+  /// available space: `Row(children: [Text("One"), Text("Two")])`. If the available
+  /// horizontal space is not enough, the texts will overflow. You can fix this by
+  /// wrapping the texts in `Expanded` widgets, but then they will each occupy half of
+  /// the available space. If instead you use `Flexible` to wrap the texts, they will
+  /// occupy the available space only if there is enough space for both of them,
+  /// otherwise they will each occupy half of the available space.
+  ///
+  /// If instead you use `SideBySide(children: [Text("One"), Text("Two")])`, the first
+  /// text will occupy as much space as it wants, and the second text will occupy the
+  /// remaining space, if there is any.
+  ///
+  /// ## The last widget
+  ///
+  /// The last widget in [children] is an is a special case, for two reasons. First,
+  /// it will be given all the remaining horizontal space, after the previous widgets
+  /// have been displayed. This means you can align it to the right if you want:
+  ///
+  /// ```dart
+  /// SideBySide(
+  ///    children: [
+  ///       const Text("Some text", textWidthBasis: TextWidthBasis.longestLine),
+  ///       Align(
+  ///          alignment: Alignment.centerRight,
+  ///          child: const Text("more text", textWidthBasis: TextWidthBasis.longestLine),
+  ///       ),
+  ///    ],
+  /// );
+  /// ```
+  ///
+  /// Second, you can specify the minimum width that it should occupy, using
+  /// the [minEndChildWidth] parameter. This means that the last widget will occupy
+  /// AT LEAST that width, even if it means that the previous widgets will be pushed out
+  /// of the available space. However, if the total available space is less
+  /// than [minEndChildWidth], then the last widget will be displayed only up to the
+  /// available space.
+  ///
+  /// ## Gaps
+  ///
+  /// You can add gaps between the widgets, using the [gaps] parameter. The gaps are
+  /// a list of doubles representing pixels. If you have two children, you should
+  /// provide one gap. If you have three children, you should provide two gaps, and so on.
+  ///
+  /// Note the gaps can be negative, in which case the widgets will overlap.
+  ///
+  /// If you provide less than the required number of gaps, the last gap will be used
+  /// for all the remaining widgets. If you provide more gaps than required, the extra
+  /// gaps will be ignored.
+  ///
+  /// ## Cross alignment
+  ///
+  /// The [crossAxisAlignment] parameter specifies how to align the widgets vertically.
+  /// The default is to center them. At the moment, only [CrossAxisAlignment.start],
+  /// [CrossAxisAlignment.end] and [CrossAxisAlignment.center] work. If you provide
+  /// [CrossAxisAlignment.baseline] or [CrossAxisAlignment.stretch], you'll get
+  /// an [UnimplementedError].
+  ///
+  /// ## Using Text as children
+  ///
+  /// When you use [Text] widgets in your children, it's strongly recommended that
+  /// you use parameter `textWidthBasis: TextWidthBasis.longestLine`. The default
+  /// `textWidthBasis` is usually `textWidthBasis: TextWidthBasis.parent`, which
+  /// is almost never what you want. For example, instead of writing:
+  /// `Text("Hello")`, you should write:
+  /// `Text("Hello", textWidthBasis: TextWidthBasis.longestLine)`.
+  ///
+  /// ## Examples
+  ///
+  /// Suppose you want to create a title aligned to the left, with a divider that
+  /// occupies the rest of the space. You want the distance between the title and
+  /// the divider to be at least 8 pixels, and you want the divider to occupy at
+  /// least 20 pixels of horizontal space:
+  ///
+  /// ```
+  /// return SideBySide(
+  ///   children: [
+  ///     Text("First Chapter", textWidthBasis: TextWidthBasis.longestLine),
+  ///     Divider(color: Colors.grey),
+  ///   ],
+  ///   gaps: [8.0],
+  ///   minEndChildWidth: 20.0,
+  /// );
+  /// ```
+  ///
+  /// Another example, with 3 widgets:
+  ///
+  /// ```
+  /// return SideBySide(
+  ///   children: [
+  ///     Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
+  ///     Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
+  ///     Text("I'm good, thank you.", textWidthBasis: TextWidthBasis.longestLine),
+  ///   ],
+  ///   gaps: [8.0, 12.0],
+  /// );
+  /// ```
+  ///
+  /// ## Deprecated usage
+  ///
+  /// The `startChild` and `endChild` parameters are deprecated. Use the `children`
+  /// parameter instead. The `innerDistance` parameter is also deprecated. Use the `gaps`
+  /// parameter instead.
+  ///
+  /// For example, this deprecated code:
+  ///
+  /// ```
+  /// return SideBySide(
+  ///   startChild: Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
+  ///   endChild: Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
+  ///   innerDistance: 8.0,
+  /// );
+  /// ```
+  ///
+  /// Should be replaced with:
+  ///
+  /// ```
+  /// return SideBySide(
+  ///   children: [
+  ///     Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
+  ///     Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
+  ///   ],
+  ///   gaps: [8.0],
+  /// );
+  /// ```
+  ///
+  /// For more info, see: https://pub.dartlang.org/packages/assorted_layout_widgets
+  ///
+  factory SideBySide({
+    Key? key,
+    List<Widget> children = const [],
+    //
+    @Deprecated('Use the `children` parameter instead.') Widget? startChild,
+    //
+    @Deprecated('Use the `children` parameter instead.') Widget? endChild,
+    //
+    List<double> gaps = const [],
+    //
+    CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
+    //
+    @Deprecated('Use the `gaps` parameter instead.') double innerDistance = 0,
+    //
+    double minEndChildWidth = 0,
+  }) {
+    // 1) Deprecated usage.
+    if (startChild != null && endChild != null) {
+      //
+      if (children.isNotEmpty)
+        throw ArgumentError(
+            'Cannot use `startChild` and `endChild` with the `children` parameter.');
 
-  /// The [startChild]  will be on the left, and will occupy as much space as it wants,
-  /// up to the available horizontal space.
-  final Widget startChild;
+      if (gaps.isNotEmpty)
+        throw ArgumentError('Cannot use `gaps` with the `startChild` parameter.');
 
-  /// The [endChild]  will be on the right of the [startChild] , and it will occupy the endChild of
-  /// the available space. Note: This means, if the `start` widget occupies all the available space,
-  /// then endChild widget will not be displayed (since it will be sized as `0` width).
-  final Widget endChild;
+      return SideBySide._(
+        key: key,
+        startChild: startChild,
+        endChild: endChild,
+        crossAxisAlignment: crossAxisAlignment,
+        innerDistance: innerDistance,
+        minEndChildWidth: minEndChildWidth,
+      );
+    }
 
-  /// The [crossAxisAlignment] parameter specifies how to align the [startChild] and [endChild]
-  /// vertically. The default is to center them. At the moment, only [CrossAxisAlignment.start],
-  /// [CrossAxisAlignment.end] and [CrossAxisAlignment.center] work.
-  final CrossAxisAlignment crossAxisAlignment;
+    if (startChild != null && endChild == null)
+      throw ArgumentError(
+          'If you provide `startChild` you should also provide `endChild`. '
+          'However, it is better to provide only `children` instead, '
+          'as `startChild` and `endChild` are deprecated.');
 
-  /// The distance in pixels between the [startChild] and [endChild] s.
-  /// The default is zero. It can be negative, in which case the widgets will overlap.
-  final double innerDistance;
+    if (startChild == null && endChild != null)
+      throw ArgumentError(
+          'If you provide `endChild` you should also provide `startChild`. '
+          'However, it is better to provide only `children` instead, '
+          'as `startChild` and `endChild` are deprecated.');
 
-  /// The minimum width, in pixels, that the [endChild]  should occupy.
-  /// The default is zero.
-  final double minEndChildWidth;
+    // 2) Empty usage.
+    if (children.isEmpty)
+      return SideBySide._(
+          key: key, startChild: const SizedBox(), endChild: const SizedBox());
 
-  SideBySide({
+    // 3) When providing [children], can't use `startChild` or `endChild`.
+    if (startChild != null || endChild != null)
+      throw ArgumentError(
+          'Cannot use `startChild` or `endChild` with the `children` parameter.');
+
+    if (innerDistance != 0)
+      throw ArgumentError('Cannot use `innerDistance` with the `children` parameter. '
+          'Use `gaps` instead.');
+
+    // 4) A single child.
+    if (children.length == 1)
+      return SideBySide._(key: key, startChild: children[0], endChild: const SizedBox());
+
+    Widget nestedSideBySide = children.last;
+
+    // Create something like: s(1, s(2,3))
+    for (int i = children.length - 2; i >= 0; i--) {
+      nestedSideBySide = SideBySide._(
+        key: key,
+        startChild: children[i],
+        endChild: nestedSideBySide,
+        crossAxisAlignment: crossAxisAlignment,
+        minEndChildWidth: minEndChildWidth,
+        innerDistance: (innerDistance +
+            (gaps.isNotEmpty //
+                ? (i < gaps.length ? gaps[i] : gaps.last) //
+                : 0)),
+      );
+    }
+
+    return nestedSideBySide as SideBySide;
+  }
+
+  SideBySide._({
     Key? key,
     required this.startChild,
     required this.endChild,
@@ -73,6 +383,31 @@ class SideBySide extends MultiChildRenderObjectWidget {
           key: key,
           children: [startChild, endChild],
         );
+
+  /// The [startChild]  will be on the left, and will occupy as much space as it wants,
+  /// up to the available horizontal space. Note that `startChild` should NOT be used
+  /// directly  (use `children` instead).
+  final Widget startChild;
+
+  /// The [endChild] will be on the right of the [startChild] , and it will occupy the
+  /// remaining of the available space. This means, if the `start` widget occupies all
+  /// the available space, then endChild widget will not be displayed (since it will
+  /// be sized as `0` width). Note that `endChild` should NOT be used
+  /// directly (use `children` instead).
+  final Widget endChild;
+
+  /// The [crossAxisAlignment] parameter specifies how to align the widgets vertically.
+  /// The default is to center them. At the moment, only [CrossAxisAlignment.start],
+  /// [CrossAxisAlignment.end] and [CrossAxisAlignment.center] work.
+  final CrossAxisAlignment crossAxisAlignment;
+
+  /// The distance in pixels between the widgets. The default is zero.
+  /// It can be negative, in which case the widgets will overlap.
+  final double innerDistance;
+
+  /// The minimum width, in pixels, that the [endChild]  should occupy.
+  /// The default is zero.
+  final double minEndChildWidth;
 
   @override
   _RenderSideBySide createRenderObject(BuildContext context) => _RenderSideBySide(
@@ -161,15 +496,18 @@ class _RenderSideBySide extends RenderBox
   void _performLayout() {
     //
 
-    // At the minimum, we have the min-endChild plus the inner-distance.
-    // But if the min-endChild is zero, then we don't need to add the inner-distance.
+    // What is the minimum width the endChild can occupy?
+    // At the minimum, we have the `minEndChildWidth` plus the inner-distance, except if
+    // the minEndChildWidth is zero, in which case we don't even add the inner-distance.
+    // Note: `minEndChildWidth` is the min-width the `endChild` occupies, and
+    // `innerDistance` is the gap between `startChild` and `endChild`.
     double minEndChildAndInnerDistance =
-        (minEndChildWidth == 0) ? 0 : minEndChildWidth + innerDistance;
+        (minEndChildWidth == 0) ? 0 : (minEndChildWidth + innerDistance);
 
     // StartChild: ---
 
     var startChildConstraints = BoxConstraints(
-      minWidth: max(0.0, constraints.minWidth - minEndChildAndInnerDistance),
+      minWidth: 0.0,
       maxWidth: max(0.0, constraints.maxWidth - minEndChildAndInnerDistance),
       minHeight: constraints.minHeight,
       maxHeight: constraints.maxHeight,
@@ -178,10 +516,14 @@ class _RenderSideBySide extends RenderBox
     startChild.layout(startChildConstraints, parentUsesSize: true);
     double startChildWidth = startChild.size.width;
 
+    // If the startChild will not bne displayed, then we remove the innerDistance.
+    var correctedInnerDistance = (startChildWidth == 0.0) ? 0 : innerDistance;
+
     // EndChild: ---
 
-    var endChildConstraints =
-        constraints.tighten(width: constraints.maxWidth - startChildWidth - innerDistance);
+    var endChildConstraints = constraints.copyWith(minWidth: 0).tighten(
+          width: constraints.maxWidth - startChildWidth - correctedInnerDistance,
+        );
 
     endChild.layout(endChildConstraints, parentUsesSize: true);
 
@@ -196,7 +538,7 @@ class _RenderSideBySide extends RenderBox
     final MultiChildLayoutParentData endChildParentData =
         endChild.parentData as MultiChildLayoutParentData;
     endChildParentData.offset =
-        Offset(startChildWidth + innerDistance, dy(endChild, maxChildHeight));
+        Offset(startChildWidth + correctedInnerDistance, dy(endChild, maxChildHeight));
 
     // ---
 
@@ -217,11 +559,11 @@ class _RenderSideBySide extends RenderBox
     //
     // TODO: Not yet implemented.
     else if (crossAxisAlignment == CrossAxisAlignment.baseline)
-      return (maxChildHeight - childHeight) / 2;
+      throw UnimplementedError('CrossAxisAlignment.baseline is not yet implemented.');
     //
     // TODO: Not yet implemented.
     else if (crossAxisAlignment == CrossAxisAlignment.stretch)
-      return (maxChildHeight - childHeight) / 2;
+      throw UnimplementedError('CrossAxisAlignment.stretch is not yet implemented.');
     //
     else
       throw AssertionError(crossAxisAlignment);
