@@ -43,14 +43,16 @@ widgets.</sub>
 The `SideBySide` widget arranges it children widgets horizontally,
 achieving a layout that is not possible with `Row` or `RowSuper` widgets.
 
-* The first widget in its `children` will be on the left, and will occupy as much
-  horizontal space as it wants, up to the available horizontal space. Then, the
-  next widget will be displayed to the right of the previous widget, and so on,
-  one by one, until they run out of available space. After the available space
-  is occupied, the widgets that did not fit will not be displayed (or, more
-  precisely, will be sized as `0` width).
+The first widget in its `children` will be on the left, and will occupy as much
+horizontal space as it wants, up to the available horizontal space. Then, the
+next widget will be displayed to the right of the previous widget, and so on,
+one by one, until they run out of available space. After the available space
+is occupied, the widgets that did not fit will not be displayed (or, more
+precisely, will be sized as `0` width).
 
 ### Why this layout is not possible with a `Row`?
+
+![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/sideBySideComparison.gif)
 
 Suppose you want to display two texts is a row, such as they occupy the
 available space: `Row(children: [Text("One"), Text("Two")])`. If the available
