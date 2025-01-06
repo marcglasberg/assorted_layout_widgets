@@ -2,7 +2,7 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
-## 10.2.1
+## 10.2.4
 
 * `SideBySide` widget now allows for any number of children, not just two. Example:
 

@@ -1,5 +1,3 @@
-[![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
-
 [![Pub popularity](https://badgen.net/pub/popularity/assorted_layout_widgets)](https://pub.dev/packages/assorted_layout_widgets)
 [![Pub Version](https://img.shields.io/pub/v/assorted_layout_widgets?style=flat-square&logo=dart)](https://pub.dev/packages/assorted_layout_widgets)
 [![GitHub stars](https://img.shields.io/github/stars/marcglasberg/assorted_layout_widgets?style=social)](https://github.com/marcglasberg/assorted_layout_widgets)
@@ -10,8 +8,18 @@
 ![GitHub forks](https://img.shields.io/github/forks/marcglasberg/assorted_layout_widgets?style=flat-square)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)
 [![Developed by Marcelo Glasberg](https://img.shields.io/badge/Developed%20by%20Marcelo%20Glasberg-blue.svg)](https://glasberg.dev/)
-[![Glasberg.dev on pub.dev](https://img.shields.io/pub/publisher/async_redux.svg)](https://pub.dev/publishers/glasberg.dev/packages)
+[![Glasberg.dev on pub.dev](https://img.shields.io/pub/publisher/assorted_layout_widgets.svg)](https://pub.dev/publishers/glasberg.dev/packages)
 [![Platforms](https://badgen.net/pub/flutter-platform/assorted_layout_widgets)](https://pub.dev/packages/assorted_layout_widgets)
+
+#### Contributors
+
+<a href="https://github.com/marcglasberg/assorted_layout_widgets/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=marcglasberg/assorted_layout_widgets&columns=9"/>
+</a>
+
+#### Sponsor
+
+[![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
 # assorted_layout_widgets
 
@@ -87,6 +95,8 @@ return SideBySide(
 );
 ```
 
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/sideBySide.png)
+
 Another example, with 3 widgets:
 
 ```
@@ -99,8 +109,6 @@ return SideBySide(
    gaps: [8.0, 12.0],
 );
 ```
-
-![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/sideBySide.png)
 
 ### The last widget
 
@@ -133,7 +141,7 @@ You can add gaps between the children widgets, by using the `gaps` parameter.
 The gaps are a list of doubles representing pixels. If you have two children, you should
 provide one gap. If you have three children, you should provide two gaps, and so on.
 
-Note the gaps can be negative, in which case the widgets will overlap.
+Note the gaps can be **negative**, in which case the widgets will **overlap**.
 
 If you provide less than the required number of gaps, the last gap will be used
 for all the remaining widgets. If you provide more gaps than required, the extra
@@ -151,9 +159,9 @@ an `UnimplementedError`.
 
 When you use `Text` widgets in your children, it's strongly recommended that
 you use parameter `textWidthBasis: TextWidthBasis.longestLine`. The default
-`textWidthBasis` is usually `textWidthBasis: TextWidthBasis.parent`, which
-is almost never what you want. For example, instead of writing:
-`Text("Hello")`, you should write:
+for this param is usually `textWidthBasis: TextWidthBasis.parent`, which
+is almost never what you want. In other words, instead of writing
+`Text("Hello")`, you should probably write
 `Text("Hello", textWidthBasis: TextWidthBasis.longestLine)`.
 
 Try running
@@ -180,7 +188,7 @@ ColumnSuper({
 });
 ```                   
 
-![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/columnSuper.png)
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/columnSuper.png)
 
 * **`children`** is the list of widgets that represent the column cells, just like in a
   regular `Column` widget. However, the list may contain `null`s, which will be ignored.
@@ -253,7 +261,7 @@ On contrary to `ColumnSuper` and the native `Row`
 (which will overflow if the children are too large to fit the available free space),
 `RowSuper` may resize its children **proportionately to their minimum intrinsic width**.
 
-![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/rowXRowSuperComparison.png)
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/rowXRowSuperComparison.png)
 
 Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_row_super.dart">
@@ -300,7 +308,7 @@ RowSuper(
 );   
 ```
 
-![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/rowSuperWithFitHorizontally.jpg)
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/rowSuperWithFitHorizontally.jpg)
 
 Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_row_super_with_fit_horizontally.dart">
@@ -326,7 +334,7 @@ FitHorizontally({
 });
 ```          
 
-![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/fitHorizontally.png)
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/fitHorizontally.png)
 
 The `child` will be asked to define its own intrinsic height. If `fitsHeight` is true, the
 child will be proportionately resized (keeping its aspect ratio)
@@ -548,7 +556,7 @@ greedy algorithm, but these lines will tend to be more similar in width.
 
 For example:
 
-![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/wrapType.jpg)
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/wrapType.jpg)
 
 - <a href="https://stackoverflow.com/questions/51679895/in-flutter-how-to-balance-the-children-of-the-wrap-widget">
   Here</a> is my original StackOverflow question that resulted in this widget.
@@ -583,13 +591,13 @@ the width of the widgets:
 
 Some examples:
 
-![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/wrapFit1.png)
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/wrapFit1.png)
 
-![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/wrapFit2.png)
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/wrapFit2.png)
 
-![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/wrapFit3.png)
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/wrapFit3.png)
 
-![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/wrapFit4.png)
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/wrapFit4.png)
 
 Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_wrap_super_fit.dart">
@@ -603,7 +611,7 @@ WrapFit example</a>.
 buttons by
 using a `WrapSuper`.
 
-![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/buttonBar.png)
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/buttonBar.png)
 
 The default (which may be changed) is `WrapType.balanced` and `WrapFit.larger`, which
 means it will distribute the buttons in as little lines as possible in a balanced way;
@@ -1411,7 +1419,7 @@ Container(
    ...
 ```
 
-![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/non_uniform_borders.png)
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/non_uniform_borders.png)
 
 Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_non_uniform_rounded_rectangle_border.dart">
@@ -1524,3 +1532,5 @@ _stackoverflow.com/users/3411681/marcg_</a>
   (versions: <a href="https://habr.com/ru/post/500210/">русский</a>)
 * <a href="https://medium.com/flutter-community/the-new-way-to-create-themes-in-your-flutter-app-7fdfc4f3df5f">
   The New Way to create Themes in your Flutter App</a> 
+
+[![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
