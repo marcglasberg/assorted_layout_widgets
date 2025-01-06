@@ -44,28 +44,32 @@ The `SideBySide` widget arranges it children widgets horizontally,
 achieving a layout that is not possible with `Row` or `RowSuper` widgets.
 
 The first widget in its `children` will be on the left, and will occupy as much
-horizontal space as it wants, up to the available horizontal space. Then, the
-next widget will be displayed to the right of the previous widget, and so on,
-one by one, until they run out of available space. After the available space
-is occupied, the widgets that did not fit will not be displayed (or, more
-precisely, will be sized as `0` width).
+horizontal space as it wants, up to the available horizontal space.
+The next widgets will be displayed to the right of the previous widget,
+and so on, until they run out of space.
+The widgets that have no space left will not be displayed (will be sized as `0` width).
 
-### Why this layout is not possible with a `Row`?
+Here is a visual the comparison between `SideBySide`, `Row` and `RowSuper`:
 
-![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/sideBySideComparison.gif)
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/sideBySideComparison.gif)
 
-Suppose you want to display two texts is a row, such as they occupy the
-available space: `Row(children: [Text("One"), Text("Two")])`. If the available
-horizontal space is not enough, the texts will overflow. You can fix this by
-wrapping the texts in `Expanded` widgets, but then they will each occupy half of
-the available space. If instead you use `Flexible` to wrap the texts, they will
-occupy the available space only if there is enough space for both of them,
-otherwise they will each occupy half of the available space.
-If instead you use `SideBySide(children: [Text("One"), Text("Two")])`, the first
-text will occupy as much space as it wants, and the second text will occupy the
-remaining space, if there is any.
+The above animation was created
+using [this example](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_side_by_side_comparison.dart).
 
-## Example
+Suppose you want to display three texts in a `Row` with
+`Row(children: [Text("Heelo there!"), Text("How are you doing?"), Text("I'm doing fine.")])`.
+If the available horizontal space is not enough, the row will overflow.
+You can fix this by wrapping the texts in `Expanded` widgets,
+but then each text will now occupy a third of the available space.
+If instead you use `Flexible` to wrap the texts, the texts now can be smaller,
+but not larger than a third of the available space.
+If instead of a `Row` you use `SideBySide`, the texts will occupy only the space they
+need, except for those that don't fit, which will now be hidden.
+In the animation, you can also see that `SideBySide` gives you the option of fixing the
+width of the last widget. It even removes gaps automatically (if you use them) as
+necessary to save space.
+
+### Example
 
 Suppose you want to create a title aligned to the left, with a divider that
 occupies the rest of the space. You want the distance between the title and
@@ -98,7 +102,7 @@ return SideBySide(
 
 ![](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/images/sideBySide.png)
 
-## The last widget
+### The last widget
 
 The last widget in `children` is an is a special case, for two reasons. First,
 it will be given all the remaining horizontal space, after the previous widgets
@@ -123,7 +127,7 @@ of the available space. However, if the total available space is less
 than `minEndChildWidth`, then the last widget will be displayed only up to the
 available space.
 
-## Gaps
+### Gaps
 
 You can add gaps between the children widgets, by using the `gaps` parameter.
 The gaps are a list of doubles representing pixels. If you have two children, you should
@@ -135,7 +139,7 @@ If you provide less than the required number of gaps, the last gap will be used
 for all the remaining widgets. If you provide more gaps than required, the extra
 gaps will be ignored.
 
-## Cross alignment
+### Cross alignment
 
 The `crossAxisAlignment` parameter specifies how to align the widgets vertically.
 The default is to center them. At the moment, only `CrossAxisAlignment.start`,
@@ -143,7 +147,7 @@ The default is to center them. At the moment, only `CrossAxisAlignment.start`,
 `CrossAxisAlignment.baseline` or `CrossAxisAlignment.stretch`, you'll get
 an `UnimplementedError`.
 
-## Using Text as children
+### Using Text as children
 
 When you use `Text` widgets in your children, it's strongly recommended that
 you use parameter `textWidthBasis: TextWidthBasis.longestLine`. The default
