@@ -2,6 +2,31 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 10.3.0
+
+* `CircleButton` now accepts an optional custom builder function to modify the button's
+  child widget. This can be used to animate the button when the button is tapped,
+  or when the mouse is over it. For example:
+
+  ```
+  CircleButton(
+     icon: Icon(Icons.shopping_cart),     
+     builder: ({
+        required bool isHover,
+        required bool isPressed,
+        required Widget child,
+     }) =>
+         AnimatedScale(
+            scale: isPressed ? 0.85 : 1.0,
+            duration: const Duration(milliseconds: 50),
+            child: child,
+       ),
+     );
+  ```  
+
+  Try running
+  the [example](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_button_and_circle_button.dart).
+
 ## 10.2.4
 
 * `SideBySide` widget now allows for any number of children, not just two. Example:

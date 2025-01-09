@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 void main() => runApp(const MaterialApp(home: Demo()));
 
 class Demo extends StatelessWidget {
-  const Demo({ super.key });
+  const Demo({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,11 +15,10 @@ class Demo extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              const Box(height: 20),
               _button(),
-              const Box(height: 20),
+              const Box(height: 16),
               _circleButton(),
-              const Box(height: 20),
+              const Box(height: 16),
             ],
           ),
         ),
@@ -34,7 +33,8 @@ class Demo extends StatelessWidget {
       child: Column(
         children: [
           const Text('Button',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+              style: TextStyle(
+                  fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
           const Box(height: 20),
           Row(
             children: [
@@ -48,7 +48,8 @@ class Demo extends StatelessWidget {
                         child: Text(
                           'Click Me',
                           style: TextStyle(
-                              fontSize: 23, color: isPressed ? Colors.black : Colors.white),
+                              fontSize: 23,
+                              color: isPressed ? Colors.black : Colors.white),
                         ),
                       );
                     },
@@ -68,7 +69,8 @@ class Demo extends StatelessWidget {
                         child: Text(
                           'Click Me',
                           style: TextStyle(
-                              fontSize: 23, color: isPressed ? Colors.black : Colors.white),
+                              fontSize: 23,
+                              color: isPressed ? Colors.black : Colors.white),
                         ),
                       );
                     },
@@ -102,7 +104,8 @@ class Demo extends StatelessWidget {
       child: Column(
         children: [
           const Text('CircleButton',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+              style: TextStyle(
+                  fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
           const Box(height: 20),
           Row(
             children: [
@@ -116,6 +119,16 @@ class Demo extends StatelessWidget {
                     border: Border.all(width: 1, color: Colors.black),
                     size: 56,
                     onTap: () {},
+                    builder: ({
+                      required bool isHover,
+                      required bool isPressed,
+                      required Widget child,
+                    }) =>
+                        AnimatedScale(
+                      scale: isPressed ? 1.15 : 1,
+                      duration: const Duration(milliseconds: 50),
+                      child: child,
+                    ),
                   ),
                 ),
               ),
@@ -130,6 +143,16 @@ class Demo extends StatelessWidget {
                     border: Border.all(width: 1, color: Colors.black),
                     size: 56,
                     onTap: () {},
+                    builder: ({
+                      required bool isHover,
+                      required bool isPressed,
+                      required Widget child,
+                    }) =>
+                        AnimatedScale(
+                      scale: isPressed ? 0.85 : 1,
+                      duration: const Duration(milliseconds: 50),
+                      child: child,
+                    ),
                   ),
                 ),
               ),
@@ -144,6 +167,7 @@ class Demo extends StatelessWidget {
             '    border: Border.all(width: 1, color: Colors.black),\n'
             '    size: 56,\n'
             '    onTap: () {},\n'
+            '    builder: ({isPressed, ...} => AnimatedScale(...),\n'
             '    clickAreaMargin: Pad(left: 50, right: 30, vertical: 20),\n'
             '    debugShowClickableArea: false / true',
             style: TextStyle(color: Colors.white),
