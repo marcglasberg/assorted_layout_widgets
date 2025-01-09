@@ -32,12 +32,12 @@ Despite the package name, they are not only related to layout. Here they are:
 
 | Layout                                                                                                                        | Behavioral                                                                                                                                                             | Special                                                                                                                                                  | Format and Style                                                                                                                                                                     |
 |-------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <tt>[SideBySide](#sidebyside)</tt> <i>arranges widgets horizontally. It does things Row and RowSuper can't do</i>.            | <tt>[Delayed](#delayed)</tt> <i>gives a widget some initial value, then change it to another value after some delay.</i>                                               | <tt>[Button](#button)</tt> <i>turns any widget into a button, with configurable click-area and the visual feedback.</i>                                  | <tt>[MaskFunctionTextInputFormatter](#maskfunctiontextinputformatter)</tt> <i>formats the text to a mask, as the user types, but the mask may change according to what is typed.</i> |
-| <tt>[ColumnSuper](#columnsuper)</tt> <i>is a column layout that does things the Column widget can't do</i>.                   | <tt>[CaptureGestures](#capturegestures)</tt> <i>captures gestures, preventing its parent and ascending subtree to detect them.</i>                                     | <tt>[CircleButton](#circlebutton)</tt> <i>is a circular icon-button that lets you have a larger click-area and prolong the visual feedback.</i>          | <tt>[NonUniformOutlineInputBorder](#nonuniformoutlineinputborder)</tt> <i>can be used to style the borders of TextFields and Containers, but hiding some of the borders.</i>         |
-| <tt>[RowSuper](#rowsuper)</tt> <i>is a row layout that does things the Row widget can't do</i>.                               | <tt>[KeyboardDismiss](#keyboarddismiss)</tt> <i>implements iOS and Android keyboard dismissing behavior.</i>                                                           | <tt>[ButtonBarSuper](#buttonbarsuper)</tt> <i>is a button-bar that places its buttons differently.</i>                                                   | <tt>[NonUniformRoundedRectangleBorder](#nonuniformroundedrectangleborder)</tt> <i>can be used to style the borders of Buttons and Containers, but hiding some of the borders.</i>    |
-| <tt>[WrapSuper](#wrapsuper)</tt> <i>is similar to the Wrap widget, but you can choose the line-breaking algorithm</i>.        | <tt>[showDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a dialog with a callback for when the dialog is dismissed.</i>                    | <tt>[GlobalValueKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key that uses equality instead of identity. Like ValueKey, but global.</i> | <tt>[FitHorizontally](#fithorizontally)</tt> <i>shrinks its child horizontally only, until a shrink limit is reached.</i>                                                            |
-| <tt>[Box](#box)</tt> <i>has features of Container, SizedBox and ColoredBox, but less verbose and can be made const</i>.       | <tt>[showCupertinoDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a Cupertino dialog with a callback for when the dialog is dismissed.</i> | <tt>[GlobalStringKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key created from a String.</i>                                            | <tt>[TextOneLine](#textoneline)</tt> is a text widget that <i>fixes <a href="https://github.com/flutter/flutter/issues/18761">this issue</a>.</i>                                    |
-| <tt>[Pad](#pad)</tt> <i>is an EdgeInsetsGeometry which is easier to type and remember</i>.                                    | <tt>[TimeBuilder](#timebuilder)</tt> <i>lets you implement clocks, countdowns, stopwatches etc, the right way.</i>                                                     |                                                                                                                                                          |                                                                                                                                                                                      |
+| <tt>[SideBySide](#sidebyside)</tt> <i>arranges widgets horizontally. It does things Row and RowSuper can't do</i>.            | <tt>[Delayed](#delayed)</tt> <i>gives a widget some initial value, then change it to another value after some delay.</i>                                               | <tt>[DetectScroll](#detectscroll)</tt> <i>helps modify or position widgets only when a scrollable is scrolled, or a scrollbar is visible.</i>            | <tt>[MaskFunctionTextInputFormatter](#maskfunctiontextinputformatter)</tt> <i>formats the text to a mask, as the user types, but the mask may change according to what is typed.</i> |
+| <tt>[RowSuper](#rowsuper)</tt> <i>is a row layout that does things the Row widget can't do</i>.                               | <tt>[CaptureGestures](#capturegestures)</tt> <i>captures gestures, preventing its parent and ascending subtree to detect them.</i>                                     | <tt>[ButtonBarSuper](#buttonbarsuper)</tt> <i>is a button-bar that places its buttons differently.</i>                                                   | <tt>[NonUniformOutlineInputBorder](#nonuniformoutlineinputborder)</tt> <i>can be used to style the borders of TextFields and Containers, but hiding some of the borders.</i>         |
+| <tt>[ColumnSuper](#columnsuper)</tt> <i>is a column layout that does things the Column widget can't do</i>.                   | <tt>[KeyboardDismiss](#keyboarddismiss)</tt> <i>implements iOS and Android keyboard dismissing behavior.</i>                                                           | <tt>[Button](#button)</tt> <i>turns any widget into a button, with configurable click-area and the visual feedback.</i>                                  | <tt>[NonUniformRoundedRectangleBorder](#nonuniformroundedrectangleborder)</tt> <i>can be used to style the borders of Buttons and Containers, but hiding some of the borders.</i>    |
+| <tt>[WrapSuper](#wrapsuper)</tt> <i>is similar to the Wrap widget, but you can choose the line-breaking algorithm</i>.        | <tt>[showDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a dialog with a callback for when the dialog is dismissed.</i>                    | <tt>[CircleButton](#circlebutton)</tt> <i>is a circular icon-button that lets you have a larger click-area and prolong the visual feedback.</i>          | <tt>[FitHorizontally](#fithorizontally)</tt> <i>shrinks its child horizontally only, until a shrink limit is reached.</i>                                                            |
+| <tt>[Box](#box)</tt> <i>has features of Container, SizedBox and ColoredBox, but less verbose and can be made const</i>.       | <tt>[showCupertinoDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a Cupertino dialog with a callback for when the dialog is dismissed.</i> | <tt>[GlobalValueKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key that uses equality instead of identity. Like ValueKey, but global.</i> | <tt>[TextOneLine](#textoneline)</tt> is a text widget that <i>fixes <a href="https://github.com/flutter/flutter/issues/18761">this issue</a>.</i>                                    |
+| <tt>[Pad](#pad)</tt> <i>is an EdgeInsetsGeometry which is easier to type and remember</i>.                                    | <tt>[TimeBuilder](#timebuilder)</tt> <i>lets you implement clocks, countdowns, stopwatches etc, the right way.</i>                                                     | <tt>[GlobalStringKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key created from a String.</i>                                            |                                                                                                                                                                                      |
 | <tt>[NormalizedOverflowBox](#normalizedoverflowbox)</tt> <i>is an OverflowBox that throws no errors and is easier to use</i>. |                                                                                                                                                                        |                                                                                                                                                          |                                                                                                                                                                                      |
 
 <sub>Note the widgets you don't use will be removed by Flutter's tree shaking. So feel
@@ -170,73 +170,6 @@ SideBySide example</a>.
 
 <br>
 
-# ColumnSuper
-
-Given a list of children widgets, this will arrange them in a column. It can overlap
-cells, add separators and more.
-
-```
-ColumnSuper({
-  List<Widget> children,
-  double outerDistance,
-  double innerDistance,
-  bool invert,
-  Alignment alignment,
-  Widget separator,
-  bool separatorOnTop,  
-  bool removeChildrenWithNoHeight,
-});
-```                   
-
-![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/columnSuper.png)
-
-* **`children`** is the list of widgets that represent the column cells, just like in a
-  regular `Column` widget. However, the list may contain `null`s, which will be ignored.
-
-* **`outerDistance`** is the distance in pixels before the first and after the last
-  widget. It can be negative, in which case the cells will overflow the column (without
-  any overflow warnings).
-
-* **`innerDistance`** is the distance in pixels between the cells. It can be negative, in
-  which case the cells will overlap.
-
-* **`invert`** if true will paint the cells that come later on top of the ones that came
-  before. This is specially useful when cells overlap (negative `innerDistance`).
-
-* **`alignment`** will align the cells horizontally if they are smaller than the available
-  horizontal space.
-
-* **`separator`** is a widget which will be painted between each cell. Its height doesn't
-  matter, since the distance between cells is given by `innerDistance` (in other words,
-  separators don't occupy space). The separator may overflow if its width is larger than
-  the column's width.
-
-* **`separatorOnTop`** if `true` (the default) will paint the separator on top of the
-  cells. If `false` will paint the separator below the cells.
-
-* **`removeChildrenWithNoHeight`** if true, children with zero height will not result in
-  an extra `innerDistance` and `separator`. If all children have zero height,
-  the `outerDistance` will also be removed. In other words, it's as if children with zero
-  height are removed, except for the fact they still occupy width. The default is false.
-  See <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_column_removing_zero_height.dart">
-  this interactive example</a>.
-
-*Note: This is not a substitute for Flutter's native `Column`, it doesn't try to have a
-similar API, and it doesn't do all that `Column` does. In special, `Expanded`
-and `Flexible` widgets don't work inside of `ColumnSuper`, and it will overflow if the
-column is not big enough to fit its contents. `ColumnSuper` is meant only for certain use
-cases where `Column` won't work, like when you need overlapping cells or separators.*
-
-Try running
-the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_column_super.dart">
-ColumnSuper example</a>.
-
-Also,
-try <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_column_super_playground.dart">
-ColumnSuper Playground</a>.
-
-<br>
-
 # RowSuper
 
 Given a list of children widgets, this will arrange them in a row. It can overlap cells,
@@ -320,6 +253,73 @@ widgets don't work inside of `RowSuper`, since `RowSuper` will resize cells
 proportionately when content doesn't fit. `RowSuper` is meant only for certain use cases
 where `Row` won't work, like when you need overlapping cells, or when you need to scale
 the contents of the cells when they don't fit.*
+
+<br>
+
+# ColumnSuper
+
+Given a list of children widgets, this will arrange them in a column. It can overlap
+cells, add separators and more.
+
+```
+ColumnSuper({
+  List<Widget> children,
+  double outerDistance,
+  double innerDistance,
+  bool invert,
+  Alignment alignment,
+  Widget separator,
+  bool separatorOnTop,  
+  bool removeChildrenWithNoHeight,
+});
+```                   
+
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/columnSuper.png)
+
+* **`children`** is the list of widgets that represent the column cells, just like in a
+  regular `Column` widget. However, the list may contain `null`s, which will be ignored.
+
+* **`outerDistance`** is the distance in pixels before the first and after the last
+  widget. It can be negative, in which case the cells will overflow the column (without
+  any overflow warnings).
+
+* **`innerDistance`** is the distance in pixels between the cells. It can be negative, in
+  which case the cells will overlap.
+
+* **`invert`** if true will paint the cells that come later on top of the ones that came
+  before. This is specially useful when cells overlap (negative `innerDistance`).
+
+* **`alignment`** will align the cells horizontally if they are smaller than the available
+  horizontal space.
+
+* **`separator`** is a widget which will be painted between each cell. Its height doesn't
+  matter, since the distance between cells is given by `innerDistance` (in other words,
+  separators don't occupy space). The separator may overflow if its width is larger than
+  the column's width.
+
+* **`separatorOnTop`** if `true` (the default) will paint the separator on top of the
+  cells. If `false` will paint the separator below the cells.
+
+* **`removeChildrenWithNoHeight`** if true, children with zero height will not result in
+  an extra `innerDistance` and `separator`. If all children have zero height,
+  the `outerDistance` will also be removed. In other words, it's as if children with zero
+  height are removed, except for the fact they still occupy width. The default is false.
+  See <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_column_removing_zero_height.dart">
+  this interactive example</a>.
+
+*Note: This is not a substitute for Flutter's native `Column`, it doesn't try to have a
+similar API, and it doesn't do all that `Column` does. In special, `Expanded`
+and `Flexible` widgets don't work inside of `ColumnSuper`, and it will overflow if the
+column is not big enough to fit its contents. `ColumnSuper` is meant only for certain use
+cases where `Column` won't work, like when you need overlapping cells or separators.*
+
+Try running
+the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_column_super.dart">
+ColumnSuper example</a>.
+
+Also,
+try <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_column_super_playground.dart">
+ColumnSuper Playground</a>.
 
 <br>
 
@@ -605,11 +605,79 @@ WrapFit example</a>.
 
 <br>
 
+# DetectScroll
+
+The `DetectScroll` has 2 uses:
+
+1. It can detect if its subtree is scrolled, and inform its descendants.
+   This is useful for showing/hiding widget only when the content is scrolled (ot not
+   scrolled).
+
+2. It can detect if a scrollbar is likely visible, and provide the width of the
+   scrollbar. This is useful for positioning widgets relative to the scrollbar,
+   so that the scrollbar doesn't overlap them. This can be important when the scrollbar
+   is permanently visible, usually on the Web and desktop.
+
+Note it will only detect the scrolling of its **closest** scrollable descendant
+(a scrollable is a `SingleChildScrollView`, `ListView`, `GridView` etc).
+Usually, you would wrap the scrollable you care about directly with a `DetectScroll`.
+For example:
+
+```
+DetectScrollbar(
+ child: SingleChildScrollView(
+    child: Column( ...
+ ...
+);
+```
+
+To get the current scroll state and scrollbar width, descendants can call:
+
+```
+bool isScrolled = DetectScrollable.of(context).isScrolled;
+double width = DetectScrollable.of(context).scrollbarWidth;
+```
+
+### Example
+
+Suppose you want to add a help button to the top-right corner of a
+scrollable, and account for the scrollbar width only if it's visible:
+
+```
+bool isScrollbarPresent = DetectScrollbar.of(context).isScrolled;
+double width = DetectScrollbar.of(context).scrollbarWidth;
+
+return Stack(
+  children: [
+     child,
+     Positioned(
+        right: isScrollbarPresent ? width : 0,
+        top: 0,
+        child: HelpButton(),
+     ),
+  ],
+);
+```
+
+## In more detaiL:
+
+The `DetectScroll` actually detects if its subtree is scrolled, which means its
+closes descendant Scrollable is not at its zero position (not at the top),
+and then informs its descendants about this fact.
+
+Note this doesn't mean there is actually a scrollbar visible, but only that the
+content is scrolled. For this reason, you should use to detect scrollbars only when
+you know there will be a fixed scrollbar (like on the web or desktop), or when
+you're using a custom scrollbar that is always visible.
+
+Regarding the width of the scrollbar provided by `DetectScroll`, this information
+is calculated from the current **theme** at the `DetectScroll`. For this reason,
+if you use this width, make sure the scrollbar is actually using this same theme.
+
 # ButtonBarSuper
 
 `ButtonBarSuper` has a similar API to a regular `ButtonBar`, but will distribute its
-buttons by
-using a `WrapSuper`.
+buttons by using a `WrapSuper`.
 
 ![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/buttonBar.png)
 
@@ -764,8 +832,8 @@ Pad(vertical: 12, horizontal: 6)
 You can also compose paddings. For example, if you want 40 pixels of padding in all
 directions, except the top with 50 pixels: `padding: Pad(all: 40, top: 10)`.
 
-During development, you sometimes need to temporarily remove the padding, for debugging
-reasons.
+During development, you sometimes need to temporarily remove the padding, 
+for debugging reasons.
 Unfortunately you can't just comment the padding parameter, because the
 `Padding` widget doesn't accept `null` padding. But you can just add `.x` to the
 `Pad` class to remove it. It's marked as `deprecated` so that you don't forget to change
@@ -793,8 +861,8 @@ Pad(all: 40).copyWith(bottom: 10);
 
 # NormalizedOverflowBox
 
-A `NormalizedOverflowBox` is a widget that imposes different constraints on its child than
-it gets from its parent, possibly allowing the child to overflow the parent.
+A `NormalizedOverflowBox` is a widget that imposes different constraints on its child 
+than it gets from its parent, possibly allowing the child to overflow the parent.
 
 A `NormalizedOverflowBox` is similar to an `OverflowBox`. However, then `OverflowBox` may
 throw errors if it gets constraints which are incompatible with its own constraints. For

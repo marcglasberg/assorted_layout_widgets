@@ -5,6 +5,7 @@ export "src/capture_gestures.dart";
 export "src/circle_button.dart";
 export "src/column_super.dart";
 export "src/delayed.dart";
+export "src/detect_scroll.dart";
 export "src/fit_horizontally.dart";
 export "src/global_keys.dart";
 export "src/keyboard_dismiss.dart";

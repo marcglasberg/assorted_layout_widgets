@@ -2,6 +2,11 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 10.4.0
+
+* A new useful widget called `DetectScroll` has been added. Check the README for more
+  information.
+
 ## 10.3.0
 
 * `CircleButton` now accepts an optional custom builder function to modify the button's
