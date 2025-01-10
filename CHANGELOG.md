@@ -2,7 +2,7 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
-## 10.4.0
+## 10.4.2
 
 * A new useful widget called `DetectScroll` has been added. Check the README for more
   information.

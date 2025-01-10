@@ -610,17 +610,17 @@ WrapFit example</a>.
 The `DetectScroll` has 2 uses:
 
 1. It can detect if its subtree is scrolled, and inform its descendants.
-   This is useful for showing/hiding widget only when the content is scrolled (ot not
+   This is useful for showing/hiding widgets only when the content is scrolled (ot not
    scrolled).
 
-2. It can detect if a scrollbar is likely visible, and provide the width of the
+2. It can detect if a scrollbar is likely visible, and tell you the width of the
    scrollbar. This is useful for positioning widgets relative to the scrollbar,
    so that the scrollbar doesn't overlap them. This can be important when the scrollbar
    is permanently visible, usually on the Web and desktop.
 
 Note it will only detect the scrolling of its **closest** scrollable descendant
 (a scrollable is a `SingleChildScrollView`, `ListView`, `GridView` etc).
-Usually, you would wrap the scrollable you care about directly with a `DetectScroll`.
+Usually, you'd wrap the scrollable you care about directly with a `DetectScroll`.
 For example:
 
 ```
@@ -631,11 +631,11 @@ DetectScrollbar(
 );
 ```
 
-To get the current scroll state and scrollbar width, descendants can call:
+To get the current scroll state and the scrollbar width, descendants can call:
 
 ```
-bool isScrolled = DetectScrollable.of(context).isScrolled;
-double width = DetectScrollable.of(context).scrollbarWidth;
+bool isScrolled = DetectScroll.of(context).isScrolled;
+double width = DetectScroll.of(context).scrollbarWidth;
 ```
 
 ### Example
@@ -659,15 +659,15 @@ return Stack(
 );
 ```
 
-## In more detaiL:
+## In more detail:
 
-The `DetectScroll` actually detects if its subtree is scrolled, which means its
-closes descendant Scrollable is not at its zero position (not at the top),
+The `DetectScroll` actually only detects if its subtree is scrolled, in other words,
+that its closest descendant Scrollable is not at its zero position (not at the top),
 and then informs its descendants about this fact.
 
 Note this doesn't mean there is actually a scrollbar visible, but only that the
-content is scrolled. For this reason, you should use to detect scrollbars only when
-you know there will be a fixed scrollbar (like on the web or desktop), or when
+content is scrolled. For this reason, you should use it to detect scrollbars only when
+a fixed scrollbar is the default (like on the web or desktop), or when
 you're using a custom scrollbar that is always visible.
 
 Regarding the width of the scrollbar provided by `DetectScroll`, this information
