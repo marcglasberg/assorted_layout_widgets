@@ -49,7 +49,7 @@ import 'package:flutter/rendering.dart';
 /// ```
 ///
 /// Second, you can specify the minimum width that it should occupy, using
-/// the [minEndChildWidth] parameter. This means that the last widget will occupy
+/// the [minEndChildWidth] property. This means that the last widget will occupy
 /// AT LEAST that width, even if it means that the previous widgets will be pushed out
 /// of the available space. However, if the total available space is less
 /// than [minEndChildWidth], then the last widget will be displayed only up to the
@@ -57,7 +57,7 @@ import 'package:flutter/rendering.dart';
 ///
 /// ## Gaps
 ///
-/// You can add gaps between the widgets, using the [gaps] parameter. The gaps are
+/// You can add gaps between the widgets, using the [gaps] property. The gaps are
 /// a list of doubles representing pixels. If you have two children, you should
 /// provide one gap. If you have three children, you should provide two gaps, and so on.
 ///
@@ -69,7 +69,7 @@ import 'package:flutter/rendering.dart';
 ///
 /// ## Cross alignment
 ///
-/// The [crossAxisAlignment] parameter specifies how to align the widgets vertically.
+/// The [crossAxisAlignment] property specifies how to align the widgets vertically.
 /// The default is to center them. At the moment, only [CrossAxisAlignment.start],
 /// [CrossAxisAlignment.end] and [CrossAxisAlignment.center] work. If you provide
 /// [CrossAxisAlignment.baseline] or [CrossAxisAlignment.stretch], you'll get
@@ -78,7 +78,7 @@ import 'package:flutter/rendering.dart';
 /// ## Using Text as children
 ///
 /// When you use [Text] widgets in your children, it's strongly recommended that
-/// you use parameter `textWidthBasis: TextWidthBasis.longestLine`. The default
+/// you use property `textWidthBasis: TextWidthBasis.longestLine`. The default
 /// `textWidthBasis` is usually `textWidthBasis: TextWidthBasis.parent`, which
 /// is almost never what you want. For example, instead of writing:
 /// `Text("Hello")`, you should write:
@@ -117,9 +117,9 @@ import 'package:flutter/rendering.dart';
 ///
 /// ## Deprecated usage
 ///
-/// The `startChild` and `endChild` parameters are deprecated. Use the `children`
-/// parameter instead. The `innerDistance` parameter is also deprecated. Use the `gaps`
-/// parameter instead.
+/// The `startChild` and `endChild` properties are deprecated. Use the `children`
+/// property instead. The `innerDistance` property is also deprecated. Use the `gaps`
+/// property instead.
 ///
 /// For example, this deprecated code:
 ///
@@ -190,7 +190,7 @@ class SideBySide extends MultiChildRenderObjectWidget {
   /// ```
   ///
   /// Second, you can specify the minimum width that it should occupy, using
-  /// the [minEndChildWidth] parameter. This means that the last widget will occupy
+  /// the [minEndChildWidth] property. This means that the last widget will occupy
   /// AT LEAST that width, even if it means that the previous widgets will be pushed out
   /// of the available space. However, if the total available space is less
   /// than [minEndChildWidth], then the last widget will be displayed only up to the
@@ -198,7 +198,7 @@ class SideBySide extends MultiChildRenderObjectWidget {
   ///
   /// ## Gaps
   ///
-  /// You can add gaps between the widgets, using the [gaps] parameter. The gaps are
+  /// You can add gaps between the widgets, using the [gaps] property. The gaps are
   /// a list of doubles representing pixels. If you have two children, you should
   /// provide one gap. If you have three children, you should provide two gaps, and so on.
   ///
@@ -210,7 +210,7 @@ class SideBySide extends MultiChildRenderObjectWidget {
   ///
   /// ## Cross alignment
   ///
-  /// The [crossAxisAlignment] parameter specifies how to align the widgets vertically.
+  /// The [crossAxisAlignment] property specifies how to align the widgets vertically.
   /// The default is to center them. At the moment, only [CrossAxisAlignment.start],
   /// [CrossAxisAlignment.end] and [CrossAxisAlignment.center] work. If you provide
   /// [CrossAxisAlignment.baseline] or [CrossAxisAlignment.stretch], you'll get
@@ -219,7 +219,7 @@ class SideBySide extends MultiChildRenderObjectWidget {
   /// ## Using Text as children
   ///
   /// When you use [Text] widgets in your children, it's strongly recommended that
-  /// you use parameter `textWidthBasis: TextWidthBasis.longestLine`. The default
+  /// you use property `textWidthBasis: TextWidthBasis.longestLine`. The default
   /// `textWidthBasis` is usually `textWidthBasis: TextWidthBasis.parent`, which
   /// is almost never what you want. For example, instead of writing:
   /// `Text("Hello")`, you should write:
@@ -258,9 +258,9 @@ class SideBySide extends MultiChildRenderObjectWidget {
   ///
   /// ## Deprecated usage
   ///
-  /// The `startChild` and `endChild` parameters are deprecated. Use the `children`
-  /// parameter instead. The `innerDistance` parameter is also deprecated. Use the `gaps`
-  /// parameter instead.
+  /// The `startChild` and `endChild` properties are deprecated. Use the `children`
+  /// property instead. The `innerDistance` property is also deprecated. Use the `gaps`
+  /// property instead.
   ///
   /// For example, this deprecated code:
   ///
@@ -290,15 +290,17 @@ class SideBySide extends MultiChildRenderObjectWidget {
     Key? key,
     List<Widget> children = const [],
     //
-    @Deprecated('Use the `children` parameter instead.') Widget? startChild,
+    @Deprecated('Use the `children` property instead.') Widget? startChild,
     //
-    @Deprecated('Use the `children` parameter instead.') Widget? endChild,
+    @Deprecated('Use the `children` property instead.') Widget? endChild,
     //
     List<double> gaps = const [],
     //
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
     //
-    @Deprecated('Use the `gaps` parameter instead.') double innerDistance = 0,
+    TextDirection textDirection = TextDirection.ltr,
+    //
+    @Deprecated('Use the `gaps` property instead.') double innerDistance = 0,
     //
     double minEndChildWidth = 0,
   }) {
@@ -307,16 +309,17 @@ class SideBySide extends MultiChildRenderObjectWidget {
       //
       if (children.isNotEmpty)
         throw ArgumentError(
-            'Cannot use `startChild` and `endChild` with the `children` parameter.');
+            'Cannot use `startChild` and `endChild` with the `children` property.');
 
       if (gaps.isNotEmpty)
-        throw ArgumentError('Cannot use `gaps` with the `startChild` parameter.');
+        throw ArgumentError('Cannot use `gaps` with the `startChild` property.');
 
       return SideBySide._(
         key: key,
         startChild: startChild,
         endChild: endChild,
         crossAxisAlignment: crossAxisAlignment,
+        textDirection: textDirection,
         innerDistance: innerDistance,
         minEndChildWidth: minEndChildWidth,
       );
@@ -337,20 +340,29 @@ class SideBySide extends MultiChildRenderObjectWidget {
     // 2) Empty usage.
     if (children.isEmpty)
       return SideBySide._(
-          key: key, startChild: const SizedBox(), endChild: const SizedBox());
+        key: key,
+        startChild: const SizedBox(),
+        endChild: const SizedBox(),
+        textDirection: textDirection,
+      );
 
     // 3) When providing [children], can't use `startChild` or `endChild`.
     if (startChild != null || endChild != null)
       throw ArgumentError(
-          'Cannot use `startChild` or `endChild` with the `children` parameter.');
+          'Cannot use `startChild` or `endChild` with the `children` property.');
 
     if (innerDistance != 0)
-      throw ArgumentError('Cannot use `innerDistance` with the `children` parameter. '
+      throw ArgumentError('Cannot use `innerDistance` with the `children` property. '
           'Use `gaps` instead.');
 
     // 4) A single child.
     if (children.length == 1)
-      return SideBySide._(key: key, startChild: children[0], endChild: const SizedBox());
+      return SideBySide._(
+        key: key,
+        startChild: children[0],
+        endChild: const SizedBox(),
+        textDirection: textDirection,
+      );
 
     Widget nestedSideBySide = children.last;
 
@@ -366,6 +378,7 @@ class SideBySide extends MultiChildRenderObjectWidget {
             (gaps.isNotEmpty //
                 ? (i < gaps.length ? gaps[i] : gaps.last) //
                 : 0)),
+        textDirection: textDirection,
       );
     }
 
@@ -377,6 +390,7 @@ class SideBySide extends MultiChildRenderObjectWidget {
     required this.startChild,
     required this.endChild,
     this.crossAxisAlignment = CrossAxisAlignment.center,
+    this.textDirection = TextDirection.ltr,
     this.innerDistance = 0,
     this.minEndChildWidth = 0,
   }) : super(
@@ -396,10 +410,19 @@ class SideBySide extends MultiChildRenderObjectWidget {
   /// directly (use `children` instead).
   final Widget endChild;
 
-  /// The [crossAxisAlignment] parameter specifies how to align the widgets vertically.
+  /// The [crossAxisAlignment] property specifies how to align the widgets vertically.
   /// The default is to center them. At the moment, only [CrossAxisAlignment.start],
   /// [CrossAxisAlignment.end] and [CrossAxisAlignment.center] work.
   final CrossAxisAlignment crossAxisAlignment;
+
+  /// The [textDirection] property controls the direction that children are rendered in.
+  /// [TextDirection.ltr] is the default direction, so the first child is rendered to the
+  /// left, with subsequent children following to the right. If you want to order
+  /// children in the opposite direction (right to left), then use [TextDirection.rtl].
+  ///
+  /// This can be used with RTL (right to left) languages, but also when you want to
+  /// align children to the right.
+  final TextDirection textDirection;
 
   /// The distance in pixels between the widgets. The default is zero.
   /// It can be negative, in which case the widgets will overlap.
@@ -414,6 +437,7 @@ class SideBySide extends MultiChildRenderObjectWidget {
         crossAxisAlignment: crossAxisAlignment,
         innerDistance: innerDistance,
         minEndChildWidth: minEndChildWidth,
+        textDirection: textDirection,
       );
 
   @override
@@ -421,7 +445,8 @@ class SideBySide extends MultiChildRenderObjectWidget {
     renderObject
       ..crossAxisAlignment = crossAxisAlignment
       ..innerDistance = innerDistance
-      ..minEndChildWidth = minEndChildWidth;
+      ..minEndChildWidth = minEndChildWidth
+      ..textDirection = textDirection;
   }
 }
 
@@ -434,19 +459,24 @@ class _RenderSideBySide extends RenderBox
     required CrossAxisAlignment crossAxisAlignment,
     required double innerDistance,
     required double minEndChildWidth,
+    required TextDirection textDirection,
   })  : _crossAxisAlignment = crossAxisAlignment,
         _innerDistance = innerDistance,
-        _minEndChildWidth = minEndChildWidth;
+        _minEndChildWidth = minEndChildWidth,
+        _textDirection = textDirection;
 
   CrossAxisAlignment _crossAxisAlignment;
   double _innerDistance;
   double _minEndChildWidth;
+  TextDirection _textDirection;
 
   CrossAxisAlignment get crossAxisAlignment => _crossAxisAlignment;
 
   double get innerDistance => _innerDistance;
 
   double get minEndChildWidth => _minEndChildWidth;
+
+  TextDirection get textDirection => _textDirection;
 
   set crossAxisAlignment(CrossAxisAlignment value) {
     if (_crossAxisAlignment == value) return;
@@ -463,6 +493,12 @@ class _RenderSideBySide extends RenderBox
   set minEndChildWidth(double value) {
     if (_minEndChildWidth == value) return;
     _minEndChildWidth = value;
+    markNeedsLayout();
+  }
+
+  set textDirection(TextDirection value) {
+    if (_textDirection == value) return;
+    _textDirection = value;
     markNeedsLayout();
   }
 
@@ -494,8 +530,72 @@ class _RenderSideBySide extends RenderBox
   late double maxChildHeight;
 
   void _performLayout() {
+    if (textDirection == TextDirection.ltr)
+      _performLayoutLtr();
     //
+    else if (textDirection == TextDirection.rtl)
+      _performLayoutRtl();
+    //
+    else
+      throw AssertionError(textDirection);
+  }
 
+  void _performLayoutRtl() {
+    // How much space (min) the endChild needs + the gap:
+    // If minEndChildWidth is zero, we consider zero for this calculation.
+    final double minEndChildAndInnerDistance =
+        (minEndChildWidth == 0) ? 0 : (minEndChildWidth + innerDistance);
+
+    // --- Layout startChild. ---
+    // It can take up to (maxWidth - minEndChildAndInnerDistance).
+    // This ensures we reserve enough space for the endChild if needed.
+    final startChildConstraints = BoxConstraints(
+      minWidth: 0.0,
+      maxWidth: max(0.0, constraints.maxWidth - minEndChildAndInnerDistance),
+      minHeight: constraints.minHeight,
+      maxHeight: constraints.maxHeight,
+    );
+    startChild.layout(startChildConstraints, parentUsesSize: true);
+    final double startChildWidth = startChild.size.width;
+
+    // If the startChild used no width, we remove the gap.
+    final double correctedInnerDistance = (startChildWidth == 0.0) ? 0.0 : innerDistance;
+
+    // --- Layout endChild. ---
+    // Whatever space is left for it:
+    final endChildConstraints = constraints.copyWith(minWidth: 0).tighten(
+          width: constraints.maxWidth - startChildWidth - correctedInnerDistance,
+        );
+    endChild.layout(endChildConstraints, parentUsesSize: true);
+    final double endChildWidth = endChild.size.width;
+
+    // Find the tallest child:
+    final double maxChildHeight = max(startChild.size.height, endChild.size.height);
+
+    // --- Positioning. ---
+    final MultiChildLayoutParentData startChildParentData =
+        startChild.parentData as MultiChildLayoutParentData;
+    final MultiChildLayoutParentData endChildParentData =
+        endChild.parentData as MultiChildLayoutParentData;
+
+    // In RTL, place the startChild on the far right,
+    // and the endChild to its left (with the gap in between).
+    startChildParentData.offset = Offset(
+      constraints.maxWidth - startChildWidth,
+      dy(startChild, maxChildHeight),
+    );
+
+    endChildParentData.offset = Offset(
+      constraints.maxWidth - startChildWidth - correctedInnerDistance - endChildWidth,
+      dy(endChild, maxChildHeight),
+    );
+
+    // Our total size is just the full available width by the tallest child.
+    size = Size(constraints.maxWidth, maxChildHeight);
+  }
+
+  void _performLayoutLtr() {
+    //
     // What is the minimum width the endChild can occupy?
     // At the minimum, we have the `minEndChildWidth` plus the inner-distance, except if
     // the minEndChildWidth is zero, in which case we don't even add the inner-distance.

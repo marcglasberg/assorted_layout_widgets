@@ -155,6 +155,16 @@ The default is to center them. At the moment, only `CrossAxisAlignment.start`,
 `CrossAxisAlignment.baseline` or `CrossAxisAlignment.stretch`, you'll get
 an `UnimplementedError`.
 
+### Text direction
+
+The `textDirection` parameter controls the direction that children are rendered in.
+`TextDirection.ltr` is the default direction, so the first child is rendered to the left,
+with subsequent children following to the right. If you want to order children in the
+opposite direction (right to left), then use `TextDirection.rtl`.
+
+This can be used with RTL (right to left) languages, but also when you want to align
+children to the right.
+
 ### Using Text as children
 
 When you use `Text` widgets in your children, it's strongly recommended that

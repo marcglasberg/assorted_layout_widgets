@@ -30,6 +30,7 @@ class Demo extends StatelessWidget {
   );
 
   static var w3 = Box(
+    alignment: Alignment.centerLeft,
     color: Colors.green.withValues(alpha: 0.2),
     child: const Text(
       "I'm doing fine.",
@@ -37,6 +38,40 @@ class Demo extends StatelessWidget {
       overflow: TextOverflow.ellipsis,
     ),
   );
+
+  static var w1Rtl = Box(
+    color: Colors.red.withValues(alpha: 0.2),
+    child: const Text(
+      "שלום!",
+      textDirection: TextDirection.rtl,
+      style: TextStyle(color: Colors.red),
+      overflow: TextOverflow.ellipsis,
+    ),
+  );
+
+  static var w2Rtl = Box(
+    color: Colors.blue.withValues(alpha: 0.2),
+    child: const Text(
+      "מה שלומך?",
+      textDirection: TextDirection.rtl,
+      style: TextStyle(color: Colors.blue),
+      overflow: TextOverflow.ellipsis,
+    ),
+  );
+
+  static var w3Rtl = Box(
+    color: Colors.green.withValues(alpha: 0.2),
+    child: const Text(
+      "אני בסדר.",
+      textDirection: TextDirection.rtl,
+      style: TextStyle(color: Colors.green),
+      overflow: TextOverflow.ellipsis,
+    ),
+  );
+
+  static const largeGap = Box(height: 45);
+  static const mediumGap = Box(height: 12);
+  static const shortGap = Box(height: 2);
 
   @override
   Widget build(BuildContext context) {
@@ -68,8 +103,10 @@ class Demo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         //
+        // -----------------------
+        //
         const Text("SideBySide", style: TextStyle(fontWeight: FontWeight.bold)),
-        const Box(height: 4),
+        shortGap,
         BoxAnimatingWidth(
           child: Box(
             color: Colors.grey[300],
@@ -78,7 +115,10 @@ class Demo extends StatelessWidget {
           ),
         ),
         //
-        const Box(height: 30),
+        // -----------------------
+        //
+        mediumGap,
+        //
         const Text.rich(
           TextSpan(
             children: [
@@ -86,13 +126,11 @@ class Demo extends StatelessWidget {
                 text: "SideBySide",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              TextSpan(
-                text: " with gap and fixed last widget",
-              ),
+              TextSpan(text: " with gap, and minEndChildWidth"),
             ],
           ),
         ),
-        const Box(height: 4),
+        shortGap,
         BoxAnimatingWidth(
           child: Box(
             color: Colors.grey[300],
@@ -101,9 +139,65 @@ class Demo extends StatelessWidget {
           ),
         ),
         //
-        const Box(height: 30),
+        // -----------------------
+        //
+        largeGap,
+        //
+        const Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                text: "SideBySide",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              TextSpan(text: " with textDirection.rtl (right to left)"),
+            ],
+          ),
+        ),
+        shortGap,
+        BoxAnimatingWidth(
+          child: Box(
+            color: Colors.grey[300],
+            width: 120,
+            child: SideBySide(
+                children: [w1Rtl, w2Rtl, w3Rtl], textDirection: TextDirection.rtl),
+          ),
+        ),
+        //
+        // -----------------------
+        //
+        mediumGap,
+        //
+        const Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                text: "SideBySide",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              TextSpan(text: " with textDir.rtl, gap, and minEndChildWidth."),
+            ],
+          ),
+        ),
+        shortGap,
+        BoxAnimatingWidth(
+          child: Box(
+            color: Colors.grey[300],
+            width: 120,
+            child: SideBySide(
+                children: [w1Rtl, w2Rtl, w3Rtl],
+                gaps: [35],
+                minEndChildWidth: 95,
+                textDirection: TextDirection.rtl),
+          ),
+        ),
+        //
+        // -----------------------
+        //
+        largeGap,
+        //
         const Text("Row", style: TextStyle(fontWeight: FontWeight.bold)),
-        const Box(height: 4),
+        shortGap,
         BoxAnimatingWidth(
           child: Box(
             color: Colors.grey[300],
@@ -114,7 +208,10 @@ class Demo extends StatelessWidget {
           ),
         ),
         //
-        const Box(height: 30),
+        // -----------------------
+        //
+        mediumGap,
+        //
         const Text.rich(
           TextSpan(
             children: [
@@ -122,13 +219,11 @@ class Demo extends StatelessWidget {
                 text: "Row",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              TextSpan(
-                text: " with Expanded",
-              ),
+              TextSpan(text: " with Expanded"),
             ],
           ),
         ),
-        const Box(height: 4),
+        shortGap,
         BoxAnimatingWidth(
           child: Box(
             color: Colors.grey[300],
@@ -143,7 +238,10 @@ class Demo extends StatelessWidget {
           ),
         ),
         //
-        const Box(height: 30),
+        // -----------------------
+        //
+        mediumGap,
+        //
         const Text.rich(
           TextSpan(
             children: [
@@ -151,13 +249,11 @@ class Demo extends StatelessWidget {
                 text: "Row",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              TextSpan(
-                text: " with Flexible",
-              ),
+              TextSpan(text: " with Flexible"),
             ],
           ),
         ),
-        const Box(height: 4),
+        shortGap,
         BoxAnimatingWidth(
           child: Box(
             color: Colors.grey[300],
@@ -168,9 +264,12 @@ class Demo extends StatelessWidget {
           ),
         ),
         //
-        const Box(height: 30),
+        // -----------------------
+        //
+        largeGap,
+        //
         const Text("RowSuper", style: TextStyle(fontWeight: FontWeight.bold)),
-        const Box(height: 4),
+        shortGap,
         BoxAnimatingWidth(
           child: Box(
             color: Colors.grey[300],
@@ -181,7 +280,10 @@ class Demo extends StatelessWidget {
           ),
         ),
         //
-        const Box(height: 30),
+        // -----------------------
+        //
+        mediumGap,
+        //
         const Text.rich(
           TextSpan(
             children: [
@@ -189,13 +291,11 @@ class Demo extends StatelessWidget {
                 text: "RowSuper",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              TextSpan(
-                text: " with `fill: true`",
-              ),
+              TextSpan(text: " with `fill: true`"),
             ],
           ),
         ),
-        const Box(height: 4),
+        shortGap,
         BoxAnimatingWidth(
           child: Box(
             color: Colors.grey[300],
@@ -207,6 +307,7 @@ class Demo extends StatelessWidget {
           ),
         ),
         //
+        // -----------------------
       ],
     );
   }
@@ -224,7 +325,7 @@ class BoxAnimatingWidth extends StatefulWidget {
   const BoxAnimatingWidth({
     Key? key,
     required this.child,
-    this.minWidth = 100.0,
+    this.minWidth = 80.0,
     this.maxWidth,
     this.moveDuration = const Duration(milliseconds: 3500),
     this.maxHoldDuration = const Duration(seconds: 1),
