@@ -17,7 +17,7 @@ import "package:flutter/material.dart";
 /// For example:
 ///
 /// ```dart
-/// DetectScrollbar(
+/// DetectScroll(
 ///  child: SingleChildScrollView(
 ///     child: Column( ...
 ///  ...
@@ -36,8 +36,8 @@ import "package:flutter/material.dart";
 /// scrollable, and account for the scrollbar width only if it's visible:
 ///
 /// ```dart
-/// bool isScrollbarPresent = DetectScrollbar.of(context).isScrolled;
-/// double width = DetectScrollbar.of(context).scrollbarWidth;
+/// bool isScrollbarPresent = DetectScroll.of(context).isScrolled;
+/// double width = DetectScroll.of(context).scrollbarWidth;
 ///
 /// return Stack(
 ///   children: [
@@ -86,7 +86,7 @@ class DetectScroll extends StatefulWidget {
   /// a [DetectScroll]. For example:
   ///
   /// ```dart
-  /// DetectScrollbar(
+  /// DetectScroll(
   ///  child: SingleChildScrollView(
   ///     child: Column( ...
   ///  ...
@@ -106,8 +106,8 @@ class DetectScroll extends StatefulWidget {
   /// scrollable, and account for the scrollbar width only if it's visible:
   ///
   /// ```dart
-  /// bool isScrollbarPresent = DetectScrollbar.of(context).isScrolled;
-  /// double width = DetectScrollbar.of(context).scrollbarWidth;
+  /// bool isScrollbarPresent = DetectScroll.of(context).isScrolled;
+  /// double width = DetectScroll.of(context).scrollbarWidth;
   ///
   /// return Stack(
   ///   children: [

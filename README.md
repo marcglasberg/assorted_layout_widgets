@@ -624,7 +624,7 @@ Usually, you'd wrap the scrollable you care about directly with a `DetectScroll`
 For example:
 
 ```
-DetectScrollbar(
+DetectScroll(
  child: SingleChildScrollView(
     child: Column( ...
  ...
@@ -644,8 +644,8 @@ Suppose you want to add a help button to the top-right corner of a
 scrollable, and account for the scrollbar width only if it's visible:
 
 ```
-bool isScrollbarPresent = DetectScrollbar.of(context).isScrolled;
-double width = DetectScrollbar.of(context).scrollbarWidth;
+bool isScrollbarPresent = DetectScroll.of(context).isScrolled;
+double width = DetectScroll.of(context).scrollbarWidth;
 
 return Stack(
   children: [
