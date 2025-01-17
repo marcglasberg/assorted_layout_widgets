@@ -67,13 +67,16 @@ import 'package:flutter/rendering.dart';
 /// for all the remaining widgets. If you provide more gaps than required, the extra
 /// gaps will be ignored.
 ///
-/// ## Cross alignment
+/// ## Cross alignment and main axis size
 ///
 /// The [crossAxisAlignment] property specifies how to align the widgets vertically.
 /// The default is to center them. At the moment, only [CrossAxisAlignment.start],
 /// [CrossAxisAlignment.end] and [CrossAxisAlignment.center] work. If you provide
 /// [CrossAxisAlignment.baseline] or [CrossAxisAlignment.stretch], you'll get
 /// an [UnimplementedError].
+///
+/// The [mainAxisSize] property determines whether the widget will occupy the full
+/// available width ([MainAxisSize.max]) or only as much as it needs ([MainAxisSize.min]).
 ///
 /// ## Using Text as children
 ///
@@ -208,13 +211,16 @@ class SideBySide extends MultiChildRenderObjectWidget {
   /// for all the remaining widgets. If you provide more gaps than required, the extra
   /// gaps will be ignored.
   ///
-  /// ## Cross alignment
+  /// ## Cross alignment and main axis size
   ///
   /// The [crossAxisAlignment] property specifies how to align the widgets vertically.
   /// The default is to center them. At the moment, only [CrossAxisAlignment.start],
   /// [CrossAxisAlignment.end] and [CrossAxisAlignment.center] work. If you provide
   /// [CrossAxisAlignment.baseline] or [CrossAxisAlignment.stretch], you'll get
   /// an [UnimplementedError].
+  ///
+  /// The [mainAxisSize] property determines whether the widget will occupy the full
+  /// available width ([MainAxisSize.max]) or only as much as it needs ([MainAxisSize.min]).
   ///
   /// ## Using Text as children
   ///
@@ -303,6 +309,9 @@ class SideBySide extends MultiChildRenderObjectWidget {
     @Deprecated('Use the `gaps` property instead.') double innerDistance = 0,
     //
     double minEndChildWidth = 0,
+    //
+    MainAxisSize mainAxisSize = MainAxisSize.max,
+    //
   }) {
     // 1) Deprecated usage.
     if (startChild != null && endChild != null) {
@@ -322,6 +331,7 @@ class SideBySide extends MultiChildRenderObjectWidget {
         textDirection: textDirection,
         innerDistance: innerDistance,
         minEndChildWidth: minEndChildWidth,
+        mainAxisSize: mainAxisSize,
       );
     }
 
@@ -344,6 +354,7 @@ class SideBySide extends MultiChildRenderObjectWidget {
         startChild: const SizedBox(),
         endChild: const SizedBox(),
         textDirection: textDirection,
+        mainAxisSize: mainAxisSize,
       );
 
     // 3) When providing [children], can't use `startChild` or `endChild`.
@@ -379,6 +390,7 @@ class SideBySide extends MultiChildRenderObjectWidget {
                 ? (i < gaps.length ? gaps[i] : gaps.last) //
                 : 0)),
         textDirection: textDirection,
+        mainAxisSize: mainAxisSize,
       );
     }
 
@@ -393,6 +405,7 @@ class SideBySide extends MultiChildRenderObjectWidget {
     this.textDirection = TextDirection.ltr,
     this.innerDistance = 0,
     this.minEndChildWidth = 0,
+    this.mainAxisSize = MainAxisSize.max,
   }) : super(
           key: key,
           children: [startChild, endChild],
@@ -432,12 +445,17 @@ class SideBySide extends MultiChildRenderObjectWidget {
   /// The default is zero.
   final double minEndChildWidth;
 
+  /// Determines whether the widget will occupy the full available width
+  /// ([MainAxisSize.max]) or only as much as it needs ([MainAxisSize.min]).
+  final MainAxisSize mainAxisSize;
+
   @override
   _RenderSideBySide createRenderObject(BuildContext context) => _RenderSideBySide(
         crossAxisAlignment: crossAxisAlignment,
         innerDistance: innerDistance,
         minEndChildWidth: minEndChildWidth,
         textDirection: textDirection,
+        mainAxisSize: mainAxisSize,
       );
 
   @override
@@ -446,7 +464,8 @@ class SideBySide extends MultiChildRenderObjectWidget {
       ..crossAxisAlignment = crossAxisAlignment
       ..innerDistance = innerDistance
       ..minEndChildWidth = minEndChildWidth
-      ..textDirection = textDirection;
+      ..textDirection = textDirection
+      ..mainAxisSize = mainAxisSize;
   }
 }
 
@@ -460,15 +479,18 @@ class _RenderSideBySide extends RenderBox
     required double innerDistance,
     required double minEndChildWidth,
     required TextDirection textDirection,
+    required MainAxisSize mainAxisSize,
   })  : _crossAxisAlignment = crossAxisAlignment,
         _innerDistance = innerDistance,
         _minEndChildWidth = minEndChildWidth,
-        _textDirection = textDirection;
+        _textDirection = textDirection,
+        _mainAxisSize = mainAxisSize;
 
   CrossAxisAlignment _crossAxisAlignment;
   double _innerDistance;
   double _minEndChildWidth;
   TextDirection _textDirection;
+  MainAxisSize _mainAxisSize;
 
   CrossAxisAlignment get crossAxisAlignment => _crossAxisAlignment;
 
@@ -477,6 +499,8 @@ class _RenderSideBySide extends RenderBox
   double get minEndChildWidth => _minEndChildWidth;
 
   TextDirection get textDirection => _textDirection;
+
+  MainAxisSize get mainAxisSize => _mainAxisSize;
 
   set crossAxisAlignment(CrossAxisAlignment value) {
     if (_crossAxisAlignment == value) return;
@@ -499,6 +523,12 @@ class _RenderSideBySide extends RenderBox
   set textDirection(TextDirection value) {
     if (_textDirection == value) return;
     _textDirection = value;
+    markNeedsLayout();
+  }
+
+  set mainAxisSize(MainAxisSize value) {
+    if (_mainAxisSize == value) return;
+    _mainAxisSize = value;
     markNeedsLayout();
   }
 
@@ -548,7 +578,6 @@ class _RenderSideBySide extends RenderBox
 
     // --- Layout startChild. ---
     // It can take up to (maxWidth - minEndChildAndInnerDistance).
-    // This ensures we reserve enough space for the endChild if needed.
     final startChildConstraints = BoxConstraints(
       minWidth: 0.0,
       maxWidth: max(0.0, constraints.maxWidth - minEndChildAndInnerDistance),
@@ -562,10 +591,22 @@ class _RenderSideBySide extends RenderBox
     final double correctedInnerDistance = (startChildWidth == 0.0) ? 0.0 : innerDistance;
 
     // --- Layout endChild. ---
-    // Whatever space is left for it:
-    final endChildConstraints = constraints.copyWith(minWidth: 0).tighten(
-          width: constraints.maxWidth - startChildWidth - correctedInnerDistance,
-        );
+    // For MainAxisSize.max, endChild is forced to fill leftover width.
+    // For MainAxisSize.min, endChild can take up to leftover width as needed.
+    final leftover = constraints.maxWidth - startChildWidth - correctedInnerDistance;
+
+    BoxConstraints endChildConstraints;
+    if (mainAxisSize == MainAxisSize.max) {
+      endChildConstraints = constraints.copyWith(minWidth: 0).tighten(width: leftover);
+    } else {
+      endChildConstraints = BoxConstraints(
+        minWidth: 0,
+        maxWidth: leftover < 0 ? 0 : leftover,
+        minHeight: constraints.minHeight,
+        maxHeight: constraints.maxHeight,
+      );
+    }
+
     endChild.layout(endChildConstraints, parentUsesSize: true);
     final double endChildWidth = endChild.size.width;
 
@@ -584,28 +625,33 @@ class _RenderSideBySide extends RenderBox
       constraints.maxWidth - startChildWidth,
       dy(startChild, maxChildHeight),
     );
-
     endChildParentData.offset = Offset(
       constraints.maxWidth - startChildWidth - correctedInnerDistance - endChildWidth,
       dy(endChild, maxChildHeight),
     );
 
-    // Our total size is just the full available width by the tallest child.
-    size = Size(constraints.maxWidth, maxChildHeight);
+    // Decide final width:
+    // For MainAxisSize.max, we use constraints.maxWidth.
+    // For MainAxisSize.min, just use the sum of both children plus the gap.
+    if (mainAxisSize == MainAxisSize.max) {
+      size = Size(constraints.maxWidth, maxChildHeight);
+    } else {
+      // The used width is the distance from the leftmost child to the rightmost child.
+      final usedWidth = startChildWidth + correctedInnerDistance + endChildWidth;
+      size = constraints.constrain(Size(usedWidth, maxChildHeight));
+    }
   }
 
   void _performLayoutLtr() {
     //
+    //
     // What is the minimum width the endChild can occupy?
     // At the minimum, we have the `minEndChildWidth` plus the inner-distance, except if
-    // the minEndChildWidth is zero, in which case we don't even add the inner-distance.
-    // Note: `minEndChildWidth` is the min-width the `endChild` occupies, and
-    // `innerDistance` is the gap between `startChild` and `endChild`.
+    // the minEndChildWidth is zero, in which case we don't add the inner-distance.
     double minEndChildAndInnerDistance =
         (minEndChildWidth == 0) ? 0 : (minEndChildWidth + innerDistance);
 
     // StartChild: ---
-
     var startChildConstraints = BoxConstraints(
       minWidth: 0.0,
       maxWidth: max(0.0, constraints.maxWidth - minEndChildAndInnerDistance),
@@ -616,21 +662,32 @@ class _RenderSideBySide extends RenderBox
     startChild.layout(startChildConstraints, parentUsesSize: true);
     double startChildWidth = startChild.size.width;
 
-    // If the startChild will not bne displayed, then we remove the innerDistance.
+    // If the startChild is zero width, remove the gap.
     var correctedInnerDistance = (startChildWidth == 0.0) ? 0 : innerDistance;
 
     // EndChild: ---
+    // For MainAxisSize.max, endChild fills leftover width.
+    // For MainAxisSize.min, endChild can take up to leftover width.
+    final leftover = constraints.maxWidth - startChildWidth - correctedInnerDistance;
 
-    var endChildConstraints = constraints.copyWith(minWidth: 0).tighten(
-          width: constraints.maxWidth - startChildWidth - correctedInnerDistance,
-        );
+    BoxConstraints endChildConstraints;
+    if (mainAxisSize == MainAxisSize.max) {
+      endChildConstraints = constraints.copyWith(minWidth: 0).tighten(width: leftover);
+    } else {
+      endChildConstraints = BoxConstraints(
+        minWidth: 0,
+        maxWidth: leftover < 0 ? 0 : leftover,
+        minHeight: constraints.minHeight,
+        maxHeight: constraints.maxHeight,
+      );
+    }
 
     endChild.layout(endChildConstraints, parentUsesSize: true);
 
+    double endChildWidth = endChild.size.width;
     double maxChildHeight = max(startChild.size.height, endChild.size.height);
 
-    // ---
-
+    // Position children.
     final MultiChildLayoutParentData startChildParentData =
         startChild.parentData as MultiChildLayoutParentData;
     startChildParentData.offset = Offset(0, dy(startChild, maxChildHeight));
@@ -640,9 +697,15 @@ class _RenderSideBySide extends RenderBox
     endChildParentData.offset =
         Offset(startChildWidth + correctedInnerDistance, dy(endChild, maxChildHeight));
 
-    // ---
-
-    size = Size(constraints.maxWidth, maxChildHeight);
+    // Decide final width:
+    // For MainAxisSize.max, fill available width.
+    // For MainAxisSize.min, match total children width (within constraints).
+    if (mainAxisSize == MainAxisSize.max) {
+      size = Size(constraints.maxWidth, maxChildHeight);
+    } else {
+      final usedWidth = startChildWidth + correctedInnerDistance + endChildWidth;
+      size = constraints.constrain(Size(usedWidth, maxChildHeight));
+    }
   }
 
   double dy(RenderBox child, double maxChildHeight) {

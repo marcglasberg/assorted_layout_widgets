@@ -155,6 +155,11 @@ The default is to center them. At the moment, only `CrossAxisAlignment.start`,
 `CrossAxisAlignment.baseline` or `CrossAxisAlignment.stretch`, you'll get
 an `UnimplementedError`.
 
+### Main axis size
+
+The `mainAxisSize` property determines whether the widget will occupy the full
+available width (`MainAxisSize.max`) or only as much as it needs (`MainAxisSize.min`).
+
 ### Text direction
 
 The `textDirection` parameter controls the direction that children are rendered in.

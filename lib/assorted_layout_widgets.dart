@@ -1,4 +1,5 @@
 export "src/box.dart";
+export "src/box_animating_width.dart";
 export "src/button.dart";
 export "src/button_bar_super.dart";
 export "src/capture_gestures.dart";

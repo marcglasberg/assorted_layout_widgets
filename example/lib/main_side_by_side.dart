@@ -24,9 +24,12 @@ class Demo extends StatelessWidget {
                 _exampleTitleAndDivider(),
                 _sideBySideWith2Children(),
                 _sideBySideWith3Children(),
+                _sideBySideMainAxisSize(),
                 //
                 // Uncomment to see the deprecated examples:
                 // _deprecated(),
+                //
+                const Box.gap(1000),
               ],
             ),
           ),
@@ -256,24 +259,177 @@ class Demo extends StatelessWidget {
     );
   }
 
-  /// Note: Using a [Row] doesn't work. Uncomment to try it:
-  /// Widget _titleWithDivider(String text) {
-  ///   //
-  ///   var sideBySide = Row(
-  ///     crossAxisAlignment: CrossAxisAlignment.start,
-  ///     children: [
-  ///       Text(
-  ///         text,
-  ///         textWidthBasis: TextWidthBasis.longestLine,
-  ///         style: const TextStyle(fontSize: 22),
-  ///       ),
-  ///       const Expanded(child: Divider(color: Colors.grey, height: 30)),
-  ///     ],
-  ///   );
-  ///
-  ///   return Padding(
-  ///     padding: const Pad(top: 30, bottom: 10),
-  ///     child: sideBySide,
-  ///   );
-  /// }
+  Widget _sideBySideMainAxisSize() {
+    var minWidth = 50.0;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        //
+        // --------------------
+        //
+        BoxAnimatingWidth(
+          minWidth: minWidth,
+          child: Center(
+            child: Box(
+              color: Colors.grey[300],
+              child: SideBySide(
+                mainAxisSize: MainAxisSize.max,
+                gaps: [6],
+                children: [
+                  const Text("Centered", style: TextStyle(color: Colors.red)),
+                  Text("MainAxisSize.max",
+                      style: TextStyle(color: Colors.blue[800]),
+                      overflow: TextOverflow.ellipsis),
+                ],
+              ),
+            ),
+          ),
+        ),
+        //
+        const Box.gap(16),
+        //
+        // --------------------
+        //
+        BoxAnimatingWidth(
+          minWidth: minWidth,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Box(
+              color: Colors.grey[300],
+              child: SideBySide(
+                mainAxisSize: MainAxisSize.max,
+                gaps: [6],
+                children: [
+                  const Text("Left aligned", style: TextStyle(color: Colors.red)),
+                  Text("MainAxisSize.max",
+                      style: TextStyle(color: Colors.blue[800]),
+                      overflow: TextOverflow.ellipsis),
+                ],
+              ),
+            ),
+          ),
+        ),
+        //
+        const Box.gap(16),
+        //
+        // --------------------
+        //
+        BoxAnimatingWidth(
+          minWidth: minWidth,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Box(
+              color: Colors.grey[300],
+              child: SideBySide(
+                mainAxisSize: MainAxisSize.max,
+                gaps: [6],
+                children: [
+                  const Text("Right aligned", style: TextStyle(color: Colors.red)),
+                  Text("MainAxisSize.max",
+                      style: TextStyle(color: Colors.blue[800]),
+                      overflow: TextOverflow.ellipsis),
+                ],
+              ),
+            ),
+          ),
+        ),
+        //
+        const Box.gap(16),
+        //
+        // --------------------
+        //
+        BoxAnimatingWidth(
+          minWidth: minWidth,
+          child: Center(
+            child: Box(
+              color: Colors.grey[300],
+              child: SideBySide(
+                mainAxisSize: MainAxisSize.min,
+                gaps: [6],
+                children: [
+                  const Text("Centered", style: TextStyle(color: Colors.red)),
+                  Text("MainAxisSize.min",
+                      style: TextStyle(color: Colors.blue[800]),
+                      overflow: TextOverflow.ellipsis),
+                ],
+              ),
+            ),
+          ),
+        ),
+        //
+        const Box.gap(16),
+        //
+        // --------------------
+        //
+        BoxAnimatingWidth(
+          minWidth: minWidth,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Box(
+              color: Colors.grey[300],
+              child: SideBySide(
+                mainAxisSize: MainAxisSize.min,
+                gaps: [6],
+                children: [
+                  const Text("Left aligned", style: TextStyle(color: Colors.red)),
+                  Text("MainAxisSize.min",
+                      style: TextStyle(color: Colors.blue[800]),
+                      overflow: TextOverflow.ellipsis),
+                ],
+              ),
+            ),
+          ),
+        ),
+        //
+        const Box.gap(16),
+        //
+        // --------------------
+        //
+        BoxAnimatingWidth(
+          minWidth: minWidth,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Box(
+              color: Colors.grey[300],
+              child: SideBySide(
+                mainAxisSize: MainAxisSize.min,
+                gaps: [6],
+                children: [
+                  const Text("Right aligned", style: TextStyle(color: Colors.red)),
+                  Text("MainAxisSize.min",
+                      style: TextStyle(color: Colors.blue[800]),
+                      overflow: TextOverflow.ellipsis),
+                ],
+              ),
+            ),
+          ),
+        ),
+        //
+        // --------------------
+        //
+      ],
+    );
+  }
 }
+
+/// Note: Using a [Row] doesn't work. Uncomment to try it:
+/// Widget _titleWithDivider(String text) {
+///   //
+///   var sideBySide = Row(
+///     crossAxisAlignment: CrossAxisAlignment.start,
+///     children: [
+///       Text(
+///         text,
+///         textWidthBasis: TextWidthBasis.longestLine,
+///         style: const TextStyle(fontSize: 22),
+///       ),
+///       const Expanded(child: Divider(color: Colors.grey, height: 30)),
+///     ],
+///   );
+///
+///   return Padding(
+///     padding: const Pad(top: 30, bottom: 10),
+///     child: sideBySide,
+///   );
+/// }}

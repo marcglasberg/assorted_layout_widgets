@@ -11,11 +11,12 @@ enum WrapType {
 
   /// The number of lines will be similar as in [WrapType.fit],
   /// however, it will try to minimize the difference between line widths.
+  /// This is the default.
   balanced,
 }
 
 enum WrapFit {
-  /// Will keep each widget's original width. This is the default.
+  /// Will keep each widget's original width.
   min,
 
   /// After the calculation, will make widgets fit all the available space.
@@ -37,6 +38,8 @@ enum WrapFit {
   /// 2) Keep the width of all widgets larger than that preferred width.
   /// 3) Calculate the remaining width and divide it equally by the remaining
   /// widgets.
+  ///
+  /// This is the default.
   larger,
 }
 

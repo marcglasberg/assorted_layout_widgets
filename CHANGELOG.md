@@ -2,6 +2,12 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 10.5.0
+
+* The `SideBySide` widget now has a `mainAxisSize` property the determines whether it
+  will occupy the full available width (`MainAxisSize.max`) or only as much as it
+  needs (`MainAxisSize.min`).
+
 ## 10.4.4
 
 * A new useful widget called `DetectScroll` has been added. Check the README for more
