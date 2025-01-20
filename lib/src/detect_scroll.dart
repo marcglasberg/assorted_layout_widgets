@@ -1,18 +1,15 @@
 import "package:flutter/material.dart";
 
-/// The [DetectScroll] has 2 uses:
+/// The [DetectScroll] can detect if the content of a Scrollable is larger than the
+/// Scrollable itself, which means that the content can be scrolled, and that a scrollbar
+/// is likely visible. It can also tell you the probable width of that scrollbar.
 ///
-/// 1) It can detect if its subtree is scrolled, and inform its descendants.
-/// This is useful for showing/hiding widgets only when the content is scrolled (ot not
-/// scrolled).
+/// This is useful for positioning widgets relative to the scrollbar, so that the
+/// scrollbar doesn't overlap them. This can be important when the scrollbar is
+/// permanently visible, usually on the Web and desktop.
 ///
-/// 2) It can detect if a scrollbar is likely visible, and tell you the width of the
-/// scrollbar. This is useful for positioning widgets relative to the scrollbar,
-/// so that the scrollbar doesn't overlap them. This can be important when the scrollbar
-/// is permanently visible, usually on the Web and desktop.
-///
-/// Note it will only detect the scrolling of its **closest** scrollable descendant
-/// (a scrollable is a `SingleChildScrollView`, `ListView`, `GridView` etc).
+/// Note that [DetectScroll] will only detect the scrolling of its **closest** scrollable
+/// descendant (a scrollable is a `SingleChildScrollView`, `ListView`, `GridView` etc).
 /// Usually, you'd wrap the scrollable you care about directly with a [DetectScroll].
 /// For example:
 ///
@@ -26,24 +23,22 @@ import "package:flutter/material.dart";
 ///
 /// To get the current scroll state and the scrollbar width, descendants can call:
 /// ```dart
-/// bool isScrolled = DetectScroll.of(context).isScrolled;
+/// bool canScroll = DetectScroll.of(context).canScroll;
 /// double width = DetectScroll.of(context).scrollbarWidth;
 /// ```
 ///
-/// ## Example
-///
-/// Suppose you want to add a help button to the top-right corner of a
+/// For example, suppose you want to add a help button to the top-right corner of a
 /// scrollable, and account for the scrollbar width only if it's visible:
 ///
 /// ```dart
-/// bool isScrollbarPresent = DetectScroll.of(context).isScrolled;
+/// bool canScroll = DetectScroll.of(context).canScroll;
 /// double width = DetectScroll.of(context).scrollbarWidth;
 ///
 /// return Stack(
 ///   children: [
 ///      child,
 ///      Positioned(
-///         right: isScrollbarPresent ? width : 0,
+///         right: canScroll ? width : 0,
 ///         top: 0,
 ///         child: HelpButton(),
 ///      ),
@@ -51,16 +46,30 @@ import "package:flutter/material.dart";
 /// );
 /// ```
 ///
+/// Another alternative is using the optional [onChange] callback:
+///
+/// ```
+/// DetectScroll(
+///    onChange: ({
+///       required bool canScroll,
+///       required double width,
+///    }) {
+///       // Do something.
+///    }
+///    child: ...
+/// ),
+/// ```
+///
 /// # In more detail:
 ///
-/// The [DetectScroll] actually only detects if its subtree is scrolled, in other words,
-/// that its closest descendant Scrollable is not at its zero position (not at the top),
-/// and then informs its descendants about this fact.
+/// The [DetectScroll] actually only detects if its subtree can scroll, in other words,
+/// that its closest descendant Scrollable has enough content so that not all of it
+/// fits the available visible space, and then informs its descendants about this fact.
 ///
 /// Note this doesn't mean there is actually a scrollbar visible, but only that the
-/// content is scrolled. For this reason, you should use it to detect scrollbars only when
-/// a fixed scrollbar is the default (like on the web or desktop), or when
-/// you're using a custom scrollbar that is always visible.
+/// content can be scrolled. For this reason, you should use it to detect scrollbars
+/// only when a scrollbar is always shown when the content doesn't fit (like on the web
+/// or desktop), or when you're using a custom scrollbar that is always visible.
 ///
 /// Regarding the width of the scrollbar provided by [DetectScroll], this information
 /// is calculated from the current **theme** at the [DetectScroll]. For this reason,
@@ -69,21 +78,28 @@ import "package:flutter/material.dart";
 class DetectScroll extends StatefulWidget {
   final Widget child;
 
-  /// The [DetectScroll] has 2 uses:
+  final void Function({
+    required bool canScroll,
+    required double scrollbarWidth,
+  })? onChange;
+
+  /// If true, the [DetectScroll] will cancel the [ScrollMetricsNotification] bubbling.
+  /// If false, the notification  will be allowed to continue to be dispatched to further
+  /// ancestors. The default is true.
+  final bool cancelNotificationBubbling;
+
+  /// The [DetectScroll] can detect if the content of a Scrollable is larger than the
+  /// Scrollable itself, which means that the content can be scrolled, and that a scrollbar
+  /// is likely visible. It can also tell you the probable width of that scrollbar.
   ///
-  /// 1) It can detect if its subtree is scrolled, and inform its descendants.
-  /// This is useful for showing/hiding widgets only when the content is scrolled (ot not
-  /// scrolled).
+  /// This is useful for positioning widgets relative to the scrollbar, so that the
+  /// scrollbar doesn't overlap them. This can be important when the scrollbar is
+  /// permanently visible, usually on the Web and desktop.
   ///
-  /// 2) It can detect if a scrollbar is likely visible, and tell you the width of the
-  /// scrollbar. This is useful for positioning widgets relative to the scrollbar,
-  /// so that the scrollbar doesn't overlap them. This can be important when the
-  /// scrollbar is permanently visible, usually on the Web and desktop.
-  ///
-  /// Note it will only detect the scrolling of its **closest** scrollable descendant
-  /// (a scrollable is a `SingleChildScrollView`, `ListView`, `GridView` etc).
-  /// Usually, you'd wrap the scrollable you care about directly with
-  /// a [DetectScroll]. For example:
+  /// Note that [DetectScroll] will only detect the scrolling of its **closest** scrollable
+  /// descendant (a scrollable is a `SingleChildScrollView`, `ListView`, `GridView` etc).
+  /// Usually, you'd wrap the scrollable you care about directly with a [DetectScroll].
+  /// For example:
   ///
   /// ```dart
   /// DetectScroll(
@@ -94,26 +110,23 @@ class DetectScroll extends StatefulWidget {
   /// ```
   ///
   /// To get the current scroll state and the scrollbar width, descendants can call:
-  /// 
   /// ```dart
-  /// bool isScrolled = DetectScroll.of(context).isScrolled;
+  /// bool canScroll = DetectScroll.of(context).canScroll;
   /// double width = DetectScroll.of(context).scrollbarWidth;
   /// ```
   ///
-  /// ## Example
-  ///
-  /// Suppose you want to add a help button to the top-right corner of a
+  /// For example, suppose you want to add a help button to the top-right corner of a
   /// scrollable, and account for the scrollbar width only if it's visible:
   ///
   /// ```dart
-  /// bool isScrollbarPresent = DetectScroll.of(context).isScrolled;
+  /// bool canScroll = DetectScroll.of(context).canScroll;
   /// double width = DetectScroll.of(context).scrollbarWidth;
   ///
   /// return Stack(
   ///   children: [
   ///      child,
   ///      Positioned(
-  ///         right: isScrollbarPresent ? width : 0,
+  ///         right: canScroll ? width : 0,
   ///         top: 0,
   ///         child: HelpButton(),
   ///      ),
@@ -121,16 +134,30 @@ class DetectScroll extends StatefulWidget {
   /// );
   /// ```
   ///
+  /// Another alternative is using the [onChange] callback:
+  ///
+  /// ```
+  /// DetectScroll(
+  ///    onChange: ({
+  ///       required bool canScroll,
+  ///       required double width,
+  ///    }) {
+  ///       // Do something.
+  ///    }
+  ///    child: ...
+  /// ),
+  /// ```
+  ///
   /// # In more detail:
   ///
-  /// The [DetectScroll] actually only detects if its subtree is scrolled, in other words,
-  /// that its closest descendant Scrollable is not at its zero position (not at the top),
-  /// and then informs its descendants about this fact.
+  /// The [DetectScroll] actually only detects if its subtree can scroll, in other words,
+  /// that its closest descendant Scrollable has enough content so that not all of it
+  /// fits the available visible space, and then informs its descendants about this fact.
   ///
   /// Note this doesn't mean there is actually a scrollbar visible, but only that the
-  /// content is scrolled. For this reason, you should use it to detect scrollbars only when
-  /// a fixed scrollbar is the default (like on the web or desktop), or when
-  /// you're using a custom scrollbar that is always visible.
+  /// content can be scrolled. For this reason, you should use it to detect scrollbars
+  /// only when a scrollbar is always shown when the content doesn't fit (like on the web
+  /// or desktop), or when you're using a custom scrollbar that is always visible.
   ///
   /// Regarding the width of the scrollbar provided by [DetectScroll], this information
   /// is calculated from the current **theme** at the [DetectScroll]. For this reason,
@@ -139,12 +166,14 @@ class DetectScroll extends StatefulWidget {
   const DetectScroll({
     Key? key,
     required this.child,
+    this.onChange,
+    this.cancelNotificationBubbling = true,
   }) : super(key: key);
 
   /// Allows descendants to get the scroll state.
   /// Example:
   /// ```
-  /// bool isPresent = DetectScroll.of(context).isScrolled;
+  /// bool canScroll = DetectScroll.of(context).canScroll;
   /// double width = DetectScroll.of(context).scrollbarWidth;
   /// ```
   static _DetectScrollInherited of(BuildContext context) {
@@ -182,31 +211,27 @@ class _DetectScrollState extends State<DetectScroll> {
 
     bool thumbVisibility =
         scrollbarTheme.thumbVisibility?.resolve(<WidgetState>{}) ?? true;
+
     bool trackVisibility =
         scrollbarTheme.trackVisibility?.resolve(<WidgetState>{}) ?? false;
+
     double thickness = scrollbarTheme.thickness?.resolve(<WidgetState>{}) ?? 8.0;
     double crossAxisMargin = scrollbarTheme.crossAxisMargin ?? 0.0;
 
-    if (thumbVisibility == false)
-      return 0.0;
-    else
-      return thickness + crossAxisMargin + (trackVisibility ? crossAxisMargin : 0);
+    return thumbVisibility
+        ? thickness + crossAxisMargin + (trackVisibility ? crossAxisMargin : 0)
+        : 0.0;
   }
 
   @override
   Widget build(BuildContext context) {
     return NotificationListener<ScrollMetricsNotification>(
-      onNotification: (notification) {
-        final metrics = notification.metrics;
-        canScrollNotifier.value =
-            metrics.hasContentDimensions && metrics.maxScrollExtent > 0;
-        return true;
-      },
+      onNotification: _onNotification,
       child: ValueListenableBuilder<bool>(
         valueListenable: canScrollNotifier,
-        builder: (_, _isScrolled, __) {
+        builder: (_, _canScroll, __) {
           return _DetectScrollInherited(
-            isScrolled: _isScrolled,
+            canScroll: _canScroll,
             scrollbarWidth: _materialScrollbarWidth,
             child: widget.child,
           );
@@ -214,22 +239,48 @@ class _DetectScrollState extends State<DetectScroll> {
       ),
     );
   }
+
+  bool _onNotification(ScrollMetricsNotification notification) {
+    final metrics = notification.metrics;
+
+    canScrollNotifier.value = metrics.hasContentDimensions && metrics.maxScrollExtent > 0;
+
+    widget.onChange?.call(
+      canScroll: canScrollNotifier.value,
+      scrollbarWidth: _materialScrollbarWidth,
+    );
+
+    // If true (the default), will cancel the notification bubbling.
+    return widget.cancelNotificationBubbling;
+  }
 }
 
 class _DetectScrollInherited extends InheritedWidget {
-  final bool isScrolled;
+  //
+
+  /// Is true whe the content of the detected Scrollable is larger than the
+  /// Scrollable itself, which means that the content can be scrolled, and that a
+  /// scrollbar is likely visible (if one was configured to appear under these
+  /// circumstances).
+  final bool canScroll;
+
+  /// The width of the scrollbar is calculated from the current **theme** at
+  /// the [DetectScroll]. For this reason, if you use this width, make sure that the
+  /// scrollbar is actually using this same theme.
   final double scrollbarWidth;
 
   const _DetectScrollInherited({
     Key? key,
     required Widget child,
-    required this.isScrolled,
+    required this.canScroll,
     required this.scrollbarWidth,
   }) : super(key: key, child: child);
 
+  @Deprecated("Use `canScroll` instead. The old `isScrolled` will be removed very soon.")
+  bool get isScrolled => canScroll;
+
   @override
   bool updateShouldNotify(_DetectScrollInherited oldWidget) {
-    return oldWidget.isScrolled != isScrolled ||
-        oldWidget.scrollbarWidth != scrollbarWidth;
+    return oldWidget.canScroll != canScroll || oldWidget.scrollbarWidth != scrollbarWidth;
   }
 }

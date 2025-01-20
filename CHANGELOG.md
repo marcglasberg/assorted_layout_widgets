@@ -2,16 +2,76 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 10.6.0
+
+# DetectScroll
+
+* The `DetectScroll` widget can detect if the content of a Scrollable is larger than the
+  Scrollable itself, which means that the content can be scrolled, and that a scrollbar
+  is likely visible. It can also tell you the probable width of that scrollbar.
+
+  This is useful for positioning widgets relative to the scrollbar, so that the
+  scrollbar doesn't overlap them. This can be important when the scrollbar is
+  permanently visible, usually on the Web and desktop.
+
+  Note that `DetectScroll` will only detect the scrolling of its **closest** scrollable
+  descendant (a scrollable is a `SingleChildScrollView`, `ListView`, `GridView` etc).
+  Usually, you'd wrap the scrollable you care about directly with a `DetectScroll`.
+  For example:
+
+  ```
+  DetectScroll(
+   child: SingleChildScrollView(
+      child: Column( ...
+   ...
+  );
+  ```
+
+  To get the current scroll state and the scrollbar width, descendants can call:
+
+  ```
+  bool canScroll = DetectScroll.of(context).canScroll;
+  double scrollbarWidth = DetectScroll.of(context).scrollbarWidth;
+  ```
+
+  For example, suppose you want to add a help button to the top-right corner of a
+  scrollable, and account for the scrollbar width only if it's visible:
+
+  ```
+  bool canScroll = DetectScroll.of(context).canScroll;
+  double scrollbarWidth = DetectScroll.of(context).scrollbarWidth;
+  
+  return Stack(
+    children: [
+       child,
+       Positioned(
+          right: canScroll ? scrollbarWidth : 0,
+          top: 0,
+          child: HelpButton(),
+       ),
+    ],
+  );
+  ```
+
+  Another alternative is using the optional `onChange` callback of the `DetectScroll`:
+
+  ```
+  DetectScroll(
+     onChange: ({
+        required bool canScroll,
+        required double scrollbarWidth,
+     }) {
+        // Do something.
+     }
+     child: ...
+  ),
+  ```     
+
 ## 10.5.0
 
 * The `SideBySide` widget now has a `mainAxisSize` property the determines whether it
   will occupy the full available width (`MainAxisSize.max`) or only as much as it
   needs (`MainAxisSize.min`).
-
-## 10.4.4
-
-* A new useful widget called `DetectScroll` has been added. Check the README for more
-  information.
 
 ## 10.3.0
 
