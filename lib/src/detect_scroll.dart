@@ -85,7 +85,7 @@ class DetectScroll extends StatefulWidget {
 
   /// If true, the [DetectScroll] will cancel the [ScrollMetricsNotification] bubbling.
   /// If false, the notification  will be allowed to continue to be dispatched to further
-  /// ancestors. The default is true.
+  /// ancestors. The default is false.
   final bool cancelNotificationBubbling;
 
   /// The [DetectScroll] can detect if the content of a Scrollable is larger than the
@@ -167,7 +167,7 @@ class DetectScroll extends StatefulWidget {
     Key? key,
     required this.child,
     this.onChange,
-    this.cancelNotificationBubbling = true,
+    this.cancelNotificationBubbling = false,
   }) : super(key: key);
 
   /// Allows descendants to get the scroll state.
@@ -250,7 +250,7 @@ class _DetectScrollState extends State<DetectScroll> {
       scrollbarWidth: _materialScrollbarWidth,
     );
 
-    // If true (the default), will cancel the notification bubbling.
+    // If true, will cancel the notification bubbling. Default is false.
     return widget.cancelNotificationBubbling;
   }
 }
