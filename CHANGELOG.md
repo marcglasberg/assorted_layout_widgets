@@ -2,9 +2,15 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
-## 10.6.1
+## 10.7.0
 
-# DetectScroll
+* The `ScrollShadow` widget adds a shadow at the top and/or bottom, to scrollables like
+  `SingleChildScrollView` or `ListView` etc., when the content doesn't fit the
+  scrollable's viewport. As the shadow appears only if there is content outside the
+  viewable area, this gives the user an indication if there is more content to be seen
+  or not.
+
+## 10.6.1
 
 * The `DetectScroll` widget can detect if the content of a Scrollable is larger than the
   Scrollable itself, which means that the content can be scrolled, and that a scrollbar

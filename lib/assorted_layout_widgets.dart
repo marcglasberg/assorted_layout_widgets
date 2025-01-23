@@ -16,6 +16,7 @@ export "src/non_uniform_rounded_rectangle_border.dart";
 export "src/normalized_overflow_box.dart";
 export "src/pad.dart";
 export "src/row_super.dart";
+export "src/scroll_shadow.dart";
 export "src/show_dialog_super.dart";
 export "src/side_by_side.dart";
 export "src/text_one_line.dart";

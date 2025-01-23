@@ -38,7 +38,7 @@ Despite the package name, they are not only related to layout. Here they are:
 | <tt>[WrapSuper](#wrapsuper)</tt> <i>is similar to the Wrap widget, but you can choose the line-breaking algorithm</i>.        | <tt>[showDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a dialog with a callback for when the dialog is dismissed.</i>                    | <tt>[CircleButton](#circlebutton)</tt> <i>is a circular icon-button that lets you have a larger click-area and prolong the visual feedback.</i>          | <tt>[FitHorizontally](#fithorizontally)</tt> <i>shrinks its child horizontally only, until a shrink limit is reached.</i>                                                            |
 | <tt>[Box](#box)</tt> <i>has features of Container, SizedBox and ColoredBox, but less verbose and can be made const</i>.       | <tt>[showCupertinoDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a Cupertino dialog with a callback for when the dialog is dismissed.</i> | <tt>[GlobalValueKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key that uses equality instead of identity. Like ValueKey, but global.</i> | <tt>[TextOneLine](#textoneline)</tt> is a text widget that <i>fixes <a href="https://github.com/flutter/flutter/issues/18761">this issue</a>.</i>                                    |
 | <tt>[Pad](#pad)</tt> <i>is an EdgeInsetsGeometry which is easier to type and remember</i>.                                    | <tt>[TimeBuilder](#timebuilder)</tt> <i>lets you implement clocks, countdowns, stopwatches etc, the right way.</i>                                                     | <tt>[GlobalStringKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key created from a String.</i>                                            |                                                                                                                                                                                      |
-| <tt>[NormalizedOverflowBox](#normalizedoverflowbox)</tt> <i>is an OverflowBox that throws no errors and is easier to use</i>. |                                                                                                                                                                        |                                                                                                                                                          |                                                                                                                                                                                      |
+| <tt>[NormalizedOverflowBox](#normalizedoverflowbox)</tt> <i>is an OverflowBox that throws no errors and is easier to use</i>. |                                                                                                                                                                        | <tt>[ScrollShadow](#scrollshadow)</tt> <i>adds dynamic top and bottom shadows to a scrollable widget, to indicate overflow content.</i>                  |                                                                                                                                                                                      |
 
 <sub>Note the widgets you don't use will be removed by Flutter's tree shaking. So feel
 free to add this package to your project even if you want to use only a few of its
@@ -1559,6 +1559,126 @@ like so:
 MaterialApp(
    builder: (BuildContext context, Widget? child) => KeyboardDismiss(child: child);
 ```
+
+<br>
+
+# ScrollShadow
+
+`ScrollShadow` is a Flutter widget that adds shadows to the top and bottom edges of a
+scrollable widget to indicate overflow content. The shadows dynamically appear or
+disappear based on the scroll state, providing a visual cue that more content can be
+revealed in a specific direction.
+
+This widget is highly customizable, allowing you to control the shadow behavior, color,
+padding, and elevation independently for the top and bottom edges.
+
+## Features
+
+- Dynamically display shadows when the content overflows the scrollable area.
+- Customize shadow visibility behavior for the top and bottom edges independently.
+- Supports `whenScrolled`, `alwaysOn`, and `alwaysOff` shadow visibility modes.
+- Control shadow color, elevation, and padding for precise styling.
+
+### Example Usage
+
+```
+ScrollShadow(
+  topShadowVisibility: ShadowVisibility.whenScrolled,
+  bottomShadowVisibility: ShadowVisibility.alwaysOn,
+  topShadowColor: Colors.black.withOpacity(0.5),
+  bottomShadowColor: Colors.black.withOpacity(0.5),
+  elevation: 4.0,
+  child: ListView.builder(
+    itemCount: 50,
+    itemBuilder: (context, index) => ListTile(title: Text('Item $index')),
+  ),
+);
+```
+
+### Constructor
+
+```
+ScrollShadow({
+  required Widget? child,
+  double? topRightPadding,
+  double? topLeftPadding,
+  Radius? topRadius,
+  double? bottomRightPadding,
+  double? bottomLeftPadding,
+  Radius? bottomRadius,
+  ShadowVisibility topShadowVisibility = ShadowVisibility.whenScrolled,
+  ShadowVisibility bottomShadowVisibility = ShadowVisibility.whenScrolled,
+  Color topShadowColor = Colors.black,
+  Color bottomShadowColor = Colors.black,
+  Color topShadowDividerColor = const Color(0xD0000000),
+  Color bottomShadowDividerColor = const Color(0xD0000000),
+  double? elevation,
+  bool ifHidesShadowForNegativeScroll = false,
+  Key? key,
+})
+```
+
+### Parameters
+
+- **`child`**: The scrollable widget wrapped by `ScrollShadow`. Typically, this is a
+  `ListView`, `SingleChildScrollView`, `GridView`, etc.
+
+- **`topRightPadding`**, **`topLeftPadding`**: Padding applied to the right and left sides
+  of the top shadow. Defaults to `14.0` and `5.0`, respectively.
+
+- **`topRadius`**: Radius for rounding the corners of the top shadow. Defaults to
+  `Radius.circular(4.0)`.
+
+- **`bottomRightPadding`**, **`bottomLeftPadding`**: Padding applied to the right and left
+  sides of the bottom shadow. Defaults to `14.0` and `5.0`, respectively.
+
+- **`bottomRadius`**: Radius for rounding the corners of the bottom shadow. Defaults to
+  `Radius.circular(4.0)`.
+
+- **`topShadowVisibility`**, **`bottomShadowVisibility`**: Controls the visibility
+  behavior of the top and bottom shadows. Available options:
+    - `ShadowVisibility.whenScrolled`: Shows the shadow only when the content overflows.
+    - `ShadowVisibility.alwaysOn`: Always displays the shadow.
+    - `ShadowVisibility.alwaysOff`: Never displays the shadow.
+
+- **`topShadowColor`**, **`bottomShadowColor`**: Colors for the top and bottom shadows.
+  Defaults to `Colors.black`.
+
+- **`topShadowDividerColor`**, **`bottomShadowDividerColor`**: Divider colors applied at
+  the top and bottom edges of the shadows.
+
+- **`elevation`**: The elevation of the shadows, determining their intensity and blur
+  radius. Defaults to `2.5`.
+
+- **`ifHidesShadowForNegativeScroll`**: If `true`, hides the shadow when the scroll
+  position is negative (e.g., overscroll). Defaults to `false`.
+
+### Use Cases
+
+- Highlighting that more content is available in a scrollable widget.
+- Adding visual emphasis to the boundaries of a scrollable area.
+- Enhancing the user experience by dynamically indicating overflow content.
+
+### Example with Nested Scrollable Widgets
+
+```
+ScrollShadow(
+  topShadowVisibility: ShadowVisibility.alwaysOn,
+  bottomShadowVisibility: ShadowVisibility.whenScrolled,
+  topShadowColor: Colors.grey.withOpacity(0.8),
+  bottomShadowColor: Colors.grey.withOpacity(0.8),
+  elevation: 3.0,
+  child: SingleChildScrollView(
+    child: Column(
+      children: List.generate(20, (index) => Text('Item $index')),
+    ),
+  ),
+);
+```
+
+Try running the
+[ScrollShadow example](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_scroll_shadow.dart)
+to see it in action.
 
 <br>
 
