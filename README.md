@@ -968,8 +968,8 @@ showDialogSuper Example</a>.
 
 # TimeBuilder
 
-If you need some widget to change periodically (clocks, countdowns, stopwatches etc.), one
-way of implementing this is using a `Timer` to rebuild it. This is, however, very
+If you need some widget to change periodically (clocks, countdowns, stopwatches etc.),
+one way of implementing this is using a `Timer` to rebuild it. This is, however, very
 inefficient and may make your app slow.
 
 The `TimeBuilder` widget gives you the correct implementation of periodic rebuilds. It's
@@ -985,8 +985,7 @@ advantages:
   `AnimationController`s.
 
 * Compatible with `Clock` changes, allowing for testing (skip frames to target a specific
-  moment in
-  time).
+  moment in time).
 
 * The `TimeBuilder` widget animation is "muted" when the widget is not visible. For
   example, when the widget is a route that is currently not visible, or because of an
@@ -994,14 +993,39 @@ advantages:
 
 Let's see some examples.
 
+## Countdown
+
+To create a **countdown** in seconds from a certain `DateTime`:
+
+```
+// 100 seconds countdown.
+TimeBuilder.countdown(
+   start: DateTime.now(),
+   seconds: 100,
+   builder: ({
+      required BuildContext context,
+      required DateTime currentTickTime,
+      required DateTime initialTime,
+      required int ticks,
+      required bool isFinished,
+      required int countdown,
+   }) => Text(isFinished ? "FINISHED" : countdown.toString()),
+);
+```
+
 ## Periodical
 
 To create a clock that ticks once per second, you can use the `.eachSecond` constructor:
 
 ```
 TimeBuilder.eachSecond(
-   builder: (BuildContext context, DateTime now, int ticks, bool isFinished) 
-                => MyClock(now),
+   builder: ({
+      required BuildContext context, 
+      required DateTime currentTickTime, 
+      required DateTime initialTime, 
+      required int ticks, 
+      required bool isFinished
+   }) => MyClock(currentTickTime),
 );
 ```
 
@@ -1010,93 +1034,135 @@ If you want the rebuilds to stop after 30 seconds you can add the `seconds` para
 ```
 TimeBuilder.eachSecond(
    seconds: 30,
-   builder: (BuildContext context, DateTime now, int ticks, bool isFinished) 
-                => MyClock(now),
+   builder: ({
+      required BuildContext context, 
+      required DateTime currentTickTime, 
+      required DateTime initialTime, 
+      required int ticks, 
+      required bool isFinished
+   }) => MyClock(currentTickTime),
 );
 ```
 
-There are also `.eachMillisecond`, `.eachMinute` and `.eachHour` constructors.
-
-## Countdown
-
-You can also create a seconds **countdown** from a certain `DateTime`:
-
-```
-// 100 seconds countdown.
-TimeBuilder.countdown(
-   start: DateTime.now(),
-   seconds: 15,
-   builder: (BuildContext context, DateTime now, int ticks, bool isFinished,
-      {required int countdown}) 
-         => Text(isFinished ? "FINISHED" : countdown.toString()),
-);
-```
-
-## General animation
-
-You can also create a general animation with the `.animate` constructor:
-
-```
-TimeBuilder.animate(
-   builder: (BuildContext context, DateTime now, int ticks, bool isFinished) 
-                => MyWidget(now),
-   isFinished: ({required DateTime currentTime, required DateTime lastTime, required int ticks,})
-                => currentTime.difference(initialTime) > Duration(seconds: 100),               
-);
-```
+There are also `.eachMillisecond`, `.eachMinute`, `.eachHour` and `.eachFrame`
+constructors.
 
 ## Creating your own
 
-And, finally, you can also create your own `TimeBuilder` using the default constructor:
+You can also create your own `TimeBuilder` using the default constructor:
 
 ```
 const TimeBuilder({
    Key? key,
-   required this.builder,
-   required this.ifRebuilds,
-   this.isFinished,
+    required this.builder,
+    required this.ifShouldTickAndRebuild,
+    this.isFinished,
 }) : super(key: key);
 ```
 
-You must provide the `builder` and `ifRebuilds` callbacks.
+You must provide the `builder` and `ifShouldTickAndRebuild` callbacks.
 
-For each frame, Flutter will first call your `ifRebuilds` callback, which may
-return `true` or `false`:
+For each frame, Flutter will first call your `ifShouldTickAndRebuild` callback,
+which may return `true` or `false`:
 
 ```
-typedef IfRebuilds = bool Function({
-
+typedef IfShouldTickAndRebuild = bool Function({
+//
   /// The current time.
   required DateTime currentTime,
 
-  /// The time of the last tick.
-  required DateTime lastTime,
+  /// The time of the last tick (is `null` for the first tick).
+  required DateTime? lastTickTime,
 
-  /// The number of ticks since the timer started.
+  /// The time when the [TimeBuilder] was created.
+  required DateTime initialTime,
+
+  /// The number of ticks since the [TimeBuilder] was created.
   required int ticks,
 });
 ```
 
 Only when it returns `true`, the `builder` will be asked to generate a widget.
-The `builder` callback is of type `TimerWidgetBuilder`:
+The `builder` callback is of type `TimeBuilderBuilder`:
 
 ```
-typedef TimerWidgetBuilder = Widget Function(
-  BuildContext context,
+typedef TimeBuilderBuilder = Widget Function({
+  required BuildContext context,
 
   /// The time of the current tick.
-  DateTime dateTime,
+  /// This is the same as the current time (or very similar).
+  required DateTime currentTickTime,
+
+  /// The time when the [TimeBuilder] was created.
+  required DateTime initialTime,
 
   /// The number of ticks since the timer started.
-  int ticks,
+  required int ticks,
 
-  /// This is false while the timer is on, and becomes true as soon as it ends.
-  bool isFinished,
-);
+  /// This is `false` while the [TimeBuilder] is ticking,
+  /// and becomes `true` as soon as it finishes.
+  required bool isFinished,
+});
 ```
 
-There is also an optional `isFinished` callback. Returning `true` here will generate one
-last rebuild, and then stop the animation for good (no more rebuilds).
+There is also the optional `isFinished` callback. Returning `true` there will generate
+one last rebuild, and then stop the animation for good (no more ticks and rebuilds).
+
+In the example below, the given `text` will be displayed one character at a time,
+as if it was being typed. The typing starts after a `startDelay` duration,
+and each character is typed every `charDuration`:
+
+```
+class TypewriterText extends StatelessWidget {
+  final String text;
+  final Duration charDuration;
+  final Duration startDelay;
+  final TextStyle textStyle;
+
+  const TypewriterText({
+    Key? key,
+    required this.text,
+    required this.charDuration,
+    required this.startDelay,
+    required this.textStyle,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final int totalTicks = text.length;
+
+    return TimeBuilder(
+      builder: ({ ... }) {
+        // One char per tick.
+        final visibleText = text.substring(0, ticks.clamp(0, text.length));
+
+        return Text(visibleText, style: textStyle);
+      },
+      //
+      isFinished: ({ ..., required int ticks }) {
+        // Finish when reaching the total number of ticks/chars.
+        return ticks >= totalTicks;
+      },
+      //
+      ifShouldTickAndRebuild: ({
+        required DateTime currentTime,
+        required DateTime? lastTickTime,
+        required DateTime initialTime,
+        required int ticks,
+      }) {
+        // Delay animation by the `startDelay`.
+        final Duration elapsedStart = currentTime.difference(initialTime);
+        if (elapsedStart < startDelay) return false;
+
+        // Rebuild periodically based on the `charDuration`.
+        final Duration elapsedLastTick =
+            currentTime.difference(lastTickTime ?? currentTime);
+        return elapsedLastTick >= charDuration;
+      },
+    );
+  }
+}
+```
 
 <br>
 

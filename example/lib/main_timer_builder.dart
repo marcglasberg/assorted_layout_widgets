@@ -90,8 +90,14 @@ class MyHomePage extends StatelessWidget {
       //
       seconds: 15,
       //
-      builder: (BuildContext context, DateTime now, int ticks, bool isFinished,
-          {required int countdown}) {
+      builder: ({
+        required BuildContext context,
+        required DateTime currentTickTime,
+        required DateTime initialTime,
+        required int ticks,
+        required bool isFinished,
+        required int countdown,
+      }) {
         print('1) countdown = $countdown, finished = $isFinished');
 
         return Column(
@@ -111,14 +117,20 @@ class MyHomePage extends StatelessWidget {
   TimeBuilder widget2() {
     return TimeBuilder.eachSecond(
       seconds: 15,
-      builder: (BuildContext context, DateTime now, int ticks, bool isFinished) {
-        print('2) now = $now, ticks = $ticks, finished = $isFinished');
+      builder: ({
+        required BuildContext context,
+        required DateTime currentTickTime,
+        required DateTime initialTime,
+        required int ticks,
+        required bool isFinished,
+      }) {
+        print('2) now = $currentTickTime, ticks = $ticks, finished = $isFinished');
         return ColumnSuper(
           innerDistance: 10.0,
           children: [
-            ClockRenderer(dateTime: now),
+            ClockRenderer(dateTime: currentTickTime),
             TickerRendered(ticks),
-            Text(now.toString()),
+            Text(currentTickTime.toString()),
           ],
         );
       },
@@ -127,14 +139,20 @@ class MyHomePage extends StatelessWidget {
 
   TimeBuilder widget3() {
     return TimeBuilder.eachSecond(
-      builder: (BuildContext context, DateTime now, int ticks, bool isFinished) {
-        print('3) now = $now, ticks = $ticks');
+      builder: ({
+        required BuildContext context,
+        required DateTime currentTickTime,
+        required DateTime initialTime,
+        required int ticks,
+        required bool isFinished,
+      }) {
+        print('3) now = $currentTickTime, ticks = $ticks');
         return ColumnSuper(
           innerDistance: 10.0,
           children: [
-            ClockRenderer(dateTime: now),
+            ClockRenderer(dateTime: currentTickTime),
             TickerRendered(ticks),
-            Text(now.toString()),
+            Text(currentTickTime.toString()),
           ],
         );
       },
@@ -143,14 +161,20 @@ class MyHomePage extends StatelessWidget {
 
   TimeBuilder widget4() {
     return TimeBuilder.eachMinute(
-      builder: (BuildContext context, DateTime now, int ticks, bool isFinished) {
-        print('4) now = $now, ticks = $ticks');
+      builder: ({
+        required BuildContext context,
+        required DateTime currentTickTime,
+        required DateTime initialTime,
+        required int ticks,
+        required bool isFinished,
+      }) {
+        print('4) now = $currentTickTime, ticks = $ticks');
         return ColumnSuper(
           innerDistance: 10.0,
           children: [
-            ClockRenderer(dateTime: now),
+            ClockRenderer(dateTime: currentTickTime),
             TickerRendered(ticks),
-            Text(now.toString()),
+            Text(currentTickTime.toString()),
           ],
         );
       },
@@ -171,8 +195,14 @@ class TickerRendered extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Box(width: 30, height: 15, color: ticker % 2 == 0 ? Colors.grey[300] : Colors.black),
-          Box(width: 30, height: 15, color: ticker % 2 == 1 ? Colors.grey[300] : Colors.black),
+          Box(
+              width: 30,
+              height: 15,
+              color: ticker % 2 == 0 ? Colors.grey[300] : Colors.black),
+          Box(
+              width: 30,
+              height: 15,
+              color: ticker % 2 == 1 ? Colors.grey[300] : Colors.black),
         ],
       ),
     );

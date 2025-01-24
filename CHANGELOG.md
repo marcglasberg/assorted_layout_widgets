@@ -2,6 +2,13 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 11.0.0
+
+* Breaking change: The signature of the builders of `TimeBuilder` have been changed.
+  They all now use **named** parameters, and also get a new `initialTime` parameter that
+  was not present before. Migration should be straightforward, Refer to the README for
+  more information.
+
 ## 10.7.0
 
 * The `ScrollShadow` widget adds a shadow at the top and/or bottom, to scrollables like
