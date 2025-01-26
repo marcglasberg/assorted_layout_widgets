@@ -86,8 +86,7 @@ class TimeBuilder extends StatefulWidget {
       builder: ({
         required BuildContext context,
 
-        /// The time of the current tick.
-        /// This is the same as the current time (or very similar).
+        /// The time of the current tick. Same as the current time (or very similar).
         required DateTime currentTickTime,
 
         /// The time when the [TimeBuilder] was created.
@@ -96,8 +95,7 @@ class TimeBuilder extends StatefulWidget {
         /// The number of ticks since the timer started.
         required int ticks,
 
-        /// This is `false` while the [TimeBuilder] is ticking,
-        /// and becomes `true` as soon as it finishes.
+        /// This is `false` while the [TimeBuilder] is ticking. Is `true` when finished.
         required bool isFinished,
       }) {
         int _seconds =
@@ -128,8 +126,7 @@ class TimeBuilder extends StatefulWidget {
 
   // required BuildContext context,
   //
-  // /// The time of the current tick.
-  // /// This is the same as the current time (or very similar).
+  // /// The time of the current tick. Same as the current time (or very similar).
   // required DateTime currentTickTime,
   //
   // /// The time when the [TimeBuilder] was created.
@@ -138,8 +135,7 @@ class TimeBuilder extends StatefulWidget {
   // /// The number of ticks since the timer started.
   // required int ticks,
   //
-  // /// This is `false` while the [TimeBuilder] is ticking,
-  // /// and becomes `true` as soon as it finishes.
+  // /// This is `false` while the [TimeBuilder] is ticking. Is `true` when finished.
   // required bool isFinished,
   //
 
@@ -322,8 +318,7 @@ class _TimeBuilderState extends State<TimeBuilder> with SingleTickerProviderStat
 typedef TimeBuilderBuilder = Widget Function({
   required BuildContext context,
 
-  /// The time of the current tick.
-  /// This is the same as the current time (or very similar).
+  /// The time of the current tick. Same as the current time (or very similar).
   required DateTime currentTickTime,
 
   /// The time when the [TimeBuilder] was created.
@@ -332,16 +327,14 @@ typedef TimeBuilderBuilder = Widget Function({
   /// The number of ticks since the timer started.
   required int ticks,
 
-  /// This is `false` while the [TimeBuilder] is ticking,
-  /// and becomes `true` as soon as it finishes.
+  /// /// This is `false` while the [TimeBuilder] is ticking. Is `true` when finished.
   required bool isFinished,
 });
 
 typedef CountdownWidgetBuilder = Widget Function({
   required BuildContext context,
 
-  /// The time of the current tick.
-  /// This is the same as the current time (or very similar).
+  /// The time of the current tick. Same as the current time (or very similar).
   required DateTime currentTickTime,
 
   /// The time when the [TimeBuilder] was created.

@@ -1067,7 +1067,7 @@ which may return `true` or `false`:
 
 ```
 typedef IfShouldTickAndRebuild = bool Function({
-//
+
   /// The current time.
   required DateTime currentTime,
 
@@ -1089,8 +1089,7 @@ The `builder` callback is of type `TimeBuilderBuilder`:
 typedef TimeBuilderBuilder = Widget Function({
   required BuildContext context,
 
-  /// The time of the current tick.
-  /// This is the same as the current time (or very similar).
+  /// The time of the current tick. Same as the current time (or very similar).
   required DateTime currentTickTime,
 
   /// The time when the [TimeBuilder] was created.
@@ -1099,8 +1098,7 @@ typedef TimeBuilderBuilder = Widget Function({
   /// The number of ticks since the timer started.
   required int ticks,
 
-  /// This is `false` while the [TimeBuilder] is ticking,
-  /// and becomes `true` as soon as it finishes.
+  /// This is `false` while the [TimeBuilder] is ticking. Is `true` when finished.
   required bool isFinished,
 });
 ```
@@ -1132,18 +1130,19 @@ class TypewriterText extends StatelessWidget {
     final int totalTicks = text.length;
 
     return TimeBuilder(
+    
       builder: ({ ... }) {
         // One char per tick.
         final visibleText = text.substring(0, ticks.clamp(0, text.length));
 
         return Text(visibleText, style: textStyle);
       },
-      //
+      
       isFinished: ({ ..., required int ticks }) {
         // Finish when reaching the total number of ticks/chars.
         return ticks >= totalTicks;
       },
-      //
+      
       ifShouldTickAndRebuild: ({
         required DateTime currentTime,
         required DateTime? lastTickTime,
@@ -1155,8 +1154,7 @@ class TypewriterText extends StatelessWidget {
         if (elapsedStart < startDelay) return false;
 
         // Rebuild periodically based on the `charDuration`.
-        final Duration elapsedLastTick =
-            currentTime.difference(lastTickTime ?? currentTime);
+        final Duration elapsedLastTick = currentTime.difference(lastTickTime ?? currentTime);
         return elapsedLastTick >= charDuration;
       },
     );
