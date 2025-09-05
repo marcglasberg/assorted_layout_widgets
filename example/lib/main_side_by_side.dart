@@ -80,6 +80,7 @@ class Demo extends StatelessWidget {
     );
   }
 
+  // ignore: unused_element
   Widget _deprecated() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
