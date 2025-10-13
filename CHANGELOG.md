@@ -2,6 +2,12 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 12.0.0-dev.0
+
+* Bumped environment:
+  - sdk: '>=3.9.2 <4.0.0'
+  - flutter: ">=3.35.6"
+
 ## 11.0.0
 
 * Breaking change: The signature of the builders of `TimeBuilder` have been changed.
@@ -28,7 +34,7 @@ Sponsored by [MyText.ai](https://mytext.ai)
   permanently visible, usually on the Web and desktop.
 
   Note that `DetectScroll` will only detect the scrolling of its **closest** scrollable
-  descendant (a scrollable is a `SingleChildScrollView`, `ListView`, `GridView` etc).
+  descendant (a scrollable is a `SingleChildScrollView`, `ListView`, `GridView` etc.).
   Usually, you'd wrap the scrollable you care about directly with a `DetectScroll`.
   For example:
 
@@ -186,7 +192,7 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 * Now `CircleButton` can specify `hoverColor` (default is no color),
   and `cursor` (the default is `SystemMouseCursors.click`, but you can pass `null` to
-  set it as `MouseCursor.defer`.
+  set it as `MouseCursor.defer`).
 
 ## 9.0.2
 
@@ -275,7 +281,7 @@ Sponsored by [MyText.ai](https://mytext.ai)
   the box
   padding: `Box(...) + Pad(all: 10);`. To substitute the box child:
   `Box(...) + Text('abc');`. To
-  put a box inside of another: `Box(...) + Box(...);`.
+  put a box inside another: `Box(...) + Box(...);`.
 
 ## 5.0.2
 
