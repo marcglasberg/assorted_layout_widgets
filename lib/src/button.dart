@@ -10,7 +10,7 @@ typedef ButtonBuilder = Widget Function({
 
 /// Transforms any widget in a button, with visual feedback in the onPointerDown.
 /// The widget must be created with a [builder] of type [ButtonBuilder], which provides an
-/// [isPressed] boolean to indicate whether the button is pressed or not.
+/// `isPressed` boolean to indicate whether the button is pressed or not.
 ///
 /// Thus, the widget can change its look according to these values.
 ///
@@ -22,13 +22,13 @@ typedef ButtonBuilder = Widget Function({
 ///
 /// 3) The Button can be inside a parent that detects gestures. Even with a null [onTap], the look
 /// still changes when you touch the button. This allows the button to be used inside other widgets
-/// that detect gestures. Note that [isPressed] is changed immediately as soon as the user touches
+/// that detect gestures. Note that `isPressed` is changed immediately as soon as the user touches
 /// the button, through a listener, which is faster than GestureDetector (which has a delay to
 /// differentiate between the various types of gestures).
 ///
 class Button extends StatefulWidget {
   //
-  static const delayMillis = 75;
+  static const delayMillis = 80;
 
   final ButtonBuilder builder;
   final VoidCallback? onTap;
@@ -206,6 +206,23 @@ class _ButtonState extends State<Button> {
 
   void _endsWithTouch() {
     timer?.cancel();
+
+    // If the press never visually started (e.g., quick tap during delay),
+    // briefly show the pressed state using minVisualTapDuration.
+    if (!_isPressed && _offset != null && widget.minVisualTapDuration != null) {
+      _keepPressedCount++;
+      var _count = _keepPressedCount;
+      setState(() {
+        _isPressed = true;
+      });
+      Future.delayed(widget.minVisualTapDuration!, () {
+        if ((_count == _keepPressedCount) && mounted && _isPressed)
+          setState(() {
+            _isPressed = false;
+          });
+      });
+      return;
+    }
 
     if (widget.minVisualTapDuration == null)
       setState(() {

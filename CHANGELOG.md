@@ -2,11 +2,15 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
-## 12.0.0-dev.0
+## 12.0.0
 
 * Bumped environment:
   - sdk: '>=3.9.2 <4.0.0'
   - flutter: ">=3.35.6"
+
+* Fixed `Button` visual bug: When `delay` is true and the user taps quickly (before the
+  delay timer fires), the visual press feedback now still shows briefly using
+  `minVisualTapDuration`, instead of being skipped entirely.
 
 ## 11.0.0
 
