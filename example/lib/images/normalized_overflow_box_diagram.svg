@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <linearGradient id="childOk" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1e3a5f"/>
+      <stop offset="100%" stop-color="#1e2d4a"/>
+    </linearGradient>
+    <pattern id="overflowHatch" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+      <rect width="6" height="6" fill="transparent"/>
+      <line x1="0" y1="0" x2="0" y2="6" stroke="rgba(96,165,250,0.2)" stroke-width="2"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="920" height="420" rx="12" fill="#0e0e0e"/>
+
+  <!-- Title -->
+  <text x="460" y="32" text-anchor="middle" fill="#ffffff" font-size="18" font-weight="600">NormalizedOverflowBox Widget</text>
+  <text x="460" y="52" text-anchor="middle" fill="#888888" font-size="12">Safely imposes different constraints on its child, unlike OverflowBox which crashes</text>
+
+  <!-- ==================== LEFT PANEL: OverflowBox ==================== -->
+  <g transform="translate(30, 68)">
+    <!-- Card -->
+    <rect width="410" height="300" rx="8" fill="#141414" stroke="#2a2a2a"/>
+
+    <!-- Header bar -->
+    <rect width="410" height="34" rx="8" fill="#1c1010"/>
+    <rect y="20" width="410" height="14" fill="#1c1010"/>
+    <text x="205" y="23" text-anchor="middle" fill="#ef4444" font-size="14" font-weight="600">OverflowBox</text>
+
+    <!-- Scenario -->
+    <text x="205" y="54" text-anchor="middle" fill="#666666" font-size="10">Parent maxWidth: 100  &#xB7;  OverflowBox minWidth: 150</text>
+
+    <!-- Dimension line for child minWidth (top) -->
+    <line x1="70" y1="66" x2="70" y2="72" stroke="#ef4444" stroke-width="0.8" opacity="0.6"/>
+    <line x1="70" y1="69" x2="340" y2="69" stroke="#ef4444" stroke-width="0.8" stroke-dasharray="3 2" opacity="0.6"/>
+    <line x1="340" y1="66" x2="340" y2="72" stroke="#ef4444" stroke-width="0.8" opacity="0.6"/>
+    <rect x="167" y="60" width="76" height="13" rx="3" fill="#141414"/>
+    <text x="205" y="70" text-anchor="middle" fill="#ef4444" font-size="8" font-family="'SF Mono', 'Fira Code', monospace" opacity="0.8">minWidth: 150</text>
+
+    <!-- Parent container -->
+    <rect x="115" y="78" width="180" height="90" rx="6" fill="#18181f" stroke="#444444" stroke-dasharray="4 3"/>
+    <text x="205" y="97" text-anchor="middle" fill="#777777" font-size="11" font-weight="500">Parent</text>
+
+    <!-- Child ghost (dashed red, never renders) -->
+    <rect x="70" y="108" width="270" height="44" rx="4" fill="rgba(239,68,68,0.04)" stroke="#ef4444" stroke-dasharray="6 4" stroke-width="1.5"/>
+    <text x="205" y="134" text-anchor="middle" fill="#ef4444" font-size="10" opacity="0.8">Child (never renders)</text>
+
+    <!-- Red X -->
+    <line x1="183" y1="112" x2="227" y2="148" stroke="#ef4444" stroke-width="3" stroke-linecap="round" opacity="0.45"/>
+    <line x1="227" y1="112" x2="183" y2="148" stroke="#ef4444" stroke-width="3" stroke-linecap="round" opacity="0.45"/>
+
+    <!-- Dimension line for parent maxWidth (bottom) -->
+    <line x1="115" y1="176" x2="115" y2="182" stroke="#666666" stroke-width="0.8"/>
+    <line x1="115" y1="179" x2="295" y2="179" stroke="#666666" stroke-width="0.8" stroke-dasharray="3 2"/>
+    <line x1="295" y1="176" x2="295" y2="182" stroke="#666666" stroke-width="0.8"/>
+    <rect x="160" y="171" width="90" height="13" rx="3" fill="#141414"/>
+    <text x="205" y="181" text-anchor="middle" fill="#888888" font-size="8" font-family="'SF Mono', 'Fira Code', monospace">maxWidth: 100</text>
+
+    <!-- Separator -->
+    <line x1="20" y1="198" x2="390" y2="198" stroke="#222222"/>
+
+    <!-- Constraint info -->
+    <text x="205" y="216" text-anchor="middle" fill="#888888" font-size="10">Constraints passed to child:</text>
+
+    <!-- Min box -->
+    <rect x="62" y="224" width="110" height="24" rx="4" fill="#1a1111" stroke="#4a2020"/>
+    <text x="117" y="240" text-anchor="middle" fill="#ef4444" font-size="10" font-family="'SF Mono', 'Fira Code', monospace" font-weight="600">min: 150</text>
+
+    <!-- Comparison > -->
+    <text x="189" y="241" text-anchor="middle" fill="#ef4444" font-size="14" font-weight="700">&gt;</text>
+
+    <!-- Max box -->
+    <rect x="206" y="224" width="110" height="24" rx="4" fill="#1a1111" stroke="#4a2020"/>
+    <text x="261" y="240" text-anchor="middle" fill="#ef4444" font-size="10" font-family="'SF Mono', 'Fira Code', monospace" font-weight="600">max: 100</text>
+
+    <!-- Error badge -->
+    <rect x="102" y="262" width="206" height="26" rx="5" fill="#2d0a0a" stroke="#ef4444" stroke-width="0.7"/>
+    <text x="205" y="279" text-anchor="middle" fill="#ef4444" font-size="11" font-weight="600">ASSERTION ERROR</text>
+  </g>
+
+  <!-- VS separator -->
+  <circle cx="460" cy="218" r="16" fill="#1a1a2e" stroke="#333333"/>
+  <text x="460" y="223" text-anchor="middle" fill="#666666" font-size="10" font-weight="700">VS</text>
+
+  <!-- ==================== RIGHT PANEL: NormalizedOverflowBox ==================== -->
+  <g transform="translate(480, 68)">
+    <!-- Card -->
+    <rect width="410" height="300" rx="8" fill="#141414" stroke="#2a2a2a"/>
+
+    <!-- Header bar -->
+    <rect width="410" height="34" rx="8" fill="#0e161c"/>
+    <rect y="20" width="410" height="14" fill="#0e161c"/>
+    <text x="205" y="23" text-anchor="middle" fill="#60a5fa" font-size="14" font-weight="600">NormalizedOverflowBox</text>
+
+    <!-- Scenario -->
+    <text x="205" y="54" text-anchor="middle" fill="#666666" font-size="10">Parent maxWidth: 100  &#xB7;  NormalizedOverflowBox minWidth: 150</text>
+
+    <!-- Dimension line for child minWidth (top) -->
+    <line x1="70" y1="66" x2="70" y2="72" stroke="#60a5fa" stroke-width="0.8" opacity="0.6"/>
+    <line x1="70" y1="69" x2="340" y2="69" stroke="#60a5fa" stroke-width="0.8" stroke-dasharray="3 2" opacity="0.6"/>
+    <line x1="340" y1="66" x2="340" y2="72" stroke="#60a5fa" stroke-width="0.8" opacity="0.6"/>
+    <rect x="167" y="60" width="76" height="13" rx="3" fill="#141414"/>
+    <text x="205" y="70" text-anchor="middle" fill="#60a5fa" font-size="8" font-family="'SF Mono', 'Fira Code', monospace" opacity="0.8">minWidth: 150</text>
+
+    <!-- Parent container fill (bottom layer) -->
+    <rect x="115" y="78" width="180" height="90" rx="6" fill="#18181f"/>
+
+    <!-- Child solid fill (overflows parent) -->
+    <clipPath id="childClip">
+      <rect x="70" y="108" width="270" height="44" rx="4"/>
+    </clipPath>
+    <g clip-path="url(#childClip)">
+      <rect x="70" y="108" width="270" height="44" fill="url(#childOk)"/>
+      <!-- Hatched overlays for overflow zones -->
+      <rect x="70" y="108" width="45" height="44" fill="url(#overflowHatch)"/>
+      <rect x="295" y="108" width="45" height="44" fill="url(#overflowHatch)"/>
+    </g>
+
+    <!-- Parent border (dashed, on top of child to show boundary) -->
+    <rect x="115" y="78" width="180" height="90" rx="6" fill="none" stroke="#444444" stroke-dasharray="4 3"/>
+    <text x="205" y="97" text-anchor="middle" fill="#777777" font-size="11" font-weight="500">Parent</text>
+
+    <!-- Child border -->
+    <rect x="70" y="108" width="270" height="44" rx="4" fill="none" stroke="#60a5fa" stroke-width="1.5"/>
+    <text x="205" y="134" text-anchor="middle" fill="#60a5fa" font-size="10" font-weight="500">Child (renders at 150)</text>
+
+    <!-- Overflow labels -->
+    <text x="92" y="103" text-anchor="middle" fill="#60a5fa" font-size="7" opacity="0.6">overflow</text>
+    <text x="318" y="103" text-anchor="middle" fill="#60a5fa" font-size="7" opacity="0.6">overflow</text>
+
+    <!-- Dimension line for parent maxWidth (bottom) -->
+    <line x1="115" y1="176" x2="115" y2="182" stroke="#666666" stroke-width="0.8"/>
+    <line x1="115" y1="179" x2="295" y2="179" stroke="#666666" stroke-width="0.8" stroke-dasharray="3 2"/>
+    <line x1="295" y1="176" x2="295" y2="182" stroke="#666666" stroke-width="0.8"/>
+    <rect x="160" y="171" width="90" height="13" rx="3" fill="#141414"/>
+    <text x="205" y="181" text-anchor="middle" fill="#888888" font-size="8" font-family="'SF Mono', 'Fira Code', monospace">maxWidth: 100</text>
+
+    <!-- Separator -->
+    <line x1="20" y1="198" x2="390" y2="198" stroke="#222222"/>
+
+    <!-- Constraint info -->
+    <text x="205" y="216" text-anchor="middle" fill="#888888" font-size="10">Constraints passed to child:</text>
+
+    <!-- Min box -->
+    <rect x="62" y="224" width="110" height="24" rx="4" fill="#111a11" stroke="#1a4a1a"/>
+    <text x="117" y="240" text-anchor="middle" fill="#4ade80" font-size="10" font-family="'SF Mono', 'Fira Code', monospace" font-weight="600">min: 150</text>
+
+    <!-- Comparison <= -->
+    <text x="189" y="241" text-anchor="middle" fill="#4ade80" font-size="14" font-weight="600">&#x2264;</text>
+
+    <!-- Max box -->
+    <rect x="206" y="224" width="110" height="24" rx="4" fill="#111a11" stroke="#1a4a1a"/>
+    <text x="261" y="240" text-anchor="middle" fill="#4ade80" font-size="10" font-family="'SF Mono', 'Fira Code', monospace" font-weight="600">max: 150</text>
+
+    <!-- Auto-adjust annotation -->
+    <text x="205" y="260" text-anchor="middle" fill="#555555" font-size="8" font-style="italic">maxWidth auto-adjusted: 100 &#x2192; 150</text>
+
+    <!-- Success badge -->
+    <rect x="102" y="270" width="206" height="26" rx="5" fill="#0a2d0a" stroke="#4ade80" stroke-width="0.7"/>
+    <text x="205" y="287" text-anchor="middle" fill="#4ade80" font-size="11" font-weight="600">WORKS SAFELY</text>
+  </g>
+
+  <!-- Bottom note -->
+  <rect x="100" y="382" width="720" height="28" rx="6" fill="#1a1a2e" stroke="#2a2a4e"/>
+  <text x="460" y="400" text-anchor="middle" fill="#b0b0d0" font-size="11">
+    NormalizedOverflowBox normalizes constraints so min never exceeds max, preventing assertion errors. The child overflows safely.
+  </text>
+</svg>

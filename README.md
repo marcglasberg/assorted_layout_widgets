@@ -38,7 +38,7 @@ Despite the package name, they are not only related to layout. Here they are:
 | <tt>[WrapSuper](#wrapsuper)</tt> <i>is similar to the Wrap widget, but you can choose the line-breaking algorithm</i>.        | <tt>[showDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a dialog with a callback for when the dialog is dismissed.</i>                    | <tt>[CircleButton](#circlebutton)</tt> <i>is a circular icon-button that lets you have a larger click-area and prolong the visual feedback.</i>          | <tt>[FitHorizontally](#fithorizontally)</tt> <i>shrinks its child horizontally only, until a shrink limit is reached.</i>                                                            |
 | <tt>[Box](#box)</tt> <i>has features of Container, SizedBox and ColoredBox, but less verbose and can be made const</i>.       | <tt>[showCupertinoDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a Cupertino dialog with a callback for when the dialog is dismissed.</i> | <tt>[GlobalValueKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key that uses equality instead of identity. Like ValueKey, but global.</i> | <tt>[TextOneLine](#textoneline)</tt> is a text widget that <i>fixes <a href="https://github.com/flutter/flutter/issues/18761">this issue</a>.</i>                                    |
 | <tt>[Pad](#pad)</tt> <i>is an EdgeInsetsGeometry which is easier to type and remember</i>.                                    | <tt>[TimeBuilder](#timebuilder)</tt> <i>lets you implement clocks, countdowns, stopwatches etc, the right way.</i>                                                     | <tt>[GlobalStringKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key created from a String.</i>                                            |                                                                                                                                                                                      |
-| <tt>[NormalizedOverflowBox](#normalizedoverflowbox)</tt> <i>is an OverflowBox that throws no errors and is easier to use</i>. |                                                                                                                                                                        | <tt>[ScrollShadow](#scrollshadow)</tt> <i>adds dynamic top and bottom shadows to a scrollable widget, to indicate overflow content.</i>                  |                                                                                                                                                                                      |
+| <tt>[NormalizedOverflowBox](#normalizedoverflowbox)</tt> <i>is an OverflowBox that throws no errors and is easier to use</i>. | <tt>[KeepTallest](#keeptallest)</tt> <i>keeps its height at the tallest child ever seen, preventing layout jumps.</i>                                                  | <tt>[ScrollShadow](#scrollshadow)</tt> <i>adds dynamic top and bottom shadows to a scrollable widget, to indicate overflow content.</i>                  |                                                                                                                                                                                      |
 
 <sub>Note the widgets you don't use will be removed by Flutter's tree shaking. So feel
 free to add this package to your project even if you want to use only a few of its
@@ -904,7 +904,9 @@ BoxConstraints has non-normalized width constraints.
 
 The `NormalizedOverflowBox`, on the other hand, will just make sure `maxWidth` is also 150
 in the above example, and throw no errors. In other words, a `NormalizedOverflowBox` is
-safer to use, and in my opinion has the behavior `OverflowBox` should have had.
+safer to use, and in my opinion, has the behavior `OverflowBox` should have had.
+
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/keep_tallest_diagram.svg)
 
 Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_normalized_overflow_box.dart">
@@ -1743,6 +1745,173 @@ ScrollShadow(
 Try running the
 [ScrollShadow example](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_scroll_shadow.dart)
 to see it in action.
+
+<br>
+
+# KeepTallest
+
+`KeepTallest` tracks its child's height and never visually shrinks below the tallest
+height observed so far. Growing, however, is always instantaneous.
+
+## Problem
+
+When multiple children of different heights share the same space (e.g. tabs inside a
+scrollable), switching from a tall child to a short one causes the surrounding layout to
+collapse, which can feel jarring: content below jumps up, scroll position shifts, etc.
+
+## Solution
+
+Wrap the variable-height content in `KeepTallest`. This widget measures its child's
+**natural** height (ignoring its own min-height constraint) and keeps the container at
+least as tall as the tallest child seen so far. If the child grows, the container grows
+immediately. If the child shrinks, the container stays at the previous (larger) height.
+
+For example, if the child's height changes through:
+
+```
+100 → 300 → 200 → 0 → 1000 → 100
+```
+
+the container height will be:
+
+```
+100 → 300 → 300 → 300 → 1000 → 1000
+```
+
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/keep_tallest_diagram.svg)
+
+### Basic Usage
+
+```
+KeepTallest(
+  child: tabContent,
+)
+```
+
+### Optional Animated Shrinking
+
+Set `shrink` to `true` to allow the container to eventually shrink back to the child's
+height. When the child becomes smaller:
+
+1. The widget waits `shrinkDelay` (default 200 ms) before starting the shrink animation.
+2. Then animates down to the child's current height over `duration`
+   (default 500 ms) using `curve` (default `Curves.easeInOut`).
+
+If the child grows again at any point during the delay or animation, the container
+immediately snaps to the new larger height (growing is never animated).
+
+```
+KeepTallest(
+  shrink: true,
+  duration: const Duration(milliseconds: 500),
+  curve: Curves.easeInOut,
+  shrinkDelay: const Duration(milliseconds: 200),
+  child: myVariableHeightWidget,
+)
+```
+
+Use `minShrinkDifference` to suppress small shrinks. The animated shrink only triggers
+when the difference between the current container height and the child's natural height
+exceeds this threshold. With the default of `0`, every decrease triggers a shrink.
+
+```
+KeepTallest(
+  shrink: true,
+  minShrinkDifference: 50,
+  child: myVariableHeightWidget,
+)
+```
+
+### Constructor
+
+```
+KeepTallest({
+  required Widget child,
+  bool shrink = false,
+  Duration duration = const Duration(milliseconds: 500),
+  Curve curve = Curves.easeInOut,
+  Duration shrinkDelay = const Duration(milliseconds: 200),
+  double minShrinkDifference = 0,
+})
+```
+
+### Parameters
+
+- **`child`**: The widget whose height is being tracked.
+
+- **`shrink`**: If `false` (default), the widget never shrinks — it keeps the largest
+  height seen. If `true`, when the child gets smaller, the widget will wait `shrinkDelay`
+  and then animate down to the child's height over `duration` using `curve`. Growing is
+  always instantaneous regardless of this flag.
+
+- **`duration`**: How long the shrink animation takes. Only used when `shrink` is `true`.
+  Defaults to 500 ms.
+
+- **`curve`**: The animation curve for the shrink transition. Only used when `shrink` is
+  `true`. Defaults to `Curves.easeInOut`.
+
+- **`shrinkDelay`**: The delay before the shrink animation starts after the child becomes
+  smaller. Only used when `shrink` is `true`. Defaults to 200 ms.
+
+- **`minShrinkDifference`**: The minimum difference between the current height and the
+  child's height required to trigger a shrink. If the difference is less than or equal to
+  this value, the widget keeps its current height instead of shrinking. Only used when
+  `shrink` is `true`. Must be `>= 0`. Defaults to `0.0` (always shrinks).
+
+### Route Visibility
+
+When route that contain widget `KeepTallest` becomes inactive (e.g. another route is
+pushed on top), `KeepTallest` immediately snaps to the child's natural height without
+animation or delay, regardless of all other parameters. This is detected via `TickerMode`.
+When the user pops back, the layout is already correct, with no stale extra space or
+jarring animation on return.
+
+Try running the
+[KeepTallest example](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_keep_tallest.dart)
+to see it in action.
+
+### PageView and TabBarView
+
+Widgets `PageView` and `TabBarView` don't automatically stop tickers for offscreen pages, 
+so the `TickerMode` detection doesn't work. If you want `KeepTallest` to immediately snap
+back the child's height when a page becomes invisible, wrap the page in a `TickerMode` and
+turn it off when the page is not visible. Example:
+                
+```
+class _MyPageViewState extends State<MyPageView> {
+
+  final _controller = PageController();
+
+  // A page is visible if it's less than 1 page away
+  bool _isVisible(int index, double page) => (page - index).abs() < 1.0;  
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('PageView with TickerMode')),
+      body: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, _) {
+          final page = _controller.hasClients &&
+                  _controller.position.hasViewportDimension
+              ? (_controller.page ?? 0.0)
+              : 0.0;
+
+          return PageView(
+            controller: _controller,
+            children: List.generate(3, (index) {
+              return TickerMode( // Here!
+                enabled: _isVisible(index, page),
+                child: _DemoPage(index: index),
+              );
+            }),
+          );
+        },
+      ),
+    );
+  }
+}
+```
 
 <br>
 

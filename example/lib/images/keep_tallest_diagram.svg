@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <pattern id="hatch" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(-45)">
+      <rect width="8" height="8" fill="#1a1a2e"/>
+      <line x1="0" y1="0" x2="0" y2="8" stroke="rgba(96,165,250,0.15)" stroke-width="4"/>
+    </pattern>
+    <linearGradient id="contentA" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1e3a5f"/>
+      <stop offset="100%" stop-color="#1e2d4a"/>
+    </linearGradient>
+    <linearGradient id="contentB" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3a1e5f"/>
+      <stop offset="100%" stop-color="#2d1e4a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="920" height="420" rx="12" fill="#0e0e0e"/>
+
+  <!-- Title -->
+  <text x="460" y="32" text-anchor="middle" fill="#ffffff" font-size="18" font-weight="600">KeepTallest Widget</text>
+  <text x="460" y="52" text-anchor="middle" fill="#888888" font-size="12">Prevents layout jumps when switching between children of different heights</text>
+
+  <!-- ==================== SCREEN 1 ==================== -->
+  <g transform="translate(40, 75)">
+    <!-- Label -->
+    <text x="100" y="-6" text-anchor="middle" fill="#aaaaaa" font-size="10" font-weight="600" letter-spacing="0.5">STEP 1</text>
+    <!-- Phone frame -->
+    <rect x="0" y="0" width="200" height="270" rx="10" fill="#181818" stroke="#333333"/>
+    <!-- Tabs -->
+    <rect x="1" y="1" width="198" height="36" rx="10" fill="#181818"/>
+    <rect x="0" y="28" width="200" height="9" fill="#181818"/>
+    <line x1="0" y1="36" x2="200" y2="36" stroke="#333333"/>
+    <text x="50" y="23" text-anchor="middle" fill="#60a5fa" font-size="12" font-weight="500">Tab A</text>
+    <line x1="30" y1="35" x2="70" y2="35" stroke="#60a5fa" stroke-width="2" stroke-linecap="round"/>
+    <text x="150" y="23" text-anchor="middle" fill="#666666" font-size="12" font-weight="500">Tab B</text>
+    <!-- Content A -->
+    <rect x="1" y="37" width="198" height="80" fill="url(#contentA)" stroke="#2d5a8e" stroke-dasharray="4 3"/>
+    <text x="100" y="82" text-anchor="middle" fill="#cccccc" font-size="12" font-weight="500">Content A</text>
+    <!-- Divider -->
+    <line x1="0" y1="117" x2="200" y2="117" stroke="#333333"/>
+    <!-- Below content -->
+    <text x="100" y="145" text-anchor="middle" fill="#666666" font-size="11">Other content</text>
+    <text x="100" y="160" text-anchor="middle" fill="#666666" font-size="11">below</text>
+    <!-- Height label -->
+    <rect x="55" y="280" width="90" height="20" rx="4" fill="#1a2a1a"/>
+    <text x="100" y="294" text-anchor="middle" fill="#4ade80" font-size="10" font-weight="600" font-family="'SF Mono', 'Fira Code', monospace">height: 80</text>
+    <!-- KeepTallest bracket -->
+    <line x1="205" y1="37" x2="210" y2="37" stroke="#60a5fa" stroke-width="1"/>
+    <line x1="210" y1="37" x2="210" y2="117" stroke="#60a5fa" stroke-width="1"/>
+    <line x1="205" y1="117" x2="210" y2="117" stroke="#60a5fa" stroke-width="1"/>
+    <text x="218" y="82" fill="#60a5fa" font-size="8" font-weight="500" transform="rotate(90, 218, 82)" text-anchor="middle">KeepTallest</text>
+  </g>
+
+  <!-- Arrow 1 -->
+  <g transform="translate(278, 200)">
+    <line x1="0" y1="0" x2="40" y2="0" stroke="#555555" stroke-width="1.5"/>
+    <polyline points="34,-5 42,0 34,5" fill="none" stroke="#555555" stroke-width="1.5"/>
+    <text x="21" y="16" text-anchor="middle" fill="#888888" font-size="10">select B</text>
+  </g>
+
+  <!-- ==================== SCREEN 2 ==================== -->
+  <g transform="translate(340, 75)">
+    <!-- Label -->
+    <text x="100" y="-6" text-anchor="middle" fill="#aaaaaa" font-size="10" font-weight="600" letter-spacing="0.5">STEP 2</text>
+    <!-- Phone frame -->
+    <rect x="0" y="0" width="200" height="270" rx="10" fill="#181818" stroke="#333333"/>
+    <!-- Tabs -->
+    <rect x="1" y="1" width="198" height="36" rx="10" fill="#181818"/>
+    <rect x="0" y="28" width="200" height="9" fill="#181818"/>
+    <line x1="0" y1="36" x2="200" y2="36" stroke="#333333"/>
+    <text x="50" y="23" text-anchor="middle" fill="#666666" font-size="12" font-weight="500">Tab A</text>
+    <text x="150" y="23" text-anchor="middle" fill="#60a5fa" font-size="12" font-weight="500">Tab B</text>
+    <line x1="130" y1="35" x2="170" y2="35" stroke="#60a5fa" stroke-width="2" stroke-linecap="round"/>
+    <!-- Content B (taller) -->
+    <rect x="1" y="37" width="198" height="160" fill="url(#contentB)" stroke="#5a2d8e" stroke-dasharray="4 3"/>
+    <text x="100" y="115" text-anchor="middle" fill="#cccccc" font-size="12" font-weight="500">Content B</text>
+    <text x="100" y="132" text-anchor="middle" fill="#a78bfa" font-size="10">(taller)</text>
+    <!-- Divider -->
+    <line x1="0" y1="197" x2="200" y2="197" stroke="#333333"/>
+    <!-- Below content -->
+    <text x="100" y="220" text-anchor="middle" fill="#666666" font-size="11">Other content</text>
+    <text x="100" y="235" text-anchor="middle" fill="#666666" font-size="11">below</text>
+    <text x="100" y="252" text-anchor="middle" fill="#4ade80" font-size="9">pushed down</text>
+    <!-- Height label -->
+    <rect x="45" y="280" width="110" height="20" rx="4" fill="#1a2a1a"/>
+    <text x="100" y="294" text-anchor="middle" fill="#4ade80" font-size="10" font-weight="600" font-family="'SF Mono', 'Fira Code', monospace">height: 160 (grew)</text>
+    <!-- KeepTallest bracket -->
+    <line x1="205" y1="37" x2="210" y2="37" stroke="#60a5fa" stroke-width="1"/>
+    <line x1="210" y1="37" x2="210" y2="197" stroke="#60a5fa" stroke-width="1"/>
+    <line x1="205" y1="197" x2="210" y2="197" stroke="#60a5fa" stroke-width="1"/>
+    <text x="218" y="122" fill="#60a5fa" font-size="8" font-weight="500" transform="rotate(90, 218, 122)" text-anchor="middle">KeepTallest</text>
+  </g>
+
+  <!-- Arrow 2 -->
+  <g transform="translate(578, 200)">
+    <line x1="0" y1="0" x2="40" y2="0" stroke="#555555" stroke-width="1.5"/>
+    <polyline points="34,-5 42,0 34,5" fill="none" stroke="#555555" stroke-width="1.5"/>
+    <text x="21" y="16" text-anchor="middle" fill="#888888" font-size="10">select A</text>
+  </g>
+
+  <!-- ==================== SCREEN 3 ==================== -->
+  <g transform="translate(640, 75)">
+    <!-- Label -->
+    <text x="100" y="-6" text-anchor="middle" fill="#aaaaaa" font-size="10" font-weight="600" letter-spacing="0.5">STEP 3</text>
+    <!-- Phone frame -->
+    <rect x="0" y="0" width="200" height="270" rx="10" fill="#181818" stroke="#333333"/>
+    <!-- Tabs -->
+    <rect x="1" y="1" width="198" height="36" rx="10" fill="#181818"/>
+    <rect x="0" y="28" width="200" height="9" fill="#181818"/>
+    <line x1="0" y1="36" x2="200" y2="36" stroke="#333333"/>
+    <text x="50" y="23" text-anchor="middle" fill="#60a5fa" font-size="12" font-weight="500">Tab A</text>
+    <line x1="30" y1="35" x2="70" y2="35" stroke="#60a5fa" stroke-width="2" stroke-linecap="round"/>
+    <text x="150" y="23" text-anchor="middle" fill="#666666" font-size="12" font-weight="500">Tab B</text>
+    <!-- Content A (short) -->
+    <rect x="1" y="37" width="198" height="80" fill="url(#contentA)" stroke="#2d5a8e" stroke-dasharray="4 3"/>
+    <text x="100" y="82" text-anchor="middle" fill="#cccccc" font-size="12" font-weight="500">Content A</text>
+    <!-- Kept gap -->
+    <rect x="1" y="117" width="198" height="80" fill="url(#hatch)" stroke="rgba(96,165,250,0.3)" stroke-dasharray="4 3"/>
+    <text x="100" y="162" text-anchor="middle" fill="#60a5fa" font-size="11" opacity="0.8">kept gap</text>
+    <!-- Divider -->
+    <line x1="0" y1="197" x2="200" y2="197" stroke="#333333"/>
+    <!-- Below content -->
+    <text x="100" y="220" text-anchor="middle" fill="#666666" font-size="11">Other content</text>
+    <text x="100" y="235" text-anchor="middle" fill="#666666" font-size="11">below</text>
+    <text x="100" y="252" text-anchor="middle" fill="#facc15" font-size="9">stays in place</text>
+    <!-- Height label -->
+    <rect x="45" y="280" width="110" height="20" rx="4" fill="#2a2a1a"/>
+    <text x="100" y="294" text-anchor="middle" fill="#facc15" font-size="10" font-weight="600" font-family="'SF Mono', 'Fira Code', monospace">height: 160 (kept)</text>
+    <!-- KeepTallest bracket -->
+    <line x1="205" y1="37" x2="210" y2="37" stroke="#60a5fa" stroke-width="1"/>
+    <line x1="210" y1="37" x2="210" y2="197" stroke="#60a5fa" stroke-width="1"/>
+    <line x1="205" y1="197" x2="210" y2="197" stroke="#60a5fa" stroke-width="1"/>
+    <text x="218" y="122" fill="#60a5fa" font-size="8" font-weight="500" transform="rotate(90, 218, 122)" text-anchor="middle">KeepTallest</text>
+  </g>
+
+  <!-- Bottom note -->
+  <rect x="130" y="380" width="660" height="30" rx="6" fill="#1a1a2e" stroke="#2a2a4e"/>
+  <text x="460" y="400" text-anchor="middle" fill="#b0b0d0" font-size="11">
+    Without KeepTallest, Step 3 would collapse 160 → 80, causing "other content below" to jump up by 80px.
+  </text>
+</svg>

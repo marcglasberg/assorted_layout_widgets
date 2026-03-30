@@ -9,6 +9,7 @@ export "src/delayed.dart";
 export "src/detect_scroll.dart";
 export "src/fit_horizontally.dart";
 export "src/global_keys.dart";
+export "src/keep_tallest.dart";
 export "src/keyboard_dismiss.dart";
 export "src/mask_function_text_input_formatter.dart";
 export "src/non_uniform_outline_input_border.dart";

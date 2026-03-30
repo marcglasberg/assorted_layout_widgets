@@ -2,6 +2,14 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 12.1.0
+
+* Added `KeepTallest` widget, which tracks its child's height and never visually shrinks
+  below the tallest height observed so far. Useful for preventing layout jumps when
+  switching between children of different heights (e.g. tab content inside scrollables). 
+  Optionally supports animated shrinking back to the child's natural height, with 
+  configurable delay, duration, curve, and minimum shrink threshold.
+
 ## 12.0.0
 
 * Bumped environment:
