@@ -21,5 +21,6 @@ export "src/scroll_shadow.dart";
 export "src/show_dialog_super.dart";
 export "src/side_by_side.dart";
 export "src/text_one_line.dart";
+export "src/thousands_separator_text_input_formatter.dart";
 export "src/time_builder.dart";
 export "src/wrap_super.dart";
