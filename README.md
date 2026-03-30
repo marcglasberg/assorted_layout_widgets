@@ -38,7 +38,7 @@ Despite the package name, they are not only related to layout. Here they are:
 | <tt>[WrapSuper](#wrapsuper)</tt> <i>is similar to the Wrap widget, but you can choose the line-breaking algorithm</i>.        | <tt>[showDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a dialog with a callback for when the dialog is dismissed.</i>                    | <tt>[CircleButton](#circlebutton)</tt> <i>is a circular icon-button that lets you have a larger click-area and prolong the visual feedback.</i>          | <tt>[FitHorizontally](#fithorizontally)</tt> <i>shrinks its child horizontally only, until a shrink limit is reached.</i>                                                            |
 | <tt>[Box](#box)</tt> <i>has features of Container, SizedBox and ColoredBox, but less verbose and can be made const</i>.       | <tt>[showCupertinoDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a Cupertino dialog with a callback for when the dialog is dismissed.</i> | <tt>[GlobalValueKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key that uses equality instead of identity. Like ValueKey, but global.</i> | <tt>[TextOneLine](#textoneline)</tt> is a text widget that <i>fixes <a href="https://github.com/flutter/flutter/issues/18761">this issue</a>.</i>                                    |
 | <tt>[Pad](#pad)</tt> <i>is an EdgeInsetsGeometry which is easier to type and remember</i>.                                    | <tt>[TimeBuilder](#timebuilder)</tt> <i>lets you implement clocks, countdowns, stopwatches etc, the right way.</i>                                                     | <tt>[GlobalStringKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key created from a String.</i>                                            |                                                                                                                                                                                      |
-| <tt>[NormalizedOverflowBox](#normalizedoverflowbox)</tt> <i>is an OverflowBox that throws no errors and is easier to use</i>. | <tt>[KeepTallest](#keeptallest)</tt> <i>keeps its height at the tallest child ever seen, preventing layout jumps.</i>                                                  | <tt>[ScrollShadow](#scrollshadow)</tt> <i>adds dynamic top and bottom shadows to a scrollable widget, to indicate overflow content.</i>                  |                                                                                                                                                                                      |
+| <tt>[NormalizedOverflowBox](#normalizedoverflowbox)</tt> <i>is an OverflowBox that throws no errors and is easier to use</i>. | <tt>[KeepTallest](#keeptallest)</tt> <i>keeps its height at the tallest child ever seen, preventing layout jumps.</i>                                                  | <tt>[ScrollShadow](#scrollshadow)</tt> <i>adds dynamic top and bottom shadows to a scrollable widget, to indicate overflow content.</i>                  | <tt>[ThousandsSeparatorTextInputFormatter](#thousandsseparatortextinputformatter)</tt> <i>formats numeric input with thousands separators as the user types.</i>                              |
 
 <sub>Note the widgets you don't use will be removed by Flutter's tree shaking. So feel
 free to add this package to your project even if you want to use only a few of its
@@ -1323,7 +1323,7 @@ while the user typed less than 7 numbers, but you want to format it as `###.###.
 for more chars than that:
 
 ```
-var myFormatter = MaskFunctionTextInputFormatter(mask: _myFormatter);
+var myFormatter = MaskFunctionTextInputFormatter(maskFunction: _myFormatter);
 
 String? _myFormatter({
    required TextEditingValue oldValue,
@@ -1360,6 +1360,58 @@ mask_text_input_formatter</a>
 by <a href="https://github.com/siqwin">Sergey</a>. The ONLY thing I added was the
 possibility of using a function that changes the mask. All the rest is from the original
 package, and credit belongs to their authors.
+
+<br>
+
+# ThousandsSeparatorTextInputFormatter
+
+The `ThousandsSeparatorTextInputFormatter` is a `TextInputFormatter` that formats numeric input
+with thousands separators while the user types, and preserves the caret or selection as
+naturally as possible.
+
+Features:
+
+* Adds thousands separators as you type.
+* When digits are inserted or deleted, including in the middle, separators are recalculated.
+* Supports a fractional part by typing a dot `.` and then more digits.
+* Only digits and one decimal dot are kept. Other characters are ignored.
+* Handles duplicate dots: if a dot already exists, typing another to the right is ignored,
+  and typing one to the left replaces the old one.
+* Keeps the caret or selection in the natural place after reformatting.
+* Special handling for Backspace/Delete near thousands separators, so those keys delete the
+  neighboring digit instead of appearing to do nothing.
+* Normalizes input like `.5` to `0.5`.
+* Limits the fractional part to `allowedDecimals` digits.
+* Prevents leading zeroes.
+
+Example behavior:
+
+* `1` → `1`
+* `1234` → `1,234`
+* `12345.6` → `12,345.6`
+* `.5` → `0.5`
+
+Usage:
+
+```dart
+TextField(
+  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+  inputFormatters: [
+    ThousandsSeparatorTextInputFormatter(),
+  ],
+)
+```
+
+By default, `,` is used as the grouping separator and `.` as the decimal separator. You can
+customize them:
+
+```dart
+ThousandsSeparatorTextInputFormatter(
+  groupSeparator: '.',
+  decimalSeparator: ',',
+  allowedDecimals: 2,
+)
+```
 
 <br>
 

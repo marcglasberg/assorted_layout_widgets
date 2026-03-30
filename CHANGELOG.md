@@ -2,8 +2,14 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
-## 12.1.1
+## 12.2.0
 
+* Added `ThousandsSeparatorTextInputFormatter`, a formatter for your text-field that formats 
+  numeric input with thousands separators as the user types, while preserving the caret 
+  position. It accepts integers and decimals.
+
+## 12.1.1
+                             
 * Added `KeepTallest` widget, which tracks its child's height and never visually shrinks
   below the tallest height observed so far. Useful for preventing layout jumps when
   switching between children of different heights (e.g. tab content inside scrollables). 
