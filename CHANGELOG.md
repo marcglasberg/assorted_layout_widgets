@@ -2,7 +2,7 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
-## 12.1.0
+## 12.1.1
 
 * Added `KeepTallest` widget, which tracks its child's height and never visually shrinks
   below the tallest height observed so far. Useful for preventing layout jumps when

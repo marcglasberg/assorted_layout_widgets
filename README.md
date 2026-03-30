@@ -906,7 +906,7 @@ The `NormalizedOverflowBox`, on the other hand, will just make sure `maxWidth` i
 in the above example, and throw no errors. In other words, a `NormalizedOverflowBox` is
 safer to use, and in my opinion, has the behavior `OverflowBox` should have had.
 
-![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/keep_tallest_diagram.svg)
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/normalized_overflow_box_diagram.svg)
 
 Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_normalized_overflow_box.dart">
@@ -1860,7 +1860,7 @@ KeepTallest({
 
 ### Route Visibility
 
-When route that contain widget `KeepTallest` becomes inactive (e.g. another route is
+When the route that contains `KeepTallest` becomes inactive (e.g. another route is
 pushed on top), `KeepTallest` immediately snaps to the child's natural height without
 animation or delay, regardless of all other parameters. This is detected via `TickerMode`.
 When the user pops back, the layout is already correct, with no stale extra space or
