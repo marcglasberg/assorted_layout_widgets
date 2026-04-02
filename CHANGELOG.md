@@ -2,7 +2,7 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
-## 12.3.0
+## 12.3.1
 
 * Added `ThousandsSeparatorTextInputFormatter`, a formatter for your text-field that formats 
   numeric input with thousands separators as the user types, while preserving the caret 

@@ -181,6 +181,9 @@ class KeepTallest extends StatefulWidget {
   /// Only used when [shrink] is true. Must be >= 0. Defaults to 0 (always shrinks).
   final double minShrinkDifference;
 
+  /// Set to true to enable debug printing of height changes and shrink decisions.
+  static bool ifDebugPrint = false;
+
   const KeepTallest({
     super.key,
     required this.child,
@@ -195,8 +198,7 @@ class KeepTallest extends StatefulWidget {
   State<KeepTallest> createState() => _KeepTallestState();
 }
 
-class _KeepTallestState extends State<KeepTallest>
-    with TickerProviderStateMixin {
+class _KeepTallestState extends State<KeepTallest> with TickerProviderStateMixin {
   double _currentHeight = 0;
   double _childHeight = 0;
 
@@ -206,6 +208,8 @@ class _KeepTallestState extends State<KeepTallest>
 
   ValueListenable<TickerModeData>? _tickerModeNotifier;
   bool _active = true;
+
+  void _print(String Function() info) => KeepTallest.ifDebugPrint ? print(info()) : null;
 
   @override
   void didChangeDependencies() {
@@ -253,7 +257,7 @@ class _KeepTallestState extends State<KeepTallest>
 
     // Growing: always instantaneous (deferred to avoid setState during layout).
     if (height >= _currentHeight) {
-      print('KeepTallest → ${_currentHeight.round()} to ${height.round()}');
+      _print(() => 'KeepTallest → ${_currentHeight.round()} to ${height.round()}');
       _shrinkTimer?.cancel();
       _controller?.stop();
       _setCurrentHeightPostFrame(height);
@@ -261,18 +265,20 @@ class _KeepTallestState extends State<KeepTallest>
     //
     // Shrinking: delayed, then animated.
     else if (widget.shrink && (_currentHeight - height) > widget.minShrinkDifference) {
-      print(
-        'KeepTallest → ${_currentHeight.round()} to ${height.round()} '
-        '(shrink: above ${widget.minShrinkDifference.round()})',
+      _print(
+        () =>
+            'KeepTallest → ${_currentHeight.round()} to ${height.round()} '
+            '(shrink: above ${widget.minShrinkDifference.round()})',
       );
       _scheduleShrink(height);
     }
     //
     // Don't shrink because the difference is too small.
     else if (widget.shrink) {
-      print(
-        'KeepTallest → ${_currentHeight.round()} to ${height.round()} '
-        '(dont shrink: below ${widget.minShrinkDifference.round()})',
+      _print(
+        () =>
+            'KeepTallest → ${_currentHeight.round()} to ${height.round()} '
+            '(dont shrink: below ${widget.minShrinkDifference.round()})',
       );
     }
   }
