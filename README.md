@@ -38,7 +38,8 @@ Despite the package name, they are not only related to layout. Here they are:
 | <tt>[WrapSuper](#wrapsuper)</tt> <i>is similar to the Wrap widget, but you can choose the line-breaking algorithm</i>.        | <tt>[showDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a dialog with a callback for when the dialog is dismissed.</i>                    | <tt>[CircleButton](#circlebutton)</tt> <i>is a circular icon-button that lets you have a larger click-area and prolong the visual feedback.</i>          | <tt>[FitHorizontally](#fithorizontally)</tt> <i>shrinks its child horizontally only, until a shrink limit is reached.</i>                                                            |
 | <tt>[Box](#box)</tt> <i>has features of Container, SizedBox and ColoredBox, but less verbose and can be made const</i>.       | <tt>[showCupertinoDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a Cupertino dialog with a callback for when the dialog is dismissed.</i> | <tt>[GlobalValueKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key that uses equality instead of identity. Like ValueKey, but global.</i> | <tt>[TextOneLine](#textoneline)</tt> is a text widget that <i>fixes <a href="https://github.com/flutter/flutter/issues/18761">this issue</a>.</i>                                    |
 | <tt>[Pad](#pad)</tt> <i>is an EdgeInsetsGeometry which is easier to type and remember</i>.                                    | <tt>[TimeBuilder](#timebuilder)</tt> <i>lets you implement clocks, countdowns, stopwatches etc, the right way.</i>                                                     | <tt>[GlobalStringKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key created from a String.</i>                                            |                                                                                                                                                                                      |
-| <tt>[NormalizedOverflowBox](#normalizedoverflowbox)</tt> <i>is an OverflowBox that throws no errors and is easier to use</i>. | <tt>[KeepTallest](#keeptallest)</tt> <i>keeps its height at the tallest child ever seen, preventing layout jumps.</i>                                                  | <tt>[ScrollShadow](#scrollshadow)</tt> <i>adds dynamic top and bottom shadows to a scrollable widget, to indicate overflow content.</i>                  | <tt>[ThousandsSeparatorTextInputFormatter](#thousandsseparatortextinputformatter)</tt> <i>formats numeric input with thousands separators as the user types.</i>                              |
+| <tt>[NormalizedOverflowBox](#normalizedoverflowbox)</tt> <i>is an OverflowBox that throws no errors and is easier to use</i>. | <tt>[KeepTallest](#keeptallest)</tt> <i>keeps its height at the tallest child ever seen, preventing layout jumps.</i>                                                  | <tt>[ScrollShadow](#scrollshadow)</tt> <i>adds dynamic top and bottom shadows to a scrollable widget, to indicate overflow content.</i>                  | <tt>[ThousandsSeparatorTextInputFormatter](#thousandsseparatortextinputformatter)</tt> <i>formats numeric input with thousands separators as the user types.</i>                     |
+|                                                                                                                               | <tt>[AnimatedBetween](#animatedbetween)</tt> <i>animates smoothly between two children, cross-fading their content while resizing the enclosing box.</i>               |                                                                                                                                                          |                                                                                                                                                                                      |
 
 <sub>Note the widgets you don't use will be removed by Flutter's tree shaking. So feel
 free to add this package to your project even if you want to use only a few of its
@@ -1365,20 +1366,22 @@ package, and credit belongs to their authors.
 
 # ThousandsSeparatorTextInputFormatter
 
-The `ThousandsSeparatorTextInputFormatter` is a `TextInputFormatter` that formats numeric input
-with thousands separators while the user types, and preserves the caret or selection as
-naturally as possible.
+The `ThousandsSeparatorTextInputFormatter` is a `TextInputFormatter` that formats numeric
+input with thousands separators while the user types, and preserves the caret or selection
+as naturally as possible.
 
 Features:
 
 * Adds thousands separators as you type.
-* When digits are inserted or deleted, including in the middle, separators are recalculated.
+* When digits are inserted or deleted, including in the middle, separators are
+  recalculated.
 * Supports a fractional part by typing a dot `.` and then more digits.
 * Only digits and one decimal dot are kept. Other characters are ignored.
 * Handles duplicate dots: if a dot already exists, typing another to the right is ignored,
   and typing one to the left replaces the old one.
 * Keeps the caret or selection in the natural place after reformatting.
-* Special handling for Backspace/Delete near thousands separators, so those keys delete the
+* Special handling for Backspace/Delete near thousands separators, so those keys delete
+  the
   neighboring digit instead of appearing to do nothing.
 * Normalizes input like `.5` to `0.5`.
 * Limits the fractional part to `allowedDecimals` digits.
@@ -1393,19 +1396,20 @@ Example behavior:
 
 Usage:
 
-```dart
+```
 TextField(
   keyboardType: const TextInputType.numberWithOptions(decimal: true),
   inputFormatters: [
     ThousandsSeparatorTextInputFormatter(),
   ],
-)
+);
 ```
 
-By default, `,` is used as the grouping separator and `.` as the decimal separator. You can
+By default, `,` is used as the grouping separator and `.` as the decimal separator. You
+can
 customize them:
 
-```dart
+```
 ThousandsSeparatorTextInputFormatter(
   groupSeparator: '.',
   decimalSeparator: ',',
@@ -1924,11 +1928,11 @@ to see it in action.
 
 ### PageView and TabBarView
 
-Widgets `PageView` and `TabBarView` don't automatically stop tickers for offscreen pages, 
+Widgets `PageView` and `TabBarView` don't automatically stop tickers for offscreen pages,
 so the `TickerMode` detection doesn't work. If you want `KeepTallest` to immediately snap
 back the child's height when a page becomes invisible, wrap the page in a `TickerMode` and
 turn it off when the page is not visible. Example:
-                
+
 ```
 class _MyPageViewState extends State<MyPageView> {
 
@@ -1964,6 +1968,159 @@ class _MyPageViewState extends State<MyPageView> {
   }
 }
 ```
+
+<br>
+
+# AnimatedBetween
+
+`AnimatedBetween` animates smoothly between two children, cross-fading their content
+while resizing the enclosing box, both horizontally and vertically.
+The old and new children can differ in both width and height,
+and their sizes don't need to be known in advance.
+
+```
+bool toogle = true; // Or false
+
+AnimatedBetween(
+  child: toggle ? child1 : child2,
+)
+```
+
+## How does it compare to other similar widgets?
+
+- With `AnimatedCrossFade` you must provide both the _firstChild_ and _secondChild_
+  at the same time, but with `AnimatedBetween` you may simply change the child.
+
+- With `AnimatedSwitcher` you may simply change its child, but then it only animates
+  the fade, not the size.
+
+- `AnimatedContainer` only works if you know the size of the children in advance.
+
+- `AnimatedSizeAndFade`
+  ([also one of my packages](https://pub.dev/packages/animated_size_and_fade))
+  only resizes it vertically, not horizontally.
+
+## Transition model
+
+Each transition runs two animations concurrently:
+
+- a **cross-fade** between the old child (fading out) and the new child (fading in),
+  running for `fadeDuration`,
+
+- a **size change** from the old box size to the new one, running for a derived
+  duration that scales with the size difference.
+
+The fade and size animations are coordinated so that they always end together on grow,
+and always start together on shrink:
+
+- **Growing** (new child larger by area): the size animation starts first; the fade
+  starts later, so the fade finishes at the same moment the size animation does. The
+  box opens to make room, and the new child reveals into that room right as it settles.
+
+- **Shrinking** (new child smaller by area): both animations start together. The fade
+  finishes first (since it is the shorter of the two), so the new, smaller child is
+  already visible while the box settles around it.
+
+The fade and size animations use independent curves (`fadeCurve` and `sizeCurve`), so
+each can be tuned separately.
+
+The container change and the content change happen in the order the eye expects.
+On growth, space opens and then fills, so the new (larger) child never looks cramped
+inside a still-small box. On shrink, new content fades in first, and then the frame
+tightens around it, so the box never looks like it's cutting off the new child.
+
+The default curves (`Curves.easeInOut` for the fade, and a custom cubic for the size)
+reinforce this: both animations settle toward the end, so the two directions read as a
+single coordinated gesture rather than two separate animations running side by side.
+
+### Widget identity caveat
+
+If the new child is the same widget type as the old one *and* has the same key, Flutter
+treats them as the same widget and updates the existing element in place, with no
+animated transition. To force a transition, give each visually distinct child
+its own `Key`, usually a `ValueKey` (as shown below).
+
+```
+AnimatedBetween(
+  child: toggle
+    ? const Text('A', key: ValueKey('a'))
+    : const Text('B', key: ValueKey('b')),
+)
+```
+
+### Show/hide
+
+To animate a single widget in and out (null ↔ widget), use `AnimatedBetween.showHide`:
+
+```
+AnimatedBetween.showHide(
+  show: isVisible,
+  child: const Text('Hello'),
+)
+```
+
+When `show` is `true` the child animates in; when `false` the child animates down to
+zero size.
+
+### Parameters
+
+```
+AnimatedBetween({
+  required Widget? child,
+  Duration fadeDuration = const Duration(milliseconds: 250),
+  double sizeDurationFactor = 15.0,
+  Curve fadeCurve = Curves.easeInOut,
+  Curve sizeCurve = const Cubic(.29, .65, .35, .97),
+  Alignment alignment = Alignment.center,  
+  AnimatedBetweenMode modeShorterChild = AnimatedBetweenMode.resize,
+  AnimatedBetweenMode modeLargerChild = AnimatedBetweenMode.fit,  
+})
+```
+
+- **`child`**: The child currently shown. Changing it triggers a transition to the new
+  value. A `null` child is valid and animates the box to zero size.
+
+- **`fadeDuration`**: Duration of the cross-fade between the old child (fading out)
+  and the new child (fading in). Also serves as the base for the size animation's
+  duration. Defaults to 250 ms.
+
+- **`sizeDurationFactor`**: Must be `>= 1`. Controls how much longer the size animation is
+  than the fade, relative to `P`, the proportional area difference between the two
+  children (larger area over smaller area, so `P ≥ 1`). The size animation runs for
+  `fadeDuration * P ^ (1 / sizeDurationFactor)`. At `1`, the size duration scales linearly
+  with `P`; larger values dampen the effect of `P`, pulling the size duration closer to
+  `fadeDuration`.
+
+- **`fadeCurve`**: Curve applied to the cross-fade animation, in both directions.
+
+- **`sizeCurve`**: Curve applied to the size animation, in both directions.
+
+- **`alignment`**: Where each child is placed inside the animated box. Also determines
+  the anchor point from which the box appears to grow or shrink (e.g.
+  `Alignment.center` expands from the center, `Alignment.topLeft` expands down-right).  
+
+- **`modeShorterChild`** / **`modeLargerChild`**: Control how each child fills the
+  animated box during a transition. The child with the **smaller** natural area uses
+  `modeShorterChild`; the child with the **larger** natural area uses `modeLargerChild`.
+  When the two children have the exact same area, both use `modeShorterChild`.
+  The three modes are:
+
+    - **`overflow`**: The child is rendered at its natural size inside the box. If the
+      box is currently smaller than the child, the child overflows and is clipped by
+      `clipBehavior`; if larger, the child is aligned via `alignment` with empty space
+      around it. The box opens or closes around content that never changes size itself.
+    - **`fit`**: The child is scaled (via `FittedBox` with `BoxFit.fill`) to match the
+      current box size, so it visually stretches or compresses together with the
+      box — the incoming child starts at the outgoing child's size and ends at its own
+      natural size. Aspect ratio is not preserved — the two axes scale independently.
+    - **`resize`**: The child is forced to the current box size via tight constraints
+      (no scaling). It re-lays out at that size, so text rewraps, flex children
+      redistribute, etc. The effect is like dragging the edge of a resizable container:
+      the content reshapes continuously as the box grows or shrinks.
+
+  These do not affect how the box itself is sized; grow/shrink direction and target
+  sizes are still determined from each child's natural size. When one side is `null`
+  (as in `showHide`), the non-null side is always treated as the larger child.
 
 <br>
 

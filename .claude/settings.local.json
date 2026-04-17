@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter analyze *)",
+      "mcp__ide__getDiagnostics",
+      "Bash(dart analyze *)"
+    ]
+  }
+}

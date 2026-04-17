@@ -2,6 +2,14 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 12.4.0
+
+* Added `AnimatedBetween` widget, which animates smoothly between two children,
+  cross-fading their content while resizing the enclosing box. The old and new
+  children can differ in both width and height, and their sizes don't need to be
+  known in advance. The convenience constructor `AnimatedBetween.showHide` animates 
+  a single widget in and out.
+
 ## 12.3.1
 
 * Added `ThousandsSeparatorTextInputFormatter`, a formatter for your text-field that formats 
