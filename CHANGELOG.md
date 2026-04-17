@@ -2,7 +2,7 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
-## 12.4.0
+## 12.4.2
 
 * Added `AnimatedBetween` widget, which animates smoothly between two children,
   cross-fading their content while resizing the enclosing box. The old and new
