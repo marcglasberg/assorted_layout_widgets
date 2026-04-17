@@ -2122,6 +2122,14 @@ AnimatedBetween({
   sizes are still determined from each child's natural size. When one side is `null`
   (as in `showHide`), the non-null side is always treated as the larger child.
 
+Try running
+the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_animated_between.dart">
+AnimatedBetween example</a>.
+
+Try running
+the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_animated_between_showhide.dart">
+AnimatedBetween.showHide example</a>.
+
 <br>
 
 # AlignPositioned
