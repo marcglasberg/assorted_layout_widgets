@@ -91,6 +91,15 @@ import 'package:flutter/widgets.dart';
 /// [AnimatedBetween.showHide].
 ///
 class AnimatedBetween extends StatefulWidget {
+  //
+  static const defaultFadeDuration = Duration(milliseconds: 250);
+  static const defaultSizeDurationFactor = 15.0;
+  static const defaultFadeCurve = Curves.easeInOut;
+  static const defaultSizeCurve = Cubic(.29, .65, .35, .97);
+
+  static const defaultFadeDurationShowHide = Duration(milliseconds: 200);
+  static const defaultSizeDurationFactorShowHide = 20.0;
+
   /// Creates an [AnimatedBetween].
   ///
   /// See the class documentation for how [fadeDuration],
@@ -99,10 +108,10 @@ class AnimatedBetween extends StatefulWidget {
   const AnimatedBetween({
     super.key,
     required this.child,
-    this.fadeDuration = const Duration(milliseconds: 250),
-    this.sizeDurationFactor = 15.0,
-    this.fadeCurve = Curves.easeInOut,
-    this.sizeCurve = const Cubic(.29, .65, .35, .97),
+    this.fadeDuration = defaultFadeDuration,
+    this.sizeDurationFactor = defaultSizeDurationFactor,
+    this.fadeCurve = defaultFadeCurve,
+    this.sizeCurve = defaultSizeCurve,
     this.alignment = Alignment.center,
     this.clipBehavior = Clip.none,
     this.modeShorterChild = AnimatedBetweenMode.resize,
@@ -120,10 +129,10 @@ class AnimatedBetween extends StatefulWidget {
     super.key,
     required bool show,
     required Widget child,
-    this.fadeDuration = const Duration(milliseconds: 200),
-    this.sizeDurationFactor = 20.0,
+    this.fadeDuration = defaultFadeDurationShowHide,
+    this.sizeDurationFactor = defaultSizeDurationFactorShowHide,
     this.fadeCurve = Curves.easeInOut,
-    this.sizeCurve = const Cubic(.29, .65, .35, .97),
+    this.sizeCurve = defaultSizeCurve,
     this.alignment = Alignment.topCenter,
     this.clipBehavior = Clip.none,
     AnimatedBetweenMode mode = AnimatedBetweenMode.fit,
@@ -637,12 +646,10 @@ class _AnimatedBetweenState extends State<AnimatedBetween> with TickerProviderSt
             } else {
               final double outArea = _outgoingChild == null
                   ? 0.0
-                  : (_outgoingChildSize?.width ?? 0) *
-                      (_outgoingChildSize?.height ?? 0);
+                  : (_outgoingChildSize?.width ?? 0) * (_outgoingChildSize?.height ?? 0);
               final double inArea = _currentChild == null
                   ? 0.0
-                  : (_currentChildSize?.width ?? 0) *
-                      (_currentChildSize?.height ?? 0);
+                  : (_currentChildSize?.width ?? 0) * (_currentChildSize?.height ?? 0);
               if (outArea == inArea) {
                 outgoingMode = widget.modeShorterChild;
                 incomingMode = widget.modeShorterChild;
