@@ -33,6 +33,10 @@ import 'package:flutter/services.dart';
 ///   builder: (BuildContext context, Widget? child) => KeyboardDismiss(child: child);
 /// ```
 ///
+@Deprecated(
+  'Use the `Keyboard` widget instead. Recommended: '
+  '`Keyboard(iOsCloseOnTap: true, iOsCloseOnSwipe: true, iOsRemoveFocusOnTap: true, child: ...)`',
+)
 class KeyboardDismiss extends StatelessWidget {
   //
   final Widget child;
@@ -115,7 +119,8 @@ class KeyboardDismiss extends StatelessWidget {
           /// and the user finger is passing through the bottom 16 pixels above the keyboard.
           if (bottom > 0.0 &&
               (fingerPosition > keyboardEdgePosition) &&
-              (fingerPosition - dy <= keyboardEdgePosition)) _keyboardDismiss(context);
+              (fingerPosition - dy <= keyboardEdgePosition))
+            _keyboardDismiss(context);
         }
       },
       child: content,

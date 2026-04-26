@@ -2,31 +2,124 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 12.5.0
+
+* Deprecated `KeyboardDismiss`. To fix the deprecation warning, replace:
+
+  ```
+  KeyboardDismiss(child: ...)
+  ``` 
+
+  with:
+
+  ```
+  Keyboard(iOsCloseOnTap: true, iOsCloseOnSwipe: true, iOsRemoveFocusOnTap: true, child: ...)
+  ``` 
+
+* Added the `Keyboard` widget. It must be placed near the top of the widget tree, where
+  it has the same size as the screen, for example, in `MaterialApp.builder`, above
+  any `Scaffold`. For example:
+
+  ```
+  MaterialApp(
+    builder: (BuildContext context, Widget? child) => 
+      Keyboard(     
+        iOsCloseOnTap: true,
+        iOsCloseOnSwipe: true,
+        iOsRemoveFocusOnTap: true,
+        child: ...,
+      );
+  ```                    
+
+  The constructor parameters are:
+
+    - Pass [iOsCloseOnTap] true to close the keyboard when the user taps an empty
+      area of the screen, on the iOS.
+    - Pass [iOsCloseOnSwipe] true to close the keyboard when the user swipes down
+      from just above the keyboard edge, on the iOS.
+    - [iOsRemoveFocusOnTap] controls whether focus is also removed from any focused
+      element when the keyboard is dismissed by a tap, on the iOS.
+    - [iOsRemoveFocusOnSwipe] controls whether focus is also removed from any focused
+      element when the keyboard is dismissed by a swipe, on the iOS.
+    - Pass [androidCloseOnTap] true to close the keyboard when the user taps an empty
+      area of the screen, on the Android.
+    - Pass [androidCloseOnSwipe] true to close the keyboard when the user swipes down
+      from just above the keyboard edge, on the Android.
+    - [androidRemoveFocusOnTap] controls whether focus is also removed from any focused
+      element when the keyboard is dismissed by a tap, on the Android.
+    - [androidRemoveFocusOnSwipe] controls whether focus is also removed from any focused
+      element when the keyboard is dismissed by a swipe, on the Android.
+
+  The default is `false` for all the above parameters.
+
+  ## Recommendation
+
+  On the iOS, it's common for the keyboard to auto-dismiss when the user taps outside it
+  or swipes down from just above the keyboard edge. Usually, when the keyboard is
+  dismissed by a tap, the focused element also loses focus, but when it's dismissed by
+  a swipe, the focused element retains focus (and may re-open the keyboard if it's
+  tapped).
+
+  On the Android, the default is that the keyboard only closes when the user taps the back
+  button or executes the back gesture.
+
+  For these reasons, the recommended configuration is:
+
+  ```dart
+  Keyboard(
+    iOsCloseOnTap: true,
+    iOsCloseOnSwipe: true,
+    iOsRemoveFocusOnTap: true,
+    child: ...
+  );
+  ```   
+
+* `Keyboard.isOpen()` can be used to check whether the keyboard is currently open or
+  not. Example usage: `bool isKeyboardOpen = Keyboard.isOpen(context);`.
+
+* Use `Keyboard.open()` and `Keyboard.close()` to programmatically open and close the
+  system keyboard.
+
+* Added the `WhenKeyboard` widget, which renders the `open` widget when the keyboard is
+  open, and the `closed` widget when the keyboard is closed. Both are optional, and a
+  missing slot renders nothing. Example usage:
+
+  ```
+  WhenKeyboard(
+     open: Text('Keyboard is open'),
+     closed: Text('Keyboard is closed'),
+  )
+  ```
+
+  Note, the `WhenKeyboard` widget requires you to add a `Keyboard` widget ancestor.
+  An error will be thrown if you try to use it without a `Keyboard` ancestor.
+
 ## 12.4.2
 
 * Added `AnimatedBetween` widget, which animates smoothly between two children,
   cross-fading their content while resizing the enclosing box. The old and new
   children can differ in both width and height, and their sizes don't need to be
-  known in advance. The convenience constructor `AnimatedBetween.showHide` animates 
+  known in advance. The convenience constructor `AnimatedBetween.showHide` animates
   a single widget in and out.
 
 ## 12.3.1
 
-* Added `ThousandsSeparatorTextInputFormatter`, a formatter for your text-field that formats 
-  numeric input with thousands separators as the user types, while preserving the caret 
+* Added `ThousandsSeparatorTextInputFormatter`, a formatter for your text-field that
+  formats
+  numeric input with thousands separators as the user types, while preserving the caret
   position. It accepts integers and decimals.
-                             
+
 * Added `KeepTallest` widget, which tracks its child's height and never visually shrinks
   below the tallest height observed so far. Useful for preventing layout jumps when
-  switching between children of different heights (e.g. tab content inside scrollables). 
-  Optionally supports animated shrinking back to the child's natural height, with 
+  switching between children of different heights (e.g. tab content inside scrollables).
+  Optionally supports animated shrinking back to the child's natural height, with
   configurable delay, duration, curve, and minimum shrink threshold.
 
 ## 12.0.0
 
 * Bumped environment:
-  - sdk: '>=3.9.2 <4.0.0'
-  - flutter: ">=3.35.6"
+    - sdk: '>=3.9.2 <4.0.0'
+    - flutter: ">=3.35.6"
 
 * Fixed `Button` visual bug: When `delay` is true and the user taps quickly (before the
   delay timer fires), the visual press feedback now still shows briefly using
@@ -63,51 +156,59 @@ Sponsored by [MyText.ai](https://mytext.ai)
   For example:
 
   ```
-  DetectScroll(
-   child: SingleChildScrollView(
-      child: Column( ...
-   ...
-  );
+
+DetectScroll(
+child: SingleChildScrollView(
+child: Column( ...
+...
+);
+
   ```
 
   To get the current scroll state and the scrollbar width, descendants can call:
 
   ```
-  bool canScroll = DetectScroll.of(context).canScroll;
-  double scrollbarWidth = DetectScroll.of(context).scrollbarWidth;
+
+bool canScroll = DetectScroll.of(context).canScroll;
+double scrollbarWidth = DetectScroll.of(context).scrollbarWidth;
+
   ```
 
   For example, suppose you want to add a help button to the top-right corner of a
   scrollable, and account for the scrollbar width only if it's visible:
 
   ```
-  bool canScroll = DetectScroll.of(context).canScroll;
-  double scrollbarWidth = DetectScroll.of(context).scrollbarWidth;
-  
-  return Stack(
-    children: [
-       child,
-       Positioned(
-          right: canScroll ? scrollbarWidth : 0,
-          top: 0,
-          child: HelpButton(),
-       ),
-    ],
-  );
+
+bool canScroll = DetectScroll.of(context).canScroll;
+double scrollbarWidth = DetectScroll.of(context).scrollbarWidth;
+
+return Stack(
+children: [
+child,
+Positioned(
+right: canScroll ? scrollbarWidth : 0,
+top: 0,
+child: HelpButton(),
+),
+],
+);
+
   ```
 
   Another alternative is using the optional `onChange` callback of the `DetectScroll`:
 
   ```
-  DetectScroll(
-     onChange: ({
-        required bool canScroll,
-        required double scrollbarWidth,
-     }) {
-        // Do something.
-     }
-     child: ...
-  ),
+
+DetectScroll(
+onChange: ({
+required bool canScroll,
+required double scrollbarWidth,
+}) {
+// Do something.
+}
+child: ...
+),
+
   ```     
 
 ## 10.5.0
@@ -123,19 +224,21 @@ Sponsored by [MyText.ai](https://mytext.ai)
   or when the mouse is over it. For example:
 
   ```
-  CircleButton(
-     icon: Icon(Icons.shopping_cart),     
-     builder: ({
-        required bool isHover,
-        required bool isPressed,
-        required Widget child,
-     }) =>
-         AnimatedScale(
-            scale: isPressed ? 0.85 : 1.0,
-            duration: const Duration(milliseconds: 50),
-            child: child,
-       ),
-     );
+
+CircleButton(
+icon: Icon(Icons.shopping_cart),     
+builder: ({
+required bool isHover,
+required bool isPressed,
+required Widget child,
+}) =>
+AnimatedScale(
+scale: isPressed ? 0.85 : 1.0,
+duration: const Duration(milliseconds: 50),
+child: child,
+),
+);
+
   ```  
 
   Try running
@@ -146,14 +249,16 @@ Sponsored by [MyText.ai](https://mytext.ai)
 * `SideBySide` widget now allows for any number of children, not just two. Example:
 
   ```
-  SideBySide(
-     children: [
-       Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
-       Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
-       Text("I'm good, thank you.", textWidthBasis: TextWidthBasis.longestLine),
-     ],
-     gaps: [8.0, 12.0],
-  );
+
+SideBySide(
+children: [
+Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
+Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
+Text("I'm good, thank you.", textWidthBasis: TextWidthBasis.longestLine),
+],
+gaps: [8.0, 12.0],
+);
+
   ```
 
   The `SideBySide` widget achieves layouts that are not possible with `Row` or `RowSuper`
@@ -166,23 +271,27 @@ Sponsored by [MyText.ai](https://mytext.ai)
   For example, this deprecated code:
 
   ```
-  return SideBySide(
-    startChild: Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
-    endChild: Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
-    innerDistance: 8.0,
-  );
+
+return SideBySide(
+startChild: Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
+endChild: Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
+innerDistance: 8.0,
+);
+
   ```
 
   Should be replaced with:
 
   ```
-  return SideBySide(
-    children: [
-      Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
-      Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
-    ],
-    gaps: [8.0],
-  );
+
+return SideBySide(
+children: [
+Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
+Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
+],
+gaps: [8.0],
+);
+
   ```
 
 ## 10.1.2
@@ -196,12 +305,14 @@ Sponsored by [MyText.ai](https://mytext.ai)
 * You can use `Box.gap()` to create a small gap between widgets:
 
   ```
-  Column(
-    children: [
-      Text('A'),
-      const Box.gap(8), // 8.0 pixel gap
-      Text('B'),
-    ]);
+
+Column(
+children: [
+Text('A'),
+const Box.gap(8), // 8.0 pixel gap
+Text('B'),
+]);
+
   ```
 
 ## 10.0.4
@@ -329,18 +440,20 @@ Sponsored by [MyText.ai](https://mytext.ai)
   is dismissed by tapping the barrier or pressing BACK in Android. Example:
 
   ```                                                                             
-  showDialogSuper<int>(
-  ...
-    actions: [
-      ElevatedButton( onPressed: (){Navigator.pop(context, 1);}, child: const Text("OK"),
-      ElevatedButton( onPressed: (){Navigator.pop(context, 2);}, child: const Text("CANCEL"),        
-    ]
-    ...
-    onDismissed: (int? result) {
-      if (result == 1) print("Pressed the OK button.");
-      else if (result == 2) print("Pressed the CANCEL button.");
-      else if (result == null) print("Dismissed with BACK or tapping the barrier.");  
-    });  
+
+showDialogSuper<int>(
+...
+actions: [
+ElevatedButton( onPressed: (){Navigator.pop(context, 1);}, child: const Text("OK"),
+ElevatedButton( onPressed: (){Navigator.pop(context, 2);}, child: const Text("CANCEL"),        
+]
+...
+onDismissed: (int? result) {
+if (result == 1) print("Pressed the OK button.");
+else if (result == 2) print("Pressed the CANCEL button.");
+else if (result == null) print("Dismissed with BACK or tapping the barrier.");  
+});
+
   ```
 
 ## 4.0.10
@@ -392,17 +505,13 @@ Sponsored by [MyText.ai](https://mytext.ai)
 ## 3.0.1
 
 * Breaking change: The `Box` widget now has a `padding` parameter. I recommend you use it
-  with the
-  new `Pad` class. For example: `Box(padding: Pad(top: 4.0))`. The `Pad` class solves the
-  verbosity
-  problem, and having a `padding` parameter makes `Box` more compatible with `Container` (
-  remember `Box` is like a `Container` which can be made `const`, so it's best if their
-  parameters
-  are not too different).
+  with the new `Pad` class. For example: `Box(padding: Pad(top: 4.0))`. The `Pad` class
+  solves the verbosity problem, and having a `padding` parameter makes `Box` more
+  compatible with `Container` (remember `Box` is like a `Container` which can be
+  made `const`, so it's best if their parameters are not too different).
 
 * The debugging constructors of the `Box` widget are now marked as deprecated so that you
-  don't
-  forget to remove them (they are not really deprecated).
+  don't forget to remove them (they are not really deprecated).
 
 ## 2.0.1
 
