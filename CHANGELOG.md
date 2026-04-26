@@ -2,9 +2,11 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
-## 12.5.0
+## 12.5.1
 
-* Widget `KeyboardDismiss` is now **deprecated**. To fix the deprecation warning, replace:
+* Widget `KeyboardDismiss` is now **deprecated**.
+
+  To fix the deprecation warning, replace:
 
   ```
   KeyboardDismiss(child: ...)
@@ -13,12 +15,21 @@ Sponsored by [MyText.ai](https://mytext.ai)
   with:
 
   ```
-  Keyboard(iOsCloseOnTap: true, iOsCloseOnSwipe: true, iOsRemoveFocusOnTap: true, child: ...)
+  Keyboard(
+    iOsCloseOnTap: true, 
+    iOsCloseOnSwipe: true, 
+    iOsRemoveFocusOnTap: true, 
+    child: ...
+  )
   ``` 
 
-* Added the `Keyboard` widget. It must be placed near the top of the widget tree, where
-  it has the same size as the screen, for example, in `MaterialApp.builder`, above
-  any `Scaffold`. For example:
+* The new `Keyboard` widget allows you to show different content depending on whether
+  the system keyboard is open or closed. If also controls the behavior of the system
+  keyboard on both iOS and Android, including auto-dismissing the keyboard when the user
+  taps outside it or swipes down from just above the keyboard edge.
+
+  Place the `Keyboard` widget near the top of the widget tree, where it has the same size
+  as the screen, for example, in `MaterialApp.builder`, above any `Scaffold`. For example:
 
   ```
   MaterialApp(
@@ -31,23 +42,23 @@ Sponsored by [MyText.ai](https://mytext.ai)
       );
   ```                    
 
-  The constructor parameters are:
+  Here are the constructor parameters:
 
-    - Pass [iOsCloseOnTap] true to close the keyboard when the user taps an empty
+    - `iOsCloseOnTap` closes the keyboard when the user taps an empty
       area of the screen, on the iOS.
-    - Pass [iOsCloseOnSwipe] true to close the keyboard when the user swipes down
+    - `iOsCloseOnSwipe` closes the keyboard when the user swipes down
       from just above the keyboard edge, on the iOS.
-    - [iOsRemoveFocusOnTap] controls whether focus is also removed from any focused
+    - `iOsRemoveFocusOnTap` controls whether focus is also removed from any focused
       element when the keyboard is dismissed by a tap, on the iOS.
-    - [iOsRemoveFocusOnSwipe] controls whether focus is also removed from any focused
+    - `iOsRemoveFocusOnSwipe` controls whether focus is also removed from any focused
       element when the keyboard is dismissed by a swipe, on the iOS.
-    - Pass [androidCloseOnTap] true to close the keyboard when the user taps an empty
+    - `androidCloseOnTap` closes the keyboard when the user taps an empty
       area of the screen, on the Android.
-    - Pass [androidCloseOnSwipe] true to close the keyboard when the user swipes down
+    - `androidCloseOnSwipe` closes the keyboard when the user swipes down
       from just above the keyboard edge, on the Android.
-    - [androidRemoveFocusOnTap] controls whether focus is also removed from any focused
+    - `androidRemoveFocusOnTap` controls whether focus is also removed from any focused
       element when the keyboard is dismissed by a tap, on the Android.
-    - [androidRemoveFocusOnSwipe] controls whether focus is also removed from any focused
+    - `androidRemoveFocusOnSwipe` controls whether focus is also removed from any focused
       element when the keyboard is dismissed by a swipe, on the Android.
 
   The default is `false` for all the above parameters.
@@ -74,37 +85,37 @@ Sponsored by [MyText.ai](https://mytext.ai)
   );
   ```   
 
-* `Keyboard.isOpen(context)` can be used to check whether the keyboard is currently open 
+* `Keyboard.isOpen(context)` can be used to check whether the keyboard is currently open
   or not. Example usage: `bool isKeyboardOpen = Keyboard.isOpen(context);`.
 
 * Use `Keyboard.open()` and `Keyboard.close()` to programmatically open and close the
   system keyboard.
 
-* Added the `KeyboardSwitch` widget, which renders different content depending on whether
+* The new `KeyboardSwitch` widget renders different content depending on whether
   the system keyboard is open or closed. There are two ways to use it:
 
-  1) The default constructor takes optional `open` and `closed` widgets. The `open`
-     widget is shown when the keyboard is open, and the `closed` widget when it is
-     closed. Both are optional, and a missing slot renders nothing. Example usage:
+    1) The default constructor takes optional `open` and `closed` widgets. The `open`
+       widget is shown when the keyboard is open, and the `closed` widget when it is
+       closed. Both are optional, and a missing slot renders nothing. Example usage:
 
-     ```
-     KeyboardSwitch(
-        open: Text('Keyboard is open'),
-        closed: Text('Keyboard is closed'),
-     )
-     ```
+       ```
+       KeyboardSwitch(
+          open: Text('Keyboard is open'),
+          closed: Text('Keyboard is closed'),
+       )
+       ```
 
-  2) The `KeyboardSwitch.builder` constructor takes a `builder` callback that receives
-     the current `isOpen` state, so you can build any widget you want based on it.
-     Example usage:
+    2) The `KeyboardSwitch.builder` constructor takes a `builder` callback that receives
+       the current `isOpen` state, so you can build any widget you want based on it.
+       Example usage:
 
-     ```
-     KeyboardSwitch.builder(
-        (context, isOpen) => Icon(isOpen ? Icons.keyboard : Icons.keyboard_hide),
-     )
-     ```
+       ```
+       KeyboardSwitch.builder(
+          (context, isOpen) => Icon(isOpen ? Icons.keyboard : Icons.keyboard_hide),
+       )
+       ```
 
-  Note the `KeyboardSwitch` widget requires you to add a `Keyboard` widget ancestor.
+  Note `KeyboardSwitch` only works if you add a `Keyboard` widget ancestor.
   An error will be thrown if you try to use it without a `Keyboard` ancestor.
 
 ## 12.4.2
