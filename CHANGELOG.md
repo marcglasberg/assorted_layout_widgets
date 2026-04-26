@@ -76,7 +76,7 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
   For these reasons, the recommended configuration is:
 
-  ```dart
+  ```
   Keyboard(
     iOsCloseOnTap: true,
     iOsCloseOnSwipe: true,
