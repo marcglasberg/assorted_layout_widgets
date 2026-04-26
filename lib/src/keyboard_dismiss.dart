@@ -2,6 +2,12 @@ import 'package:flutter/foundation.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 
+import '../assorted_layout_widgets.dart';
+
+/// The [KeyboardDismiss] widget is DEPRECATED. Use [Keyboard] instead.
+///
+/// ---
+///
 /// Wrap your widget tree with a [KeyboardDismiss] so that:
 ///
 /// 1) In iOS, if [iOS] is true (the default), the keyboard will follow iOS's default behavior:
@@ -142,10 +148,8 @@ class KeyboardDismiss extends StatelessWidget {
 
   /// Closes the keyboard.
   /// If [ifRemovesFocus] is true (the default) it also removes focus from whatever widget has it.
+  @Deprecated('Use `Keyboard.close()` instead.')
   static void keyboardDismiss(BuildContext context, {bool ifRemovesFocus = true}) {
-    /// How to Dismiss the Keyboard in Flutter the Right Way.
-    /// https://flutterigniter.com/dismiss-keyboard-form-lose-focus/
-
     if (ifRemovesFocus) FocusScope.of(context).requestFocus(FocusNode());
     SystemChannels.textInput.invokeMethod<dynamic>('TextInput.hide');
   }

@@ -34,7 +34,8 @@ Despite the package name, they are not only related to layout. Here they are:
 |-------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | <tt>[SideBySide](#sidebyside)</tt> <i>arranges widgets horizontally. It does things Row and RowSuper can't do</i>.            | <tt>[Delayed](#delayed)</tt> <i>gives a widget some initial value, then change it to another value after some delay.</i>                                               | <tt>[DetectScroll](#detectscroll)</tt> <i>helps modify widgets when a scrollable is scrolled, or a scrollbar is visible.</i>                             | <tt>[MaskFunctionTextInputFormatter](#maskfunctiontextinputformatter)</tt> <i>formats the text to a mask, as the user types, but the mask may change according to what is typed.</i> |
 | <tt>[RowSuper](#rowsuper)</tt> <i>is a row layout that does things the Row widget can't do</i>.                               | <tt>[CaptureGestures](#capturegestures)</tt> <i>captures gestures, preventing its parent and ascending subtree to detect them.</i>                                     | <tt>[ButtonBarSuper](#buttonbarsuper)</tt> <i>is a button-bar that places its buttons differently.</i>                                                   | <tt>[NonUniformOutlineInputBorder](#nonuniformoutlineinputborder)</tt> <i>can be used to style the borders of TextFields and Containers, but hiding some of the borders.</i>         |
-| <tt>[ColumnSuper](#columnsuper)</tt> <i>is a column layout that does things the Column widget can't do</i>.                   | <tt>[KeyboardDismiss](#keyboarddismiss)</tt> <i>implements iOS and Android keyboard dismissing behavior.</i>                                                           | <tt>[Button](#button)</tt> <i>turns any widget into a button, with configurable click-area and the visual feedback.</i>                                  | <tt>[NonUniformRoundedRectangleBorder](#nonuniformroundedrectangleborder)</tt> <i>can be used to style the borders of Buttons and Containers, but hiding some of the borders.</i>    |
+| <tt>[ColumnSuper](#columnsuper)</tt> <i>is a column layout that does things the Column widget can't do</i>.                   | <tt>[Keyboard](#keyboard)</tt> <i>opens, closes and checks the keyboard open/closed state. Implements iOS and Android keyboard dismiss behavior.</i>                   | <tt>[Button](#button)</tt> <i>turns any widget into a button, with configurable click-area and the visual feedback.</i>                                  | <tt>[NonUniformRoundedRectangleBorder](#nonuniformroundedrectangleborder)</tt> <i>can be used to style the borders of Buttons and Containers, but hiding some of the borders.</i>    |
+|                                                                                                                               | <tt>[KeyboardSwitch](#keyboardSwitch)</tt> <i>renders one widget when the keyboard is open, and another when it's closed.</i>                                          |                                                                                                                                                          |                                                                                                                                                                                      |
 | <tt>[WrapSuper](#wrapsuper)</tt> <i>is similar to the Wrap widget, but you can choose the line-breaking algorithm</i>.        | <tt>[showDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a dialog with a callback for when the dialog is dismissed.</i>                    | <tt>[CircleButton](#circlebutton)</tt> <i>is a circular icon-button that lets you have a larger click-area and prolong the visual feedback.</i>          | <tt>[FitHorizontally](#fithorizontally)</tt> <i>shrinks its child horizontally only, until a shrink limit is reached.</i>                                                            |
 | <tt>[Box](#box)</tt> <i>has features of Container, SizedBox and ColoredBox, but less verbose and can be made const</i>.       | <tt>[showCupertinoDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a Cupertino dialog with a callback for when the dialog is dismissed.</i> | <tt>[GlobalValueKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key that uses equality instead of identity. Like ValueKey, but global.</i> | <tt>[TextOneLine](#textoneline)</tt> is a text widget that <i>fixes <a href="https://github.com/flutter/flutter/issues/18761">this issue</a>.</i>                                    |
 | <tt>[Pad](#pad)</tt> <i>is an EdgeInsetsGeometry which is easier to type and remember</i>.                                    | <tt>[TimeBuilder](#timebuilder)</tt> <i>lets you implement clocks, countdowns, stopwatches etc, the right way.</i>                                                     | <tt>[GlobalStringKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key created from a String.</i>                                            |                                                                                                                                                                                      |
@@ -1645,42 +1646,120 @@ NonUniformRoundedRectangleBorder example</a>.
 
 <br>
 
-# KeyboardDismiss
+# Keyboard
 
-Wrap your widget tree with a `KeyboardDismiss` so that:
-
-1) In iOS, if parameter `iOS` is true (the default), the keyboard will follow iOS's
-   default
-   behavior:
-
-    - Keyboard closes when the user taps an empty area of the screen.
-    - Keyboard closes when the user swipes down from just above the keyboard edge.
-    - Any focused element will lose focus.
-
-2) In Android, the default behavior is that the keyboard only closes when the user taps
-   the back button or executes the back gesture. However, if you want, you can force the
-   Android to follow some iOS behaviors:
-
-    - Pass `androidCloseWhenTap` true, if you want the keyboard to close when the user
-      taps an empty area of the screen.
-    - Pass `androidCloseWhenSwipe` true, if you want the keyboard to close when the user
-      swipes down from just above the keyboard edge.
-    - Pass `androidLoseFocus` true, if you want any focused element will lose focus.
+The `Keyboard` widget lets you control and observe the system soft-keyboard. It
+implements iOS and Android keyboard dismiss behaviors, exposes the current
+open/closed state to descendants, and provides static methods to programmatically
+open and close the keyboard.
 
 ### Placement
 
-The `KeyboardDismiss` widget must be put in a place where it has the same size of the
-screen.
-For example, if you use a `Scaffold`, the `KeyboardDismiss` should be **above** the
-scaffold, and not inside the scaffold's body.
-
-A good place to put the `KeyboardDismiss` widget is in the `MaterialApp.builder` method,
-like so:
+The `Keyboard` widget must be placed near the top of the widget tree, where it has the
+same size as the screen. A good place is in the `MaterialApp.builder` method, above any
+`Scaffold`:
 
 ```
 MaterialApp(
-   builder: (BuildContext context, Widget? child) => KeyboardDismiss(child: child);
+  builder: (BuildContext context, Widget? child) =>
+    Keyboard(
+      iOsCloseOnTap: true,
+      iOsCloseOnSwipe: true,
+      iOsRemoveFocusOnTap: true,
+      child: child!,
+    ),
+);
 ```
+
+### Dismiss parameters
+
+All constructor parameters default to `false`:
+
+- `iOsCloseOnTap` — close the keyboard when the user taps an empty area of the screen,
+  on iOS.
+- `iOsCloseOnSwipe` — close the keyboard when the user swipes down from just above the
+  keyboard edge, on iOS.
+- `iOsRemoveFocusOnTap` — also remove focus from any focused element when the keyboard
+  is dismissed by a tap, on iOS.
+- `iOsRemoveFocusOnSwipe` — also remove focus from any focused element when the keyboard
+  is dismissed by a swipe, on iOS.
+- `androidCloseOnTap` — close the keyboard when the user taps an empty area of the
+  screen, on Android.
+- `androidCloseOnSwipe` — close the keyboard when the user swipes down from just above
+  the keyboard edge, on Android.
+- `androidRemoveFocusOnTap` — also remove focus from any focused element when the
+  keyboard is dismissed by a tap, on Android.
+- `androidRemoveFocusOnSwipe` — also remove focus from any focused element when the
+  keyboard is dismissed by a swipe, on Android.
+
+### Recommendation
+
+On iOS, it's common for the keyboard to auto-dismiss when the user taps outside it or
+swipes down from just above the keyboard edge. Usually, when the keyboard is dismissed
+by a tap the focused element also loses focus, but when it's dismissed by a swipe the
+focused element retains focus (and may re-open the keyboard if it's tapped).
+
+On Android, the default is that the keyboard only closes when the user taps the back
+button or executes the back gesture.
+
+For these reasons, the recommended configuration is:
+
+```
+Keyboard(
+  iOsCloseOnTap: true,
+  iOsCloseOnSwipe: true,
+  iOsRemoveFocusOnTap: true,
+  child: ...,
+);
+```
+
+### Checking the keyboard state
+
+Use `Keyboard.isOpen(context)` and `Keyboard.isClosed(context)` to check whether the
+keyboard is currently open or closed. Both require you added the `Keyboard` ancestor.
+
+```
+bool isKeyboardOpen = Keyboard.isOpen(context);
+bool isKeyboardClosed = Keyboard.isClosed(context);
+```
+
+### Programmatically opening and closing the keyboard
+
+Use `Keyboard.open()` and `Keyboard.close()` to programmatically open and close the
+system keyboard. `Keyboard.close()` also removes focus from any element that has focus:
+
+```
+Keyboard.open();
+Keyboard.close();
+```
+
+# KeyboardSwitch
+
+The `KeyboardSwitch` widget renders different content depending on whether the system
+keyboard is open or closed. There are two ways to use it.
+
+The default constructor takes optional `open` and `closed` widgets. The `open` widget is
+shown when the keyboard is open, and the `closed` widget when it is closed. Both are
+optional, and a missing slot renders nothing:
+
+```
+KeyboardSwitch(
+  open: Text('Keyboard is open'),
+  closed: Text('Keyboard is closed'),
+);
+```
+
+Alternatively, the `KeyboardSwitch.builder` constructor takes a `builder` callback that
+receives the current `isOpen` state, so you can build any widget you want based on it:
+
+```
+KeyboardSwitch.builder(
+  (context, isOpen) => Icon(isOpen ? Icons.keyboard : Icons.keyboard_hide),
+);
+```
+
+`KeyboardSwitch` requires a `Keyboard` ancestor. An error is thrown if it's used without
+one.
 
 <br>
 
@@ -2097,7 +2176,7 @@ AnimatedBetween({
 
 - **`alignment`**: Where each child is placed inside the animated box. Also determines
   the anchor point from which the box appears to grow or shrink (e.g.
-  `Alignment.center` expands from the center, `Alignment.topLeft` expands down-right).  
+  `Alignment.center` expands from the center, `Alignment.topLeft` expands down-right).
 
 - **`modeShorterChild`** / **`modeLargerChild`**: Control how each child fills the
   animated box during a transition. The child with the **smaller** natural area uses

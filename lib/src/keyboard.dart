@@ -2,30 +2,58 @@ import 'package:flutter/foundation.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 
-/// [WhenKeyboard] renders the [open] widget when the keyboard is open, and the [closed]
-/// widget when it is closed. Both are optional, and a missing slot renders nothing.
+/// [KeyboardSwitch] renders different content depending on whether the system keyboard
+/// is open or closed.
 ///
-/// Requires a [Keyboard] ancestor.
+/// IMPORTANT: For this widget to work it requires a [Keyboard] ancestor. if you don't
+/// have a [Keyboard] ancestor, it will throw an assertion error.
 ///
-/// Example usage:
+/// There are two ways to use it:
 ///
-/// ```
-/// WhenKeyboard(
-///   open: Text('Keyboard is open'),
-///   closed: Text('Keyboard is closed'),
-/// )
-/// ```
+/// 1) The default constructor takes optional [open] and [closed] widgets. The [open]
+///    widget is shown when the keyboard is open, and the [closed] widget when it is
+///    closed. Both are optional, and a missing slot renders nothing:
 ///
-class WhenKeyboard extends StatelessWidget {
-  const WhenKeyboard({super.key, this.open, this.closed});
-
+///    ```
+///    KeyboardSwitch(
+///      open: Text('Keyboard is open'),
+///      closed: Text('Keyboard is closed'),
+///    )
+///    ```
+///
+/// 2) The [KeyboardSwitch.builder] constructor takes a [builder] callback that receives
+///    the current `isOpen` state, so you can build any widget you want based on it:
+///
+///    ```
+///    KeyboardSwitch.builder(
+///      (context, isOpen) => Icon(isOpen ? Icons.keyboard : Icons.keyboard_hide),
+///    )
+///    ```
+///
+class KeyboardSwitch extends StatelessWidget {
+  //
   final Widget? open;
   final Widget? closed;
+  final Widget Function(BuildContext context, bool isOpen)? builder;
+
+  /// Renders [open] when the keyboard is open, and [closed] when it is closed. Both are
+  /// optional, and a missing slot renders nothing.
+  const KeyboardSwitch({super.key, this.open, this.closed}) : builder = null;
+
+  /// Renders the widget returned by [builder], which receives the current `isOpen`
+  /// state of the keyboard.
+  const KeyboardSwitch.builder(this.builder, {super.key}) : open = null, closed = null;
 
   @override
   Widget build(BuildContext context) {
-    final widget = Keyboard.isOpen(context) ? open : closed;
-    return widget ?? const SizedBox.shrink();
+    final isOpen = Keyboard.isOpen(context);
+
+    final builder = this.builder;
+    if (builder != null) {
+      return builder(context, isOpen);
+    }
+
+    return isOpen ? open ?? const SizedBox.shrink() : closed ?? const SizedBox.shrink();
   }
 }
 
@@ -101,12 +129,19 @@ class WhenKeyboard extends StatelessWidget {
 ///   programmatically open and close the system keyboard. Example usage:
 ///
 ///   ```
-///   // Forces the keyboard to close.
+///   // Forces the keyboard to open.
+///   Keyboard.open();
+///
+///   // Forces the keyboard to close, and removes focus from any focused element.
 ///   Keyboard.close();
+///
+///   // Forces the keyboard to close. Keeps focus on any focused element,
+///   so the keyboard may re-open if that element is tapped again.
+///   Keyboard.close(removeFocus: false);
 ///   ```
 ///
 /// See also:
-/// - [WhenKeyboard] for a widget that conditionally renders its child based on the
+/// - [KeyboardSwitch] for a widget that conditionally renders its child based on the
 ///   keyboard open/close state.
 ///
 class Keyboard extends StatefulWidget {
@@ -134,9 +169,9 @@ class Keyboard extends StatefulWidget {
   final bool androidRemoveFocusOnSwipe;
 
   /// Closes only the system keyboard and removes focus from any element that has focus.
-  static void close() {
+  static void close({bool removeFocus = true}) {
+    if (removeFocus) FocusManager.instance.primaryFocus?.unfocus();
     SystemChannels.textInput.invokeMethod('TextInput.hide');
-    FocusManager.instance.primaryFocus?.unfocus();
   }
 
   static void open() {
@@ -242,7 +277,7 @@ class _KeyboardState extends State<Keyboard> with WidgetsBindingObserver {
   Widget _tappingAnywhere(BuildContext context, Widget content, bool removeFocus) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: () => _hideKeyboard(context, removeFocus: removeFocus),
+      onTap: () => Keyboard.close(removeFocus: removeFocus),
       child: content,
     );
   }
@@ -268,16 +303,11 @@ class _KeyboardState extends State<Keyboard> with WidgetsBindingObserver {
         if (bottom > 0.0 &&
             fingerPosition > keyboardEdgePosition &&
             fingerPosition - dy <= keyboardEdgePosition) {
-          _hideKeyboard(context, removeFocus: removeFocus);
+          Keyboard.close(removeFocus: removeFocus);
         }
       },
       child: content,
     );
-  }
-
-  void _hideKeyboard(BuildContext context, {required bool removeFocus}) {
-    if (removeFocus) FocusScope.of(context).requestFocus(FocusNode());
-    SystemChannels.textInput.invokeMethod<dynamic>('TextInput.hide');
   }
 }
 

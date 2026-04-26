@@ -4,7 +4,7 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 ## 12.5.0
 
-* Deprecated `KeyboardDismiss`. To fix the deprecation warning, replace:
+* Widget `KeyboardDismiss` is now **deprecated**. To fix the deprecation warning, replace:
 
   ```
   KeyboardDismiss(child: ...)
@@ -74,24 +74,37 @@ Sponsored by [MyText.ai](https://mytext.ai)
   );
   ```   
 
-* `Keyboard.isOpen()` can be used to check whether the keyboard is currently open or
-  not. Example usage: `bool isKeyboardOpen = Keyboard.isOpen(context);`.
+* `Keyboard.isOpen(context)` can be used to check whether the keyboard is currently open 
+  or not. Example usage: `bool isKeyboardOpen = Keyboard.isOpen(context);`.
 
 * Use `Keyboard.open()` and `Keyboard.close()` to programmatically open and close the
   system keyboard.
 
-* Added the `WhenKeyboard` widget, which renders the `open` widget when the keyboard is
-  open, and the `closed` widget when the keyboard is closed. Both are optional, and a
-  missing slot renders nothing. Example usage:
+* Added the `KeyboardSwitch` widget, which renders different content depending on whether
+  the system keyboard is open or closed. There are two ways to use it:
 
-  ```
-  WhenKeyboard(
-     open: Text('Keyboard is open'),
-     closed: Text('Keyboard is closed'),
-  )
-  ```
+  1) The default constructor takes optional `open` and `closed` widgets. The `open`
+     widget is shown when the keyboard is open, and the `closed` widget when it is
+     closed. Both are optional, and a missing slot renders nothing. Example usage:
 
-  Note, the `WhenKeyboard` widget requires you to add a `Keyboard` widget ancestor.
+     ```
+     KeyboardSwitch(
+        open: Text('Keyboard is open'),
+        closed: Text('Keyboard is closed'),
+     )
+     ```
+
+  2) The `KeyboardSwitch.builder` constructor takes a `builder` callback that receives
+     the current `isOpen` state, so you can build any widget you want based on it.
+     Example usage:
+
+     ```
+     KeyboardSwitch.builder(
+        (context, isOpen) => Icon(isOpen ? Icons.keyboard : Icons.keyboard_hide),
+     )
+     ```
+
+  Note the `KeyboardSwitch` widget requires you to add a `Keyboard` widget ancestor.
   An error will be thrown if you try to use it without a `Keyboard` ancestor.
 
 ## 12.4.2
