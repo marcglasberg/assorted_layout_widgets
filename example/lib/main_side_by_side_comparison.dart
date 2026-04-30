@@ -12,7 +12,7 @@ class Demo extends StatelessWidget {
   const Demo({super.key});
 
   static var w1 = Box(
-    color: Colors.red.withValues(alpha: 0.2),
+    color: Colors.red.withOpacity(0.2),
     child: const Text(
       "Hello there!",
       style: TextStyle(color: Colors.red),
@@ -21,7 +21,7 @@ class Demo extends StatelessWidget {
   );
 
   static var w2 = Box(
-    color: Colors.blue.withValues(alpha: 0.2),
+    color: Colors.blue.withOpacity(0.2),
     child: const Text(
       "How are you doing?",
       style: TextStyle(color: Colors.blue),
@@ -31,7 +31,7 @@ class Demo extends StatelessWidget {
 
   static var w3 = Box(
     alignment: Alignment.centerLeft,
-    color: Colors.green.withValues(alpha: 0.2),
+    color: Colors.green.withOpacity(0.2),
     child: const Text(
       "I'm doing fine.",
       style: TextStyle(color: Colors.green),
@@ -40,7 +40,7 @@ class Demo extends StatelessWidget {
   );
 
   static var w1Rtl = Box(
-    color: Colors.red.withValues(alpha: 0.2),
+    color: Colors.red.withOpacity(0.2),
     child: const Text(
       "שלום!",
       textDirection: TextDirection.rtl,
@@ -50,7 +50,7 @@ class Demo extends StatelessWidget {
   );
 
   static var w2Rtl = Box(
-    color: Colors.blue.withValues(alpha: 0.2),
+    color: Colors.blue.withOpacity(0.2),
     child: const Text(
       "מה שלומך?",
       textDirection: TextDirection.rtl,
@@ -60,7 +60,7 @@ class Demo extends StatelessWidget {
   );
 
   static var w3Rtl = Box(
-    color: Colors.green.withValues(alpha: 0.2),
+    color: Colors.green.withOpacity(0.2),
     child: const Text(
       "אני בסדר.",
       textDirection: TextDirection.rtl,
