@@ -2,7 +2,7 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
-## 12.6.0
+## 12.6.1
 
 * New `OtpCodeVerificationField` widget for one-time-password / verification
   flows: a row of digit boxes that auto-submits when the last character is

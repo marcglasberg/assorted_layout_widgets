@@ -1,4 +1,3 @@
-[![Pub popularity](https://badgen.net/pub/popularity/assorted_layout_widgets)](https://pub.dev/packages/assorted_layout_widgets)
 [![Pub Version](https://img.shields.io/pub/v/assorted_layout_widgets?style=flat-square&logo=dart)](https://pub.dev/packages/assorted_layout_widgets)
 [![GitHub stars](https://img.shields.io/github/stars/marcglasberg/assorted_layout_widgets?style=social)](https://github.com/marcglasberg/assorted_layout_widgets)
 ![Code Climate issues](https://img.shields.io/github/issues/marcglasberg/assorted_layout_widgets?style=flat-square)
