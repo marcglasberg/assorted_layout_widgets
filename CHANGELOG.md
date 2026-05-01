@@ -2,6 +2,43 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 12.6.0
+
+* New `OtpCodeVerificationField` widget for one-time-password / verification
+  flows: a row of digit boxes that auto-submits when the last character is
+  entered, with built-in handling for wrong-code, verification-failure, and
+  expiry states, plus an optional countdown timer. Accepted characters are
+  configurable via `codeType`, `codeLetterSet`, `codeLetterCasing`, and
+  `customSet`, and almost everything visual can be customized.
+
+  ![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/otp_video.gif)
+
+* New `Email` class for email-address handling: `isValid()` validates an
+  address (with optional top-level-domain and international-character support),
+  `sanitize()` strips obviously invalid characters, and `tryFix()` attempts to
+  repair an invalid address into a valid one. The matching
+  `EmailTextInputFormatter` uses `sanitize()` to strip invalid characters as
+  the user types.
+
+* New `CapitalizationTextInputFormatter` capitalizes text as the user types,
+  with options for uppercase, lowercase, first-letter, or English title case.
+
+* New `NumbersTextInputFormatter` allows only numeric input — integer, or
+  decimal with locale-aware, dot, or comma separators.
+
+* New `AllowedCharsTextInputFormatter` allows only the characters that match a
+  given regular expression, filtering out everything else.
+
+* New `NoSpacesTextInputFormatter` prevents the user from typing any whitespace,
+  removing spaces, tabs, and newlines from the input.
+
+* New `AlwaysAtTheEndTextInputFormatter` forces the cursor to always stay at the
+  end of the text being typed.
+
+* New `StringDotLengthLimiterTextInputFormatter` limits text by Dart's
+  `String.length` (instead of grapheme clusters), useful when matching server,
+  database, or file-format limits.
+
 ## 12.5.1
 
 * Widget `KeyboardDismiss` is now **deprecated**.

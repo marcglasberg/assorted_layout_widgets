@@ -30,17 +30,20 @@ Despite the package name, they are not only related to layout. Here they are:
 
 <br>&nbsp;<br>
 
-| Layout                                                                                                                        | Behavioral                                                                                                                                                             | Special                                                                                                                                                  | Format and Style                                                                                                                                                                     |
-|-------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <tt>[SideBySide](#sidebyside)</tt> <i>arranges widgets horizontally. It does things Row and RowSuper can't do</i>.            | <tt>[Delayed](#delayed)</tt> <i>gives a widget some initial value, then change it to another value after some delay.</i>                                               | <tt>[DetectScroll](#detectscroll)</tt> <i>helps modify widgets when a scrollable is scrolled, or a scrollbar is visible.</i>                             | <tt>[MaskFunctionTextInputFormatter](#maskfunctiontextinputformatter)</tt> <i>formats the text to a mask, as the user types, but the mask may change according to what is typed.</i> |
-| <tt>[RowSuper](#rowsuper)</tt> <i>is a row layout that does things the Row widget can't do</i>.                               | <tt>[CaptureGestures](#capturegestures)</tt> <i>captures gestures, preventing its parent and ascending subtree to detect them.</i>                                     | <tt>[ButtonBarSuper](#buttonbarsuper)</tt> <i>is a button-bar that places its buttons differently.</i>                                                   | <tt>[NonUniformOutlineInputBorder](#nonuniformoutlineinputborder)</tt> <i>can be used to style the borders of TextFields and Containers, but hiding some of the borders.</i>         |
-| <tt>[ColumnSuper](#columnsuper)</tt> <i>is a column layout that does things the Column widget can't do</i>.                   | <tt>[Keyboard](#keyboard)</tt> <i>opens, closes and checks the keyboard open/closed state. Implements iOS and Android keyboard dismiss behavior.</i>                   | <tt>[Button](#button)</tt> <i>turns any widget into a button, with configurable click-area and the visual feedback.</i>                                  | <tt>[NonUniformRoundedRectangleBorder](#nonuniformroundedrectangleborder)</tt> <i>can be used to style the borders of Buttons and Containers, but hiding some of the borders.</i>    |
-|                                                                                                                               | <tt>[KeyboardSwitch](#keyboardSwitch)</tt> <i>renders one widget when the keyboard is open, and another when it's closed.</i>                                          |                                                                                                                                                          |                                                                                                                                                                                      |
-| <tt>[WrapSuper](#wrapsuper)</tt> <i>is similar to the Wrap widget, but you can choose the line-breaking algorithm</i>.        | <tt>[showDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a dialog with a callback for when the dialog is dismissed.</i>                    | <tt>[CircleButton](#circlebutton)</tt> <i>is a circular icon-button that lets you have a larger click-area and prolong the visual feedback.</i>          | <tt>[FitHorizontally](#fithorizontally)</tt> <i>shrinks its child horizontally only, until a shrink limit is reached.</i>                                                            |
-| <tt>[Box](#box)</tt> <i>has features of Container, SizedBox and ColoredBox, but less verbose and can be made const</i>.       | <tt>[showCupertinoDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a Cupertino dialog with a callback for when the dialog is dismissed.</i> | <tt>[GlobalValueKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key that uses equality instead of identity. Like ValueKey, but global.</i> | <tt>[TextOneLine](#textoneline)</tt> is a text widget that <i>fixes <a href="https://github.com/flutter/flutter/issues/18761">this issue</a>.</i>                                    |
-| <tt>[Pad](#pad)</tt> <i>is an EdgeInsetsGeometry which is easier to type and remember</i>.                                    | <tt>[TimeBuilder](#timebuilder)</tt> <i>lets you implement clocks, countdowns, stopwatches etc, the right way.</i>                                                     | <tt>[GlobalStringKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key created from a String.</i>                                            |                                                                                                                                                                                      |
-| <tt>[NormalizedOverflowBox](#normalizedoverflowbox)</tt> <i>is an OverflowBox that throws no errors and is easier to use</i>. | <tt>[KeepTallest](#keeptallest)</tt> <i>keeps its height at the tallest child ever seen, preventing layout jumps.</i>                                                  | <tt>[ScrollShadow](#scrollshadow)</tt> <i>adds dynamic top and bottom shadows to a scrollable widget, to indicate overflow content.</i>                  | <tt>[ThousandsSeparatorTextInputFormatter](#thousandsseparatortextinputformatter)</tt> <i>formats numeric input with thousands separators as the user types.</i>                     |
-|                                                                                                                               | <tt>[AnimatedBetween](#animatedbetween)</tt> <i>animates smoothly between two children, cross-fading their content while resizing the enclosing box.</i>               |                                                                                                                                                          |                                                                                                                                                                                      |
+| Layout                                                                                                                        | Behavioral                                                                                                                                                             | Special                                                                                                                                                  | Format and Style                                                                                                                                                                              |
+|-------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| <tt>[SideBySide](#sidebyside)</tt> <i>arranges widgets horizontally. It does things Row and RowSuper can't do</i>.            | <tt>[Delayed](#delayed)</tt> <i>gives a widget some initial value, then change it to another value after some delay.</i>                                               | <tt>[DetectScroll](#detectscroll)</tt> <i>helps modify widgets when a scrollable is scrolled, or a scrollbar is visible.</i>                             | <tt>[MaskFunctionTextInputFormatter](#maskfunctiontextinputformatter)</tt> <i>formats the text to a mask, as the user types, but the mask may change according to what is typed.</i>          |
+| <tt>[RowSuper](#rowsuper)</tt> <i>is a row layout that does things the Row widget can't do</i>.                               | <tt>[CaptureGestures](#capturegestures)</tt> <i>captures gestures, preventing its parent and ascending subtree to detect them.</i>                                     | <tt>[ButtonBarSuper](#buttonbarsuper)</tt> <i>is a button-bar that places its buttons differently.</i>                                                   | <tt>[NonUniformOutlineInputBorder](#nonuniformoutlineinputborder)</tt> <i>can be used to style the borders of TextFields and Containers, but hiding some of the borders.</i>                  |
+| <tt>[ColumnSuper](#columnsuper)</tt> <i>is a column layout that does things the Column widget can't do</i>.                   | <tt>[Keyboard](#keyboard)</tt> <i>opens, closes and checks the keyboard open/closed state. Implements iOS and Android keyboard dismiss behavior.</i>                   | <tt>[Button](#button)</tt> <i>turns any widget into a button, with configurable click-area and the visual feedback.</i>                                  | <tt>[NonUniformRoundedRectangleBorder](#nonuniformroundedrectangleborder)</tt> <i>can be used to style the borders of Buttons and Containers, but hiding some of the borders.</i>             |
+| <tt>[WrapSuper](#wrapsuper)</tt> <i>is similar to the Wrap widget, but you can choose the line-breaking algorithm</i>.        | <tt>[KeyboardSwitch](#keyboardSwitch)</tt> <i>renders one widget when the keyboard is open, and another when it's closed.</i>                                          | <tt>[CircleButton](#circlebutton)</tt> <i>is a circular icon-button that lets you have a larger click-area and prolong the visual feedback.</i>          | <tt>[FitHorizontally](#fithorizontally)</tt> <i>shrinks its child horizontally only, until a shrink limit is reached.</i>                                                                     |
+| <tt>[Box](#box)</tt> <i>has features of Container, SizedBox and ColoredBox, but less verbose and can be made const</i>.       | <tt>[showDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a dialog with a callback for when the dialog is dismissed.</i>                    | <tt>[GlobalValueKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key that uses equality instead of identity. Like ValueKey, but global.</i> | <tt>[TextOneLine](#textoneline)</tt> is a text widget that <i>fixes <a href="https://github.com/flutter/flutter/issues/18761">this issue</a>.</i>                                             |
+| <tt>[Pad](#pad)</tt> <i>is an EdgeInsetsGeometry which is easier to type and remember</i>.                                    | <tt>[showCupertinoDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a Cupertino dialog with a callback for when the dialog is dismissed.</i> | <tt>[GlobalStringKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key created from a String.</i>                                            | <tt>[ThousandsSeparatorTextInputFormatter](#thousandsseparatortextinputformatter)</tt> <i>formats numeric input with thousands separators as the user types.</i>                              |
+| <tt>[NormalizedOverflowBox](#normalizedoverflowbox)</tt> <i>is an OverflowBox that throws no errors and is easier to use</i>. | <tt>[TimeBuilder](#timebuilder)</tt> <i>lets you implement clocks, countdowns, stopwatches etc, the right way.</i>                                                     | <tt>[ScrollShadow](#scrollshadow)</tt> <i>adds dynamic top and bottom shadows to a scrollable widget, to indicate overflow content.</i>                  | <tt>[CapitalizationTextInputFormatter](#capitalizationtextinputformatter)</tt> <i>capitalizes text as the user types: uppercase, lowercase, first-letter, or title.</i>                       |
+|                                                                                                                               | <tt>[KeepTallest](#keeptallest)</tt> <i>keeps its height at the tallest child ever seen, preventing layout jumps.</i>                                                  | <tt>[Email](#email)</tt> <i>provides email validation and sanitization, plus an EmailTextInputFormatter to use as the user types.</i>                    | <tt>[NumbersTextInputFormatter](#numberstextinputformatter)</tt> <i>allows only numeric input: integer, or decimal with locale-aware, dot, or comma separators.</i>                           |
+|                                                                                                                               | <tt>[AnimatedBetween](#animatedbetween)</tt> <i>animates smoothly between two children, cross-fading their content while resizing the enclosing box.</i>               | <tt>[OtpCodeVerificationField](#otpcodeverificationfield)</tt> <i>is a one-time-password code verification textfield, with lots of features.</i>         | <tt>[AllowedCharsTextInputFormatter](#allowedcharstextinputformatter)</tt> <i>allows only the characters that match a given regular expression, filtering out everything else.</i>            |
+|                                                                                                                               |                                                                                                                                                                        |                                                                                                                                                          | <tt>[NoSpacesTextInputFormatter](#nospacestextinputformatter)</tt> <i>prevents the user from typing whitespace.</i>                                                                           |
+|                                                                                                                               |                                                                                                                                                                        |                                                                                                                                                          | <tt>[AlwaysAtTheEndTextInputFormatter](#alwaysattheendtextinputformatter)</tt> <i>forces the cursor to always stay at the end of the typed text.</i>                                          |
+|                                                                                                                               |                                                                                                                                                                        |                                                                                                                                                          | <tt>[StringDotLengthLimiterTextInputFormatter](#stringdotlengthlimitertextinputformatter)</tt> <i>limits text by Dart's String.length (instead of grapheme clusters), to match DB limits.</i> |
 
 <sub>Note the widgets you don't use will be removed by Flutter's tree shaking. So feel
 free to add this package to your project even if you want to use only a few of its
@@ -1417,6 +1420,431 @@ ThousandsSeparatorTextInputFormatter(
   allowedDecimals: 2,
 )
 ```
+
+<br>
+
+# CapitalizationTextInputFormatter
+
+The `CapitalizationTextInputFormatter` is a `TextInputFormatter` that capitalizes text as
+the user types, according to the chosen `Capitalize` option:
+
+* `Capitalize.firstLetterUpper`: capitalizes only the first letter of the text.
+* `Capitalize.uppercase`: makes all letters uppercase.
+* `Capitalize.lowercase`: makes all letters lowercase.
+* `Capitalize.title`: capitalizes the first letter of each word (an approximation of
+  English title case, with common small words like `a`, `the`, `of`, `in` kept lowercase
+  unless they are the first or last word).
+
+Usage:
+
+```
+TextField(
+  inputFormatters: [
+    CapitalizationTextInputFormatter.firstLetterUppercase,
+    // or .uppercase, .lowercase, .title
+  ],
+);
+```
+
+Or pass the option directly:
+
+```
+CapitalizationTextInputFormatter(Capitalize.title)
+```
+
+<br>
+
+# NumbersTextInputFormatter
+
+The `NumbersTextInputFormatter` is a `TextInputFormatter` that allows only numeric input,
+with four predefined modes:
+
+* `NumbersTextInputFormatter.integer`: only digits `0` to `9` can be typed.
+
+* `NumbersTextInputFormatter.decimal`: digits `0` to `9`, plus dot or comma can be typed.
+  Whichever the user types is converted to the current locale's decimal separator.
+
+* `NumbersTextInputFormatter.decimalWithDot`: digits `0` to `9`, plus dot or comma can be
+  typed, but commas are always converted to dots.
+
+* `NumbersTextInputFormatter.decimalWithComma`: digits `0` to `9`, plus dot or comma can
+  be typed, but dots are always converted to commas.
+
+Usage:
+
+```
+TextField(
+  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+  inputFormatters: [
+    NumbersTextInputFormatter.decimal,
+  ],
+);
+```
+
+The locale-aware decimal separator is resolved using the `intl` package, so it handles
+regional variants like `de_CH`, `en_ZA`, and `es_MX`. Note this reflects the default
+separator for the locale and may not reflect OS-level number-format overrides.
+
+<br>
+
+# AllowedCharsTextInputFormatter
+
+The `AllowedCharsTextInputFormatter` is a `TextInputFormatter` that allows only characters
+matching the given `allowedPattern` regular expression. Any character that does not match
+is silently filtered out as the user types.
+
+The pattern is matched against each grapheme cluster of the input individually, so it
+should describe a single character. For unicode property classes like `\p{L}`, the
+`RegExp` must be created with `unicode: true`.
+
+Usage:
+
+```
+TextField(
+  inputFormatters: [
+    AllowedCharsTextInputFormatter(RegExp(r'[a-zA-Z]')),
+  ],
+);
+```
+
+```
+// Allow only unicode letters (any language):
+AllowedCharsTextInputFormatter(RegExp(r'\p{L}', unicode: true))
+```
+
+<br>
+
+# NoSpacesTextInputFormatter
+
+The `NoSpacesTextInputFormatter` is a `TextInputFormatter` that prevents the user from
+typing any whitespace. It removes all whitespace characters (spaces, tabs, and newlines)
+from the input.
+
+Usage:
+
+```
+TextField(
+  inputFormatters: [
+    NoSpacesTextInputFormatter(),
+  ],
+);
+```
+
+<br>
+
+# AlwaysAtTheEndTextInputFormatter
+
+The `AlwaysAtTheEndTextInputFormatter` is a `TextInputFormatter` that forces the cursor
+to always stay at the end of the text being typed.
+
+Note that simply adding this formatter does not prevent text selection, and does not
+prevent the user from moving the cursor using the keyboard arrows. However, if the user
+types a character when not at the end, the text remains unchanged and the cursor goes to
+the end of the text.
+
+Basic usage:
+
+```
+TextField(
+  inputFormatters: [
+    AlwaysAtTheEndTextInputFormatter.instance,
+  ],
+);
+```
+
+You can improve this by adding two more changes to your code:
+
+1. Add `enableInteractiveSelection: false` to the `TextField`, which prevents long-press
+   selection, the copy/paste menu, and selection handles.
+
+2. Create a `controller` and add the following code to your widget's `initState()`, which
+   prevents the cursor from moving horizontally with the keyboard arrows:
+
+```
+final controller = TextEditingController();
+
+bool _fixingSelection = false;
+
+@override
+void initState() {
+  super.initState();
+
+  controller.addListener(() {
+    if (_fixingSelection) return;
+
+    final textLength = controller.text.length;
+    final selection = controller.selection;
+
+    if (!selection.isCollapsed || selection.baseOffset != textLength) {
+      _fixingSelection = true;
+      controller.selection = TextSelection.collapsed(offset: textLength);
+      _fixingSelection = false;
+    }
+  });
+}
+```
+
+Then:
+
+```
+TextField(
+  controller: controller,
+  enableInteractiveSelection: false,
+  inputFormatters: [
+    AlwaysAtTheEndTextInputFormatter.instance,
+  ],
+)
+```
+
+<br>
+
+# StringDotLengthLimiterTextInputFormatter
+
+The `StringDotLengthLimiterTextInputFormatter` is a `TextInputFormatter` that limits text
+by Dart's `String.length`, not by user-perceived characters (grapheme clusters).
+
+The important detail is that it counts using `String.length`, but when it cuts text it
+walks user-visible characters (using the `characters` package), so it never splits an
+emoji or combined character in half.
+
+Use this formatter when the allowed length of some text is based on `String.length`,
+such as when a server, database, or file format has that same limit.
+
+This is different from Flutter's native `LengthLimitingTextInputFormatter`, which counts
+user-visible characters, not `String.length`. Because of that, Flutter's formatter may
+result in text that does not really fit a `String.length` limit, and may even allow text
+that exceeds it. For example, if the limit is 10, Flutter's formatter may allow 10
+emojis, which can be more than 10 characters in `String.length`.
+
+_Note:_ when using `StringDotLengthLimiterTextInputFormatter`, you should not show the
+normal character count to the user in the UI, because what the user sees is not the real
+limit.
+
+Usage:
+
+```
+TextField(
+  inputFormatters: [
+    StringDotLengthLimiterTextInputFormatter(80),
+  ],
+);
+```
+
+Pass `null` or `-1` as the `maxLength` to disable the limit.
+
+The class also exposes static helpers:
+
+* `StringDotLengthLimiterTextInputFormatter.truncateString(value, maxLength)` truncates a
+  `String` to `maxLength` using `String.length`, without splitting graphemes.
+* `StringDotLengthLimiterTextInputFormatter.truncate(value, maxLength)` does the same for
+  a `TextEditingValue`, also fixing the selection and composing range.
+
+<br>
+
+# Email
+
+The `Email` class wraps an email-address `String` and exposes three operations: validate
+it, sanitize it, and try to fix it.
+
+```
+final email = Email('user@example.com');
+print(email.isValid()); // true
+print(email.address);   // user@example.com
+```
+
+### `isValid()`
+
+Returns `true` when the address is a valid complete email address.
+
+```
+Email('user@example.com').isValid();              // true
+Email('user@example').isValid();                  // false (no top-level domain)
+Email('user@example').isValid(allowTopLevelDomains: true); // true
+Email('用户@例子.中国').isValid();                  // true (international, default)
+Email('用户@例子.中国').isValid(allowInternational: false); // false
+```
+
+* `allowTopLevelDomains` — accept addresses without a dotted domain
+  (e.g. `user@example`). Defaults to `false`.
+* `allowInternational` — accept non-ASCII characters. Defaults to `true`.
+
+**Important:** validating email addresses is tricky, because email providers usually
+don't completely agree on the rules. This method uses the most commonly accepted rules,
+but the only way to be 100% sure you are not discarding an address that could actually
+be delivered is to use a much more permissive validation and then try to send the email
+and see if it bounces.
+
+### `sanitize()`
+
+Returns the address with characters that are obviously not allowed in an email address
+removed. The result can still be incomplete or invalid (e.g. it can return `user@`). Use
+this while the user is typing.
+
+```
+Email('us er@exa mple.com').sanitize(); // user@example.com
+```
+
+* `allowInternational` — keep non-ASCII characters. Defaults to `true`.
+
+### `tryFix()`
+
+Trims the address and tries to turn it into a valid email address by removing unsupported
+characters from the local and domain parts. It does not try to fix a missing `@` or more
+than one `@`. Returns `null` if the address cannot be fixed.
+
+```
+Email('  user @ example.com  ').tryFix(); // user@example.com
+Email('user@@example.com').tryFix();      // null (more than one @)
+```
+
+Note: `tryFix` may change the meaning of the address. Use it only when you really want to
+guess the correct address.
+
+### `EmailTextInputFormatter`
+
+While the user types an email address, `EmailTextInputFormatter` strips characters that
+are obviously not part of an email address. It does not check if the address is complete
+or valid — for that, use `Email.isValid()` once the user finishes typing.
+
+```
+TextField(
+  inputFormatters: [EmailTextInputFormatter()],
+);
+```
+
+Note: do not use this formatter if you want the user to be able to type anything and only
+check the validity of the address when they finish typing. In that case use a regular
+`TextField` and call `Email(text).isValid()` on submit.
+
+Try running
+the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_otp_code_verification_field.dart">
+OTP Code Verification example</a>, which also demonstrates how to use `Email.isValid()`
+and `EmailTextInputFormatter`.
+
+<br>
+
+# OtpCodeVerificationField
+
+The `OtpCodeVerificationField` is a verification-code field, used for one-time-password
+(OTP) flows such as confirming an email address or a phone number.
+
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/otp_video.gif)
+
+A row of digit boxes is shown side by side. As the user types, the characters fill in
+from left to right, with a blinking cursor in the next empty box and a highlighted border
+around it. Disallowed characters are silently rejected, and the input is capped at the
+configured number of digits. Tapping anywhere on the row of boxes opens the keyboard.
+
+As soon as the last digit is typed, the code is submitted automatically (there is no
+separate "submit" button) by calling `onSubmit`. The widget then reacts to one of three
+outcomes:
+
+* **Correct code** — `onSubmit` returns `true`. The widget does nothing else; the owner
+  is expected to navigate away to the next page.
+
+* **Wrong code** — `onSubmit` returns `false`. An "Enter the correct code" message
+  appears below the digits, the boxes are cleared, and focus returns so the user can try
+  again.
+
+* **Verification failed** — `onSubmit` throws (e.g. no internet, server error). A
+  "Couldn't verify the code" message appears below the digits along with a "Retry"
+  button, but the typed digits are kept so the user can resubmit the same code with a
+  single tap.
+
+In both error cases the message disappears as soon as the user starts typing again.
+
+### Optional countdown
+
+The widget can also show how long the code is still valid for, as a "Code valid for
+M:SS" line below the digits. When the timer hits zero, the digit row is replaced by a
+"Your code expired" view with a "Go back to try again" button. Tapping it calls
+`onExpiredGoBack` — the widget itself does not navigate or change state, so the owner
+decides what happens next (typically: pop the page and request a fresh code).
+
+### Basic usage
+
+```
+OtpCodeVerificationField(
+  numberOfDigits: 6,
+  countdownStartDateTime: codeIssuedAt,
+  countdownDuration: const Duration(minutes: 30),
+  onSubmit: (code) async {
+    final ok = await verifyCode(code);
+    if (ok) Navigator.of(context).pushReplacement(...);
+    return ok; // true = correct, false = wrong, throw = verification failed
+  },
+  onExpiredGoBack: () => Navigator.of(context).pop(),
+);
+```
+
+Pass `countdownStartDateTime: null` (or `showCountdown: false`) to disable the countdown
+and keep the field active indefinitely.
+
+### Allowed characters
+
+Three nullable parameters control which characters can be typed:
+
+* `codeType` — what kind of characters are accepted: `numbersOnly`, `lettersOnly`, or
+  `numbersAndLetters`.
+* `codeLetterCasing` — how letters are normalized: `uppercase`, `lowercase`, or
+  `mixed` (kept as typed).
+* `codeLetterSet` — which alphabet of characters is accepted: `aToZ`, `unicodeLetters`,
+  `all`, `crockford` (base32 without confusable chars), `binary`, `hexadecimal`,
+  `base62`, or `custom`.
+* `customSet` — when `codeLetterSet` is `CodeLetterSet.custom`, the string of characters
+  that can be typed (digits 0-9 are added on top when `codeType` is `numbersAndLetters`).
+
+When all three are `null`, the field accepts digits 0-9 only. The class doc
+(`OtpCodeVerificationField`) lists the full inference and compatibility rules; mutually
+incompatible combinations are caught with asserts in the constructor.
+
+```
+// 4-digit numeric code (default behavior, made explicit):
+OtpCodeVerificationField(
+  numberOfDigits: 4,
+  codeType: CodeType.numbersOnly,
+  ...
+);
+
+// 8-character alphanumeric uppercase code:
+OtpCodeVerificationField(
+  numberOfDigits: 8,
+  codeType: CodeType.numbersAndLetters,
+  codeLetterSet: CodeLetterSet.aToZ,
+  codeLetterCasing: CodeLetterCasing.uppercase,
+  ...
+);
+```
+
+### Customization
+
+Almost everything visual can be tweaked: the digit-box look, border colors (with a
+separate color for the active box), cursor color and size, text styles for digits,
+errors, expired headline and countdown, plus the containers that wrap each piece of
+text. If you need fully custom buttons (e.g. to match a design system), pass
+`buttonBuilder` and it will be used for both the "Retry" and "Go back to try again"
+buttons; otherwise a plain elevated button is used.
+
+The default messages — `'Enter the correct code'`, `"Couldn't verify the code"`,
+`'Retry'`, `'Your code expired'`, `'Go back to try again'`, and the
+`"Code valid for M:SS"` countdown — can all be replaced via the `wrongCodeMessage`,
+`verificationFailedMessage`, `retryButtonLabel`, `expiredMessage`, `expiredButtonLabel`,
+and `countdownTextBuilder` parameters.
+
+Other useful parameters:
+
+* `numberOfDigits` — number of character boxes (must be in `[2, 50]`). Defaults to `6`.
+* `autoFocus` — whether to pop the keyboard up shortly after the widget is built.
+  Defaults to `true`.
+* `onChanged` — called every time the typed value changes.
+* `showWrongCodeMessage` — whether to show the wrong-code message. The field is still
+  cleared and re-focused either way.
+* `debugShowTextField` — for debugging only; renders the underlying hidden `TextField`
+  visibly so you can see what it holds. Must be `false` in production.
+
+Try running
+the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_otp_code_verification_field.dart">
+OTP Code Verification example</a>.
 
 <br>
 
