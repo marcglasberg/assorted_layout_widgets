@@ -384,7 +384,11 @@ class OtpCodeVerificationField extends StatefulWidget {
   /// with a 1px border. The border uses [activeBorderColor] when
   /// [isCurrentDigit] is `true` (the box at the current cursor position) and
   /// [borderColor] otherwise.
+  ///
+  /// The [index] is the zero-based position of the digit box (the first box
+  /// is index `0`, the last is [numberOfDigits] - 1).
   final Widget Function({
+    required int index,
     required Color? backgroundColor,
     required bool isCurrentDigit,
     required Color? activeBorderColor,
@@ -616,8 +620,10 @@ class OtpCodeVerificationField extends StatefulWidget {
 
   /// Default builder for [digitContainerBuilder]: a 50x60 rounded rectangle
   /// with a 1px border that switches between [activeBorderColor] and
-  /// [borderColor] depending on [isCurrentDigit].
+  /// [borderColor] depending on [isCurrentDigit]. The [index] (zero-based
+  /// position of the digit box) is not used by this default builder.
   static Widget defaultDigitContainerBuilder({
+    required int index,
     required Color? backgroundColor,
     required bool isCurrentDigit,
     required Color? activeBorderColor,
@@ -1213,6 +1219,7 @@ class _DigitField extends StatelessWidget {
   final Size? cursorSize;
   final TextStyle? textStyle;
   final Widget Function({
+    required int index,
     required Color? backgroundColor,
     required bool isCurrentDigit,
     required Color? activeBorderColor,
@@ -1237,6 +1244,7 @@ class _DigitField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return digitContainerBuilder(
+      index: index ?? 0,
       backgroundColor: backgroundColor,
       isCurrentDigit: controllerPosition == index,
       activeBorderColor: activeBorderColor,
