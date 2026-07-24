@@ -1387,6 +1387,7 @@ Features:
   the
   neighboring digit instead of appearing to do nothing.
 * Normalizes input like `.5` to `0.5`.
+* Limits the integer part to `allowedIntegerDigits` digits (leading zeros don't count).
 * Limits the fractional part to `allowedDecimals` digits.
 * Prevents leading zeroes.
 
@@ -1416,6 +1417,7 @@ customize them:
 ThousandsSeparatorTextInputFormatter(
   groupSeparator: '.',
   decimalSeparator: ',',
+  allowedIntegerDigits: 8,
   allowedDecimals: 2,
 )
 ```

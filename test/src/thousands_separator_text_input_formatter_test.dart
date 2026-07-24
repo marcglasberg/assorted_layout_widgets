@@ -383,10 +383,10 @@ void main() {
 
   group('IME composition', () {
     test('returns newValue unchanged during active composition', () {
-      final newVal = TextEditingValue(
+      const newVal = TextEditingValue(
         text: '123',
-        selection: const TextSelection.collapsed(offset: 3),
-        composing: const TextRange(start: 0, end: 3),
+        selection: TextSelection.collapsed(offset: 3),
+        composing: TextRange(start: 0, end: 3),
       );
       final result = formatter.formatEditUpdate(const TextEditingValue(), newVal);
       expect(result, newVal);
@@ -464,9 +464,9 @@ void main() {
 
     test('negative offset clamped', () {
       // Construct a value with a negative selection offset.
-      final badVal = TextEditingValue(
+      const badVal = TextEditingValue(
         text: '123',
-        selection: const TextSelection.collapsed(offset: -1),
+        selection: TextSelection.collapsed(offset: -1),
       );
       // Should not throw — negative offset gets clamped.
       final result = formatter.formatEditUpdate(const TextEditingValue(), badVal);
@@ -474,9 +474,9 @@ void main() {
     });
 
     test('offset beyond text length clamped', () {
-      final badVal = TextEditingValue(
+      const badVal = TextEditingValue(
         text: '123',
-        selection: const TextSelection.collapsed(offset: 100),
+        selection: TextSelection.collapsed(offset: 100),
       );
       final result = formatter.formatEditUpdate(const TextEditingValue(), badVal);
       expect(result.text, '123');
@@ -712,6 +712,101 @@ void main() {
         _value('1.000000000000000001'),
       );
       expect(result.text, '1.000000000000000001');
+    });
+  });
+
+  // ============================================================
+  // ALLOWED INTEGER DIGITS
+  // ============================================================
+
+  group('allowedIntegerDigits', () {
+    test('allowedIntegerDigits: 3 — truncates extra integer digits', () {
+      final f = ThousandsSeparatorTextInputFormatter(allowedIntegerDigits: 3);
+      final result = f.formatEditUpdate(const TextEditingValue(), _value('12345'));
+      expect(result.text, '123');
+    });
+
+    test('allowedIntegerDigits: 3 — exact limit kept as-is', () {
+      final f = ThousandsSeparatorTextInputFormatter(allowedIntegerDigits: 3);
+      final result = f.formatEditUpdate(const TextEditingValue(), _value('123'));
+      expect(result.text, '123');
+    });
+
+    test('allowedIntegerDigits: 3 — fewer digits than limit kept as-is', () {
+      final f = ThousandsSeparatorTextInputFormatter(allowedIntegerDigits: 3);
+      final result = f.formatEditUpdate(const TextEditingValue(), _value('12'));
+      expect(result.text, '12');
+    });
+
+    test('allowedIntegerDigits: 4 — leading zeros do not consume the limit', () {
+      final f = ThousandsSeparatorTextInputFormatter(allowedIntegerDigits: 4);
+      final result = f.formatEditUpdate(const TextEditingValue(), _value('0001234'));
+      expect(result.text, '1,234');
+    });
+
+    test('allowedIntegerDigits: 2 — zeros after a non-zero digit do count', () {
+      final f = ThousandsSeparatorTextInputFormatter(allowedIntegerDigits: 2);
+      final result = f.formatEditUpdate(const TextEditingValue(), _value('1000'));
+      expect(result.text, '10');
+    });
+
+    test('allowedIntegerDigits: 3 — fractional part unaffected', () {
+      final f = ThousandsSeparatorTextInputFormatter(allowedIntegerDigits: 3);
+      final result = f.formatEditUpdate(const TextEditingValue(), _value('12345.67'));
+      expect(result.text, '123.67');
+    });
+
+    test('allowedIntegerDigits: 2 — "0.12345" unaffected (zero is leading)', () {
+      final f = ThousandsSeparatorTextInputFormatter(allowedIntegerDigits: 2);
+      final result = f.formatEditUpdate(const TextEditingValue(), _value('0.12345'));
+      expect(result.text, '0.12345');
+    });
+
+    test('combined with allowedDecimals', () {
+      final f = ThousandsSeparatorTextInputFormatter(
+        allowedIntegerDigits: 3,
+        allowedDecimals: 2,
+      );
+      final result = f.formatEditUpdate(const TextEditingValue(), _value('12345.6789'));
+      expect(result.text, '123.67');
+    });
+
+    test('allowedIntegerDigits: 3 — sequential typing respects limit', () {
+      final f = ThousandsSeparatorTextInputFormatter(allowedIntegerDigits: 3);
+      final result = _typeSequence(f, _value(''), '12345');
+      expect(result.text, '123');
+      expect(result.selection.baseOffset, 3);
+    });
+
+    test('allowedIntegerDigits: 4 — typing leading zeros first still allows digits', () {
+      final f = ThousandsSeparatorTextInputFormatter(allowedIntegerDigits: 4);
+      final result = _typeSequence(f, _value(''), '0001234');
+      expect(result.text, '1,234');
+    });
+
+    test('allowedIntegerDigits: 4 — insert digit at start when at limit', () {
+      final f = ThousandsSeparatorTextInputFormatter(allowedIntegerDigits: 4);
+      // Field contains "1,234" (at the limit), caret at start, user types '9'.
+      // The inserted '9' is kept and the last digit '4' is dropped.
+      final old = _value('1,234', offset: 0);
+      final edited = _value('91,234', offset: 1);
+      final result = f.formatEditUpdate(old, edited);
+      expect(result.text, '9,123');
+      expect(result.selection.baseOffset, 1);
+    });
+
+    test('allowedIntegerDigits: 8 — paste larger number is truncated', () {
+      final f = ThousandsSeparatorTextInputFormatter(allowedIntegerDigits: 8);
+      final result = f.formatEditUpdate(const TextEditingValue(), _value('123456789012'));
+      expect(result.text, '12,345,678');
+    });
+
+    test('default allowedIntegerDigits allows many integer digits', () {
+      final result = formatter.formatEditUpdate(
+        const TextEditingValue(),
+        _value('123456789012345'),
+      );
+      expect(result.text, '123,456,789,012,345');
     });
   });
 

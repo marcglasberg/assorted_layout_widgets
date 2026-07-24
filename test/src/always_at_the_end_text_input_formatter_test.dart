@@ -285,7 +285,7 @@ void main() {
     });
 
     test('multi-byte chars: caret at end (in code units) is accepted', () {
-      final text = 'café';
+      const text = 'café';
       final result = formatter.formatEditUpdate(
         _value('caf'),
         _value(text),

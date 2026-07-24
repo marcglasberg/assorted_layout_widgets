@@ -45,7 +45,7 @@ void main() {
   // ============================================================
 
   group('AllowedCharsTextInputFormatter — digits only [0-9]', () {
-    final formatter = AllowedCharsTextInputFormatter(RegExp(r'[0-9]'));
+    final formatter = AllowedCharsTextInputFormatter(RegExp('[0-9]'));
 
     test('empty input stays empty', () {
       final result = formatter.formatEditUpdate(const TextEditingValue(), _value(''));
@@ -111,7 +111,7 @@ void main() {
   // ============================================================
 
   group('AllowedCharsTextInputFormatter — letters only [a-zA-Z]', () {
-    final formatter = AllowedCharsTextInputFormatter(RegExp(r'[a-zA-Z]'));
+    final formatter = AllowedCharsTextInputFormatter(RegExp('[a-zA-Z]'));
 
     test('letters are kept and digits stripped', () {
       final result = formatter.formatEditUpdate(
@@ -143,7 +143,7 @@ void main() {
   // ============================================================
 
   group('AllowedCharsTextInputFormatter — alphanumeric [a-zA-Z0-9]', () {
-    final formatter = AllowedCharsTextInputFormatter(RegExp(r'[a-zA-Z0-9]'));
+    final formatter = AllowedCharsTextInputFormatter(RegExp('[a-zA-Z0-9]'));
 
     test('letters and digits are kept', () {
       final result = formatter.formatEditUpdate(
@@ -175,7 +175,7 @@ void main() {
   // ============================================================
 
   group('AllowedCharsTextInputFormatter — negated pattern [^,.]', () {
-    final formatter = AllowedCharsTextInputFormatter(RegExp(r'[^,.]'));
+    final formatter = AllowedCharsTextInputFormatter(RegExp('[^,.]'));
 
     test('characters not in the excluded set are kept', () {
       final result = formatter.formatEditUpdate(
@@ -238,7 +238,7 @@ void main() {
 
   group('AllowedCharsTextInputFormatter — grapheme clusters', () {
     // Pattern allows everything (any single grapheme).
-    final allowAll = AllowedCharsTextInputFormatter(RegExp(r'.', dotAll: true));
+    final allowAll = AllowedCharsTextInputFormatter(RegExp('.', dotAll: true));
 
     test('emoji grapheme is preserved as a whole', () {
       final result = allowAll.formatEditUpdate(
@@ -258,7 +258,7 @@ void main() {
     });
 
     test('emoji is stripped when pattern does not match it', () {
-      final lettersOnly = AllowedCharsTextInputFormatter(RegExp(r'[a-z]'));
+      final lettersOnly = AllowedCharsTextInputFormatter(RegExp('[a-z]'));
       final result = lettersOnly.formatEditUpdate(
         const TextEditingValue(),
         _value('a😀b🇧🇷c'),
@@ -272,7 +272,7 @@ void main() {
   // ============================================================
 
   group('AllowedCharsTextInputFormatter — composing range', () {
-    final formatter = AllowedCharsTextInputFormatter(RegExp(r'[0-9]'));
+    final formatter = AllowedCharsTextInputFormatter(RegExp('[0-9]'));
 
     test('composing range is cleared even when nothing changes', () {
       final result = formatter.formatEditUpdate(
@@ -297,7 +297,7 @@ void main() {
   // ============================================================
 
   group('AllowedCharsTextInputFormatter — cursor offset', () {
-    final formatter = AllowedCharsTextInputFormatter(RegExp(r'[0-9]'));
+    final formatter = AllowedCharsTextInputFormatter(RegExp('[0-9]'));
 
     test('caret stays at end after typing valid char', () {
       final result = formatter.formatEditUpdate(
@@ -343,9 +343,9 @@ void main() {
     test('selection collapses to a single offset', () {
       final result = formatter.formatEditUpdate(
         const TextEditingValue(),
-        TextEditingValue(
+        const TextEditingValue(
           text: '123',
-          selection: const TextSelection(baseOffset: 0, extentOffset: 3),
+          selection: TextSelection(baseOffset: 0, extentOffset: 3),
         ),
       );
       expect(result.selection.isCollapsed, isTrue);
@@ -358,14 +358,14 @@ void main() {
 
   group('AllowedCharsTextInputFormatter — construction', () {
     test('the given allowedPattern is exposed', () {
-      final pattern = RegExp(r'[a-z]');
+      final pattern = RegExp('[a-z]');
       final formatter = AllowedCharsTextInputFormatter(pattern);
       expect(formatter.allowedPattern, same(pattern));
     });
 
     test('two formatters built with the same regex string filter the same', () {
-      final a = AllowedCharsTextInputFormatter(RegExp(r'[0-9]'));
-      final b = AllowedCharsTextInputFormatter(RegExp(r'[0-9]'));
+      final a = AllowedCharsTextInputFormatter(RegExp('[0-9]'));
+      final b = AllowedCharsTextInputFormatter(RegExp('[0-9]'));
       final input = _value('a1b2c3');
       expect(
         a.formatEditUpdate(const TextEditingValue(), input).text,

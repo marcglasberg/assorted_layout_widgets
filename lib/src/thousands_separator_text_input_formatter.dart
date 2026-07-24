@@ -28,6 +28,8 @@ import 'package:flutter/services.dart';
 ///   instead of appearing to do nothing.
 /// * If the input starts with `.,` it normalizes it to `0.`.
 ///   For example, `.5` becomes `0.5`.
+/// * Limit the integer part to [allowedIntegerDigits] digits. Leading zeros
+///   don't count toward this limit, since they are stripped anyway.
 /// * Limit the fractional part to [allowedDecimals] digits.
 /// * Prevent leading zeroes on the left.
 ///
@@ -185,14 +187,17 @@ class ThousandsSeparatorTextInputFormatter extends TextInputFormatter {
   ThousandsSeparatorTextInputFormatter({
     this.groupSeparator = ',',
     this.decimalSeparator = '.',
+    this.allowedIntegerDigits = 1000,
     this.allowedDecimals = 1000,
   }) : assert(groupSeparator.length == 1),
        assert(decimalSeparator.length == 1),
        assert(groupSeparator != decimalSeparator),
+       assert(allowedIntegerDigits >= 1),
        assert(allowedDecimals >= 0);
 
   final String groupSeparator;
   final String decimalSeparator;
+  final int allowedIntegerDigits;
   final int allowedDecimals;
 
   @override
@@ -383,6 +388,8 @@ class ThousandsSeparatorTextInputFormatter extends TextInputFormatter {
     final inputToRaw = List<int>.filled(input.length + 1, 0);
 
     bool sawDecimalSeparator = false;
+    bool sawNonZeroIntegerDigit = false;
+    int integerDigits = 0;
     int fractionalDigits = 0;
     inputToRaw[0] = 0;
 
@@ -401,6 +408,17 @@ class ThousandsSeparatorTextInputFormatter extends TextInputFormatter {
           if (fractionalDigits > allowedDecimals) {
             inputToRaw[i + 1] = buffer.length;
             continue;
+          }
+        } else {
+          if (ch != '0') sawNonZeroIntegerDigit = true;
+          // Leading zeros are stripped after sanitization, so they don't
+          // count against the integer-digit budget.
+          if (sawNonZeroIntegerDigit) {
+            integerDigits++;
+            if (integerDigits > allowedIntegerDigits) {
+              inputToRaw[i + 1] = buffer.length;
+              continue;
+            }
           }
         }
         buffer.write(ch);

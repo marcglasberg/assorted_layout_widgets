@@ -2,6 +2,13 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 12.7.0
+
+* `ThousandsSeparatorTextInputFormatter` now accepts an `allowedIntegerDigits`
+  parameter that limits the integer part to the given number of digits, just
+  like `allowedDecimals` limits the fractional part. Leading zeros don't count
+  toward the limit, since they are stripped anyway.
+
 ## 12.6.2
 
 * New `OtpCodeVerificationField` widget for one-time-password / verification
