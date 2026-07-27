@@ -605,102 +605,171 @@ class _AnimatedBetweenState extends State<AnimatedBetween> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        return AnimatedBuilder(
-          animation: Listenable.merge(<Listenable>[_fadeController, _sizeController]),
-          builder: (BuildContext context, Widget? child) {
-            if (!_isTransitioning) {
-              if (_currentChild == null) {
-                return const SizedBox.shrink();
-              }
+    return AnimatedBuilder(
+      animation: Listenable.merge(<Listenable>[_fadeController, _sizeController]),
+      builder: (BuildContext context, Widget? child) {
+        if (!_isTransitioning) {
+          if (_currentChild == null) {
+            return const SizedBox.shrink();
+          }
 
-              return _MeasureSize(
-                onChanged: _handleCurrentChildSizeChanged,
-                child: _currentChild!,
-              );
-            }
+          // At rest there is no LayoutBuilder in the subtree, so
+          // intrinsic queries from the parent (IntrinsicWidth,
+          // RowSuper, etc.) delegate straight through _MeasureSize (a
+          // RenderProxyBox) to the child.
+          return _MeasureSize(
+            onChanged: _handleCurrentChildSizeChanged,
+            child: _currentChild!,
+          );
+        }
 
-            final double incomingOpacity = _currentChild == null ? 0.0 : _fadeT;
-            final double outgoingOpacity = _outgoingChild == null ? 0.0 : 1.0 - _fadeT;
-            final Size displaySize = _displaySize;
+        final double incomingOpacity = _currentChild == null ? 0.0 : _fadeT;
+        final double outgoingOpacity = _outgoingChild == null ? 0.0 : 1.0 - _fadeT;
+        final Size displaySize = _displaySize;
 
-            // Classify each child as the "shorter" or "larger" by
-            // natural area, and apply the corresponding mode. When
-            // one side is null and the other isn't, the non-null one
-            // is unambiguously the larger side regardless of whether
-            // the incoming child has been measured yet — this avoids
-            // treating an unmeasured non-null child as tied with a
-            // null child and so misapplying modeShorterChild on the
-            // first frame of a showHide grow. When the areas tie
-            // with both sides non-null, both use modeShorterChild
-            // per the widget contract.
-            final AnimatedBetweenMode outgoingMode;
-            final AnimatedBetweenMode incomingMode;
-            if (_outgoingChild == null && _currentChild != null) {
-              outgoingMode = widget.modeShorterChild;
-              incomingMode = widget.modeLargerChild;
-            } else if (_outgoingChild != null && _currentChild == null) {
-              outgoingMode = widget.modeLargerChild;
-              incomingMode = widget.modeShorterChild;
-            } else {
-              final double outArea = _outgoingChild == null
-                  ? 0.0
-                  : (_outgoingChildSize?.width ?? 0) * (_outgoingChildSize?.height ?? 0);
-              final double inArea = _currentChild == null
-                  ? 0.0
-                  : (_currentChildSize?.width ?? 0) * (_currentChildSize?.height ?? 0);
-              if (outArea == inArea) {
-                outgoingMode = widget.modeShorterChild;
-                incomingMode = widget.modeShorterChild;
-              } else if (outArea > inArea) {
-                outgoingMode = widget.modeLargerChild;
-                incomingMode = widget.modeShorterChild;
-              } else {
-                outgoingMode = widget.modeShorterChild;
-                incomingMode = widget.modeLargerChild;
-              }
-            }
+        // Classify each child as the "shorter" or "larger" by
+        // natural area, and apply the corresponding mode. When
+        // one side is null and the other isn't, the non-null one
+        // is unambiguously the larger side regardless of whether
+        // the incoming child has been measured yet — this avoids
+        // treating an unmeasured non-null child as tied with a
+        // null child and so misapplying modeShorterChild on the
+        // first frame of a showHide grow. When the areas tie
+        // with both sides non-null, both use modeShorterChild
+        // per the widget contract.
+        final AnimatedBetweenMode outgoingMode;
+        final AnimatedBetweenMode incomingMode;
+        if (_outgoingChild == null && _currentChild != null) {
+          outgoingMode = widget.modeShorterChild;
+          incomingMode = widget.modeLargerChild;
+        } else if (_outgoingChild != null && _currentChild == null) {
+          outgoingMode = widget.modeLargerChild;
+          incomingMode = widget.modeShorterChild;
+        } else {
+          final double outArea = _outgoingChild == null
+              ? 0.0
+              : (_outgoingChildSize?.width ?? 0) * (_outgoingChildSize?.height ?? 0);
+          final double inArea = _currentChild == null
+              ? 0.0
+              : (_currentChildSize?.width ?? 0) * (_currentChildSize?.height ?? 0);
+          if (outArea == inArea) {
+            outgoingMode = widget.modeShorterChild;
+            incomingMode = widget.modeShorterChild;
+          } else if (outArea > inArea) {
+            outgoingMode = widget.modeLargerChild;
+            incomingMode = widget.modeShorterChild;
+          } else {
+            outgoingMode = widget.modeShorterChild;
+            incomingMode = widget.modeLargerChild;
+          }
+        }
 
-            return ClipRect(
-              clipBehavior: widget.clipBehavior,
-              child: SizedBox(
-                width: displaySize.width,
-                height: displaySize.height,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  alignment: widget.alignment,
-                  children: <Widget>[
-                    if (_outgoingChild != null)
-                      Positioned.fill(
-                        child: _buildAnimatedLayer(
-                          child: _outgoingChild!,
-                          knownSize: _outgoingChildSize,
-                          opacity: outgoingOpacity,
-                          parentConstraints: constraints,
-                          onSizeChanged: _handleOutgoingChildSizeChanged,
-                          mode: outgoingMode,
+        // The LayoutBuilder exists only to feed the parent's
+        // constraints to _buildAnimatedLayer's overflow mode.
+        // RenderLayoutBuilder cannot answer intrinsic or dry-layout
+        // queries, so _IntrinsicSizeOverride sits outside it and
+        // answers them with the current animated box size.
+        return _IntrinsicSizeOverride(
+          size: displaySize,
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              return ClipRect(
+                clipBehavior: widget.clipBehavior,
+                child: SizedBox(
+                  width: displaySize.width,
+                  height: displaySize.height,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    alignment: widget.alignment,
+                    children: <Widget>[
+                      if (_outgoingChild != null)
+                        Positioned.fill(
+                          child: _buildAnimatedLayer(
+                            child: _outgoingChild!,
+                            knownSize: _outgoingChildSize,
+                            opacity: outgoingOpacity,
+                            parentConstraints: constraints,
+                            onSizeChanged: _handleOutgoingChildSizeChanged,
+                            mode: outgoingMode,
+                          ),
                         ),
-                      ),
-                    if (_currentChild != null)
-                      Positioned.fill(
-                        child: _buildAnimatedLayer(
-                          child: _currentChild!,
-                          knownSize: _currentChildSize,
-                          opacity: incomingOpacity,
-                          parentConstraints: constraints,
-                          onSizeChanged: _handleCurrentChildSizeChanged,
-                          mode: incomingMode,
+                      if (_currentChild != null)
+                        Positioned.fill(
+                          child: _buildAnimatedLayer(
+                            child: _currentChild!,
+                            knownSize: _currentChildSize,
+                            opacity: incomingOpacity,
+                            parentConstraints: constraints,
+                            onSizeChanged: _handleCurrentChildSizeChanged,
+                            mode: incomingMode,
+                          ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         );
       },
     );
+  }
+}
+
+/// Reports the current animated box size as this subtree's intrinsic
+/// dimensions and dry layout. The transition branch has a
+/// LayoutBuilder at its root, whose render object throws on intrinsic
+/// and dry-layout queries; this proxy answers those queries instead,
+/// so intrinsic-measuring parents can track the box mid-transition.
+class _IntrinsicSizeOverride extends SingleChildRenderObjectWidget {
+  const _IntrinsicSizeOverride({required this.size, super.child});
+
+  final Size size;
+
+  @override
+  RenderObject createRenderObject(BuildContext context) {
+    return _IntrinsicSizeOverrideRenderObject(size);
+  }
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    covariant _IntrinsicSizeOverrideRenderObject renderObject,
+  ) {
+    renderObject.overrideSize = size;
+  }
+}
+
+class _IntrinsicSizeOverrideRenderObject extends RenderProxyBox {
+  _IntrinsicSizeOverrideRenderObject(this._overrideSize);
+
+  Size _overrideSize;
+
+  Size get overrideSize => _overrideSize;
+
+  set overrideSize(Size value) {
+    if (_overrideSize == value) {
+      return;
+    }
+    _overrideSize = value;
+    markNeedsLayout();
+  }
+
+  @override
+  double computeMinIntrinsicWidth(double height) => _overrideSize.width;
+
+  @override
+  double computeMaxIntrinsicWidth(double height) => _overrideSize.width;
+
+  @override
+  double computeMinIntrinsicHeight(double width) => _overrideSize.height;
+
+  @override
+  double computeMaxIntrinsicHeight(double width) => _overrideSize.height;
+
+  @override
+  Size computeDryLayout(BoxConstraints constraints) {
+    return constraints.constrain(_overrideSize);
   }
 }
 

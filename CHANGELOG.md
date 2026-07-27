@@ -2,6 +2,14 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 12.7.1
+
+* `AnimatedBetween` now reports proper intrinsic dimensions, so it can be used
+  inside parents that measure children by intrinsics (`IntrinsicWidth`,
+  `IntrinsicHeight`, `RowSuper`, etc.). At rest it reports its child's
+  intrinsics; mid-transition it reports the current animated box size, so
+  intrinsic-measuring parents animate along. Visual behavior is unchanged.
+
 ## 12.7.0
 
 * `ThousandsSeparatorTextInputFormatter` now accepts an `allowedIntegerDigits`
