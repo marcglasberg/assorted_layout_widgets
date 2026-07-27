@@ -20,6 +20,7 @@ export "src/non_uniform_rounded_rectangle_border.dart";
 export "src/normalized_overflow_box.dart";
 export "src/otp_code_verification_field.dart";
 export "src/pad.dart";
+export "src/row_proportional.dart";
 export "src/row_super.dart";
 export "src/scroll_shadow.dart";
 export "src/show_dialog_super.dart";

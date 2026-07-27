@@ -32,13 +32,13 @@ Despite the package name, they are not only related to layout. Here they are:
 | Layout                                                                                                                        | Behavioral                                                                                                                                                             | Special                                                                                                                                                  | Format and Style                                                                                                                                                                              |
 |-------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | <tt>[SideBySide](#sidebyside)</tt> <i>arranges widgets horizontally. It does things Row and RowSuper can't do</i>.            | <tt>[Delayed](#delayed)</tt> <i>gives a widget some initial value, then change it to another value after some delay.</i>                                               | <tt>[DetectScroll](#detectscroll)</tt> <i>helps modify widgets when a scrollable is scrolled, or a scrollbar is visible.</i>                             | <tt>[MaskFunctionTextInputFormatter](#maskfunctiontextinputformatter)</tt> <i>formats the text to a mask, as the user types, but the mask may change according to what is typed.</i>          |
-| <tt>[RowSuper](#rowsuper)</tt> <i>is a row layout that does things the Row widget can't do</i>.                               | <tt>[CaptureGestures](#capturegestures)</tt> <i>captures gestures, preventing its parent and ascending subtree to detect them.</i>                                     | <tt>[ButtonBarSuper](#buttonbarsuper)</tt> <i>is a button-bar that places its buttons differently.</i>                                                   | <tt>[NonUniformOutlineInputBorder](#nonuniformoutlineinputborder)</tt> <i>can be used to style the borders of TextFields and Containers, but hiding some of the borders.</i>                  |
-| <tt>[ColumnSuper](#columnsuper)</tt> <i>is a column layout that does things the Column widget can't do</i>.                   | <tt>[Keyboard](#keyboard)</tt> <i>opens, closes and checks the keyboard open/closed state. Implements iOS and Android keyboard dismiss behavior.</i>                   | <tt>[Button](#button)</tt> <i>turns any widget into a button, with configurable click-area and the visual feedback.</i>                                  | <tt>[NonUniformRoundedRectangleBorder](#nonuniformroundedrectangleborder)</tt> <i>can be used to style the borders of Buttons and Containers, but hiding some of the borders.</i>             |
-| <tt>[WrapSuper](#wrapsuper)</tt> <i>is similar to the Wrap widget, but you can choose the line-breaking algorithm</i>.        | <tt>[KeyboardSwitch](#keyboardSwitch)</tt> <i>renders one widget when the keyboard is open, and another when it's closed.</i>                                          | <tt>[CircleButton](#circlebutton)</tt> <i>is a circular icon-button that lets you have a larger click-area and prolong the visual feedback.</i>          | <tt>[FitHorizontally](#fithorizontally)</tt> <i>shrinks its child horizontally only, until a shrink limit is reached.</i>                                                                     |
-| <tt>[Box](#box)</tt> <i>has features of Container, SizedBox and ColoredBox, but less verbose and can be made const</i>.       | <tt>[showDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a dialog with a callback for when the dialog is dismissed.</i>                    | <tt>[GlobalValueKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key that uses equality instead of identity. Like ValueKey, but global.</i> | <tt>[TextOneLine](#textoneline)</tt> is a text widget that <i>fixes <a href="https://github.com/flutter/flutter/issues/18761">this issue</a>.</i>                                             |
-| <tt>[Pad](#pad)</tt> <i>is an EdgeInsetsGeometry which is easier to type and remember</i>.                                    | <tt>[showCupertinoDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a Cupertino dialog with a callback for when the dialog is dismissed.</i> | <tt>[GlobalStringKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key created from a String.</i>                                            | <tt>[ThousandsSeparatorTextInputFormatter](#thousandsseparatortextinputformatter)</tt> <i>formats numeric input with thousands separators as the user types.</i>                              |
-| <tt>[NormalizedOverflowBox](#normalizedoverflowbox)</tt> <i>is an OverflowBox that throws no errors and is easier to use</i>. | <tt>[TimeBuilder](#timebuilder)</tt> <i>lets you implement clocks, countdowns, stopwatches etc, the right way.</i>                                                     | <tt>[ScrollShadow](#scrollshadow)</tt> <i>adds dynamic top and bottom shadows to a scrollable widget, to indicate overflow content.</i>                  | <tt>[CapitalizationTextInputFormatter](#capitalizationtextinputformatter)</tt> <i>capitalizes text as the user types: uppercase, lowercase, first-letter, or title.</i>                       |
-|                                                                                                                               | <tt>[KeepTallest](#keeptallest)</tt> <i>keeps its height at the tallest child ever seen, preventing layout jumps.</i>                                                  | <tt>[Email](#email)</tt> <i>provides email validation and sanitization, plus an EmailTextInputFormatter to use as the user types.</i>                    | <tt>[NumbersTextInputFormatter](#numberstextinputformatter)</tt> <i>allows only numeric input: integer, or decimal with locale-aware, dot, or comma separators.</i>                           |
+| <tt>[RowProportional](#rowproportional)</tt> <i>distributes the horizontal space between its children, proportionately to their preferred widths</i>.                               | <tt>[CaptureGestures](#capturegestures)</tt> <i>captures gestures, preventing its parent and ascending subtree to detect them.</i>                                     | <tt>[ButtonBarSuper](#buttonbarsuper)</tt> <i>is a button-bar that places its buttons differently.</i>                                                   | <tt>[NonUniformOutlineInputBorder](#nonuniformoutlineinputborder)</tt> <i>can be used to style the borders of TextFields and Containers, but hiding some of the borders.</i>                  |
+| <tt>[RowSuper](#rowsuper)</tt> <i>is a row layout that does things the Row widget can't do</i>.                   | <tt>[Keyboard](#keyboard)</tt> <i>opens, closes and checks the keyboard open/closed state. Implements iOS and Android keyboard dismiss behavior.</i>                   | <tt>[Button](#button)</tt> <i>turns any widget into a button, with configurable click-area and the visual feedback.</i>                                  | <tt>[NonUniformRoundedRectangleBorder](#nonuniformroundedrectangleborder)</tt> <i>can be used to style the borders of Buttons and Containers, but hiding some of the borders.</i>             |
+| <tt>[ColumnSuper](#columnsuper)</tt> <i>is a column layout that does things the Column widget can't do</i>.        | <tt>[KeyboardSwitch](#keyboardSwitch)</tt> <i>renders one widget when the keyboard is open, and another when it's closed.</i>                                          | <tt>[CircleButton](#circlebutton)</tt> <i>is a circular icon-button that lets you have a larger click-area and prolong the visual feedback.</i>          | <tt>[FitHorizontally](#fithorizontally)</tt> <i>shrinks its child horizontally only, until a shrink limit is reached.</i>                                                                     |
+| <tt>[WrapSuper](#wrapsuper)</tt> <i>is similar to the Wrap widget, but you can choose the line-breaking algorithm</i>.       | <tt>[showDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a dialog with a callback for when the dialog is dismissed.</i>                    | <tt>[GlobalValueKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key that uses equality instead of identity. Like ValueKey, but global.</i> | <tt>[TextOneLine](#textoneline)</tt> is a text widget that <i>fixes <a href="https://github.com/flutter/flutter/issues/18761">this issue</a>.</i>                                             |
+| <tt>[Box](#box)</tt> <i>has features of Container, SizedBox and ColoredBox, but less verbose and can be made const</i>.                                    | <tt>[showCupertinoDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a Cupertino dialog with a callback for when the dialog is dismissed.</i> | <tt>[GlobalStringKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key created from a String.</i>                                            | <tt>[ThousandsSeparatorTextInputFormatter](#thousandsseparatortextinputformatter)</tt> <i>formats numeric input with thousands separators as the user types.</i>                              |
+| <tt>[Pad](#pad)</tt> <i>is an EdgeInsetsGeometry which is easier to type and remember</i>. | <tt>[TimeBuilder](#timebuilder)</tt> <i>lets you implement clocks, countdowns, stopwatches etc, the right way.</i>                                                     | <tt>[ScrollShadow](#scrollshadow)</tt> <i>adds dynamic top and bottom shadows to a scrollable widget, to indicate overflow content.</i>                  | <tt>[CapitalizationTextInputFormatter](#capitalizationtextinputformatter)</tt> <i>capitalizes text as the user types: uppercase, lowercase, first-letter, or title.</i>                       |
+| <tt>[NormalizedOverflowBox](#normalizedoverflowbox)</tt> <i>is an OverflowBox that throws no errors and is easier to use</i>. | <tt>[KeepTallest](#keeptallest)</tt> <i>keeps its height at the tallest child ever seen, preventing layout jumps.</i>                                                  | <tt>[Email](#email)</tt> <i>provides email validation and sanitization, plus an EmailTextInputFormatter to use as the user types.</i>                    | <tt>[NumbersTextInputFormatter](#numberstextinputformatter)</tt> <i>allows only numeric input: integer, or decimal with locale-aware, dot, or comma separators.</i>                           |
 |                                                                                                                               | <tt>[AnimatedBetween](#animatedbetween)</tt> <i>animates smoothly between two children, cross-fading their content while resizing the enclosing box.</i>               | <tt>[OtpCodeVerificationField](#otpcodeverificationfield)</tt> <i>is a one-time-password code verification textfield, with lots of features.</i>         | <tt>[AllowedCharsTextInputFormatter](#allowedcharstextinputformatter)</tt> <i>allows only the characters that match a given regular expression, filtering out everything else.</i>            |
 |                                                                                                                               |                                                                                                                                                                        |                                                                                                                                                          | <tt>[NoSpacesTextInputFormatter](#nospacestextinputformatter)</tt> <i>prevents the user from typing whitespace.</i>                                                                           |
 |                                                                                                                               |                                                                                                                                                                        |                                                                                                                                                          | <tt>[AlwaysAtTheEndTextInputFormatter](#alwaysattheendtextinputformatter)</tt> <i>forces the cursor to always stay at the end of the typed text.</i>                                          |
@@ -186,6 +186,134 @@ is almost never what you want. In other words, instead of writing
 Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_side_by_side.dart">
 SideBySide example</a>.
+
+<br>
+
+# RowProportional
+
+The `RowProportional` widget arranges its children horizontally, dividing all the
+available horizontal space between them, proportionally to their preferred
+(natural, intrinsic) widths.
+
+```
+RowProportional({
+  List<Widget> children,
+  CrossAxisAlignment crossAxisAlignment,
+  TextDirection textDirection,
+  TextBaseline textBaseline,
+});
+```
+
+In other words, it first asks each child how wide it would like to be, and then scales
+all children by the same factor, so that together they fill the available width exactly.
+Children are forced to their calculated widths, which means the row never overflows:
+if there is extra space the children grow, and if space is short they shrink,
+always keeping their relative proportions.
+
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/RowProportional.gif)
+
+The above animation was created
+using [this runnable example](https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_row_proportional.dart).
+
+For example, if the first child is a `Text('Hello')` that wants to be 70 pixels wide,
+the second child is a `SizedBox(width: 100)`, and the `RowProportional` is 200 pixels
+wide, then the first child will be `200 / 170 * 70` pixels wide, and the second child
+will be `200 / 170 * 100` pixels wide:
+
+```
+RowProportional(
+  children: [
+    Text('Hello'), // Gets 200 / 170 * 70 ≈ 82.4 pixels.
+    SizedBox(width: 100), // Gets 200 / 170 * 100 ≈ 117.6 pixels.
+  ],
+);
+```
+
+### Expanded and Flexible
+
+If a child is wrapped in an `Expanded` with some `flex`, its preferred width is
+multiplied by that flex for the proportional distribution. For example,
+`Expanded(flex: 2, child: Text('Hello'))` where the text wants to be 70 pixels wide,
+will be treated as if it wanted to be 140 pixels wide (70 pixels times 2).
+
+Both plain children and `Expanded` children are forced to assume exactly their
+calculated widths. If instead you use a `Flexible`, the child is allowed to be
+**smaller** than its calculated width (but not larger). In that case the space
+reserved for the child is still its full calculated width, and the child is aligned
+to the start of that space.
+
+### Spacer
+
+A different behavior happens if one or more of the children is a `Spacer`. In that
+case there is no proportional scaling anymore: all other children are simply given
+their preferred widths (multiplied by their flexes, if they have any), and the space
+left over is given to the `Spacer` (or divided between all the spacers, proportionally
+to their flexes):
+
+```
+RowProportional(
+  children: [
+    Text('Hello'), // Gets its preferred width: 70 pixels.
+    Spacer(), // Gets all the leftover space.
+    SizedBox(width: 100), // Gets 100 pixels.
+  ],
+);
+```
+
+If there is no space left over (the other children alone already exceed the available
+width), the spacers get zero width and the other children shrink proportionally, just
+as if the spacers were not there.
+
+### Fixed widths
+
+Sometimes you want some children to have a specific immutable width that never scales.
+This is usually for gaps, but can have other uses. To that end, wrap the child in a
+`FixedWidth` widget (or use `FixedWidth` with no child at all, which creates an empty
+gap):
+
+```
+RowProportional(
+  children: [
+    Text('Hello'),
+    FixedWidth(width: 8), // An immutable 8 pixel gap.
+    FixedWidth(child: Text('World')), // Fixed at the text's natural width.
+    FixedWidth(width: 50, child: Icon(Icons.add)), // Pinned at 50 pixels.
+  ],
+);
+```
+
+If you don't provide the `width`, the child is fixed at its preferred width: in the
+example above, `Text('World')` always keeps exactly the width that fits the text,
+while the other children scale.
+
+The fixed widths are carved out of the available space first, and only the remaining
+space is distributed between the other children (proportionally, or according to the
+spacers). In the unlikely case where the fixed widths alone exceed the available
+space, the other children get zero width and the fixed children shrink, proportionally
+to their fixed widths, so that the row still never overflows.
+
+### Other details
+
+* The preferred width of a child is its max intrinsic width: the width it would have
+  if it was completely unconstrained. For a `Text` this is the width of the text laid
+  out in a single line.
+
+* If the available horizontal space is unbounded (for example, inside a horizontal
+  `ListView`), there is nothing to distribute: all children simply get their preferred
+  widths, and spacers get zero width.
+
+* The `crossAxisAlignment` parameter specifies how to align the children vertically.
+  The default is to center them. All alignments work: `CrossAxisAlignment.start`,
+  `CrossAxisAlignment.end`, `CrossAxisAlignment.center`, `CrossAxisAlignment.stretch`
+  and `CrossAxisAlignment.baseline`. To use `CrossAxisAlignment.baseline` you must
+  also provide the `textBaseline` parameter, just like in a `Row`.
+
+* The `textDirection` parameter controls the direction that children are laid out in,
+  just like in a `Row`. If not provided, the ambient `Directionality` is used.
+
+Try running
+the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_row_proportional.dart">
+RowProportional example</a>.
 
 <br>
 

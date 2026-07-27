@@ -2,6 +2,30 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 12.8.0
+
+* New `RowProportional` widget, which arranges its children horizontally,
+  dividing all the available horizontal space between them, proportionally to
+  their preferred (natural, intrinsic) widths. Children are forced to their
+  calculated widths, so the row never overflows: with extra space the children
+  grow, and with less space they shrink, always keeping their relative
+  proportions. Wrapping a child in an `Expanded` multiplies its preferred width
+  by the `flex`, while a `Flexible` also allows the child to be smaller than its
+  calculated width. If one or more children are `Spacer`s, there is no scaling
+  anymore: the other children get their preferred widths, and the leftover space
+  is divided between the spacers.
+
+  ![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/RowProportional.gif)
+
+* New `FixedWidth` widget, to be used as a direct child of `RowProportional`,
+  gives a child an immutable width that never scales and does not participate in
+  the proportional distribution of space. Use `FixedWidth(width: 8)` with no
+  child for a fixed 8 pixel gap, `FixedWidth(width: 50, child: ...)` to pin a
+  child at exactly 50 pixels, or `FixedWidth(child: ...)` with no width to fix a
+  child at its own preferred width. If the fixed widths alone exceed the
+  available space, they shrink proportionally to each other, so the row still
+  never overflows.
+
 ## 12.7.1
 
 * `AnimatedBetween` now reports proper intrinsic dimensions, so it can be used
