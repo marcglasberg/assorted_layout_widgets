@@ -2,6 +2,14 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 12.10.0
+
+* New `TimeBuilder.each` constructor, which rebuilds once for each given `interval` of
+  time: `TimeBuilder.each(interval: const Duration(seconds: 5), builder: ...)` rebuilds
+  each 5 seconds. The ticks are aligned to the clock and never drift, so a 5 second
+  interval ticks when the clock reaches the seconds 0, 5, 10, 15 etc. The optional
+  `numberOfTicks` parameter stops the rebuilds after that number of ticks.
+
 ## 12.8.0
 
 * New `RowProportional` widget, which arranges its children horizontally,

@@ -70,8 +70,18 @@ class MyHomePage extends StatelessWidget {
               child: ColumnSuper(
                 innerDistance: 15.0,
                 children: [
-                  const Text("Runs once per minute:"),
+                  const Text("Runs once each 5 seconds:"),
                   widget4(),
+                ],
+              ),
+            ),
+            //
+            Center(
+              child: ColumnSuper(
+                innerDistance: 15.0,
+                children: [
+                  const Text("Runs once per minute:"),
+                  widget5(),
                 ],
               ),
             ),
@@ -160,7 +170,8 @@ class MyHomePage extends StatelessWidget {
   }
 
   TimeBuilder widget4() {
-    return TimeBuilder.eachMinute(
+    return TimeBuilder.each(
+      interval: const Duration(seconds: 5),
       builder: ({
         required BuildContext context,
         required DateTime currentTickTime,
@@ -169,6 +180,28 @@ class MyHomePage extends StatelessWidget {
         required bool isFinished,
       }) {
         print('4) now = $currentTickTime, ticks = $ticks');
+        return ColumnSuper(
+          innerDistance: 10.0,
+          children: [
+            ClockRenderer(dateTime: currentTickTime),
+            TickerRendered(ticks),
+            Text(currentTickTime.toString()),
+          ],
+        );
+      },
+    );
+  }
+
+  TimeBuilder widget5() {
+    return TimeBuilder.eachMinute(
+      builder: ({
+        required BuildContext context,
+        required DateTime currentTickTime,
+        required DateTime initialTime,
+        required int ticks,
+        required bool isFinished,
+      }) {
+        print('5) now = $currentTickTime, ticks = $ticks');
         return ColumnSuper(
           innerDistance: 10.0,
           children: [

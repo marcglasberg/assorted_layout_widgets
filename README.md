@@ -1181,6 +1181,28 @@ TimeBuilder.eachSecond(
 There are also `.eachMillisecond`, `.eachMinute`, `.eachHour` and `.eachFrame`
 constructors.
 
+To rebuild once for each arbitrary period of time, use the `.each` constructor with an
+`interval`:
+
+```
+// Rebuilds each 5 seconds.
+TimeBuilder.each(
+   interval: const Duration(seconds: 5),
+   builder: ({
+      required BuildContext context, 
+      required DateTime currentTickTime, 
+      required DateTime initialTime, 
+      required int ticks, 
+      required bool isFinished
+   }) => MyClock(currentTickTime),
+);
+```
+
+The ticks are aligned to the clock, and never drift. In other words, an interval of 5
+seconds ticks when the clock reaches the seconds 0, 5, 10, 15 etc., and an interval of 2
+minutes ticks when the clock reaches the minutes 0, 2, 4, 6 etc. You can also add the
+optional `numberOfTicks` parameter, to stop the rebuilds after that number of ticks.
+
 ## Creating your own
 
 You can also create your own `TimeBuilder` using the default constructor:

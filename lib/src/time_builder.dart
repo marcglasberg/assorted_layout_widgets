@@ -190,6 +190,38 @@ class TimeBuilder extends StatefulWidget {
         isFinished = _ifFinished(hours),
         super(key: key);
 
+  /// Creates a [TimeBuilder] that rebuilds once for each given [interval] of time.
+  ///
+  /// For example, this will show a clock that rebuilds each 5 seconds:
+  ///
+  /// ```
+  /// TimeBuilder.each(
+  ///   interval: const Duration(seconds: 5),
+  ///   builder: ({ ... , required DateTime currentTickTime, ... })
+  ///       => ClockRenderer(dateTime: currentTickTime);
+  /// )
+  /// ```
+  /// The ticks are aligned to the clock, and never drift. In other words, an interval
+  /// of 5 seconds ticks when the clock reaches the seconds 0, 5, 10, 15 etc., and an
+  /// interval of 2 minutes ticks when the clock reaches the minutes 0, 2, 4, 6 etc.
+  ///
+  /// If you pass [numberOfTicks] it will stop when reaching that number of ticks.
+  ///
+  /// Note: An [interval] of 1 second and 1 minute is the same as using
+  /// [TimeBuilder.eachSecond] and [TimeBuilder.eachMinute], respectively. However, since
+  /// the alignment is done in UTC, an [interval] of 1 hour differs from
+  /// [TimeBuilder.eachHour] in the few timezones which are not a whole number of hours
+  /// away from UTC (India, for example, would tick at half past each hour).
+  ///
+  TimeBuilder.each({
+    Key? key,
+    required Duration interval,
+    int? numberOfTicks,
+    required this.builder,
+  })  : ifShouldTickAndRebuild = _eachInterval(interval),
+        isFinished = _ifFinished(numberOfTicks),
+        super(key: key);
+
   static bool _always({
     required DateTime currentTime,
     required DateTime? lastTickTime,
@@ -229,6 +261,23 @@ class TimeBuilder extends StatefulWidget {
     required int ticks,
   }) =>
       (lastTickTime == null || (currentTime.hour != lastTickTime.hour));
+
+  /// Ticks once per [interval], aligned to the clock (so that it never drifts).
+  /// If the [interval] is zero or negative, it ticks in every frame.
+  static IfShouldTickAndRebuild _eachInterval(Duration interval) {
+    final int micros = interval.inMicroseconds;
+    if (micros <= 0) return _always;
+
+    return ({
+      required DateTime currentTime,
+      required DateTime? lastTickTime,
+      required DateTime initialTime,
+      required int ticks,
+    }) =>
+        (lastTickTime == null) ||
+        ((currentTime.microsecondsSinceEpoch ~/ micros) !=
+            (lastTickTime.microsecondsSinceEpoch ~/ micros));
+  }
 
   static IsFinished _ifFinished(int? numberOfTicks) => ({
         required DateTime currentTime,
