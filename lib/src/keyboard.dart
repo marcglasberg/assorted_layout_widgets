@@ -91,6 +91,10 @@ class KeyboardSwitch extends StatelessWidget {
 ///     element when the keyboard is dismissed by a tap, on the Android.
 ///   - [androidRemoveFocusOnSwipe] controls whether focus is also removed from any focused
 ///     element when the keyboard is dismissed by a swipe, on the Android.
+///   - Pass [closeOnTapOnlyIfKeyboardIsOpen] true to make the close-on-tap behavior
+///     ([iOsCloseOnTap] / [androidCloseOnTap]) act only when the system keyboard is
+///     actually open. When the keyboard is closed, taps do nothing: the keyboard is not
+///     asked to hide, and focus is not removed.
 ///
 /// The default is `false` for all the above parameters.
 ///
@@ -112,6 +116,21 @@ class KeyboardSwitch extends StatelessWidget {
 ///   iOsCloseOnTap: true,
 ///   iOsCloseOnSwipe: true,
 ///   iOsRemoveFocusOnTap: true,
+///   child: ...
+/// )
+/// ```
+///
+/// However, if your app uses a custom in-app keyboard (a custom [TextInputControl] that
+/// suppresses the platform keyboard), also pass `closeOnTapOnlyIfKeyboardIsOpen: true`.
+/// Otherwise, while the system keyboard is closed, taps on empty areas of the screen
+/// would still remove focus from the focused text field, hiding your in-app keyboard:
+///
+/// ```dart
+/// Keyboard(
+///   iOsCloseOnTap: true,
+///   iOsCloseOnSwipe: true,
+///   iOsRemoveFocusOnTap: true,
+///   closeOnTapOnlyIfKeyboardIsOpen: true,
 ///   child: ...
 /// )
 /// ```
@@ -156,6 +175,7 @@ class Keyboard extends StatefulWidget {
     this.androidCloseOnSwipe = false,
     this.androidRemoveFocusOnTap = false,
     this.androidRemoveFocusOnSwipe = false,
+    this.closeOnTapOnlyIfKeyboardIsOpen = true,
   });
 
   final Widget child;
@@ -167,6 +187,7 @@ class Keyboard extends StatefulWidget {
   final bool androidCloseOnSwipe;
   final bool androidRemoveFocusOnTap;
   final bool androidRemoveFocusOnSwipe;
+  final bool closeOnTapOnlyIfKeyboardIsOpen;
 
   /// Closes only the system keyboard and removes focus from any element that has focus.
   static void close({bool removeFocus = true}) {
@@ -277,7 +298,12 @@ class _KeyboardState extends State<Keyboard> with WidgetsBindingObserver {
   Widget _tappingAnywhere(BuildContext context, Widget content, bool removeFocus) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: () => Keyboard.close(removeFocus: removeFocus),
+      onTap: () {
+        // Reads the insets fresh at tap time (not the cached _isOpen field), so the
+        // check cannot go stale between a metrics change and the next rebuild.
+        if (widget.closeOnTapOnlyIfKeyboardIsOpen && !_readIsOpen()) return;
+        Keyboard.close(removeFocus: removeFocus);
+      },
       child: content,
     );
   }

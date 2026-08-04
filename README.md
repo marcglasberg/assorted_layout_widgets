@@ -2270,6 +2270,12 @@ All constructor parameters default to `false`:
   keyboard is dismissed by a tap, on Android.
 - `androidRemoveFocusOnSwipe` — also remove focus from any focused element when the
   keyboard is dismissed by a swipe, on Android.
+- `closeOnTapOnlyIfKeyboardIsOpen` — make the close-on-tap behavior (`iOsCloseOnTap` /
+  `androidCloseOnTap`) act only when the system keyboard is actually open. When the
+  keyboard is closed, taps do nothing: the keyboard is not asked to hide, and focus is
+  not removed. Recommended for apps that use a custom in-app keyboard (a 
+  custom `TextInputControl` that suppresses the platform keyboard).
+
 
 ### Recommendation
 
@@ -2288,6 +2294,22 @@ Keyboard(
   iOsCloseOnTap: true,
   iOsCloseOnSwipe: true,
   iOsRemoveFocusOnTap: true,
+  child: ...,
+);
+```
+
+However, if your app uses a custom in-app keyboard (a custom `TextInputControl` that
+suppresses the platform keyboard and needs to be open all the time), also 
+pass `closeOnTapOnlyIfKeyboardIsOpen: true`. Otherwise, while the system keyboard is 
+closed, taps on empty areas of the screen would still remove focus from the focused text 
+field, hiding your in-app keyboard:
+
+```
+Keyboard(
+  iOsCloseOnTap: true,
+  iOsCloseOnSwipe: true,
+  iOsRemoveFocusOnTap: true,
+  closeOnTapOnlyIfKeyboardIsOpen: true,
   child: ...,
 );
 ```

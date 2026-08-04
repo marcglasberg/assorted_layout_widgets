@@ -2,6 +2,13 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 12.11.0
+
+* New `Keyboard` parameter `closeOnTapOnlyIfKeyboardIsOpen` (default `false`). When
+  `true`, the close-on-tap behavior (`iOsCloseOnTap` / `androidCloseOnTap`) acts only
+  when the **system** keyboard is actually open: while it's closed, tapping an empty area
+  of the screen does nothing.
+
 ## 12.10.0
 
 * New `TimeBuilder.each` constructor, which rebuilds once for each given `interval` of
