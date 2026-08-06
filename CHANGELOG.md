@@ -4,7 +4,13 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 ## 12.12.0
 
-* New `SquircleBorder` class.
+* The new `SquircleBorder` class is similar to Flutter's `ContinuousRectangleBorder`, 
+  but it allows more configuration options. It defines a rounded-rectangle shape 
+  (like a "squircle") where two things are chosen independently: how big the corners are, 
+  and how the corner curve looks.
+
+  ![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/squircle_border1.png)
+  ![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/squircle_border2.png)
 
 ## 12.11.0
 

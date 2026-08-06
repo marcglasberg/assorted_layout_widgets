@@ -34,14 +34,15 @@ Despite the package name, they are not only related to layout. Here they are:
 | <tt>[SideBySide](#sidebyside)</tt> <i>arranges widgets horizontally. It does things Row and RowSuper can't do</i>.            | <tt>[Delayed](#delayed)</tt> <i>gives a widget some initial value, then change it to another value after some delay.</i>                                               | <tt>[DetectScroll](#detectscroll)</tt> <i>helps modify widgets when a scrollable is scrolled, or a scrollbar is visible.</i>                             | <tt>[MaskFunctionTextInputFormatter](#maskfunctiontextinputformatter)</tt> <i>formats the text to a mask, as the user types, but the mask may change according to what is typed.</i>          |
 | <tt>[RowProportional](#rowproportional)</tt> <i>distributes the horizontal space between its children, proportionately to their preferred widths</i>.                               | <tt>[CaptureGestures](#capturegestures)</tt> <i>captures gestures, preventing its parent and ascending subtree to detect them.</i>                                     | <tt>[ButtonBarSuper](#buttonbarsuper)</tt> <i>is a button-bar that places its buttons differently.</i>                                                   | <tt>[NonUniformOutlineInputBorder](#nonuniformoutlineinputborder)</tt> <i>can be used to style the borders of TextFields and Containers, but hiding some of the borders.</i>                  |
 | <tt>[RowSuper](#rowsuper)</tt> <i>is a row layout that does things the Row widget can't do</i>.                   | <tt>[Keyboard](#keyboard)</tt> <i>opens, closes and checks the keyboard open/closed state. Implements iOS and Android keyboard dismiss behavior.</i>                   | <tt>[Button](#button)</tt> <i>turns any widget into a button, with configurable click-area and the visual feedback.</i>                                  | <tt>[NonUniformRoundedRectangleBorder](#nonuniformroundedrectangleborder)</tt> <i>can be used to style the borders of Buttons and Containers, but hiding some of the borders.</i>             |
-| <tt>[ColumnSuper](#columnsuper)</tt> <i>is a column layout that does things the Column widget can't do</i>.        | <tt>[KeyboardSwitch](#keyboardSwitch)</tt> <i>renders one widget when the keyboard is open, and another when it's closed.</i>                                          | <tt>[CircleButton](#circlebutton)</tt> <i>is a circular icon-button that lets you have a larger click-area and prolong the visual feedback.</i>          | <tt>[FitHorizontally](#fithorizontally)</tt> <i>shrinks its child horizontally only, until a shrink limit is reached.</i>                                                                     |
-| <tt>[WrapSuper](#wrapsuper)</tt> <i>is similar to the Wrap widget, but you can choose the line-breaking algorithm</i>.       | <tt>[showDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a dialog with a callback for when the dialog is dismissed.</i>                    | <tt>[GlobalValueKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key that uses equality instead of identity. Like ValueKey, but global.</i> | <tt>[TextOneLine](#textoneline)</tt> is a text widget that <i>fixes <a href="https://github.com/flutter/flutter/issues/18761">this issue</a>.</i>                                             |
-| <tt>[Box](#box)</tt> <i>has features of Container, SizedBox and ColoredBox, but less verbose and can be made const</i>.                                    | <tt>[showCupertinoDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a Cupertino dialog with a callback for when the dialog is dismissed.</i> | <tt>[GlobalStringKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key created from a String.</i>                                            | <tt>[ThousandsSeparatorTextInputFormatter](#thousandsseparatortextinputformatter)</tt> <i>formats numeric input with thousands separators as the user types.</i>                              |
-| <tt>[Pad](#pad)</tt> <i>is an EdgeInsetsGeometry which is easier to type and remember</i>. | <tt>[TimeBuilder](#timebuilder)</tt> <i>lets you implement clocks, countdowns, stopwatches etc, the right way.</i>                                                     | <tt>[ScrollShadow](#scrollshadow)</tt> <i>adds dynamic top and bottom shadows to a scrollable widget, to indicate overflow content.</i>                  | <tt>[CapitalizationTextInputFormatter](#capitalizationtextinputformatter)</tt> <i>capitalizes text as the user types: uppercase, lowercase, first-letter, or title.</i>                       |
-| <tt>[NormalizedOverflowBox](#normalizedoverflowbox)</tt> <i>is an OverflowBox that throws no errors and is easier to use</i>. | <tt>[KeepTallest](#keeptallest)</tt> <i>keeps its height at the tallest child ever seen, preventing layout jumps.</i>                                                  | <tt>[Email](#email)</tt> <i>provides email validation and sanitization, plus an EmailTextInputFormatter to use as the user types.</i>                    | <tt>[NumbersTextInputFormatter](#numberstextinputformatter)</tt> <i>allows only numeric input: integer, or decimal with locale-aware, dot, or comma separators.</i>                           |
-|                                                                                                                               | <tt>[AnimatedBetween](#animatedbetween)</tt> <i>animates smoothly between two children, cross-fading their content while resizing the enclosing box.</i>               | <tt>[OtpCodeVerificationField](#otpcodeverificationfield)</tt> <i>is a one-time-password code verification textfield, with lots of features.</i>         | <tt>[AllowedCharsTextInputFormatter](#allowedcharstextinputformatter)</tt> <i>allows only the characters that match a given regular expression, filtering out everything else.</i>            |
-|                                                                                                                               |                                                                                                                                                                        |                                                                                                                                                          | <tt>[NoSpacesTextInputFormatter](#nospacestextinputformatter)</tt> <i>prevents the user from typing whitespace.</i>                                                                           |
-|                                                                                                                               |                                                                                                                                                                        |                                                                                                                                                          | <tt>[AlwaysAtTheEndTextInputFormatter](#alwaysattheendtextinputformatter)</tt> <i>forces the cursor to always stay at the end of the typed text.</i>                                          |
+| <tt>[ColumnSuper](#columnsuper)</tt> <i>is a column layout that does things the Column widget can't do</i>.        | <tt>[KeyboardSwitch](#keyboardSwitch)</tt> <i>renders one widget when the keyboard is open, and another when it's closed.</i>                                          | <tt>[CircleButton](#circlebutton)</tt> <i>is a circular icon-button that lets you have a larger click-area and prolong the visual feedback.</i>          | <tt>[SquircleBorder](#squircleborder)</tt> <i>is a rounded-rectangle shape where the corner size and the corner style are chosen independently: from iOS-style squircles to circles, pills, and arrow-tipped buttons.</i>                                                                     |
+| <tt>[WrapSuper](#wrapsuper)</tt> <i>is similar to the Wrap widget, but you can choose the line-breaking algorithm</i>.       | <tt>[showDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a dialog with a callback for when the dialog is dismissed.</i>                    | <tt>[GlobalValueKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key that uses equality instead of identity. Like ValueKey, but global.</i> | <tt>[FitHorizontally](#fithorizontally)</tt> <i>shrinks its child horizontally only, until a shrink limit is reached.</i>                                             |
+| <tt>[Box](#box)</tt> <i>has features of Container, SizedBox and ColoredBox, but less verbose and can be made const</i>.                                    | <tt>[showCupertinoDialogSuper](#showdialogsuper-and-showcupertinodialogsuper)</tt> <i>creates a Cupertino dialog with a callback for when the dialog is dismissed.</i> | <tt>[GlobalStringKey](#globalvaluekey-and-globalstringkey)</tt> <i>is a global key created from a String.</i>                                            | <tt>[TextOneLine](#textoneline)</tt> is a text widget that <i>fixes <a href="https://github.com/flutter/flutter/issues/18761">this issue</a>.</i>                              |
+| <tt>[Pad](#pad)</tt> <i>is an EdgeInsetsGeometry which is easier to type and remember</i>. | <tt>[TimeBuilder](#timebuilder)</tt> <i>lets you implement clocks, countdowns, stopwatches etc, the right way.</i>                                                     | <tt>[ScrollShadow](#scrollshadow)</tt> <i>adds dynamic top and bottom shadows to a scrollable widget, to indicate overflow content.</i>                  | <tt>[ThousandsSeparatorTextInputFormatter](#thousandsseparatortextinputformatter)</tt> <i>formats numeric input with thousands separators as the user types.</i>                       |
+| <tt>[NormalizedOverflowBox](#normalizedoverflowbox)</tt> <i>is an OverflowBox that throws no errors and is easier to use</i>. | <tt>[KeepTallest](#keeptallest)</tt> <i>keeps its height at the tallest child ever seen, preventing layout jumps.</i>                                                  | <tt>[Email](#email)</tt> <i>provides email validation and sanitization, plus an EmailTextInputFormatter to use as the user types.</i>                    | <tt>[CapitalizationTextInputFormatter](#capitalizationtextinputformatter)</tt> <i>capitalizes text as the user types: uppercase, lowercase, first-letter, or title.</i>                           |
+|                                                                                                                               | <tt>[AnimatedBetween](#animatedbetween)</tt> <i>animates smoothly between two children, cross-fading their content while resizing the enclosing box.</i>               | <tt>[OtpCodeVerificationField](#otpcodeverificationfield)</tt> <i>is a one-time-password code verification textfield, with lots of features.</i>         | <tt>[NumbersTextInputFormatter](#numberstextinputformatter)</tt> <i>allows only numeric input: integer, or decimal with locale-aware, dot, or comma separators.</i>            |
+|                                                                                                                               |                                                                                                                                                                        |                                                                                                                                                          | <tt>[AllowedCharsTextInputFormatter](#allowedcharstextinputformatter)</tt> <i>allows only the characters that match a given regular expression, filtering out everything else.</i>                                                                           |
+|                                                                                                                               |                                                                                                                                                                        |                                                                                                                                                          | <tt>[NoSpacesTextInputFormatter](#nospacestextinputformatter)</tt> <i>prevents the user from typing whitespace.</i>                                          |
+|                                                                                                                               |                                                                                                                                                                        |                                                                                                                                                          | <tt>[AlwaysAtTheEndTextInputFormatter](#alwaysattheendtextinputformatter)</tt> <i>forces the cursor to always stay at the end of the typed text.</i> |
 |                                                                                                                               |                                                                                                                                                                        |                                                                                                                                                          | <tt>[StringDotLengthLimiterTextInputFormatter](#stringdotlengthlimitertextinputformatter)</tt> <i>limits text by Dart's String.length (instead of grapheme clusters), to match DB limits.</i> |
 
 <sub>Note the widgets you don't use will be removed by Flutter's tree shaking. So feel
@@ -2197,6 +2198,86 @@ Container(
 Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_non_uniform_rounded_rectangle_border.dart">
 NonUniformRoundedRectangleBorder example</a>.
+
+<br>
+
+# SquircleBorder
+
+The `SquircleBorder` is similar to Flutter's `ContinuousRectangleBorder`, but it allows
+more configuration options.
+
+It defines a rounded-rectangle shape (a "squircle") where two things are chosen 
+independently: how big the corners are, and how the corner curve looks.
+
+**Corner size** is chosen by the constructor:
+
+* `SquircleBorder` (the default constructor) — a fixed `borderRadius` in logical pixels,
+  used exactly like a `RoundedRectangleBorder`.
+
+* `SquircleBorder.proportional` — the corner size is a fraction of the shape's own width
+  and height (`widthFactor` and `heightFactor`, from 0.0 to 1.0), so the corners adapt
+  automatically when the shape resizes. With both factors at 1.0 no straight edges are
+  left at all: the whole outline is one continuous curve, like an ellipse — a "stretched
+  squircle".
+
+* `SquircleBorder.stadium` — the corner radius is half the shape's shortest side,
+  producing a pill, like `StadiumBorder`. A good default for buttons and tags that are
+  sized by their content.
+
+* `SquircleBorder.arrow` — a pill where one end is shaped as an arrow tip (`Arrow.left`,
+  `Arrow.right`, `Arrow.top` or `Arrow.bottom`). Useful for "previous"/"next" style
+  buttons.
+
+**Corner style** is chosen by `superRadius`, with ready-made values in `SuperRadius`.
+From most pointed to most round, the scale is:
+
+`pointed` → `squarish` → `sameAsContinuousRectangle` → `squircle` → `fatSquircle` →
+`veryFatSquircle` → `fatCircle` → `circle` → `chamfer` (a straight chamfer cut)
+
+* `SuperRadius.sameAsContinuousRectangle` (the default) gives the exact same corner curve
+  as Flutter's `ContinuousRectangleBorder`.
+* `SuperRadius.squircle` is the classic squircle (superellipse) curve, like iOS app
+  icons.
+* `SuperRadius.circle` closely reproduces plain circular corners. With
+  `SquircleBorder.stadium` it gives a regular `StadiumBorder`-like pill.
+* `SuperRadius.chamfer` simply cuts the corner off with a straight line.
+* Negative values, like `SuperRadius.squarish` and `SuperRadius.pointed`, make the
+  corners bulge outward past the rectangle's corner, so the shape paints slightly
+  outside its rectangle.
+
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/squircle_border1.png)
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/squircle_border2.png)
+
+Use it anywhere Flutter accepts a `ShapeBorder`, such as `ShapeDecoration`, `Material`,
+buttons, or clippers:
+
+```
+// A card with 16-pixel, iOS-style corners:
+ShapeDecoration(
+   color: Colors.white,
+   shape: SquircleBorder(
+      borderRadius: BorderRadius.circular(16),
+      superRadius: SuperRadius.squircle,
+   ),
+);
+
+// A pill-shaped tag that adapts to its content:
+SquircleBorder.stadium(superRadius: SuperRadius.squarish)
+
+// A "next" button whose right end points like an arrow:
+ElevatedButton(
+   style: ElevatedButton.styleFrom(
+      shape: const SquircleBorder.arrow(arrow: Arrow.right),
+   ),
+   ...
+```
+
+The border line (`side`) honors `BorderSide.strokeAlign`: by default it is drawn fully
+inside the shape.
+
+Try running
+the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_squircle_border.dart">
+SquircleBorder example</a>.
 
 <br>
 

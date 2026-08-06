@@ -61,11 +61,8 @@ class Demo extends StatelessWidget {
       children: [
         _explanation(
           'The SuperRadius scale (default constructor)',
-          'All shapes below use SquircleBorder with the same fixed corner size, '
-              'BorderRadius.circular(28). Only the superRadius changes, going from '
-              'corners that bulge outward and look pointed, to plain circular '
-              'corners, to a straight chamfer cut. Note "pointed" and "squarish" '
-              'paint slightly outside their rectangle.',
+          'All shapes below use SquircleBorder with the same fixed corner size. '
+              'Only the superRadius changes.',
         ),
         Wrap(
           spacing: 14,
@@ -110,13 +107,9 @@ class Demo extends StatelessWidget {
       children: [
         _explanation(
           'Compare with ContinuousRectangleBorder',
-          'Both shapes use the same BorderRadius.circular(45). The larger shape '
+          'Both shapes use the same border radius. The larger shape '
               'is blue, and the smaller one is drawn in yellow on top of it, so '
-              'wherever blue peeks out the two curves differ. With the default '
-              'superRadius, SquircleBorder is identical to Flutter\'s '
-              'ContinuousRectangleBorder, so no blue shows at all. "squircle" '
-              'cuts the corner more than ContinuousRectangleBorder, "fatCircle" '
-              'cuts it even more, and "squarish" bulges outward past it.',
+              'wherever blue peeks out the two curves differ.',
         ),
         Wrap(
           spacing: 14,
@@ -126,10 +119,7 @@ class Demo extends StatelessWidget {
               'default (∞ super radius): identical curves',
               SuperRadius.sameAsContinuousRectangle,
             ),
-            item(
-              'SuperRadius.squircle (yellow): cuts corners',
-              SuperRadius.squircle,
-            ),
+            item('SuperRadius.squircle (yellow): cuts corners', SuperRadius.squircle),
             item('SuperRadius.fatCircle (yellow): rounder still', SuperRadius.fatCircle),
             item(
               'SuperRadius.squarish (blue): bulges outward',
@@ -149,12 +139,8 @@ class Demo extends StatelessWidget {
       children: [
         _explanation(
           'Compare with a real circle and a real StadiumBorder',
-          'The blue shape is a SquircleBorder.stadium, and drawn in yellow on '
-              'top of it is a real CircleBorder (first pair) or a real '
-              'StadiumBorder (second pair). With "circle" the squircle matches '
-              'the true circular arc almost exactly, so almost no blue shows. '
-              'With "fatCircle" a thin blue sliver of squircle remains visible '
-              'around the round ends.',
+          'The yellow shapes are the real circle and the real circle stadium. '
+              'In blue are the squircle versions, slightly larger.',
         ),
         Wrap(
           spacing: 14,
@@ -193,62 +179,44 @@ class Demo extends StatelessWidget {
   }
 
   Widget _borderSideSection() {
+    //
+    Widget item(String label, double strokeAlign, {required bool cheap}) {
+      return _item(
+        label,
+        SquircleBorder(
+          borderRadius: BorderRadius.circular(28),
+          superRadius: SuperRadius.squircle,
+          useCheapCalculation: cheap,
+          side: BorderSide(color: Colors.black54, width: 8, strokeAlign: strokeAlign),
+        ),
+        color: Colors.lightGreen[700]!,
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _explanation(
           'With a border side',
-          'The border line honors BorderSide.strokeAlign. By default it is drawn '
-              'fully inside the shape.',
+          'The border line honors BorderSide.strokeAlign. '
+              'By default it is drawn fully inside the shape.',
         ),
         Wrap(
           spacing: 14,
           runSpacing: 14,
           children: [
             _item(
-              'inside\n(default)',
+              'outline (no fill)',
               SquircleBorder(
                 borderRadius: BorderRadius.circular(28),
                 superRadius: SuperRadius.squircle,
-                side: const BorderSide(color: Colors.black87, width: 8),
-              ),
-              color: Colors.lightGreen,
-            ),
-            _item(
-              'center',
-              SquircleBorder(
-                borderRadius: BorderRadius.circular(28),
-                superRadius: SuperRadius.squircle,
-                side: const BorderSide(
-                  color: Colors.black87,
-                  width: 8,
-                  strokeAlign: BorderSide.strokeAlignCenter,
-                ),
-              ),
-              color: Colors.lightGreen,
-            ),
-            _item(
-              'outside',
-              SquircleBorder(
-                borderRadius: BorderRadius.circular(28),
-                superRadius: SuperRadius.squircle,
-                side: const BorderSide(
-                  color: Colors.black87,
-                  width: 8,
-                  strokeAlign: BorderSide.strokeAlignOutside,
-                ),
-              ),
-              color: Colors.lightGreen,
-            ),
-            _item(
-              'outline only\n(no fill)',
-              SquircleBorder(
-                borderRadius: BorderRadius.circular(28),
-                superRadius: SuperRadius.squircle,
-                side: const BorderSide(color: Colors.black87, width: 3),
+                side: const BorderSide(color: Colors.black, width: 8),
               ),
               color: Colors.transparent,
             ),
+            item('inside', BorderSide.strokeAlignInside, cheap: true),
+            item('center', BorderSide.strokeAlignCenter, cheap: true),
+            item('outside', BorderSide.strokeAlignOutside, cheap: true),
           ],
         ),
         const Divider(height: 35),
@@ -263,40 +231,32 @@ class Demo extends StatelessWidget {
         _explanation(
           'SquircleBorder.proportional',
           'The corner size is a fraction of the shape\'s own size, so it adapts '
-              'when the shape resizes. All shapes below are 200 × 80 pixels. '
-              'A null factor copies the pixel size computed by the other factor, '
-              'which makes the corners symmetrical (circular).',
+              'when the shape resizes. A null factor copies the pixel size computed '
+              'by the other factor, making the corners symmetrical (circular).',
         ),
         Wrap(
           spacing: 14,
           runSpacing: 14,
           children: [
             _item(
-              'widthFactor: 1.0\nheightFactor: 1.0\n(stretched squircle)',
+              'widthFactor: 0.3\nheightFactor: 0.3',
+              const SquircleBorder.proportional(widthFactor: 0.3, heightFactor: 0.3),
+              width: 210,
+              height: 70,
+              color: Colors.purple,
+            ),
+            _item(
+              'widthFactor: 0.3\nheightFactor: null (circular corners)',
+              const SquircleBorder.proportional(widthFactor: 0.3),
+              width: 210,
+              height: 70,
+              color: Colors.purple,
+            ),
+            _item(
+              'widthFactor: 1.0\nheightFactor: 1.0',
               const SquircleBorder.proportional(widthFactor: 1.0, heightFactor: 1.0),
-              width: 200,
-              height: 80,
-              color: Colors.purple,
-            ),
-            _item(
-              'widthFactor: 0.5\nheightFactor: 0.8',
-              const SquircleBorder.proportional(widthFactor: 0.5, heightFactor: 0.8),
-              width: 200,
-              height: 80,
-              color: Colors.purple,
-            ),
-            _item(
-              'widthFactor: 0.2\nheightFactor: null\n(symmetrical corners)',
-              const SquircleBorder.proportional(widthFactor: 0.2),
-              width: 200,
-              height: 80,
-              color: Colors.purple,
-            ),
-            _item(
-              'widthFactor: null\nheightFactor: 0.8\n(symmetrical corners)',
-              const SquircleBorder.proportional(heightFactor: 0.8),
-              width: 200,
-              height: 80,
+              width: 210,
+              height: 70,
               color: Colors.purple,
             ),
           ],
@@ -346,9 +306,7 @@ class Demo extends StatelessWidget {
         _explanation(
           'SquircleBorder.stadium × SuperRadius',
           'A pill: the corner radius is always half the shape\'s shortest side, '
-              'like StadiumBorder. The style of the round ends still comes from '
-              'superRadius: with "circle" the result is essentially a regular '
-              'StadiumBorder, while the others give squircle-style ends.',
+              'like StadiumBorder.',
         ),
         Wrap(
           spacing: 14,
@@ -358,7 +316,7 @@ class Demo extends StatelessWidget {
               _item(
                 name,
                 SquircleBorder.stadium(superRadius: superRadius),
-                width: 130,
+                width: 125,
                 height: 48,
                 color: Colors.teal,
               ),
@@ -410,7 +368,7 @@ class Demo extends StatelessWidget {
         Wrap(
           spacing: 14,
           runSpacing: 14,
-          crossAxisAlignment: WrapCrossAlignment.end,
+          crossAxisAlignment: WrapCrossAlignment.start,
           children: [
             for (final arrow in Arrow.values)
               _item(
@@ -494,7 +452,7 @@ class Demo extends StatelessWidget {
   Widget _item(
     String label,
     ShapeBorder shape, {
-    double width = 86,
+    double width = 90,
     double height = 60,
     Color color = Colors.blue,
   }) {

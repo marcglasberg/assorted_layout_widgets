@@ -99,7 +99,8 @@ class SuperRadius {
 /// ([SuperRadius.circle]).
 ///
 /// The border line ([side]) honors [BorderSide.strokeAlign]: by default it
-/// is drawn fully inside the shape.
+/// is drawn fully inside the shape. Two ways of painting it are available,
+/// chosen by [useCheapCalculation].
 ///
 /// Use it anywhere Flutter accepts a [ShapeBorder], such as
 /// [ShapeDecoration], [Material], buttons, or clippers:
@@ -149,6 +150,7 @@ class SquircleBorder extends OutlinedBorder {
     super.side,
     this.borderRadius = BorderRadius.zero,
     this.superRadius = SuperRadius.sameAsContinuousRectangle,
+    this.useCheapCalculation = true,
   }) : assert(superRadius >= 1.0 || superRadius <= -1.0),
        widthFactor = null,
        heightFactor = null,
@@ -189,6 +191,7 @@ class SquircleBorder extends OutlinedBorder {
     this.superRadius = SuperRadius.sameAsContinuousRectangle,
     this.widthFactor,
     this.heightFactor,
+    this.useCheapCalculation = true,
   }) : assert(superRadius >= 1.0 || superRadius <= -1.0),
        assert(widthFactor != null || heightFactor != null),
        assert(widthFactor == null || (widthFactor >= 0.0 && widthFactor <= 1.0)),
@@ -213,6 +216,7 @@ class SquircleBorder extends OutlinedBorder {
   const SquircleBorder.stadium({
     super.side,
     this.superRadius = SuperRadius.sameAsContinuousRectangle,
+    this.useCheapCalculation = true,
   }) : assert(superRadius >= 1.0 || superRadius <= -1.0),
        borderRadius = BorderRadius.zero,
        widthFactor = null,
@@ -239,6 +243,7 @@ class SquircleBorder extends OutlinedBorder {
     super.side,
     this.superRadius = SuperRadius.squircle,
     required this.arrow,
+    this.useCheapCalculation = true,
   }) : assert(superRadius >= 1.0 || superRadius <= -1.0),
        borderRadius = BorderRadius.zero,
        widthFactor = null,
@@ -252,6 +257,7 @@ class SquircleBorder extends OutlinedBorder {
     required this.widthFactor,
     required this.heightFactor,
     required this.arrow,
+    required this.useCheapCalculation,
     required bool isStadium,
   }) : assert(superRadius >= 1.0 || superRadius <= -1.0),
        _isStadium = isStadium;
@@ -312,6 +318,25 @@ class SquircleBorder extends OutlinedBorder {
   /// [Arrow.none] for the other constructors.
   final Arrow arrow;
 
+  /// How the border line ([side]) is painted.
+  ///
+  /// * `true` (the default): the border is a single stroked line along the
+  ///   border's centerline, with the corner radii adjusted so that the line
+  ///   runs parallel to the shape's outline. This is the cheapest way to
+  ///   paint it, and is accurate to a small fraction of the border width —
+  ///   normally indistinguishable from the exact border.
+  ///
+  /// * `false`: the exact band the border covers — from its outer edge to
+  ///   its inner edge — is computed and filled. The side of the band that
+  ///   touches the shape's outline *is* the outline, so the border meets
+  ///   the fill exactly, at the cost of building and filling a two-contour
+  ///   path. Use this if a very thick border with an extreme [superRadius]
+  ///   shows artifacts where it meets the fill.
+  ///
+  /// This only affects how the border line is painted. The shape's outline
+  /// and interior ([getOuterPath], [getInnerPath]) are the same either way.
+  final bool useCheapCalculation;
+
   /// Whether the corner radius is half the rectangle's shortest side,
   /// resolved when the shape is used. See [SquircleBorder.stadium].
   final bool _isStadium;
@@ -332,6 +357,7 @@ class SquircleBorder extends OutlinedBorder {
       widthFactor: widthFactor,
       heightFactor: heightFactor,
       arrow: arrow,
+      useCheapCalculation: useCheapCalculation,
       isStadium: _isStadium,
     );
   }
@@ -350,6 +376,7 @@ class SquircleBorder extends OutlinedBorder {
             ? null
             : lerpDouble(a.heightFactor, heightFactor, t),
         arrow: arrow,
+        useCheapCalculation: useCheapCalculation,
         isStadium: _isStadium,
       );
     }
@@ -370,6 +397,7 @@ class SquircleBorder extends OutlinedBorder {
             ? null
             : lerpDouble(heightFactor, b.heightFactor, t),
         arrow: arrow,
+        useCheapCalculation: b.useCheapCalculation,
         isStadium: _isStadium,
       );
     }
@@ -391,24 +419,44 @@ class SquircleBorder extends OutlinedBorder {
   static double _lerpSuperRadius(double a, double b, double t) =>
       1.0 / lerpDouble(1.0 / a, 1.0 / b, t)!;
 
-  Path _getPath(RRect rRect) {
-    final double left = rRect.left;
-    final double right = rRect.right;
-    final double top = rRect.top;
-    final double bottom = rRect.bottom;
-    // Each radius is clamped to half its own side of the rRect, so that the
-    // two corners sharing an edge never overlap (which would produce strange
-    // tie-fighter shapes).
-    final double halfWidth = rRect.width / 2.0;
-    final double halfHeight = rRect.height / 2.0;
-    final double tlRadiusX = clampDouble(rRect.tlRadiusX, 0.0, halfWidth);
-    final double tlRadiusY = clampDouble(rRect.tlRadiusY, 0.0, halfHeight);
-    final double trRadiusX = clampDouble(rRect.trRadiusX, 0.0, halfWidth);
-    final double trRadiusY = clampDouble(rRect.trRadiusY, 0.0, halfHeight);
-    final double blRadiusX = clampDouble(rRect.blRadiusX, 0.0, halfWidth);
-    final double blRadiusY = clampDouble(rRect.blRadiusY, 0.0, halfHeight);
-    final double brRadiusX = clampDouble(rRect.brRadiusX, 0.0, halfWidth);
-    final double brRadiusY = clampDouble(rRect.brRadiusY, 0.0, halfHeight);
+  /// By how much a corner radius must change per pixel of outline offset,
+  /// so that the offset outline stays parallel to the original.
+  ///
+  /// Shifting the shape's rectangle outward by `o` while keeping the radius
+  /// would just translate each corner curve diagonally by `(o, o)`: correct
+  /// along the straight edges, but √2 times too far at the middle of the
+  /// corner, where the curve's normal points along the diagonal. Changing
+  /// the radius by `o * factor` places the middle of the offset corner
+  /// exactly `o` away from the original curve, while the curve's endpoints
+  /// stay on the offset edges.
+  ///
+  /// The middle of the corner (the cubic's point at `t = 0.5`) sits at
+  /// `radius * (1 + 3/superRadius) / 8` from the corner point, along each
+  /// axis. Requiring it to move by `o/√2` per axis gives
+  /// `factor = (8 − 4√2) / (1 + 3/superRadius)`.
+  ///
+  /// For [SuperRadius.circle] the factor is exactly 1.0 — offsetting a
+  /// circular arc by `o` is the same as changing its radius by `o`. For a
+  /// superRadius of exactly -3.0 the middle of the corner sits on the
+  /// corner point itself and no radius change can move it, so the factor
+  /// diverges; the radius clamping in [_getPath] then takes over.
+  static double _radiusOffsetFactor(double superRadius) =>
+      (8.0 - 4.0 * math.sqrt2) / (1.0 + 3.0 / superRadius);
+
+  /// Builds the squircle path for [rRect]. A non-zero [offset] builds the
+  /// outline shifted outward by that many pixels (inward when negative)
+  /// while staying parallel to the original: the edges are moved by
+  /// [offset], and each corner radius is adjusted by [offset] times
+  /// [_radiusOffsetFactor].
+  Path _getPath(RRect rRect, {double offset = 0.0}) {
+    final double left = rRect.left - offset;
+    final double right = rRect.right + offset;
+    final double top = rRect.top - offset;
+    final double bottom = rRect.bottom + offset;
+
+    // An inward offset (like the inner path of a border thicker than the
+    // shape itself) may swallow the shape entirely, leaving nothing.
+    if (right < left || bottom < top) return Path();
 
     // The two corners on the arrow side use a fixed, pointier superRadius,
     // forming the arrow tip. A left/right arrow only applies when the rect
@@ -429,6 +477,28 @@ class SquircleBorder extends OutlinedBorder {
     final double trSuperRadius = cornerSuperRadius(Arrow.right, Arrow.top);
     final double brSuperRadius = cornerSuperRadius(Arrow.right, Arrow.bottom);
     final double blSuperRadius = cornerSuperRadius(Arrow.left, Arrow.bottom);
+
+    double radiusDelta(double sr) =>
+        (offset == 0.0) ? 0.0 : offset * _radiusOffsetFactor(sr);
+
+    final double tlRadiusDelta = radiusDelta(tlSuperRadius);
+    final double trRadiusDelta = radiusDelta(trSuperRadius);
+    final double brRadiusDelta = radiusDelta(brSuperRadius);
+    final double blRadiusDelta = radiusDelta(blSuperRadius);
+
+    // Each radius is clamped to half its own side of the shape, so that the
+    // two corners sharing an edge never overlap (which would produce strange
+    // tie-fighter shapes).
+    final double halfWidth = (right - left) / 2.0;
+    final double halfHeight = (bottom - top) / 2.0;
+    final double tlRadiusX = clampDouble(rRect.tlRadiusX + tlRadiusDelta, 0.0, halfWidth);
+    final double tlRadiusY = clampDouble(rRect.tlRadiusY + tlRadiusDelta, 0.0, halfHeight);
+    final double trRadiusX = clampDouble(rRect.trRadiusX + trRadiusDelta, 0.0, halfWidth);
+    final double trRadiusY = clampDouble(rRect.trRadiusY + trRadiusDelta, 0.0, halfHeight);
+    final double blRadiusX = clampDouble(rRect.blRadiusX + blRadiusDelta, 0.0, halfWidth);
+    final double blRadiusY = clampDouble(rRect.blRadiusY + blRadiusDelta, 0.0, halfHeight);
+    final double brRadiusX = clampDouble(rRect.brRadiusX + brRadiusDelta, 0.0, halfWidth);
+    final double brRadiusY = clampDouble(rRect.brRadiusY + brRadiusDelta, 0.0, halfHeight);
 
     // Distance of a control point from its corner, along the adjacent edge.
     double dTl(double radius) => radius / tlSuperRadius;
@@ -498,7 +568,8 @@ class SquircleBorder extends OutlinedBorder {
   @override
   Path getInnerPath(Rect rect, {TextDirection? textDirection}) {
     return _getPath(
-      _resolveBorderRadius(rect, textDirection).toRRect(rect).deflate(side.strokeInset),
+      _resolveBorderRadius(rect, textDirection).toRRect(rect),
+      offset: -side.strokeInset,
     );
   }
 
@@ -512,6 +583,7 @@ class SquircleBorder extends OutlinedBorder {
     BorderSide? side,
     BorderRadiusGeometry? borderRadius,
     double? superRadius,
+    bool? useCheapCalculation,
   }) {
     return SquircleBorder._(
       side: side ?? this.side,
@@ -520,6 +592,7 @@ class SquircleBorder extends OutlinedBorder {
       widthFactor: widthFactor,
       heightFactor: heightFactor,
       arrow: arrow,
+      useCheapCalculation: useCheapCalculation ?? this.useCheapCalculation,
       isStadium: _isStadium,
     );
   }
@@ -533,14 +606,32 @@ class SquircleBorder extends OutlinedBorder {
       case BorderStyle.none:
         break;
       case BorderStyle.solid:
-        // The stroke centerline is shifted by [BorderSide.strokeAlign], the
-        // same way [StadiumBorder] does it: with the default
-        // strokeAlignInside the stroke paints fully inside the rect,
-        // consistent with [getInnerPath].
-        canvas.drawPath(
-          getOuterPath(rect.inflate(side.strokeOffset / 2.0), textDirection: textDirection),
-          side.toPaint(),
-        );
+        final RRect rRect = _resolveBorderRadius(rect, textDirection).toRRect(rect);
+
+        if (useCheapCalculation || side.width == 0.0) {
+          // A single stroked line along the border's centerline, which
+          // [BorderSide.strokeAlign] places at an offset from the shape's
+          // outline: with the default strokeAlignInside the stroke paints
+          // fully inside the rect, consistent with [getInnerPath]. The
+          // radius adjustment in [_getPath] keeps the centerline parallel
+          // to the outline, so the stroke stays flush with the fill to
+          // within a small fraction of the border width.
+          canvas.drawPath(
+            _getPath(rRect, offset: side.strokeOffset / 2.0),
+            side.toPaint(),
+          );
+        }
+        //
+        else {
+          // The exact band the border covers: the area between its outer
+          // and inner edges, filled as a two-contour even-odd path. The
+          // contour that touches the shape's outline is the outline
+          // itself, so the border meets the fill exactly.
+          final Path band = _getPath(rRect, offset: side.strokeOutset)
+            ..addPath(_getPath(rRect, offset: -side.strokeInset), Offset.zero)
+            ..fillType = PathFillType.evenOdd;
+          canvas.drawPath(band, Paint()..color = side.color);
+        }
     }
   }
 
@@ -556,6 +647,7 @@ class SquircleBorder extends OutlinedBorder {
         other.widthFactor == widthFactor &&
         other.heightFactor == heightFactor &&
         other.arrow == arrow &&
+        other.useCheapCalculation == useCheapCalculation &&
         other._isStadium == _isStadium;
   }
 
@@ -567,12 +659,14 @@ class SquircleBorder extends OutlinedBorder {
     widthFactor,
     heightFactor,
     arrow,
+    useCheapCalculation,
     _isStadium,
   );
 
   @override
   String toString() {
     return '${objectRuntimeType(this, 'SquircleBorder')}'
-        '($side, $borderRadius, $superRadius, $widthFactor, $heightFactor, $arrow, $_isStadium)';
+        '($side, $borderRadius, $superRadius, $widthFactor, $heightFactor, $arrow, '
+        '$useCheapCalculation, $_isStadium)';
   }
 }
