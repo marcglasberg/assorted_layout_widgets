@@ -857,32 +857,7 @@ ButtonBarSuper example</a>.
 `TextOneLine` is a substitute for `Text` when `maxLines: 1`, to fix this issue:
 https://github.com/flutter/flutter/issues/18761 filled by myself a long time ago.
 
-It renders ellipsis as expected, much better than the current/ buggy and ugly-looking
-ellipsis of the native `Text` widget, which cuts the whole word.
-
-For example, this:
-
-```
-Text("This isAVeryLongWordToDemonstrateAProblem", maxLines: 1, softWrap: false);  
-```
-
-Will print this in the screen:
-
-```
-This ...  
-```
-
-While this:
-
-```
-TextOneLine("This isAVeryLongWordToDemonstrateAProblem");  
-```
-
-Will print this:
-
-```
-This isAVeryLongWordToDemonst...  
-```
+Since the issue is already fixed, this class is now deprecated. Just use `Text` instead.
 
 <br>
 

@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 
-/// [TextOneLine] is a substitute for [Text] when [maxLines] is 1.
+/// [TextOneLine] was a substitute for [Text] when [maxLines] is 1.
 ///
-/// It renders ellipsis as expected, much better than the current
+/// It renders ellipsis as expected, much better than the previous
 /// buggy and ugly-looking ellipsis of the native [Text].
 ///
-/// This widget only makes sense while that issue is not fixed:
+/// This widget doesn't make sense anymore, since this issue is now fixed:
 /// https://github.com/flutter/flutter/issues/18761
 ///
-/// Known issues: The letter-spacing will work fine when the style is defined inline,
-/// but it may not work fine when the style is inherited.
-///
+@Deprecated("Use Text instead.")
 class TextOneLine extends Text {
   const TextOneLine(
     String data, {

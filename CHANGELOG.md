@@ -2,6 +2,10 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 12.12.0
+
+* New `SquircleBorder` class.
+
 ## 12.11.0
 
 * New `Keyboard` parameter `closeOnTapOnlyIfKeyboardIsOpen` (default `false`). When
