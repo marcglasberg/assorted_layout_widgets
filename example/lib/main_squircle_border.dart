@@ -344,7 +344,7 @@ class Demo extends StatelessWidget {
             for (final arrow in Arrow.values)
               _item(
                 _arrowLabel(arrow, worksWhenWide: true),
-                SquircleBorder.arrow(arrow: arrow),
+                SquircleBorder.arrow(arrow),
                 width: 110,
                 height: 42,
                 color: Colors.indigo,
@@ -373,7 +373,7 @@ class Demo extends StatelessWidget {
             for (final arrow in Arrow.values)
               _item(
                 _arrowLabel(arrow, worksWhenWide: false),
-                SquircleBorder.arrow(arrow: arrow),
+                SquircleBorder.arrow(arrow),
                 width: 42,
                 height: 90,
                 color: Colors.indigo,
@@ -402,7 +402,7 @@ class Demo extends StatelessWidget {
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
                 padding: const Pad(horizontal: 28, vertical: 16),
-                shape: const SquircleBorder.arrow(arrow: Arrow.left),
+                shape: const SquircleBorder.arrow(Arrow.left),
               ),
               onPressed: () {},
               child: const Text('Back'),
@@ -413,7 +413,7 @@ class Demo extends StatelessWidget {
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
                 padding: const Pad(horizontal: 28, vertical: 16),
-                shape: const SquircleBorder.arrow(arrow: Arrow.right),
+                shape: const SquircleBorder.arrow(Arrow.right),
               ),
               onPressed: () {},
               child: const Text('Next'),

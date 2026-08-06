@@ -2267,7 +2267,7 @@ SquircleBorder.stadium(superRadius: SuperRadius.squarish)
 // A "next" button whose right end points like an arrow:
 ElevatedButton(
    style: ElevatedButton.styleFrom(
-      shape: const SquircleBorder.arrow(arrow: Arrow.right),
+      shape: const SquircleBorder.arrow(Arrow.right),
    ),
    ...
 ```

@@ -119,7 +119,7 @@ class SuperRadius {
 /// SquircleBorder.stadium(superRadius: SuperRadius.squarish)
 ///
 /// // A "next" button whose right end points like an arrow:
-/// SquircleBorder.arrow(arrow: Arrow.right)
+/// SquircleBorder.arrow(Arrow.right)
 /// ```
 ///
 /// For the geometrically inclined: each corner is a single cubic Bézier
@@ -239,10 +239,10 @@ class SquircleBorder extends OutlinedBorder {
   ///
   /// [superRadius] styles the remaining corners, and defaults to
   /// [SuperRadius.squircle] — the classic arrow look.
-  const SquircleBorder.arrow({
+  const SquircleBorder.arrow(
+    this.arrow, {
     super.side,
     this.superRadius = SuperRadius.squircle,
-    required this.arrow,
     this.useCheapCalculation = true,
   }) : assert(superRadius >= 1.0 || superRadius <= -1.0),
        borderRadius = BorderRadius.zero,

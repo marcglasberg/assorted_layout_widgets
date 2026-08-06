@@ -5,7 +5,8 @@
       "mcp__ide__getDiagnostics",
       "Bash(dart analyze *)",
       "Bash(flutter test *)",
-      "PowerShell(flutter test *)"
+      "PowerShell(flutter test *)",
+      "PowerShell(flutter analyze *)"
     ]
   }
 }

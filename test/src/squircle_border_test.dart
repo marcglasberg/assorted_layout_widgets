@@ -191,19 +191,19 @@ void main() {
       expect(ShapeBorder.lerp(w, h, 0.25), same(w));
 
       // Arrows in different directions cannot be interpolated.
-      var leftArrow = const SquircleBorder.arrow(arrow: Arrow.left);
-      var rightArrow = const SquircleBorder.arrow(arrow: Arrow.right);
+      var leftArrow = const SquircleBorder.arrow(Arrow.left);
+      var rightArrow = const SquircleBorder.arrow(Arrow.right);
       expect(ShapeBorder.lerp(leftArrow, rightArrow, 0.25), same(leftArrow));
 
       // Same-direction arrows interpolate smoothly.
       var mid =
           ShapeBorder.lerp(
                 const SquircleBorder.arrow(
-                  arrow: Arrow.right,
+                  Arrow.right,
                   superRadius: SuperRadius.squarish,
                 ),
                 const SquircleBorder.arrow(
-                  arrow: Arrow.right,
+                  Arrow.right,
                   superRadius: SuperRadius.squircle,
                 ),
                 0.5,
@@ -275,7 +275,7 @@ void main() {
       for (var superRadius in superRadii) {
         for (var arrow in [Arrow.left, Arrow.right]) {
           var a = SquircleBorder.arrow(
-            arrow: arrow,
+            arrow,
             superRadius: superRadius,
           ).getOuterPath(rect);
           var b = legacyOuterPath(rect, superRadius, arrow: arrow);
@@ -293,7 +293,7 @@ void main() {
         const Rect.fromLTWH(0, 0, 100, 100),
         const Rect.fromLTWH(0, 0, 80, 240),
       ]) {
-        var a = const SquircleBorder.arrow(arrow: Arrow.right).getOuterPath(rect);
+        var a = const SquircleBorder.arrow(Arrow.right).getOuterPath(rect);
         var b = const SquircleBorder.stadium(
           superRadius: SuperRadius.squircle,
         ).getOuterPath(rect);
@@ -319,11 +319,11 @@ void main() {
       for (var superRadius in [SuperRadius.squircle, SuperRadius.squarish]) {
         pairs.forEach((vertical, horizontal) {
           var tallPath = SquircleBorder.arrow(
-            arrow: vertical,
+            vertical,
             superRadius: superRadius,
           ).getOuterPath(tall);
           var widePath = SquircleBorder.arrow(
-            arrow: horizontal,
+            horizontal,
             superRadius: superRadius,
           ).getOuterPath(wide);
 
@@ -349,7 +349,7 @@ void main() {
         const Rect.fromLTWH(0, 0, 300, 120),
       ]) {
         for (var arrow in [Arrow.top, Arrow.bottom]) {
-          var a = SquircleBorder.arrow(arrow: arrow).getOuterPath(rect);
+          var a = SquircleBorder.arrow(arrow).getOuterPath(rect);
           var b = const SquircleBorder.stadium(
             superRadius: SuperRadius.squircle,
           ).getOuterPath(rect);
@@ -476,7 +476,7 @@ void main() {
             side: const BorderSide(width: 6, strokeAlign: 0.5),
           ),
           SquircleBorder.arrow(
-            arrow: Arrow.right,
+            Arrow.right,
             useCheapCalculation: cheap,
             side: const BorderSide(width: 4),
           ),
@@ -613,11 +613,11 @@ void main() {
     test('Borders with the same fields but different modes are not equal.', () {
       expect(const SquircleBorder.stadium(), isNot(const SquircleBorder()));
       expect(
-        const SquircleBorder.arrow(arrow: Arrow.right),
-        isNot(const SquircleBorder.arrow(arrow: Arrow.left)),
+        const SquircleBorder.arrow(Arrow.right),
+        isNot(const SquircleBorder.arrow(Arrow.left)),
       );
       expect(
-        const SquircleBorder.arrow(arrow: Arrow.right, superRadius: 5.0),
+        const SquircleBorder.arrow(Arrow.right, superRadius: 5.0),
         isNot(const SquircleBorder.stadium(superRadius: 5.0)),
       );
     });
