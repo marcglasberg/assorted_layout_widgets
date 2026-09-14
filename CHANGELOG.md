@@ -2,7 +2,7 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
-## 12.13.0
+## 12.13.1
 
 * New `RowProportional` parameter `proportionalityFactor` (default `1.0`), which
   controls how proportional the distribution of space is. With `1.0` the space is
@@ -12,12 +12,19 @@ Sponsored by [MyText.ai](https://mytext.ai)
   with `proportionalityFactor: 1.0`, 50%/50% with `proportionalityFactor: 0.0`, and
   40%/60% with `proportionalityFactor: 0.5`.
 
-* New `RowProportional` parameter `widthOffsetFactor` (default `0.0`), a number of
-  pixels that is subtracted from the preferred width of each child (clipped at zero,
-  so it never goes negative) before the proportions are calculated. For example, two
-  children with preferred widths of 1000 and 500 divide the space between them as
-  900 to 400, when `widthOffsetFactor: 100.0`. If both factors are given, the
-  `widthOffsetFactor` is applied first.
+* New `RowProportional` parameter `reservedWidthFactor` (default `0.0`), a number of
+  pixels that is reserved for each child and does not take part in the proportional
+  division: each child first gets those pixels, and only the rest of the available
+  space is divided between the children, proportionally to their preferred widths
+  minus the reserved width. This is useful when each child contains some fixed part
+  that should not grow or shrink with the rest, like a padding. For example, two
+  children with preferred widths of 60 and 100 (two texts of 30 and 70 pixels, each
+  one with a horizontal padding of 15 pixels) in 300 pixels of available space get
+  102 and 198 pixels with `reservedWidthFactor: 30`: 2 * 30 pixels are reserved for
+  the paddings, and the other 240 pixels are divided between the texts,
+  proportionally to 30 and 70. Note this keeps the children at their preferred widths
+  when the available space is exactly the total of their preferred widths. If both
+  factors are given, the reserved width is removed first.
 
 ## 12.12.1
 

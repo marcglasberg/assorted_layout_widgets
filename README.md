@@ -200,7 +200,7 @@ available horizontal space between them, proportionally to their preferred
 RowProportional({
   List<Widget> children,
   double proportionalityFactor,
-  double widthOffsetFactor,
+  double reservedWidthFactor,
   CrossAxisAlignment crossAxisAlignment,
   TextDirection textDirection,
   TextBaseline textBaseline,
@@ -252,24 +252,40 @@ space with `proportionalityFactor: 1.0`, and 50% and 50% with
 `proportionalityFactor: 0.0`. With `proportionalityFactor: 0.5` they get
 40% ((30% + 50%) / 2) and 60% ((70% + 50%) / 2).
 
-The `widthOffsetFactor` (default `0.0`) is a number of pixels that is subtracted from
-the preferred width of each child, before the proportions are calculated. The result
-is clipped at zero, so it never goes negative. For example, two children with
-preferred widths of 1000 and 500 divide the space between them as 900 to 400, when
-`widthOffsetFactor: 100.0`:
+The `reservedWidthFactor` (default `0.0`) is a number of pixels that is reserved for
+each child, and does not take part in the proportional division: each child is first
+given those pixels, and only the rest of the available space is divided between the
+children, proportionally to their preferred widths **minus** the reserved width.
+
+This is useful when each child contains some fixed part that should not grow or shrink
+with the rest, like a padding. For example, suppose two texts that are 30 and 70 pixels
+wide, each one inside a container with a horizontal padding of 15 pixels, so that their
+preferred widths are 60 and 100 pixels. With `reservedWidthFactor: 30` (the 15 pixels
+of padding on each side), the paddings are put aside, and only the space that's left is
+divided between the texts, proportionally to 30 and 70. So, if the available space is
+300 pixels, 2 * 30 = 60 pixels are reserved for the paddings, the other 240 pixels are
+divided into 72 and 168, and the children get 102 and 198 pixels:
 
 ```
 RowProportional(
-  widthOffsetFactor: 100.0,
+  reservedWidthFactor: 30, // A horizontal padding of 15 pixels on each side.
   children: [
-    SizedBox(width: 1000), // Gets 900 / 1300 of the space.
-    SizedBox(width: 500), // Gets 400 / 1300 of the space.
+    Padding(padding: EdgeInsets.symmetric(horizontal: 15), child: Text('...')),
+    Padding(padding: EdgeInsets.symmetric(horizontal: 15), child: Text('...')),
   ],
 );
 ```
 
-If you provide both factors, the `widthOffsetFactor` is applied first, and then the
-`proportionalityFactor` is applied to the resulting widths.
+Note this keeps the children at their preferred widths when the available space is
+exactly the total of their preferred widths (160 pixels, in the example above). With
+more space they grow, and with less space they shrink, but always proportionally to
+their preferred widths minus the reserved width, which never scales. In the unlikely
+case where there is not enough space to reserve, the reserved width shrinks too, so
+that the row never overflows.
+
+If you provide both factors, the space reserved by the `reservedWidthFactor` is
+removed first, and the `proportionalityFactor` then applies to the division of the
+space that's left.
 
 The factors only change how the children that scale divide the space between them:
 they change neither the width of `FixedWidth` children, nor the space left over for

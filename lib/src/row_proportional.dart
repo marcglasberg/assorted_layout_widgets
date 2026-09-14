@@ -49,24 +49,42 @@ import 'package:flutter/widgets.dart';
 /// `proportionalityFactor: 0.0`. With `proportionalityFactor: 0.5` they get
 /// 40% ((30% + 50%) / 2) and 60% ((70% + 50%) / 2).
 ///
-/// The [widthOffsetFactor] (default 0.0) is a number of pixels that is subtracted
-/// from the preferred width of each child, before the proportions are calculated.
-/// The result is clipped at zero, so it never goes negative. For example, two
-/// children with preferred widths of 1000 and 500 divide the space between them
-/// as 900 to 400, when `widthOffsetFactor: 100.0`:
+/// The [reservedWidthFactor] (default 0.0) is a number of pixels that is reserved
+/// for each child, and does not take part in the proportional division: each child
+/// is first given those pixels, and only the rest of the available space is divided
+/// between the children, proportionally to their preferred widths minus the
+/// reserved width.
+///
+/// This is useful when each child contains some fixed part that should not grow or
+/// shrink with the rest, like a padding. For example, suppose two texts that are 30
+/// and 70 pixels wide, each one inside a container with a horizontal padding of 15
+/// pixels, so that their preferred widths are 60 and 100 pixels. With
+/// `reservedWidthFactor: 30` (the 15 pixels of padding on each side), the paddings
+/// are put aside, and only the space that's left is divided between the texts,
+/// proportionally to 30 and 70. So, if the available space is 300 pixels,
+/// 2 * 30 = 60 pixels are reserved for the paddings, the other 240 pixels are
+/// divided into 72 and 168, and the children get 102 and 198 pixels:
 ///
 /// ```dart
 /// RowProportional(
-///   widthOffsetFactor: 100.0,
+///   reservedWidthFactor: 30, // A horizontal padding of 15 pixels on each side.
 ///   children: [
-///     SizedBox(width: 1000), // Gets 900 / 1300 of the space.
-///     SizedBox(width: 500), // Gets 400 / 1300 of the space.
+///     Padding(padding: EdgeInsets.symmetric(horizontal: 15), child: Text('...')),
+///     Padding(padding: EdgeInsets.symmetric(horizontal: 15), child: Text('...')),
 ///   ],
 /// );
 /// ```
 ///
-/// If you provide both factors, the [widthOffsetFactor] is applied first, and
-/// then the [proportionalityFactor] is applied to the resulting widths.
+/// Note this keeps the children at their preferred widths when the available space
+/// is exactly the total of their preferred widths (160 pixels, in the example
+/// above). With more space they grow, and with less space they shrink, but always
+/// proportionally to their preferred widths minus the reserved width, which never
+/// scales. In the unlikely case where there is not enough space to reserve, the
+/// reserved width shrinks too, so that the row never overflows.
+///
+/// If you provide both factors, the space reserved by the [reservedWidthFactor] is
+/// removed first, and the [proportionalityFactor] then applies to the division of
+/// the space that's left.
 ///
 /// The factors only change how the children that scale divide the space between
 /// them: they change neither the width of [FixedWidth] children, nor the space
@@ -187,9 +205,12 @@ class RowProportional extends MultiChildRenderObjectWidget {
   ///   preferred widths of the children; with `0.0` it's divided equally between
   ///   them; and values in between interpolate the two.
   ///
-  /// * The [widthOffsetFactor] (default 0.0) is a number of pixels subtracted from
-  ///   the preferred width of each child (clipped at zero), before the proportions
-  ///   are calculated. If both factors are given, this one is applied first.
+  /// * The [reservedWidthFactor] (default 0.0) is a number of pixels reserved for
+  ///   each child, which does not take part in the proportional division: each child
+  ///   first gets those pixels, and only the rest of the space is divided between
+  ///   the children, proportionally to their preferred widths minus the reserved
+  ///   width. This is useful when each child contains some fixed part that should
+  ///   not grow or shrink with the rest, like a padding.
   ///
   /// * Wrapping a child in an [Expanded] multiplies its preferred width by the
   ///   `flex`, for the purpose of the proportional distribution.
@@ -215,14 +236,14 @@ class RowProportional extends MultiChildRenderObjectWidget {
     super.key,
     super.children,
     this.proportionalityFactor = 1.0,
-    this.widthOffsetFactor = 0.0,
+    this.reservedWidthFactor = 0.0,
     this.crossAxisAlignment = CrossAxisAlignment.center,
     this.textDirection,
     this.textBaseline,
   })  : assert(proportionalityFactor >= 0.0 && proportionalityFactor <= 1.0,
             'The proportionalityFactor must be between 0.0 and 1.0, inclusive.'),
-        assert(widthOffsetFactor >= 0.0,
-            'The widthOffsetFactor must be equal to or greater than zero.'),
+        assert(reservedWidthFactor >= 0.0,
+            'The reservedWidthFactor must be equal to or greater than zero.'),
         assert(
             crossAxisAlignment != CrossAxisAlignment.baseline || textBaseline != null,
             'To use CrossAxisAlignment.baseline, you must also provide a textBaseline.');
@@ -237,14 +258,21 @@ class RowProportional extends MultiChildRenderObjectWidget {
   /// Must be between 0.0 and 1.0, inclusive.
   final double proportionalityFactor;
 
-  /// The [widthOffsetFactor] (default 0.0) is a number of pixels that is subtracted
-  /// from the preferred (natural, intrinsic) width of each child, before the
-  /// proportions are calculated. The result is clipped at zero, so it never goes
-  /// negative. For example, two children with preferred widths of 1000 and 500
-  /// divide the space between them as 900 to 400, when `widthOffsetFactor: 100.0`.
-  /// If you also provide a [proportionalityFactor], this offset is applied first.
-  /// Must be equal to or greater than zero.
-  final double widthOffsetFactor;
+  /// The [reservedWidthFactor] (default 0.0) is a number of pixels that is reserved
+  /// for each child, and does not take part in the proportional division: each child
+  /// is first given those pixels, and only the rest of the available space is divided
+  /// between the children, proportionally to their preferred (natural, intrinsic)
+  /// widths minus the reserved width. This is useful when each child contains some
+  /// fixed part that should not grow or shrink with the rest, like a padding. For
+  /// example, two children with preferred widths of 60 and 100 (two texts of 30 and
+  /// 70 pixels, each one with a horizontal padding of 15 pixels) in 300 pixels of
+  /// available space get 102 and 198 pixels when `reservedWidthFactor: 30`: 2 * 30
+  /// pixels are reserved for the paddings, and the other 240 pixels are divided
+  /// between the texts, proportionally to 30 and 70. Note this keeps the children at
+  /// their preferred widths when the available space is exactly the total of their
+  /// preferred widths. If there is not enough space to reserve, the reserved width
+  /// shrinks, so that the row never overflows. Must be equal to or greater than zero.
+  final double reservedWidthFactor;
 
   /// The [crossAxisAlignment] property specifies how to align the children
   /// vertically. The default is to center them. To use
@@ -271,7 +299,7 @@ class RowProportional extends MultiChildRenderObjectWidget {
   _RenderRowProportional createRenderObject(BuildContext context) =>
       _RenderRowProportional(
         proportionalityFactor: proportionalityFactor,
-        widthOffsetFactor: widthOffsetFactor,
+        reservedWidthFactor: reservedWidthFactor,
         crossAxisAlignment: crossAxisAlignment,
         textDirection: _effectiveTextDirection(context),
         textBaseline: textBaseline,
@@ -281,7 +309,7 @@ class RowProportional extends MultiChildRenderObjectWidget {
   void updateRenderObject(BuildContext context, _RenderRowProportional renderObject) {
     renderObject
       ..proportionalityFactor = proportionalityFactor
-      ..widthOffsetFactor = widthOffsetFactor
+      ..reservedWidthFactor = reservedWidthFactor
       ..crossAxisAlignment = crossAxisAlignment
       ..textDirection = _effectiveTextDirection(context)
       ..textBaseline = textBaseline;
@@ -380,28 +408,23 @@ enum _Kind { fixed, spacer, proportional }
 /// * [_Kind.fixed]: [value] is its immutable width in pixels.
 /// * [_Kind.spacer]: [value] is its flex.
 /// * [_Kind.proportional]: [value] is its natural weight (preferred width times
-///   flex), and [share] is the weight used to divide the available space between
-///   the children, which is the natural weight after applying the factors.
+///   flex).
 class _Measure {
-  _Measure.fixed(this.value)
-      : kind = _Kind.fixed,
-        share = 0.0;
+  _Measure.fixed(this.value) : kind = _Kind.fixed;
 
   _Measure.spacer(int flex)
       : kind = _Kind.spacer,
-        value = flex.toDouble(),
-        share = 0.0;
+        value = flex.toDouble();
 
-  _Measure.proportional(this.value, this.share) : kind = _Kind.proportional;
+  _Measure.proportional(this.value) : kind = _Kind.proportional;
 
   final _Kind kind;
   final double value;
-  final double share;
 }
 
 class _Measurements {
-  _Measurements(this.measures, this.fixedTotal, this.naturalTotal, this.shareTotal,
-      this.spacerFlexTotal);
+  _Measurements(
+      this.measures, this.fixedTotal, this.naturalTotal, this.spacerFlexTotal);
 
   final List<_Measure> measures;
   final double fixedTotal;
@@ -409,10 +432,12 @@ class _Measurements {
   /// The sum of the natural weights of the proportional children.
   final double naturalTotal;
 
-  /// The sum of the shares of the proportional children.
-  final double shareTotal;
-
   final int spacerFlexTotal;
+
+  /// The natural weights of the proportional children, in order.
+  Iterable<double> get naturalWeights => measures
+      .where((measure) => measure.kind == _Kind.proportional)
+      .map((measure) => measure.value);
 }
 
 class _RenderRowProportional extends RenderBox
@@ -422,25 +447,25 @@ class _RenderRowProportional extends RenderBox
   //
   _RenderRowProportional({
     required double proportionalityFactor,
-    required double widthOffsetFactor,
+    required double reservedWidthFactor,
     required CrossAxisAlignment crossAxisAlignment,
     required TextDirection textDirection,
     required TextBaseline? textBaseline,
   })  : _proportionalityFactor = proportionalityFactor,
-        _widthOffsetFactor = widthOffsetFactor,
+        _reservedWidthFactor = reservedWidthFactor,
         _crossAxisAlignment = crossAxisAlignment,
         _textDirection = textDirection,
         _textBaseline = textBaseline;
 
   double _proportionalityFactor;
-  double _widthOffsetFactor;
+  double _reservedWidthFactor;
   CrossAxisAlignment _crossAxisAlignment;
   TextDirection _textDirection;
   TextBaseline? _textBaseline;
 
   double get proportionalityFactor => _proportionalityFactor;
 
-  double get widthOffsetFactor => _widthOffsetFactor;
+  double get reservedWidthFactor => _reservedWidthFactor;
 
   CrossAxisAlignment get crossAxisAlignment => _crossAxisAlignment;
 
@@ -454,9 +479,9 @@ class _RenderRowProportional extends RenderBox
     markNeedsLayout();
   }
 
-  set widthOffsetFactor(double value) {
-    if (_widthOffsetFactor == value) return;
-    _widthOffsetFactor = value;
+  set reservedWidthFactor(double value) {
+    if (_reservedWidthFactor == value) return;
+    _reservedWidthFactor = value;
     markNeedsLayout();
   }
 
@@ -489,9 +514,7 @@ class _RenderRowProportional extends RenderBox
     final measures = <_Measure>[];
     double fixedTotal = 0.0;
     double naturalTotal = 0.0;
-    double shareTotal = 0.0;
     int spacerFlexTotal = 0;
-    int proportionalCount = 0;
 
     RenderBox? child = firstChild;
     while (child != null) {
@@ -517,52 +540,67 @@ class _RenderRowProportional extends RenderBox
         }
         // 3) Any other child participates proportionally to its preferred width,
         // multiplied by its flex (if it's wrapped in an `Expanded` or `Flexible`).
-        // The `widthOffsetFactor` pixels are removed from the preferred width (but
-        // never below zero) before the proportions are calculated.
         else {
-          final int multiplier = math.max(1, flex);
-          final double natural = preferredWidth * multiplier;
-          final double share =
-              math.max(0.0, preferredWidth - widthOffsetFactor) * multiplier;
-
+          final double natural = preferredWidth * math.max(1, flex);
           naturalTotal += natural;
-          shareTotal += share;
-          proportionalCount++;
-          measures.add(_Measure.proportional(natural, share));
+          measures.add(_Measure.proportional(natural));
         }
       }
 
       child = parentData.nextSibling;
     }
 
-    // The `proportionalityFactor` blends the proportional distribution with an equal
-    // one: with a factor of 1 each child keeps its own share (fully proportional);
-    // with a factor of 0 all shares become the average share (so all children get the
-    // same space); and in between the shares are interpolated.
-    if (proportionalityFactor != 1.0 && proportionalCount > 0) {
+    return _Measurements(measures, fixedTotal, naturalTotal, spacerFlexTotal);
+  }
+
+  /// Divides the [available] space between the proportional children, which have
+  /// the given natural [weights], and returns the width of each one of them.
+  ///
+  /// Each child first reserves [reservedWidthFactor] pixels, which are not divided
+  /// proportionally. Those pixels are also discounted from the natural weights (but
+  /// never below zero), so that the children keep their natural widths when the
+  /// available space is exactly the total of their natural widths: when the space is
+  /// larger they grow, and when it's smaller they shrink, always proportionally to
+  /// their natural widths minus the reserved width.
+  ///
+  /// The [proportionalityFactor] then blends this proportional division with an
+  /// equal one: with a factor of 1 each child keeps its own share (fully
+  /// proportional); with a factor of 0 all shares become the average share (so all
+  /// children divide the space equally); and in between the shares are interpolated.
+  List<double> _proportionalWidths(Iterable<double> weights, double available) {
+    final int count = weights.length;
+
+    // If there is not enough space to reserve, the reserved width shrinks, so that
+    // the row never overflows.
+    final double reserved = math.min(reservedWidthFactor, available / count);
+
+    final List<double> shares =
+        weights.map((weight) => math.max(0.0, weight - reserved)).toList();
+
+    double shareTotal = shares.fold(0.0, (a, b) => a + b);
+
+    if (proportionalityFactor != 1.0) {
       //
-      // When all shares are zero (the width offset consumed all the widths) there is
-      // no meaningful average: any factor below 1 then divides the space equally.
-      final double averageShare =
-          (shareTotal == 0.0) ? 1.0 : shareTotal / proportionalCount;
+      // When all shares are zero (all children fit inside the reserved width) there
+      // is no meaningful average: any factor below 1 then divides the space equally.
+      final double averageShare = (shareTotal == 0.0) ? 1.0 : shareTotal / count;
 
       shareTotal = 0.0;
 
-      for (int i = 0; i < measures.length; i++) {
-        final _Measure measure = measures[i];
+      for (int i = 0; i < count; i++) {
+        shares[i] = proportionalityFactor * shares[i] +
+            (1.0 - proportionalityFactor) * averageShare;
 
-        if (measure.kind == _Kind.proportional) {
-          final double share = proportionalityFactor * measure.share +
-              (1.0 - proportionalityFactor) * averageShare;
-
-          shareTotal += share;
-          measures[i] = _Measure.proportional(measure.value, share);
-        }
+        shareTotal += shares[i];
       }
     }
 
-    return _Measurements(
-        measures, fixedTotal, naturalTotal, shareTotal, spacerFlexTotal);
+    // The space that's left, after the reserved widths, is divided proportionally
+    // to the shares. If there are no shares, the children get just their reserve.
+    final double toDivide = available - reserved * count;
+    final double scale = (shareTotal == 0.0) ? 0.0 : toDivide / shareTotal;
+
+    return shares.map((share) => reserved + share * scale).toList();
   }
 
   /// Calculates the width each child should be given, considering the
@@ -570,9 +608,11 @@ class _RenderRowProportional extends RenderBox
   List<double> _childWidths(double maxWidth) {
     final _Measurements m = _measure();
 
-    double scale = 1.0;
     double fixedScale = 1.0;
     double spacerSpace = 0.0;
+
+    // The widths of the proportional children, in order. When null, they get zero.
+    List<double>? proportionalWidths;
 
     // If the available space is unbounded, there is nothing to distribute:
     // children simply get their preferred widths, and spacers get zero.
@@ -584,7 +624,6 @@ class _RenderRowProportional extends RenderBox
       // shrink proportionally to each other, and everything else gets zero.
       if (m.fixedTotal > maxWidth) {
         fixedScale = maxWidth / m.fixedTotal;
-        scale = 0.0;
       }
       //
       else {
@@ -598,13 +637,15 @@ class _RenderRowProportional extends RenderBox
           spacerSpace = leftover;
           naturalWidths = true;
         }
-        // Otherwise, the remaining space is distributed between the children,
-        // proportionally to their shares, and spacers get zero.
-        else {
-          scale = (m.shareTotal == 0.0) ? 0.0 : remaining / m.shareTotal;
+        // Otherwise, the remaining space is divided between the children
+        // (growing or shrinking them), and spacers get zero.
+        else if (m.naturalWeights.isNotEmpty) {
+          proportionalWidths = _proportionalWidths(m.naturalWeights, remaining);
         }
       }
     }
+
+    int index = 0;
 
     return m.measures.map((measure) {
       switch (measure.kind) {
@@ -613,7 +654,8 @@ class _RenderRowProportional extends RenderBox
         case _Kind.spacer:
           return spacerSpace * measure.value / m.spacerFlexTotal;
         case _Kind.proportional:
-          return naturalWidths ? measure.value : measure.share * scale;
+          if (naturalWidths) return measure.value;
+          return (proportionalWidths == null) ? 0.0 : proportionalWidths[index++];
       }
     }).toList();
   }

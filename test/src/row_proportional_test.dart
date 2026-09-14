@@ -16,6 +16,8 @@ void main() {
     WidgetTester tester, {
     required List<Widget> children,
     double width = 200,
+    double proportionalityFactor = 1.0,
+    double reservedWidthFactor = 0.0,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
     TextDirection textDirection = TextDirection.ltr,
   }) {
@@ -27,6 +29,8 @@ void main() {
             width: width,
             height: 100,
             child: RowProportional(
+              proportionalityFactor: proportionalityFactor,
+              reservedWidthFactor: reservedWidthFactor,
               crossAxisAlignment: crossAxisAlignment,
               textDirection: textDirection,
               children: children,
@@ -404,5 +408,192 @@ void main() {
     // Stretch forces both children to the full available height.
     expect(tester.getSize(find.byKey(k1)).height, 100.0);
     expect(tester.getSize(find.byKey(k2)).height, 100.0);
+  });
+
+  testWidgets('The default factors divide the space exactly as before.',
+      (tester) async {
+    //
+    // The default factors must divide the space exactly like it was divided before
+    // the factors existed: proportionally to the preferred widths, no reserve.
+    for (final double rowWidth in [50.0, 170.0, 200.0, 700.0]) {
+      //
+      await pump(tester, width: rowWidth, children: const [
+        SizedBox(key: k1, width: 70, height: 10),
+        SizedBox(key: k2, width: 100, height: 10),
+      ]);
+
+      expect(width(tester, k1), moreOrLessEquals(rowWidth * 70 / 170));
+      expect(width(tester, k2), moreOrLessEquals(rowWidth * 100 / 170));
+
+      // Passing the factors explicitly with their default values is the same thing.
+      await pump(tester,
+          width: rowWidth,
+          proportionalityFactor: 1.0,
+          reservedWidthFactor: 0.0,
+          children: const [
+            SizedBox(key: k1, width: 70, height: 10),
+            SizedBox(key: k2, width: 100, height: 10),
+          ]);
+
+      expect(width(tester, k1), moreOrLessEquals(rowWidth * 70 / 170));
+      expect(width(tester, k2), moreOrLessEquals(rowWidth * 100 / 170));
+    }
+
+    // Expanded, FixedWidth and Spacer children are also divided as before.
+    await pump(tester, width: 300, children: const [
+      FixedWidth(width: 50, child: SizedBox(key: k1, height: 10)),
+      Expanded(flex: 2, child: SizedBox(key: k2, width: 35, height: 10)),
+      Spacer(),
+      SizedBox(key: k3, width: 100, height: 10),
+    ]);
+
+    // The Spacer gets 300 - 50 - 70 - 100 = 80 pixels.
+    expect(width(tester, k1), 50.0);
+    expect(width(tester, k2), 70.0);
+    expect(width(tester, k3), 100.0);
+    expect(left(tester, k3) - left(tester, k1), 50.0 + 70.0 + 80.0);
+  });
+
+  testWidgets('The proportionalityFactor divides between proportional and equal.',
+      (tester) async {
+    //
+    const children = [
+      SizedBox(key: k1, width: 30, height: 10),
+      SizedBox(key: k2, width: 70, height: 10),
+    ];
+
+    // Fully proportional: 30% and 70%.
+    await pump(tester, width: 200, proportionalityFactor: 1.0, children: children);
+    expect(width(tester, k1), moreOrLessEquals(60.0));
+    expect(width(tester, k2), moreOrLessEquals(140.0));
+
+    // Equally divided: 50% and 50%.
+    await pump(tester, width: 200, proportionalityFactor: 0.0, children: children);
+    expect(width(tester, k1), moreOrLessEquals(100.0));
+    expect(width(tester, k2), moreOrLessEquals(100.0));
+
+    // Halfway between them: 40% and 60%.
+    await pump(tester, width: 200, proportionalityFactor: 0.5, children: children);
+    expect(width(tester, k1), moreOrLessEquals(80.0));
+    expect(width(tester, k2), moreOrLessEquals(120.0));
+  });
+
+  testWidgets('The reservedWidthFactor reserves a width for each child.',
+      (tester) async {
+    //
+    // Two texts of 30 and 70 pixels, each one inside a horizontal padding of 15.
+    const children = [
+      SizedBox(key: k1, width: 60, height: 10),
+      SizedBox(key: k2, width: 100, height: 10),
+    ];
+
+    // 2 * 30 pixels are reserved for the paddings, and the other 240 pixels are
+    // divided between the texts, proportionally to 30 and 70.
+    await pump(tester, width: 300, reservedWidthFactor: 30, children: children);
+    expect(width(tester, k1), moreOrLessEquals(30 + 240 * 30 / 100));
+    expect(width(tester, k2), moreOrLessEquals(30 + 240 * 70 / 100));
+
+    // When the available space is the natural one, the children keep their
+    // preferred widths.
+    await pump(tester, width: 160, reservedWidthFactor: 30, children: children);
+    expect(width(tester, k1), moreOrLessEquals(60.0));
+    expect(width(tester, k2), moreOrLessEquals(100.0));
+
+    // With less space they shrink, proportionally, after the reserved paddings.
+    await pump(tester, width: 100, reservedWidthFactor: 30, children: children);
+    expect(width(tester, k1), moreOrLessEquals(30 + 40 * 30 / 100));
+    expect(width(tester, k2), moreOrLessEquals(30 + 40 * 70 / 100));
+
+    // If there is not enough space to reserve, the reserved width shrinks, so
+    // that the row never overflows.
+    await pump(tester, width: 40, reservedWidthFactor: 30, children: children);
+    expect(width(tester, k1), moreOrLessEquals(20.0));
+    expect(width(tester, k2), moreOrLessEquals(20.0));
+  });
+
+  testWidgets('Both factors: the reserved width is removed first.', (tester) async {
+    //
+    const children = [
+      SizedBox(key: k1, width: 60, height: 10),
+      SizedBox(key: k2, width: 100, height: 10),
+    ];
+
+    // 2 * 30 pixels are reserved, and the other 240 pixels are divided equally.
+    await pump(tester,
+        width: 300,
+        reservedWidthFactor: 30,
+        proportionalityFactor: 0.0,
+        children: children);
+
+    expect(width(tester, k1), moreOrLessEquals(150.0));
+    expect(width(tester, k2), moreOrLessEquals(150.0));
+
+    // Shares of 30 and 70, blended with their average of 50, into 40 and 60.
+    await pump(tester,
+        width: 300,
+        reservedWidthFactor: 30,
+        proportionalityFactor: 0.5,
+        children: children);
+
+    expect(width(tester, k1), moreOrLessEquals(30 + 240 * 0.4));
+    expect(width(tester, k2), moreOrLessEquals(30 + 240 * 0.6));
+  });
+
+  testWidgets('The factors do not affect FixedWidth children nor Spacers.',
+      (tester) async {
+    //
+    // The fixed widths are still carved out of the space first: 250 pixels are
+    // left, 2 * 30 are reserved, and the other 190 are divided as 57 to 133.
+    await pump(tester, width: 300, reservedWidthFactor: 30, children: const [
+      FixedWidth(width: 50, child: SizedBox(key: k1, height: 10)),
+      SizedBox(key: k2, width: 60, height: 10),
+      SizedBox(key: k3, width: 100, height: 10),
+    ]);
+
+    expect(width(tester, k1), moreOrLessEquals(50.0));
+    expect(width(tester, k2), moreOrLessEquals(30 + 190 * 30 / 100));
+    expect(width(tester, k3), moreOrLessEquals(30 + 190 * 70 / 100));
+
+    // When the spacers get leftover space there is no proportional division at
+    // all, and the factors do nothing.
+    await pump(tester,
+        width: 300,
+        reservedWidthFactor: 30,
+        proportionalityFactor: 0.0,
+        children: const [
+          SizedBox(key: k1, width: 60, height: 10),
+          Spacer(),
+          SizedBox(key: k2, width: 100, height: 10),
+        ]);
+
+    expect(width(tester, k1), moreOrLessEquals(60.0));
+    expect(width(tester, k2), moreOrLessEquals(100.0));
+  });
+
+  testWidgets('The factors do not affect the natural width of the row.',
+      (tester) async {
+    //
+    await tester.pumpWidget(const Directionality(
+      textDirection: TextDirection.ltr,
+      child: Center(
+        child: IntrinsicWidth(
+          child: RowProportional(
+            reservedWidthFactor: 30,
+            proportionalityFactor: 0.0,
+            children: [
+              SizedBox(key: k1, width: 60, height: 10),
+              SizedBox(key: k2, width: 100, height: 10),
+            ],
+          ),
+        ),
+      ),
+    ));
+
+    // The row still wants 60 + 100 pixels, even though the factors then divide
+    // those 160 pixels equally between the children (30 reserved for each one,
+    // and the other 100 divided into 50 and 50).
+    expect(tester.getSize(find.byType(RowProportional)).width, 160.0);
+    expect(width(tester, k1), moreOrLessEquals(80.0));
+    expect(width(tester, k2), moreOrLessEquals(80.0));
   });
 }
