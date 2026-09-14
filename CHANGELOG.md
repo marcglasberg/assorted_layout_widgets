@@ -2,29 +2,27 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
-## 12.13.1
+## 12.13.2
 
-* New `RowProportional` parameter `proportionalityFactor` (default `1.0`), which
-  controls how proportional the distribution of space is. With `1.0` the space is
-  divided proportionally to the preferred widths of the children; with `0.0` it's
-  divided equally between them; and values in between interpolate the two. For
-  example, two children with preferred widths of 30 and 70 get 30%/70% of the space
-  with `proportionalityFactor: 1.0`, 50%/50% with `proportionalityFactor: 0.0`, and
-  40%/60% with `proportionalityFactor: 0.5`.
+* New `RowProportional` parameter `reservedPadding` (default `null`): the fixed
+  horizontal padding (left plus right) that each child has inside of it. Providing it
+  (even with a value of zero) completely changes the way the available space is
+  divided between the children: the row then treats that padding as a fixed part of
+  each child, that never scales. If the available space is exactly the total of the
+  preferred widths of the children, they get exactly their preferred widths; if there
+  is more space, the extra space is divided **equally** between the children (and not
+  proportionally); and if there is less space, the paddings are kept and only the rest
+  of the children shrink, proportionally.
 
-* New `RowProportional` parameter `reservedWidthFactor` (default `0.0`), a number of
-  pixels that is reserved for each child and does not take part in the proportional
-  division: each child first gets those pixels, and only the rest of the available
-  space is divided between the children, proportionally to their preferred widths
-  minus the reserved width. This is useful when each child contains some fixed part
-  that should not grow or shrink with the rest, like a padding. For example, two
-  children with preferred widths of 60 and 100 (two texts of 30 and 70 pixels, each
-  one with a horizontal padding of 15 pixels) in 300 pixels of available space get
-  102 and 198 pixels with `reservedWidthFactor: 30`: 2 * 30 pixels are reserved for
-  the paddings, and the other 240 pixels are divided between the texts,
-  proportionally to 30 and 70. Note this keeps the children at their preferred widths
-  when the available space is exactly the total of their preferred widths. If both
-  factors are given, the reserved width is removed first.
+  For example, two children with preferred widths of 60 and 100 (two texts of 30 and
+  70 pixels, each one with a horizontal padding of 15 pixels) with
+  `reservedPadding: 30`, get 60 and 100 pixels when the available space is 160; 480
+  and 520 pixels when it's 1000 (the 840 extra pixels are divided equally); and 42 and
+  58 pixels when it's 100 (60 pixels are kept for the paddings, and the other 40 are
+  divided between the texts, proportionally to 30 and 70).
+
+  When you don't provide the `reservedPadding` (the default), all the available space
+  is simply divided proportionally to the preferred widths, exactly as before.
 
 ## 12.12.1
 

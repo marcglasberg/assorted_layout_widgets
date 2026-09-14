@@ -9,6 +9,12 @@ analyzer:
   exclude:
     - 'bin/cache/**'
     - 'lib/src/http/**'
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
 
 # https://github.com/dart-lang/linter/blob/master/example/all.yaml
 linter:

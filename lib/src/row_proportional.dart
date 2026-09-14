@@ -29,45 +29,27 @@ import 'package:flutter/widgets.dart';
 /// );
 /// ```
 ///
-/// ## The factors
+/// ## Reserved padding
 ///
-/// Two optional factors let you tweak how the space is divided.
+/// IMPORTANT: Providing the [reservedPadding] parameter (even with a value of zero)
+/// completely changes the way the available space is divided between the children.
+/// When you don't provide it (the default), everything works as described above.
 ///
-/// The [proportionalityFactor] (default 1.0) controls how proportional the
-/// distribution is:
+/// If the children have some fixed horizontal padding in them, you may tell the row
+/// about it with the [reservedPadding] parameter, and the row will then treat that
+/// padding as a fixed part of each child, that never scales. The children then keep
+/// their preferred widths when the available space is exactly the preferred one;
+/// any extra space is divided EQUALLY between them (and not proportionally); and,
+/// when the space is short, their paddings are kept and only the rest of the
+/// children shrink, proportionally.
 ///
-/// * With `proportionalityFactor: 1.0` the space is divided proportionally to
-///   the preferred widths of the children.
-///
-/// * With `proportionalityFactor: 0.0` the space is divided equally between the
-///   children, no matter their preferred widths.
-///
-/// * With a factor in between, the result is interpolated between those two.
-///
-/// For example, two children with preferred widths of 30 and 70 get 30% and 70%
-/// of the space with `proportionalityFactor: 1.0`, and 50% and 50% with
-/// `proportionalityFactor: 0.0`. With `proportionalityFactor: 0.5` they get
-/// 40% ((30% + 50%) / 2) and 60% ((70% + 50%) / 2).
-///
-/// The [reservedWidthFactor] (default 0.0) is a number of pixels that is reserved
-/// for each child, and does not take part in the proportional division: each child
-/// is first given those pixels, and only the rest of the available space is divided
-/// between the children, proportionally to their preferred widths minus the
-/// reserved width.
-///
-/// This is useful when each child contains some fixed part that should not grow or
-/// shrink with the rest, like a padding. For example, suppose two texts that are 30
-/// and 70 pixels wide, each one inside a container with a horizontal padding of 15
-/// pixels, so that their preferred widths are 60 and 100 pixels. With
-/// `reservedWidthFactor: 30` (the 15 pixels of padding on each side), the paddings
-/// are put aside, and only the space that's left is divided between the texts,
-/// proportionally to 30 and 70. So, if the available space is 300 pixels,
-/// 2 * 30 = 60 pixels are reserved for the paddings, the other 240 pixels are
-/// divided into 72 and 168, and the children get 102 and 198 pixels:
+/// For example, suppose two texts that are 30 and 70 pixels wide, each one inside a
+/// container with a horizontal padding of 15 pixels, so that the preferred widths of
+/// the children are 60 and 100 pixels:
 ///
 /// ```dart
 /// RowProportional(
-///   reservedWidthFactor: 30, // A horizontal padding of 15 pixels on each side.
+///   reservedPadding: 30, // 15 pixels of padding on each side.
 ///   children: [
 ///     Padding(padding: EdgeInsets.symmetric(horizontal: 15), child: Text('...')),
 ///     Padding(padding: EdgeInsets.symmetric(horizontal: 15), child: Text('...')),
@@ -75,21 +57,40 @@ import 'package:flutter/widgets.dart';
 /// );
 /// ```
 ///
-/// Note this keeps the children at their preferred widths when the available space
-/// is exactly the total of their preferred widths (160 pixels, in the example
-/// above). With more space they grow, and with less space they shrink, but always
-/// proportionally to their preferred widths minus the reserved width, which never
-/// scales. In the unlikely case where there is not enough space to reserve, the
-/// reserved width shrinks too, so that the row never overflows.
+/// With `reservedPadding: 30`, in the example above:
 ///
-/// If you provide both factors, the space reserved by the [reservedWidthFactor] is
-/// removed first, and the [proportionalityFactor] then applies to the division of
-/// the space that's left.
+/// * If the available space is exactly the preferred one (60 + 100 = 160 pixels),
+///   the children get exactly their preferred widths: 60 and 100 pixels.
 ///
-/// The factors only change how the children that scale divide the space between
-/// them: they change neither the width of [FixedWidth] children, nor the space
-/// left over for the [Spacer]s. In particular, when the spacers do get leftover
-/// space there is no proportional distribution at all, and the factors do nothing.
+/// * If there is MORE space, the extra space is divided EQUALLY between the
+///   children. For example, if the available space is 1000 pixels, there are
+///   1000 - 160 = 840 extra pixels, so each child grows 420 pixels, and they get
+///   480 and 520 pixels.
+///
+/// * If there is LESS space, the paddings are kept, and only the texts shrink,
+///   proportionally to their own widths. For example, if the available space is
+///   100 pixels, 2 * 30 = 60 pixels are kept for the paddings, and the other 40
+///   pixels are divided between the texts, proportionally to 30 and 70, so that
+///   the children get 42 and 58 pixels. In the unlikely case where there is not
+///   enough space for the paddings themselves, they shrink too, so that the row
+///   never overflows.
+///
+/// Note that when the space is short the division is still proportional (of what's
+/// left of the children, after their paddings), but when there is extra space it's
+/// not proportional at all: all children grow by the same number of pixels.
+///
+/// Also note it's the presence of the [reservedPadding] that turns this behavior on,
+/// and not its value: `reservedPadding: 0` also divides the extra space equally (and
+/// then simply has no padding to keep, when the space is short). When you don't
+/// provide it at all (`reservedPadding: null`, the default), all the available space
+/// is divided proportionally to the preferred widths of the children, as explained
+/// above.
+///
+/// The reserved padding only changes how the children that scale divide the space
+/// between them: it changes neither the width of [FixedWidth] children, nor the
+/// space left over for the [Spacer]s. In particular, when the spacers do get
+/// leftover space there is no proportional distribution at all, and the reserved
+/// padding does nothing.
 ///
 /// ## Expanded and Flexible
 ///
@@ -200,17 +201,12 @@ class RowProportional extends MultiChildRenderObjectWidget {
   /// is 200 pixels wide, then the first child will be `200 / 170 * 70` pixels wide,
   /// and the second child will be `200 / 170 * 100` pixels wide.
   ///
-  /// * The [proportionalityFactor] (default 1.0) controls how proportional the
-  ///   distribution is: with `1.0` the space is divided proportionally to the
-  ///   preferred widths of the children; with `0.0` it's divided equally between
-  ///   them; and values in between interpolate the two.
-  ///
-  /// * The [reservedWidthFactor] (default 0.0) is a number of pixels reserved for
-  ///   each child, which does not take part in the proportional division: each child
-  ///   first gets those pixels, and only the rest of the space is divided between
-  ///   the children, proportionally to their preferred widths minus the reserved
-  ///   width. This is useful when each child contains some fixed part that should
-  ///   not grow or shrink with the rest, like a padding.
+  /// * Providing the [reservedPadding] parameter (default null) completely changes
+  ///   the way the space is divided: the row then divides any extra space EQUALLY
+  ///   between the children, instead of proportionally; and, when the space is short,
+  ///   it keeps the given padding of each child and shrinks only the rest of them,
+  ///   proportionally. Use it when the children have some fixed horizontal padding
+  ///   in them, that should never scale.
   ///
   /// * Wrapping a child in an [Expanded] multiplies its preferred width by the
   ///   `flex`, for the purpose of the proportional distribution.
@@ -235,44 +231,74 @@ class RowProportional extends MultiChildRenderObjectWidget {
   const RowProportional({
     super.key,
     super.children,
-    this.proportionalityFactor = 1.0,
-    this.reservedWidthFactor = 0.0,
+    this.reservedPadding,
     this.crossAxisAlignment = CrossAxisAlignment.center,
     this.textDirection,
     this.textBaseline,
-  })  : assert(proportionalityFactor >= 0.0 && proportionalityFactor <= 1.0,
-            'The proportionalityFactor must be between 0.0 and 1.0, inclusive.'),
-        assert(reservedWidthFactor >= 0.0,
-            'The reservedWidthFactor must be equal to or greater than zero.'),
+  })  : assert(reservedPadding == null || reservedPadding >= 0.0,
+            'The reservedPadding must be equal to or greater than zero.'),
         assert(
             crossAxisAlignment != CrossAxisAlignment.baseline || textBaseline != null,
             'To use CrossAxisAlignment.baseline, you must also provide a textBaseline.');
 
-  /// The [proportionalityFactor] (default 1.0) controls how proportional the
-  /// distribution of the available space is: with `1.0` the space is divided
-  /// proportionally to the preferred (natural, intrinsic) widths of the children;
-  /// with `0.0` it's divided equally between them; and values in between interpolate
-  /// the two. For example, two children with preferred widths of 30 and 70 get 30%
-  /// and 70% of the space with `proportionalityFactor: 1.0`, 50% and 50% with
-  /// `proportionalityFactor: 0.0`, and 40% and 60% with `proportionalityFactor: 0.5`.
-  /// Must be between 0.0 and 1.0, inclusive.
-  final double proportionalityFactor;
-
-  /// The [reservedWidthFactor] (default 0.0) is a number of pixels that is reserved
-  /// for each child, and does not take part in the proportional division: each child
-  /// is first given those pixels, and only the rest of the available space is divided
-  /// between the children, proportionally to their preferred (natural, intrinsic)
-  /// widths minus the reserved width. This is useful when each child contains some
-  /// fixed part that should not grow or shrink with the rest, like a padding. For
-  /// example, two children with preferred widths of 60 and 100 (two texts of 30 and
-  /// 70 pixels, each one with a horizontal padding of 15 pixels) in 300 pixels of
-  /// available space get 102 and 198 pixels when `reservedWidthFactor: 30`: 2 * 30
-  /// pixels are reserved for the paddings, and the other 240 pixels are divided
-  /// between the texts, proportionally to 30 and 70. Note this keeps the children at
-  /// their preferred widths when the available space is exactly the total of their
-  /// preferred widths. If there is not enough space to reserve, the reserved width
-  /// shrinks, so that the row never overflows. Must be equal to or greater than zero.
-  final double reservedWidthFactor;
+  /// The [reservedPadding] (default null) is the fixed horizontal padding (left plus
+  /// right) that each child has inside of it, in pixels.
+  ///
+  /// IMPORTANT: This parameter completely changes the way the available space is
+  /// divided between the children. What turns that change on is the presence of the
+  /// parameter, and not its value: `reservedPadding: 0` behaves like
+  /// `reservedPadding: 30`, and not like `reservedPadding: null`.
+  ///
+  /// ## When the reservedPadding is null (the default)
+  ///
+  /// All the available space is divided between the children, proportionally to
+  /// their preferred (natural, intrinsic) widths. This is the case no matter how
+  /// much space there is: if the available space is larger than the total of the
+  /// preferred widths the children grow proportionally, if it's smaller they shrink
+  /// proportionally, and if it's exactly the same they get their preferred widths.
+  ///
+  /// For example, two children with preferred widths of 60 and 100 always get 37.5%
+  /// and 62.5% of the space: 60 and 100 pixels when the available space is 160; 375
+  /// and 625 pixels when it's 1000; and 37.5 and 62.5 pixels when it's 100.
+  ///
+  /// ## When the reservedPadding is not null
+  ///
+  /// The row treats the given padding as a fixed part of each child, that never
+  /// scales:
+  ///
+  /// * If the available space is exactly the total of the preferred widths of the
+  ///   children, they get exactly their preferred widths (just like when the
+  ///   [reservedPadding] is null).
+  ///
+  /// * If there is more space, the extra space is divided EQUALLY between the
+  ///   children (and not proportionally), so that they all grow by the same number
+  ///   of pixels. Note the value of the padding is irrelevant in this case.
+  ///
+  /// * If there is less space, the padding of each child is kept, and only the rest
+  ///   of the children shrink, proportionally to their preferred widths minus the
+  ///   padding. If there is not enough space for the paddings themselves, they
+  ///   shrink too, so that the row never overflows.
+  ///
+  /// For example, two children with preferred widths of 60 and 100 (two texts of 30
+  /// and 70 pixels, each one with a horizontal padding of 15 pixels) and
+  /// `reservedPadding: 30`, get 60 and 100 pixels when the available space is 160;
+  /// 480 and 520 pixels when it's 1000 (the 840 extra pixels are divided equally);
+  /// and 42 and 58 pixels when it's 100 (60 pixels are kept for the paddings, and
+  /// the other 40 are divided between the texts, proportionally to 30 and 70).
+  ///
+  /// With `reservedPadding: 0` the extra space is still divided equally, and there
+  /// is simply no padding to keep when the space is short (so the children then
+  /// shrink proportionally to their preferred widths).
+  ///
+  /// ## In both cases
+  ///
+  /// The [reservedPadding] only changes how the children that scale divide the space
+  /// between them. The widths of [FixedWidth] children are always carved out of the
+  /// available space first, and when the [Spacer]s do get leftover space there is no
+  /// division at all: the other children simply get their preferred widths.
+  ///
+  /// Must be equal to or greater than zero, when provided.
+  final double? reservedPadding;
 
   /// The [crossAxisAlignment] property specifies how to align the children
   /// vertically. The default is to center them. To use
@@ -298,8 +324,7 @@ class RowProportional extends MultiChildRenderObjectWidget {
   @override
   _RenderRowProportional createRenderObject(BuildContext context) =>
       _RenderRowProportional(
-        proportionalityFactor: proportionalityFactor,
-        reservedWidthFactor: reservedWidthFactor,
+        reservedPadding: reservedPadding,
         crossAxisAlignment: crossAxisAlignment,
         textDirection: _effectiveTextDirection(context),
         textBaseline: textBaseline,
@@ -308,8 +333,7 @@ class RowProportional extends MultiChildRenderObjectWidget {
   @override
   void updateRenderObject(BuildContext context, _RenderRowProportional renderObject) {
     renderObject
-      ..proportionalityFactor = proportionalityFactor
-      ..reservedWidthFactor = reservedWidthFactor
+      ..reservedPadding = reservedPadding
       ..crossAxisAlignment = crossAxisAlignment
       ..textDirection = _effectiveTextDirection(context)
       ..textBaseline = textBaseline;
@@ -446,26 +470,21 @@ class _RenderRowProportional extends RenderBox
         RenderBoxContainerDefaultsMixin<RenderBox, RowProportionalParentData> {
   //
   _RenderRowProportional({
-    required double proportionalityFactor,
-    required double reservedWidthFactor,
+    required double? reservedPadding,
     required CrossAxisAlignment crossAxisAlignment,
     required TextDirection textDirection,
     required TextBaseline? textBaseline,
-  })  : _proportionalityFactor = proportionalityFactor,
-        _reservedWidthFactor = reservedWidthFactor,
+  })  : _reservedPadding = reservedPadding,
         _crossAxisAlignment = crossAxisAlignment,
         _textDirection = textDirection,
         _textBaseline = textBaseline;
 
-  double _proportionalityFactor;
-  double _reservedWidthFactor;
+  double? _reservedPadding;
   CrossAxisAlignment _crossAxisAlignment;
   TextDirection _textDirection;
   TextBaseline? _textBaseline;
 
-  double get proportionalityFactor => _proportionalityFactor;
-
-  double get reservedWidthFactor => _reservedWidthFactor;
+  double? get reservedPadding => _reservedPadding;
 
   CrossAxisAlignment get crossAxisAlignment => _crossAxisAlignment;
 
@@ -473,15 +492,9 @@ class _RenderRowProportional extends RenderBox
 
   TextBaseline? get textBaseline => _textBaseline;
 
-  set proportionalityFactor(double value) {
-    if (_proportionalityFactor == value) return;
-    _proportionalityFactor = value;
-    markNeedsLayout();
-  }
-
-  set reservedWidthFactor(double value) {
-    if (_reservedWidthFactor == value) return;
-    _reservedWidthFactor = value;
+  set reservedPadding(double? value) {
+    if (_reservedPadding == value) return;
+    _reservedPadding = value;
     markNeedsLayout();
   }
 
@@ -556,51 +569,46 @@ class _RenderRowProportional extends RenderBox
   /// Divides the [available] space between the proportional children, which have
   /// the given natural [weights], and returns the width of each one of them.
   ///
-  /// Each child first reserves [reservedWidthFactor] pixels, which are not divided
-  /// proportionally. Those pixels are also discounted from the natural weights (but
-  /// never below zero), so that the children keep their natural widths when the
-  /// available space is exactly the total of their natural widths: when the space is
-  /// larger they grow, and when it's smaller they shrink, always proportionally to
-  /// their natural widths minus the reserved width.
-  ///
-  /// The [proportionalityFactor] then blends this proportional division with an
-  /// equal one: with a factor of 1 each child keeps its own share (fully
-  /// proportional); with a factor of 0 all shares become the average share (so all
-  /// children divide the space equally); and in between the shares are interpolated.
+  /// With no [reservedPadding], the space is simply divided proportionally to the
+  /// natural weights. Otherwise, the children keep their natural widths when the
+  /// available space is exactly their natural total; any extra space is divided
+  /// equally between them; and, when the space is short, their paddings are kept
+  /// and only the rest of the children shrink, proportionally.
   List<double> _proportionalWidths(Iterable<double> weights, double available) {
     final int count = weights.length;
+    final double naturalTotal = weights.fold(0.0, (a, b) => a + b);
 
-    // If there is not enough space to reserve, the reserved width shrinks, so that
-    // the row never overflows.
-    final double reserved = math.min(reservedWidthFactor, available / count);
+    // The extra space, if the children were given their natural widths.
+    final double extra = available - naturalTotal;
 
-    final List<double> shares =
-        weights.map((weight) => math.max(0.0, weight - reserved)).toList();
+    final double? reservedPadding = this.reservedPadding;
 
-    double shareTotal = shares.fold(0.0, (a, b) => a + b);
-
-    if (proportionalityFactor != 1.0) {
-      //
-      // When all shares are zero (all children fit inside the reserved width) there
-      // is no meaningful average: any factor below 1 then divides the space equally.
-      final double averageShare = (shareTotal == 0.0) ? 1.0 : shareTotal / count;
-
-      shareTotal = 0.0;
-
-      for (int i = 0; i < count; i++) {
-        shares[i] = proportionalityFactor * shares[i] +
-            (1.0 - proportionalityFactor) * averageShare;
-
-        shareTotal += shares[i];
-      }
+    // 1) No reserved padding: the space is divided proportionally, and that's it.
+    if (reservedPadding == null) {
+      final double scale = (naturalTotal == 0.0) ? 0.0 : available / naturalTotal;
+      return weights.map((weight) => weight * scale).toList();
     }
+    //
+    // 2) There is extra space: it's divided equally between the children, so that
+    // they all grow by the same number of pixels.
+    else if (extra >= 0.0) {
+      return weights.map((weight) => weight + extra / count).toList();
+    }
+    //
+    // 3) The space is short: the paddings are kept (unless there is not enough
+    // space even for them), and only the rest of the children shrink, proportionally.
+    else {
+      final double padding = math.min(reservedPadding, available / count);
 
-    // The space that's left, after the reserved widths, is divided proportionally
-    // to the shares. If there are no shares, the children get just their reserve.
-    final double toDivide = available - reserved * count;
-    final double scale = (shareTotal == 0.0) ? 0.0 : toDivide / shareTotal;
+      final List<double> rest =
+          weights.map((weight) => math.max(0.0, weight - padding)).toList();
 
-    return shares.map((share) => reserved + share * scale).toList();
+      final double restTotal = rest.fold(0.0, (a, b) => a + b);
+      final double toDivide = available - padding * count;
+      final double scale = (restTotal == 0.0) ? 0.0 : toDivide / restTotal;
+
+      return rest.map((weight) => padding + weight * scale).toList();
+    }
   }
 
   /// Calculates the width each child should be given, considering the

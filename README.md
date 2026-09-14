@@ -199,8 +199,7 @@ available horizontal space between them, proportionally to their preferred
 ```
 RowProportional({
   List<Widget> children,
-  double proportionalityFactor,
-  double reservedWidthFactor,
+  double? reservedPadding,
   CrossAxisAlignment crossAxisAlignment,
   TextDirection textDirection,
   TextBaseline textBaseline,
@@ -232,43 +231,23 @@ RowProportional(
 );
 ```
 
-### The factors
+### Reserved padding
 
-Two optional factors let you tweak how the space is divided.
+**Important:** Providing the `reservedPadding` parameter (even with a value of zero)
+completely changes the way the available space is divided between the children. When
+you don't provide it (the default), everything works as described above.
 
-The `proportionalityFactor` (default `1.0`) controls how proportional the
-distribution is:
+If the children have some fixed horizontal padding in them, you may tell the row about
+it with the `reservedPadding` parameter, and the row will then treat that padding as a
+fixed part of each child, that never scales.
 
-* With `proportionalityFactor: 1.0` the space is divided proportionally to the
-  preferred widths of the children.
-
-* With `proportionalityFactor: 0.0` the space is divided equally between the
-  children, no matter their preferred widths.
-
-* With a factor in between, the result is interpolated between those two.
-
-For example, two children with preferred widths of 30 and 70 get 30% and 70% of the
-space with `proportionalityFactor: 1.0`, and 50% and 50% with
-`proportionalityFactor: 0.0`. With `proportionalityFactor: 0.5` they get
-40% ((30% + 50%) / 2) and 60% ((70% + 50%) / 2).
-
-The `reservedWidthFactor` (default `0.0`) is a number of pixels that is reserved for
-each child, and does not take part in the proportional division: each child is first
-given those pixels, and only the rest of the available space is divided between the
-children, proportionally to their preferred widths **minus** the reserved width.
-
-This is useful when each child contains some fixed part that should not grow or shrink
-with the rest, like a padding. For example, suppose two texts that are 30 and 70 pixels
-wide, each one inside a container with a horizontal padding of 15 pixels, so that their
-preferred widths are 60 and 100 pixels. With `reservedWidthFactor: 30` (the 15 pixels
-of padding on each side), the paddings are put aside, and only the space that's left is
-divided between the texts, proportionally to 30 and 70. So, if the available space is
-300 pixels, 2 * 30 = 60 pixels are reserved for the paddings, the other 240 pixels are
-divided into 72 and 168, and the children get 102 and 198 pixels:
+For example, suppose two texts that are 30 and 70 pixels wide, each one inside a
+container with a horizontal padding of 15 pixels, so that the preferred widths of the
+children are 60 and 100 pixels:
 
 ```
 RowProportional(
-  reservedWidthFactor: 30, // A horizontal padding of 15 pixels on each side.
+  reservedPadding: 30, // 15 pixels of padding on each side.
   children: [
     Padding(padding: EdgeInsets.symmetric(horizontal: 15), child: Text('...')),
     Padding(padding: EdgeInsets.symmetric(horizontal: 15), child: Text('...')),
@@ -276,20 +255,36 @@ RowProportional(
 );
 ```
 
-Note this keeps the children at their preferred widths when the available space is
-exactly the total of their preferred widths (160 pixels, in the example above). With
-more space they grow, and with less space they shrink, but always proportionally to
-their preferred widths minus the reserved width, which never scales. In the unlikely
-case where there is not enough space to reserve, the reserved width shrinks too, so
-that the row never overflows.
+With `reservedPadding: 30`, in the example above:
 
-If you provide both factors, the space reserved by the `reservedWidthFactor` is
-removed first, and the `proportionalityFactor` then applies to the division of the
-space that's left.
+* If the available space is exactly the preferred one (60 + 100 = 160 pixels), the
+  children get exactly their preferred widths: 60 and 100 pixels.
 
-The factors only change how the children that scale divide the space between them:
-they change neither the width of `FixedWidth` children, nor the space left over for
-the `Spacer`s.
+* If there is **more** space, the extra space is divided **equally** between the
+  children. For example, if the available space is 1000 pixels, there are
+  1000 - 160 = 840 extra pixels, so each child grows 420 pixels, and they get 480 and
+  520 pixels.
+
+* If there is **less** space, the paddings are kept, and only the texts shrink,
+  proportionally to their own widths. For example, if the available space is 100
+  pixels, 2 * 30 = 60 pixels are kept for the paddings, and the other 40 pixels are
+  divided between the texts, proportionally to 30 and 70, so that the children get 42
+  and 58 pixels. In the unlikely case where there is not enough space for the paddings
+  themselves, they shrink too, so that the row never overflows.
+
+In other words, when the space is short the division is still proportional (of what's
+left of the children, after their paddings), but when there is extra space it's not
+proportional at all: all children grow by the same number of pixels.
+
+Note it's the presence of the `reservedPadding` that turns this behavior on, and not
+its value: `reservedPadding: 0` also divides the extra space equally (and then simply
+has no padding to keep, when the space is short). When you don't provide it at all
+(`reservedPadding: null`, the default), all the available space is divided
+proportionally to the preferred widths of the children.
+
+The reserved padding only changes how the children that scale divide the space between
+them: it changes neither the width of `FixedWidth` children, nor the space left over
+for the `Spacer`s.
 
 ### Expanded and Flexible
 

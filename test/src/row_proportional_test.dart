@@ -16,8 +16,7 @@ void main() {
     WidgetTester tester, {
     required List<Widget> children,
     double width = 200,
-    double proportionalityFactor = 1.0,
-    double reservedWidthFactor = 0.0,
+    double? reservedPadding,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
     TextDirection textDirection = TextDirection.ltr,
   }) {
@@ -29,8 +28,7 @@ void main() {
             width: width,
             height: 100,
             child: RowProportional(
-              proportionalityFactor: proportionalityFactor,
-              reservedWidthFactor: reservedWidthFactor,
+              reservedPadding: reservedPadding,
               crossAxisAlignment: crossAxisAlignment,
               textDirection: textDirection,
               children: children,
@@ -410,11 +408,11 @@ void main() {
     expect(tester.getSize(find.byKey(k2)).height, 100.0);
   });
 
-  testWidgets('The default factors divide the space exactly as before.',
+  testWidgets('Without the reservedPadding, the space is divided as it always was.',
       (tester) async {
     //
-    // The default factors must divide the space exactly like it was divided before
-    // the factors existed: proportionally to the preferred widths, no reserve.
+    // The default must divide the space exactly like it was divided before the
+    // reservedPadding existed: proportionally to the preferred widths.
     for (final double rowWidth in [50.0, 170.0, 200.0, 700.0]) {
       //
       await pump(tester, width: rowWidth, children: const [
@@ -425,15 +423,11 @@ void main() {
       expect(width(tester, k1), moreOrLessEquals(rowWidth * 70 / 170));
       expect(width(tester, k2), moreOrLessEquals(rowWidth * 100 / 170));
 
-      // Passing the factors explicitly with their default values is the same thing.
-      await pump(tester,
-          width: rowWidth,
-          proportionalityFactor: 1.0,
-          reservedWidthFactor: 0.0,
-          children: const [
-            SizedBox(key: k1, width: 70, height: 10),
-            SizedBox(key: k2, width: 100, height: 10),
-          ]);
+      // Passing a null reservedPadding is exactly the same thing.
+      await pump(tester, width: rowWidth, reservedPadding: null, children: const [
+        SizedBox(key: k1, width: 70, height: 10),
+        SizedBox(key: k2, width: 100, height: 10),
+      ]);
 
       expect(width(tester, k1), moreOrLessEquals(rowWidth * 70 / 170));
       expect(width(tester, k2), moreOrLessEquals(rowWidth * 100 / 170));
@@ -454,7 +448,7 @@ void main() {
     expect(left(tester, k3) - left(tester, k1), 50.0 + 70.0 + 80.0);
   });
 
-  testWidgets('The proportionalityFactor divides between proportional and equal.',
+  testWidgets('Even a zero reservedPadding changes the way the space is divided.',
       (tester) async {
     //
     const children = [
@@ -462,23 +456,19 @@ void main() {
       SizedBox(key: k2, width: 70, height: 10),
     ];
 
-    // Fully proportional: 30% and 70%.
-    await pump(tester, width: 200, proportionalityFactor: 1.0, children: children);
-    expect(width(tester, k1), moreOrLessEquals(60.0));
-    expect(width(tester, k2), moreOrLessEquals(140.0));
-
-    // Equally divided: 50% and 50%.
-    await pump(tester, width: 200, proportionalityFactor: 0.0, children: children);
-    expect(width(tester, k1), moreOrLessEquals(100.0));
-    expect(width(tester, k2), moreOrLessEquals(100.0));
-
-    // Halfway between them: 40% and 60%.
-    await pump(tester, width: 200, proportionalityFactor: 0.5, children: children);
+    // It's the presence of the parameter that turns the behavior on, not its value:
+    // the 100 extra pixels are divided equally, and not proportionally.
+    await pump(tester, width: 200, reservedPadding: 0.0, children: children);
     expect(width(tester, k1), moreOrLessEquals(80.0));
     expect(width(tester, k2), moreOrLessEquals(120.0));
+
+    // But with no padding to keep, shrinking is proportional, as usual.
+    await pump(tester, width: 50, reservedPadding: 0.0, children: children);
+    expect(width(tester, k1), moreOrLessEquals(15.0));
+    expect(width(tester, k2), moreOrLessEquals(35.0));
   });
 
-  testWidgets('The reservedWidthFactor reserves a width for each child.',
+  testWidgets('With the reservedPadding, the extra space is divided equally.',
       (tester) async {
     //
     // Two texts of 30 and 70 pixels, each one inside a horizontal padding of 15.
@@ -487,90 +477,71 @@ void main() {
       SizedBox(key: k2, width: 100, height: 10),
     ];
 
-    // 2 * 30 pixels are reserved for the paddings, and the other 240 pixels are
-    // divided between the texts, proportionally to 30 and 70.
-    await pump(tester, width: 300, reservedWidthFactor: 30, children: children);
-    expect(width(tester, k1), moreOrLessEquals(30 + 240 * 30 / 100));
-    expect(width(tester, k2), moreOrLessEquals(30 + 240 * 70 / 100));
-
-    // When the available space is the natural one, the children keep their
-    // preferred widths.
-    await pump(tester, width: 160, reservedWidthFactor: 30, children: children);
+    // The natural space: the children keep their preferred widths.
+    await pump(tester, width: 160, reservedPadding: 30, children: children);
     expect(width(tester, k1), moreOrLessEquals(60.0));
     expect(width(tester, k2), moreOrLessEquals(100.0));
 
-    // With less space they shrink, proportionally, after the reserved paddings.
-    await pump(tester, width: 100, reservedWidthFactor: 30, children: children);
-    expect(width(tester, k1), moreOrLessEquals(30 + 40 * 30 / 100));
-    expect(width(tester, k2), moreOrLessEquals(30 + 40 * 70 / 100));
+    // More space: the 700 - 160 = 540 extra pixels are divided equally.
+    await pump(tester, width: 700, reservedPadding: 30, children: children);
+    expect(width(tester, k1), moreOrLessEquals(60 + 270));
+    expect(width(tester, k2), moreOrLessEquals(100 + 270));
 
-    // If there is not enough space to reserve, the reserved width shrinks, so
-    // that the row never overflows.
-    await pump(tester, width: 40, reservedWidthFactor: 30, children: children);
-    expect(width(tester, k1), moreOrLessEquals(20.0));
-    expect(width(tester, k2), moreOrLessEquals(20.0));
+    // The paddings do not change the extra space, only the preferred widths do.
+    await pump(tester, width: 700, reservedPadding: 10, children: children);
+    expect(width(tester, k1), moreOrLessEquals(60 + 270));
+    expect(width(tester, k2), moreOrLessEquals(100 + 270));
   });
 
-  testWidgets('Both factors: the reserved width is removed first.', (tester) async {
+  testWidgets('With the reservedPadding, only the rest of the children shrink.',
+      (tester) async {
     //
     const children = [
       SizedBox(key: k1, width: 60, height: 10),
       SizedBox(key: k2, width: 100, height: 10),
     ];
 
-    // 2 * 30 pixels are reserved, and the other 240 pixels are divided equally.
-    await pump(tester,
-        width: 300,
-        reservedWidthFactor: 30,
-        proportionalityFactor: 0.0,
-        children: children);
+    // 2 * 30 pixels are kept for the paddings, and the other 40 pixels are
+    // divided between the texts, proportionally to 30 and 70.
+    await pump(tester, width: 100, reservedPadding: 30, children: children);
+    expect(width(tester, k1), moreOrLessEquals(30 + 40 * 30 / 100));
+    expect(width(tester, k2), moreOrLessEquals(30 + 40 * 70 / 100));
 
-    expect(width(tester, k1), moreOrLessEquals(150.0));
-    expect(width(tester, k2), moreOrLessEquals(150.0));
-
-    // Shares of 30 and 70, blended with their average of 50, into 40 and 60.
-    await pump(tester,
-        width: 300,
-        reservedWidthFactor: 30,
-        proportionalityFactor: 0.5,
-        children: children);
-
-    expect(width(tester, k1), moreOrLessEquals(30 + 240 * 0.4));
-    expect(width(tester, k2), moreOrLessEquals(30 + 240 * 0.6));
+    // If there is not enough space for the paddings, they shrink too, so that
+    // the row never overflows.
+    await pump(tester, width: 40, reservedPadding: 30, children: children);
+    expect(width(tester, k1), moreOrLessEquals(20.0));
+    expect(width(tester, k2), moreOrLessEquals(20.0));
   });
 
-  testWidgets('The factors do not affect FixedWidth children nor Spacers.',
+  testWidgets('The reservedPadding does not affect FixedWidth children nor Spacers.',
       (tester) async {
     //
     // The fixed widths are still carved out of the space first: 250 pixels are
-    // left, 2 * 30 are reserved, and the other 190 are divided as 57 to 133.
-    await pump(tester, width: 300, reservedWidthFactor: 30, children: const [
+    // left, which is 90 more than the natural 160, divided equally.
+    await pump(tester, width: 300, reservedPadding: 30, children: const [
       FixedWidth(width: 50, child: SizedBox(key: k1, height: 10)),
       SizedBox(key: k2, width: 60, height: 10),
       SizedBox(key: k3, width: 100, height: 10),
     ]);
 
     expect(width(tester, k1), moreOrLessEquals(50.0));
-    expect(width(tester, k2), moreOrLessEquals(30 + 190 * 30 / 100));
-    expect(width(tester, k3), moreOrLessEquals(30 + 190 * 70 / 100));
+    expect(width(tester, k2), moreOrLessEquals(60 + 45));
+    expect(width(tester, k3), moreOrLessEquals(100 + 45));
 
-    // When the spacers get leftover space there is no proportional division at
-    // all, and the factors do nothing.
-    await pump(tester,
-        width: 300,
-        reservedWidthFactor: 30,
-        proportionalityFactor: 0.0,
-        children: const [
-          SizedBox(key: k1, width: 60, height: 10),
-          Spacer(),
-          SizedBox(key: k2, width: 100, height: 10),
-        ]);
+    // When the spacers get leftover space there is no distribution at all, and
+    // the reserved padding does nothing.
+    await pump(tester, width: 300, reservedPadding: 30, children: const [
+      SizedBox(key: k1, width: 60, height: 10),
+      Spacer(),
+      SizedBox(key: k2, width: 100, height: 10),
+    ]);
 
     expect(width(tester, k1), moreOrLessEquals(60.0));
     expect(width(tester, k2), moreOrLessEquals(100.0));
   });
 
-  testWidgets('The factors do not affect the natural width of the row.',
+  testWidgets('The reservedPadding does not affect the natural width of the row.',
       (tester) async {
     //
     await tester.pumpWidget(const Directionality(
@@ -578,8 +549,7 @@ void main() {
       child: Center(
         child: IntrinsicWidth(
           child: RowProportional(
-            reservedWidthFactor: 30,
-            proportionalityFactor: 0.0,
+            reservedPadding: 30,
             children: [
               SizedBox(key: k1, width: 60, height: 10),
               SizedBox(key: k2, width: 100, height: 10),
@@ -589,11 +559,9 @@ void main() {
       ),
     ));
 
-    // The row still wants 60 + 100 pixels, even though the factors then divide
-    // those 160 pixels equally between the children (30 reserved for each one,
-    // and the other 100 divided into 50 and 50).
+    // The row wants 60 + 100 pixels, and the children keep their natural widths.
     expect(tester.getSize(find.byType(RowProportional)).width, 160.0);
-    expect(width(tester, k1), moreOrLessEquals(80.0));
-    expect(width(tester, k2), moreOrLessEquals(80.0));
+    expect(width(tester, k1), moreOrLessEquals(60.0));
+    expect(width(tester, k2), moreOrLessEquals(100.0));
   });
 }
