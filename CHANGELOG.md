@@ -2,6 +2,23 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 12.13.0
+
+* New `RowProportional` parameter `proportionalityFactor` (default `1.0`), which
+  controls how proportional the distribution of space is. With `1.0` the space is
+  divided proportionally to the preferred widths of the children; with `0.0` it's
+  divided equally between them; and values in between interpolate the two. For
+  example, two children with preferred widths of 30 and 70 get 30%/70% of the space
+  with `proportionalityFactor: 1.0`, 50%/50% with `proportionalityFactor: 0.0`, and
+  40%/60% with `proportionalityFactor: 0.5`.
+
+* New `RowProportional` parameter `widthOffsetFactor` (default `0.0`), a number of
+  pixels that is subtracted from the preferred width of each child (clipped at zero,
+  so it never goes negative) before the proportions are calculated. For example, two
+  children with preferred widths of 1000 and 500 divide the space between them as
+  900 to 400, when `widthOffsetFactor: 100.0`. If both factors are given, the
+  `widthOffsetFactor` is applied first.
+
 ## 12.12.1
 
 * The new `SquircleBorder` class is similar to Flutter's `ContinuousRectangleBorder`, 

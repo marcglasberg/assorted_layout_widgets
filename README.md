@@ -199,6 +199,8 @@ available horizontal space between them, proportionally to their preferred
 ```
 RowProportional({
   List<Widget> children,
+  double proportionalityFactor,
+  double widthOffsetFactor,
   CrossAxisAlignment crossAxisAlignment,
   TextDirection textDirection,
   TextBaseline textBaseline,
@@ -229,6 +231,49 @@ RowProportional(
   ],
 );
 ```
+
+### The factors
+
+Two optional factors let you tweak how the space is divided.
+
+The `proportionalityFactor` (default `1.0`) controls how proportional the
+distribution is:
+
+* With `proportionalityFactor: 1.0` the space is divided proportionally to the
+  preferred widths of the children.
+
+* With `proportionalityFactor: 0.0` the space is divided equally between the
+  children, no matter their preferred widths.
+
+* With a factor in between, the result is interpolated between those two.
+
+For example, two children with preferred widths of 30 and 70 get 30% and 70% of the
+space with `proportionalityFactor: 1.0`, and 50% and 50% with
+`proportionalityFactor: 0.0`. With `proportionalityFactor: 0.5` they get
+40% ((30% + 50%) / 2) and 60% ((70% + 50%) / 2).
+
+The `widthOffsetFactor` (default `0.0`) is a number of pixels that is subtracted from
+the preferred width of each child, before the proportions are calculated. The result
+is clipped at zero, so it never goes negative. For example, two children with
+preferred widths of 1000 and 500 divide the space between them as 900 to 400, when
+`widthOffsetFactor: 100.0`:
+
+```
+RowProportional(
+  widthOffsetFactor: 100.0,
+  children: [
+    SizedBox(width: 1000), // Gets 900 / 1300 of the space.
+    SizedBox(width: 500), // Gets 400 / 1300 of the space.
+  ],
+);
+```
+
+If you provide both factors, the `widthOffsetFactor` is applied first, and then the
+`proportionalityFactor` is applied to the resulting widths.
+
+The factors only change how the children that scale divide the space between them:
+they change neither the width of `FixedWidth` children, nor the space left over for
+the `Spacer`s.
 
 ### Expanded and Flexible
 

@@ -10,6 +10,8 @@ analyzer:
     missing_required_param: warning
     # allow having TODOs in the code
     todo: ignore
+  exclude:
+    - build/**
 
 # Rules are in the same order (alphabetically) as documented at http://dart-lang.github.io/linter/lints
 # and https://github.com/dart-lang/linter/blob/master/example/all.yaml
