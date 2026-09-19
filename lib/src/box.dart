@@ -257,17 +257,22 @@ class Box extends StatelessWidget {
 
       double r = (color == null)
           ? (30 + rand.nextInt(196)) / 255.0
-          : (color.r + rand.nextDouble()) / 2;
+          : (color.red / 255.0 + rand.nextDouble()) / 2;
 
       double g = (color == null)
           ? (30 + rand.nextInt(196)) / 255.0
-          : (color.g + rand.nextDouble()) / 2;
+          : (color.green / 255.0 + rand.nextDouble()) / 2;
 
       double b = (color == null)
           ? (30 + rand.nextInt(196)) / 255.0
-          : (color.b + rand.nextDouble()) / 2;
+          : (color.blue / 255.0 + rand.nextDouble()) / 2;
 
-      color = Color.from(alpha: 1.0, red: r, green: g, blue: b);
+      color = Color.fromRGBO(
+        (r * 255).round(),
+        (g * 255).round(),
+        (b * 255).round(),
+        1.0,
+      );
     }
 
     if (decoration != null) {
