@@ -2,6 +2,24 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 12.15.0
+
+* New `AnimatedSymbol` widget, which draws a plus, minus, times, check, equals or colon
+  symbol, and animates smoothly between them when the symbol changes. You can choose the
+  thickness of the lines, the color, and the size of the widget.
+
+  ![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/symbol.gif)
+
+## 12.14.0
+
+* New `NoSpacesTextInputFormatter.trim()` constructor. While the default
+  `NoSpacesTextInputFormatter()` removes all whitespace, the `trim` one allows
+  whitespace but keeps it tidy while the user types: whitespace can never be the
+  first character of the text; line breaks are allowed, but at most one completely
+  blank line in a row; spaces and tabs are removed from the end of every line,
+  except from the last line (the one currently being typed); and double spaces are
+  not allowed (a run of spaces/tabs is reduced to a single space).
+
 ## 12.13.2
 
 * New `RowProportional` parameter `reservedPadding` (default `null`): the fixed
@@ -26,9 +44,9 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 ## 12.12.1
 
-* The new `SquircleBorder` class is similar to Flutter's `ContinuousRectangleBorder`, 
-  but it allows more configuration options. It defines a rounded-rectangle shape 
-  (like a "squircle") where two things are chosen independently: how big the corners are, 
+* The new `SquircleBorder` class is similar to Flutter's `ContinuousRectangleBorder`,
+  but it allows more configuration options. It defines a rounded-rectangle shape (like a
+  "squircle") where two things are chosen independently: how big the corners are,
   and how the corner curve looks.
 
   ![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/squircle_border1.png)
@@ -304,9 +322,7 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
   ```
 
-DetectScroll(
-child: SingleChildScrollView(
-child: Column( ...
+DetectScroll (child: SingleChildScrollView (child: Column (...
 ...
 );
 
@@ -316,8 +332,8 @@ child: Column( ...
 
   ```
 
-bool canScroll = DetectScroll.of(context).canScroll;
-double scrollbarWidth = DetectScroll.of(context).scrollbarWidth;
+bool canScroll = DetectScroll.of (context).canScroll;
+double scrollbarWidth = DetectScroll.of (context).scrollbarWidth;
 
   ```
 
@@ -326,16 +342,14 @@ double scrollbarWidth = DetectScroll.of(context).scrollbarWidth;
 
   ```
 
-bool canScroll = DetectScroll.of(context).canScroll;
-double scrollbarWidth = DetectScroll.of(context).scrollbarWidth;
+bool canScroll = DetectScroll.of (context).canScroll;
+double scrollbarWidth = DetectScroll.of (context).scrollbarWidth;
 
-return Stack(
-children: [
+return Stack (children: [
 child,
-Positioned(
-right: canScroll ? scrollbarWidth : 0,
+Positioned (right: canScroll ? scrollbarWidth : 0,
 top: 0,
-child: HelpButton(),
+child: HelpButton (),
 ),
 ],
 );
@@ -346,8 +360,7 @@ child: HelpButton(),
 
   ```
 
-DetectScroll(
-onChange: ({
+DetectScroll (onChange: ({
 required bool canScroll,
 required double scrollbarWidth,
 }) {
@@ -372,16 +385,14 @@ child: ...
 
   ```
 
-CircleButton(
-icon: Icon(Icons.shopping_cart),     
+CircleButton (icon: Icon (Icons.shopping_cart),     
 builder: ({
 required bool isHover,
 required bool isPressed,
 required Widget child,
 }) =>
-AnimatedScale(
-scale: isPressed ? 0.85 : 1.0,
-duration: const Duration(milliseconds: 50),
+AnimatedScale (scale: isPressed ? 0.85 : 1.0,
+duration: const Duration (milliseconds: 50),
 child: child,
 ),
 );
@@ -397,11 +408,10 @@ child: child,
 
   ```
 
-SideBySide(
-children: [
-Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
-Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
-Text("I'm good, thank you.", textWidthBasis: TextWidthBasis.longestLine),
+SideBySide (children: [
+Text ("Hello!", textWidthBasis: TextWidthBasis.longestLine),
+Text ("How are you?", textWidthBasis: TextWidthBasis.longestLine),
+Text ("I'm good, thank you.", textWidthBasis: TextWidthBasis.longestLine),
 ],
 gaps: [8.0, 12.0],
 );
@@ -419,9 +429,9 @@ gaps: [8.0, 12.0],
 
   ```
 
-return SideBySide(
-startChild: Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
-endChild: Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
+return SideBySide (startChild: Text ("Hello!", textWidthBasis:
+TextWidthBasis.longestLine),
+endChild: Text ("How are you?", textWidthBasis: TextWidthBasis.longestLine),
 innerDistance: 8.0,
 );
 
@@ -431,10 +441,9 @@ innerDistance: 8.0,
 
   ```
 
-return SideBySide(
-children: [
-Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
-Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
+return SideBySide (children: [
+Text ("Hello!", textWidthBasis: TextWidthBasis.longestLine),
+Text ("How are you?", textWidthBasis: TextWidthBasis.longestLine),
 ],
 gaps: [8.0],
 );
@@ -453,11 +462,10 @@ gaps: [8.0],
 
   ```
 
-Column(
-children: [
-Text('A'),
-const Box.gap(8), // 8.0 pixel gap
-Text('B'),
+Column (children: [
+Text ('A'),
+const Box.gap (8), // 8.0 pixel gap
+Text ('B'),
 ]);
 
   ```
@@ -588,17 +596,16 @@ Text('B'),
 
   ```                                                                             
 
-showDialogSuper<int>(
-...
+showDialogSuper<int>(...
 actions: [
-ElevatedButton( onPressed: (){Navigator.pop(context, 1);}, child: const Text("OK"),
-ElevatedButton( onPressed: (){Navigator.pop(context, 2);}, child: const Text("CANCEL"),        
+ElevatedButton (onPressed: (){Navigator.pop (context, 1);}, child: const Text ("OK"),
+ElevatedButton (onPressed: (){Navigator.pop (context, 2);}, child: const Text ("CANCEL"),        
 ]
 ...
 onDismissed: (int? result) {
-if (result == 1) print("Pressed the OK button.");
-else if (result == 2) print("Pressed the CANCEL button.");
-else if (result == null) print("Dismissed with BACK or tapping the barrier.");  
+if (result == 1) print ("Pressed the OK button.");
+else if (result == 2) print ("Pressed the CANCEL button.");
+else if (result == null) print ("Dismissed with BACK or tapping the barrier.");  
 });
 
   ```

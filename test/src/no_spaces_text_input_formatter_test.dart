@@ -359,4 +359,114 @@ void main() {
       expect(r2.text, 'cd');
     });
   });
+
+  // ============================================================
+  // TRIM CONSTRUCTOR
+  // ============================================================
+
+  group('NoSpacesTextInputFormatter.trim', () {
+    final trim = NoSpacesTextInputFormatter.trim();
+
+    /// Formats [text] as if it had just been typed/pasted into an empty field.
+    String fmt(String text) =>
+        trim.formatEditUpdate(const TextEditingValue(), _value(text)).text;
+
+    test('keeps whitespace tidy', () {
+      //
+      // The examples from the docs.
+      expect(fmt(' a'), 'a');
+      expect(fmt(' a '), 'a ');
+      expect(fmt(' a  '), 'a ');
+      expect(fmt('a\nb'), 'a\nb');
+      expect(fmt('a\n\nb'), 'a\n\nb');
+      expect(fmt('a\n\n\nb'), 'a\n\nb');
+      expect(fmt('a  b'), 'a b');
+      expect(fmt('a\n\n \nb'), 'a\n\nb');
+      expect(fmt('a \nb'), 'a\nb');
+      expect(fmt('a  \nb '), 'a\nb ');
+
+      // Empty, or only whitespace, results in empty text.
+      expect(fmt(''), '');
+      expect(fmt(' '), '');
+      expect(fmt('    '), '');
+      expect(fmt('\n'), '');
+      expect(fmt('\n\n\n'), '');
+      expect(fmt('\t'), '');
+      expect(fmt(' \n\t \n '), '');
+
+      // Whitespace can never be the first character.
+      expect(fmt('   a'), 'a');
+      expect(fmt('\na'), 'a');
+      expect(fmt('\n\n\na'), 'a');
+      expect(fmt('\ta'), 'a');
+      expect(fmt(' \n a'), 'a');
+      expect(fmt('  \t \n  Hello'), 'Hello');
+
+      // Once there is a non-whitespace character, whitespace may be typed.
+      expect(fmt('a '), 'a ');
+      expect(fmt('a\n'), 'a\n');
+      expect(fmt('Hello world'), 'Hello world');
+      expect(fmt('The quick brown fox'), 'The quick brown fox');
+
+      // No double spaces: a run of spaces/tabs becomes a single space.
+      expect(fmt('a   b'), 'a b');
+      expect(fmt('a          b'), 'a b');
+      expect(fmt('a\tb'), 'a b');
+      expect(fmt('a\t\tb'), 'a b');
+      expect(fmt('a \t b'), 'a b');
+      expect(fmt('a   '), 'a ');
+      expect(fmt('a b  c   d'), 'a b c d');
+      // Non-breaking space also counts as horizontal whitespace.
+      expect(fmt('a b'), 'a b');
+      expect(fmt('a   b'), 'a b');
+
+      // At most one completely blank line in a row.
+      expect(fmt('a\n\n\n\nb'), 'a\n\nb');
+      expect(fmt('a\n\n\n\n\n\n\nb'), 'a\n\nb');
+      expect(fmt('a\n\nb\n\n\nc'), 'a\n\nb\n\nc');
+      expect(fmt('a\n \n \n \nb'), 'a\n\nb');
+      expect(fmt('a\n\t\n\t\nb'), 'a\n\nb');
+      expect(fmt('Line one\n\nLine two\n\n\nLine three'),
+          'Line one\n\nLine two\n\nLine three');
+
+      // Spaces and tabs are removed from the end of every line, but not from the
+      // last line, which is the one being typed.
+      expect(fmt('a \nb'), 'a\nb');
+      expect(fmt('a   \nb'), 'a\nb');
+      expect(fmt('a\t\nb'), 'a\nb');
+      expect(fmt('a \nb \nc '), 'a\nb\nc ');
+      expect(fmt('a \n'), 'a\n');
+      expect(fmt('a\n '), 'a\n ');
+      expect(fmt('a\n  '), 'a\n ');
+      expect(fmt('a\n\n\n '), 'a\n\n ');
+      // But leading spaces of lines other than the first one are kept.
+      expect(fmt('a  b  \n  c  d  '), 'a b\n c d ');
+      expect(fmt('a\n b'), 'a\n b');
+
+      // Carriage returns become line breaks.
+      expect(fmt('a\r\nb'), 'a\nb');
+      expect(fmt('a\rb'), 'a\nb');
+      expect(fmt('a\r\n\r\nb'), 'a\n\nb');
+      expect(fmt('a\r\n\r\n\r\nb'), 'a\n\nb');
+      expect(fmt('\r\na'), 'a');
+
+      // Non-whitespace characters are never touched.
+      expect(fmt('a, b. c! d?'), 'a, b. c! d?');
+      expect(fmt(r'$  #  @'), r'$ # @');
+      expect(fmt('café  au  lait'), 'café au lait');
+      expect(fmt(' hi  🎉  there '), 'hi 🎉 there ');
+      expect(fmt('1  2  3'), '1 2 3');
+
+      // Already tidy text passes through unchanged.
+      expect(fmt('a b\nc d\n\ne f'), 'a b\nc d\n\ne f');
+      expect(fmt('HelloWorld'), 'HelloWorld');
+
+      // The default constructor still removes all whitespace, unlike `trim`.
+      final noSpaces = NoSpacesTextInputFormatter();
+      expect(
+        noSpaces.formatEditUpdate(const TextEditingValue(), _value(' a  \nb ')).text,
+        'ab',
+      );
+    });
+  });
 }

@@ -1,4 +1,5 @@
 export "src/animated_between.dart";
+export "src/animated_symbol.dart";
 export "src/box.dart";
 export "src/box_animating_width.dart";
 export "src/button.dart";

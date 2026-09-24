@@ -185,15 +185,66 @@ class AllowedCharsTextInputFormatter extends TextInputFormatter {
 /// [NoSpacesTextInputFormatter] is a [TextInputFormatter] that prevents the user from
 /// typing any spaces (including tabs and newlines). It removes all whitespace characters
 /// from the input.
+///
+/// There are two constructors:
+///
+/// - [NoSpacesTextInputFormatter]: Removes **all** whitespace characters (spaces, tabs,
+///   newlines etc.) from the input, so that no whitespace can ever be typed.
+///
+/// - [NoSpacesTextInputFormatter.trim]: Allows whitespace, but keeps it tidy while the
+///   user types. See the constructor documentation for the exact rules.
+///
 class NoSpacesTextInputFormatter extends TextInputFormatter {
   //
+  final bool _trim;
+
+  /// Prevents the user from typing any whitespace at all: all spaces, tabs, newlines
+  /// and other whitespace characters are removed from the input.
+  ///
+  /// See also: [NoSpacesTextInputFormatter.trim].
+  ///
+  NoSpacesTextInputFormatter() : _trim = false;
+
+  /// Allows the user to type whitespace, but keeps it tidy while typing:
+  ///
+  /// - Whitespace can never be the first character of the text. In other words, all
+  ///   leading whitespace is removed. Once there is a non-whitespace character,
+  ///   whitespace may be typed.
+  ///
+  /// - Line breaks are allowed, but at most one completely blank line in a row.
+  ///   Two blank lines in a row are reduced to one.
+  ///
+  /// - Spaces and tabs are removed from the end of every line, except from the last
+  ///   line (the one currently being typed).
+  ///
+  /// - Double spaces are not allowed: a run of spaces/tabs is reduced to a single space.
+  ///
+  /// Examples (using `\n` for a line break):
+  ///
+  /// ```
+  /// ' a'          →  'a'
+  /// ' a '         →  'a '
+  /// ' a  '        →  'a '
+  /// 'a\nb'        →  'a\nb'
+  /// 'a\n\nb'      →  'a\n\nb'
+  /// 'a\n\n\nb'    →  'a\n\nb'
+  /// 'a  b'        →  'a b'
+  /// 'a\n\n \nb'   →  'a\n\nb'
+  /// 'a \nb'       →  'a\nb'
+  /// 'a  \nb '     →  'a\nb '
+  /// ```
+  ///
+  /// See also: [NoSpacesTextInputFormatter].
+  ///
+  NoSpacesTextInputFormatter.trim() : _trim = true;
+
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
     //
-    var text = newValue.text.removeSpaces();
+    var text = _trim ? newValue.text.trimSpaces() : newValue.text.removeSpaces();
 
     int offset = newValue.text.length <= text.length
         ? math.min(newValue.selection.baseOffset, text.length)
@@ -431,6 +482,16 @@ extension _StringTextInputFormatterUtils on String {
   static final _patternAllCharsExceptDigits = RegExp('[^0-9]');
   static final _patternAllCharsExceptDigitsDotOrComma = RegExp('[^0-9.,]');
   static final _allSpaces = RegExp(r'\s');
+  static final _leadingSpaces = RegExp(r'^\s+');
+
+  /// Any whitespace that is not a line break.
+  static final _horizontalSpaces = RegExp(r'[^\S\n]+');
+
+  /// Horizontal whitespace at the end of a line (of a line that is not the last one).
+  static final _horizontalSpacesBeforeNewline = RegExp(r'[^\S\n]+(?=\n)');
+
+  /// Three or more line breaks in a row (which means two or more blank lines).
+  static final _threeOrMoreNewlines = RegExp(r'\n{3,}');
 
   /// Returns only digits 0-9 (also removes dot, comma, and minus sign).
   String onlyInts() => replaceAll(_patternAllCharsExceptDigits, '');
@@ -439,6 +500,22 @@ extension _StringTextInputFormatterUtils on String {
   String onlyIntsDotComma() => replaceAll(_patternAllCharsExceptDigitsDotOrComma, '');
 
   String removeSpaces() => replaceAll(_allSpaces, "");
+
+  /// Keeps whitespace tidy, as described in [NoSpacesTextInputFormatter.trim]:
+  ///
+  /// - Removes all leading whitespace, so whitespace can never be the first character.
+  /// - Reduces runs of spaces/tabs to a single space (no double spaces).
+  /// - Removes spaces/tabs from the end of all lines, except the last one.
+  /// - Allows at most one completely blank line in a row.
+  ///
+  String trimSpaces() {
+    var text = replaceAll('\r\n', '\n').replaceAll('\r', '\n');
+    text = text.replaceFirst(_leadingSpaces, '');
+    text = text.replaceAll(_horizontalSpaces, ' ');
+    text = text.replaceAll(_horizontalSpacesBeforeNewline, '');
+    text = text.replaceAll(_threeOrMoreNewlines, '\n\n');
+    return text;
+  }
 
   /// Converts the given text to title case, following common English
   /// title capitalization rules. This is an approximation. A better

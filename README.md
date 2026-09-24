@@ -40,7 +40,7 @@ Despite the package name, they are not only related to layout. Here they are:
 | <tt>[Pad](#pad)</tt> <i>is an EdgeInsetsGeometry which is easier to type and remember</i>.                                                            | <tt>[TimeBuilder](#timebuilder)</tt> <i>lets you implement clocks, countdowns, stopwatches etc, the right way.</i>                                                     | <tt>[ScrollShadow](#scrollshadow)</tt> <i>adds dynamic top and bottom shadows to a scrollable widget, to indicate overflow content.</i>                  | <tt>[ThousandsSeparatorTextInputFormatter](#thousandsseparatortextinputformatter)</tt> <i>formats numeric input with thousands separators as the user types.</i>                              |
 | <tt>[NormalizedOverflowBox](#normalizedoverflowbox)</tt> <i>is an OverflowBox that throws no errors and is easier to use</i>.                         | <tt>[KeepTallest](#keeptallest)</tt> <i>keeps its height at the tallest child ever seen, preventing layout jumps.</i>                                                  | <tt>[Email](#email)</tt> <i>provides email validation and sanitization, plus an EmailTextInputFormatter to use as the user types.</i>                    | <tt>[CapitalizationTextInputFormatter](#capitalizationtextinputformatter)</tt> <i>capitalizes text as the user types: uppercase, lowercase, first-letter, or title.</i>                       |
 |                                                                                                                                                       | <tt>[AnimatedBetween](#animatedbetween)</tt> <i>animates smoothly between two children, cross-fading their content while resizing the enclosing box.</i>               | <tt>[OtpCodeVerificationField](#otpcodeverificationfield)</tt> <i>is a one-time-password code verification textfield, with lots of features.</i>         | <tt>[NumbersTextInputFormatter](#numberstextinputformatter)</tt> <i>allows only numeric input: integer, or decimal with locale-aware, dot, or comma separators.</i>                           |
-|                                                                                                                                                       |                                                                                                                                                                        |                                                                                                                                                          | <tt>[AllowedCharsTextInputFormatter](#allowedcharstextinputformatter)</tt> <i>allows only the characters that match a given regular expression, filtering out everything else.</i>            |
+|                                                                                                                                                       |                                                                                                                                                                        | <tt>[AnimatedSymbol](#animatedsymbol)</tt> <i>draws a +, -, x, ✓, = or : symbol, and animates between them.</i>                                        | <tt>[AllowedCharsTextInputFormatter](#allowedcharstextinputformatter)</tt> <i>allows only the characters that match a given regular expression, filtering out everything else.</i>            |
 |                                                                                                                                                       |                                                                                                                                                                        |                                                                                                                                                          | <tt>[NoSpacesTextInputFormatter](#nospacestextinputformatter)</tt> <i>prevents the user from typing whitespace.</i>                                                                           |
 |                                                                                                                                                       |                                                                                                                                                                        |                                                                                                                                                          | <tt>[AlwaysAtTheEndTextInputFormatter](#alwaysattheendtextinputformatter)</tt> <i>forces the cursor to always stay at the end of the typed text.</i>                                          |
 |                                                                                                                                                       |                                                                                                                                                                        |                                                                                                                                                          | <tt>[StringDotLengthLimiterTextInputFormatter](#stringdotlengthlimitertextinputformatter)</tt> <i>limits text by Dart's String.length (instead of grapheme clusters), to match DB limits.</i> |
@@ -1713,6 +1713,46 @@ TextField(
 );
 ```
 
+There is also a `NoSpacesTextInputFormatter.trim()` constructor, which does allow
+whitespace, but keeps it tidy while the user types:
+
+* Whitespace can never be the first character of the text. In other words, all leading
+  whitespace is removed. Once there is a non-whitespace character, whitespace may
+  be typed.
+
+* Line breaks are allowed, but at most one completely blank line in a row. Two blank
+  lines in a row are reduced to one.
+
+* Spaces and tabs are removed from the end of every line, except from the last line
+  (the one currently being typed).
+
+* Double spaces are not allowed: a run of spaces/tabs is reduced to a single space.
+
+For example (using `\n` for a line break):
+
+```
+' a'          →  'a'
+' a '         →  'a '
+' a  '        →  'a '
+'a\nb'        →  'a\nb'
+'a\n\nb'      →  'a\n\nb'
+'a\n\n\nb'    →  'a\n\nb'
+'a  b'        →  'a b'
+'a\n\n \nb'   →  'a\n\nb'
+'a \nb'       →  'a\nb'
+'a  \nb '     →  'a\nb '
+```
+
+Usage:
+
+```
+TextField(
+  inputFormatters: [
+    NoSpacesTextInputFormatter.trim(),
+  ],
+);
+```
+
 <br>
 
 # AlwaysAtTheEndTextInputFormatter
@@ -2921,6 +2961,73 @@ AnimatedBetween example</a>.
 Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_animated_between_showhide.dart">
 AnimatedBetween.showHide example</a>.
+
+<br>
+
+# AnimatedSymbol
+
+`AnimatedSymbol` draws one of these symbols: plus `+`, minus `-`, times `x`,
+check `✓`, equals `=` or colon `:`. When you change the symbol, it animates
+smoothly into the new one. You can choose the thickness of the lines, the color, and 
+the size of the widget.
+
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/symbol.gif)
+
+```
+AnimatedSymbol(
+  isOpen ? SymbolType.times : SymbolType.plus,
+  Colors.blue,
+  width: 40,
+  height: 40,
+)
+```
+
+The symbol is always square, centered, and as large as the available space
+(after the `padding`). Each symbol is made of two bars that rotate, move and resize to
+form the next symbol. The colon is made of two circles: to form it, the bars first turn
+into small squares where the circles will be, and then the squares seem to turn into
+circles. Changing from the colon does the same, in reverse, and takes twice the
+`duration`.
+
+### Parameters
+
+```
+AnimatedSymbol(
+  SymbolType symbol,
+  Color color, {
+  double widthRatio = 0.15,
+  double? minWidth,
+  double? maxWidth,
+  EdgeInsetsGeometry? padding,
+  double? width,
+  double? height,
+  Duration duration = const Duration(milliseconds: 300),
+})
+```
+
+- **`symbol`**: One of `SymbolType.plus`, `minus`, `times`, `check`, `equals` or
+  `colon`. Changing it animates to the new symbol.
+
+- **`color`**: The color of the symbol.
+
+- **`widthRatio`**: The line width, as a fraction of the symbol size. For the equals,
+  it's also the gap between the bars. For the colon, it's the diameter of the circles,
+  and also the gap between them.
+
+- **`minWidth`** / **`maxWidth`**: Optional limits to the line width (or circle
+  diameter), in pixels. Useful so that small symbols don't get too thin, and large
+  symbols don't get too thick.
+
+- **`padding`**: Space around the symbol, inside the `width` and `height`.
+
+- **`width`** / **`height`**: The size of the widget. If not given, it fills the
+  available space.
+
+- **`duration`**: The duration of the animation between symbols.
+
+Try running
+the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_animated_symbol.dart">
+AnimatedSymbol example</a>.
 
 <br>
 
