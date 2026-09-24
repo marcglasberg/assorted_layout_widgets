@@ -2,13 +2,13 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
-## 12.15.2
+## 12.15.3
 
 * New `AnimatedSymbol` widget, which draws a plus, minus, times, check, equals or colon
   symbol, and animates smoothly between them when the symbol changes. You can choose the
   thickness of the lines, the color, and the size of the widget.
 
-  ![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/symbol.gif)
+  ![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/symbols.gif)
 
 ## 12.14.0
 

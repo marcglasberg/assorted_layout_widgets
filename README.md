@@ -2971,7 +2971,7 @@ check `✓`, equals `=` or colon `:`. When you change the symbol, it animates
 smoothly into the new one. You can choose the thickness of the lines, the color, and 
 the size of the widget.
 
-![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/symbol.gif)
+![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/symbols.gif)
 
 ```
 AnimatedSymbol(
