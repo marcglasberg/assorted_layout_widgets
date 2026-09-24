@@ -4,32 +4,28 @@ import "package:align_positioned/align_positioned.dart";
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-// /
-
 enum SymbolType { plus, minus, times, check, equals, colon }
-
-// /
 
 /// Creates the symbol ("+", "-", "x", "✓", "=" or ":") requested in the [symbol] parameter,
 /// with the size of the container, and the requested color.
 ///
-/// The line width is proportional to the size of the container (see [widthRatio]),
-/// but optionally limited by [minWidth] and [maxWidth].
+/// The line width is proportional to the size of the container (see [lineWidthRatio]),
+/// but optionally limited by [minLineWidth] and [maxLineWidth].
 ///
 /// For the equals symbol, the vertical distance between the bars is the line width.
 ///
-/// For the colon symbol, [widthRatio], [minWidth] and [maxWidth] define the diameter
+/// For the colon symbol, [lineWidthRatio], [minLineWidth] and [maxLineWidth] define the diameter
 /// of the circles, which is also the vertical distance between them.
 ///
 /// If [symbol] is changed to another one, there will be an animation between them.
 ///
 class AnimatedSymbol extends StatefulWidget {
   //
-  final Color color;
-  final double widthRatio;
-  final double? minWidth;
-  final double? maxWidth;
   final SymbolType symbol;
+  final Color color;
+  final double lineWidthRatio;
+  final double? minLineWidth;
+  final double? maxLineWidth;
   final EdgeInsetsGeometry? padding;
   final double? width;
   final double? height;
@@ -39,9 +35,9 @@ class AnimatedSymbol extends StatefulWidget {
     this.symbol,
     this.color, {
     Key? key,
-    this.widthRatio = 0.15,
-    this.minWidth,
-    this.maxWidth,
+    this.lineWidthRatio = 0.15,
+    this.minLineWidth,
+    this.maxLineWidth,
     this.padding,
     this.width,
     this.height,
@@ -52,7 +48,8 @@ class AnimatedSymbol extends StatefulWidget {
   State<AnimatedSymbol> createState() => _AnimatedSymbolState();
 }
 
-class _AnimatedSymbolState extends State<AnimatedSymbol> with SingleTickerProviderStateMixin {
+class _AnimatedSymbolState extends State<AnimatedSymbol>
+    with SingleTickerProviderStateMixin {
   //
   /// Drives the animation to and from the colon symbol. It takes twice the [duration]:
   /// * 0.0: Not a colon. The bars form the other symbols, as usual.
@@ -141,7 +138,8 @@ class _AnimatedSymbolState extends State<AnimatedSymbol> with SingleTickerProvid
 
     bool showColonSquares = (widget.symbol == SymbolType.colon) || (colonProgress > 0.5);
 
-    List<Widget> bars = showColonSquares //
+    List<Widget> bars =
+        showColonSquares //
         ? _colonSquares(size, colonProgress)
         : _bars(widget.symbol);
 
@@ -169,31 +167,25 @@ class _AnimatedSymbolState extends State<AnimatedSymbol> with SingleTickerProvid
       throw AssertionError(symbol);
   }
 
-  List<Widget> _plus() => [
-        _bar(rotateDegrees: 0),
-        _bar(rotateDegrees: 90),
-      ];
+  List<Widget> _plus() => [_bar(rotateDegrees: 0), _bar(rotateDegrees: 90)];
 
   List<Widget> _minus() => [
-        // Uses two bars, so that it can transform into the other symbols.
-        _bar(rotateDegrees: 0),
-        _bar(rotateDegrees: 0),
-      ];
+    // Uses two bars, so that it can transform into the other symbols.
+    _bar(rotateDegrees: 0),
+    _bar(rotateDegrees: 0),
+  ];
 
-  List<Widget> _times() => [
-        _bar(rotateDegrees: 45),
-        _bar(rotateDegrees: -45),
-      ];
+  List<Widget> _times() => [_bar(rotateDegrees: 45), _bar(rotateDegrees: -45)];
 
   List<Widget> _equals() => [
-        // The gap between the bars is the line width.
-        _bar(rotateDegrees: 0, moveByChildHeight: -1),
-        _bar(rotateDegrees: 0, moveByChildHeight: 1),
-      ];
+    // The gap between the bars is the line width.
+    _bar(rotateDegrees: 0, moveByChildHeight: -1),
+    _bar(rotateDegrees: 0, moveByChildHeight: 1),
+  ];
 
   List<Widget> _check() {
-    // Note: If minWidth is used, the bumpSize calculation will be off.
-    double bumpSize = 1 + (widget.widthRatio - 0.15) * (1.35 - 1.0) / (0.4 - 0.15);
+    // Note: If minLineWidth is used, the bumpSize calculation will be off.
+    double bumpSize = 1 + (widget.lineWidthRatio - 0.15) * (1.35 - 1.0) / (0.4 - 0.15);
 
     const double angle = 135.0;
     const double horizontalDisplacement = 0.04;
@@ -228,22 +220,21 @@ class _AnimatedSymbolState extends State<AnimatedSymbol> with SingleTickerProvid
     double dx = 0.0,
     double dy = 0.0,
     Color? color,
-  }) =>
-      AnimatedAlignPositioned(
-        duration: widget.duration,
-        rotateDegrees: rotateDegrees,
-        childWidthRatio: childWidthRatio,
-        childHeightRatio: widget.widthRatio,
-        minChildHeight: widget.minWidth,
-        maxChildHeight: widget.maxWidth,
-        moveByChildWidth: moveByChildWidth,
-        moveByChildHeight: moveByChildHeight,
-        moveByContainerWidth: moveByContainerWidth,
-        moveByContainerHeight: moveByContainerHeight,
-        dx: dx,
-        dy: dy,
-        child: Container(color: color ?? widget.color),
-      );
+  }) => AnimatedAlignPositioned(
+    duration: widget.duration,
+    rotateDegrees: rotateDegrees,
+    childWidthRatio: childWidthRatio,
+    childHeightRatio: widget.lineWidthRatio,
+    minChildHeight: widget.minLineWidth,
+    maxChildHeight: widget.maxLineWidth,
+    moveByChildWidth: moveByChildWidth,
+    moveByChildHeight: moveByChildHeight,
+    moveByContainerWidth: moveByContainerWidth,
+    moveByContainerHeight: moveByContainerHeight,
+    dx: dx,
+    dy: dy,
+    child: Container(color: color ?? widget.color),
+  );
 
   // ---------------------------------------------------------------------------
   // Colon.
@@ -273,9 +264,9 @@ class _AnimatedSymbolState extends State<AnimatedSymbol> with SingleTickerProvid
   /// The diameter of the colon circles, which is also the vertical distance between
   /// them. Uses the same calculation as the width of the bars.
   double _colonDiameter(double size) {
-    double diameter = widget.widthRatio * size;
-    if (widget.minWidth != null) diameter = max(diameter, widget.minWidth!);
-    if (widget.maxWidth != null) diameter = min(diameter, widget.maxWidth!);
+    double diameter = widget.lineWidthRatio * size;
+    if (widget.minLineWidth != null) diameter = max(diameter, widget.minLineWidth!);
+    if (widget.maxLineWidth != null) diameter = min(diameter, widget.maxLineWidth!);
     return diameter;
   }
 
@@ -289,8 +280,17 @@ class _AnimatedSymbolState extends State<AnimatedSymbol> with SingleTickerProvid
 
     return [
       _colonSquare(
-          direction: -1, rotation: rotation0, diameterRatio: diameterRatio, scale: scale),
-      _colonSquare(direction: 1, rotation: rotation1, diameterRatio: diameterRatio, scale: scale),
+        direction: -1,
+        rotation: rotation0,
+        diameterRatio: diameterRatio,
+        scale: scale,
+      ),
+      _colonSquare(
+        direction: 1,
+        rotation: rotation1,
+        diameterRatio: diameterRatio,
+        scale: scale,
+      ),
     ];
   }
 
@@ -318,16 +318,16 @@ class _AnimatedSymbolState extends State<AnimatedSymbol> with SingleTickerProvid
       duration: widget.duration,
       rotateDegrees: rotateDegrees,
       childWidthRatio: diameterRatio,
-      childHeightRatio: widget.widthRatio,
-      minChildHeight: widget.minWidth,
-      maxChildHeight: widget.maxWidth,
+      childHeightRatio: widget.lineWidthRatio,
+      minChildHeight: widget.minLineWidth,
+      maxChildHeight: widget.maxLineWidth,
       moveByContainerWidth: offset * sin(radians),
       moveByContainerHeight: offset * cos(radians),
       child: (scale >= 1.0)
           ? square
           : (scale <= 0.0)
-              ? const SizedBox()
-              : Transform.scale(scale: scale, child: square),
+          ? const SizedBox()
+          : Transform.scale(scale: scale, child: square),
     );
   }
 
@@ -337,18 +337,15 @@ class _AnimatedSymbolState extends State<AnimatedSymbol> with SingleTickerProvid
     double left = (size - diameter) / 2;
 
     Widget circle(double top) => Positioned(
-          left: left,
-          top: top,
-          width: diameter,
-          height: diameter,
-          child: DecoratedBox(
-            decoration: BoxDecoration(color: widget.color, shape: BoxShape.circle),
-          ),
-        );
+      left: left,
+      top: top,
+      width: diameter,
+      height: diameter,
+      child: DecoratedBox(
+        decoration: BoxDecoration(color: widget.color, shape: BoxShape.circle),
+      ),
+    );
 
-    return [
-      circle(size / 2 - diameter * 1.5),
-      circle(size / 2 + diameter * 0.5),
-    ];
+    return [circle(size / 2 - diameter * 1.5), circle(size / 2 + diameter * 0.5)];
   }
 }

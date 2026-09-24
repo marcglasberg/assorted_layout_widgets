@@ -17,8 +17,8 @@ class _DemoState extends State<Demo> {
   SymbolType _symbol = SymbolType.plus;
 
   void _next() => setState(() {
-        _symbol = SymbolType.values[(_symbol.index + 1) % SymbolType.values.length];
-      });
+    _symbol = SymbolType.values[(_symbol.index + 1) % SymbolType.values.length];
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +161,13 @@ class _DemoState extends State<Demo> {
         for (final ratio in const [0.05, 0.10, 0.15, 0.25, 0.40])
           _item(
             'widthRatio: $ratio',
-            AnimatedSymbol(_symbol, Colors.blue, width: 60, height: 60, widthRatio: ratio),
+            AnimatedSymbol(
+              _symbol,
+              Colors.blue,
+              width: 60,
+              height: 60,
+              lineWidthRatio: ratio,
+            ),
           ),
       ],
     );
@@ -169,13 +175,16 @@ class _DemoState extends State<Demo> {
 
   Widget _minMaxWidthSection() {
     //
-    Widget row(String title, {double? minWidth, double? maxWidth}) {
+    Widget row(String title, {double? minLineWidth, double? maxLineWidth}) {
       return Padding(
         padding: const Pad(bottom: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+            ),
             const Box.gap(6),
             Wrap(
               spacing: 14,
@@ -190,8 +199,8 @@ class _DemoState extends State<Demo> {
                       Colors.blue,
                       width: size,
                       height: size,
-                      minWidth: minWidth,
-                      maxWidth: maxWidth,
+                      minLineWidth: minLineWidth,
+                      maxLineWidth: maxLineWidth,
                     ),
                   ),
               ],
@@ -205,18 +214,18 @@ class _DemoState extends State<Demo> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _explanation(
-          'minWidth and maxWidth',
+          'minLineWidth and maxLineWidth',
           'Since the line width is proportional to the symbol size, small '
               'symbols get very thin lines, and large symbols get very thick '
-              'lines. Use minWidth and maxWidth to limit the line '
+              'lines. Use minLineWidth and maxLineWidth to limit the line '
               'width, in pixels. For the colon, they limit the circle diameter '
-              '(and the gap between the circles). Note: minWidth may slightly '
+              '(and the gap between the circles). Note: minLineWidth may slightly '
               'distort the check symbol.',
         ),
         row('No limits (default)'),
-        row('minWidth: 4', minWidth: 4),
-        row('maxWidth: 6', maxWidth: 6),
-        row('minWidth: 4, maxWidth: 6', minWidth: 4, maxWidth: 6),
+        row('minLineWidth: 4', minLineWidth: 4),
+        row('maxLineWidth: 6', maxLineWidth: 6),
+        row('minLineWidth: 4, maxLineWidth: 6', minLineWidth: 4, maxLineWidth: 6),
         const Divider(height: 35),
       ],
     );
@@ -364,11 +373,7 @@ class _DemoState extends State<Demo> {
       children: [
         child,
         const Box.gap(4),
-        Text(
-          label,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 11),
-        ),
+        Text(label, textAlign: TextAlign.center, style: const TextStyle(fontSize: 11)),
       ],
     );
   }
