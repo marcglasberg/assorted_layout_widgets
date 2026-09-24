@@ -144,6 +144,8 @@ class _AnimatedSymbolState extends State<AnimatedSymbol>
         : _bars(widget.symbol);
 
     return Stack(
+      // Don't clip, since the symbol may be larger than the square.
+      clipBehavior: Clip.none,
       children: [
         if (colonProgress > 0.5) ..._colonCircles(size),
         KeyedSubtree(key: ValueKey('bar0-$_barsGeneration'), child: bars[0]),
