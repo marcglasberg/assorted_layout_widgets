@@ -2,7 +2,7 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
-## 12.15.3
+## 12.15.4
 
 * New `AnimatedSymbol` widget, which draws a plus, minus, times, check, equals or colon
   symbol, and animates smoothly between them when the symbol changes. You can choose the

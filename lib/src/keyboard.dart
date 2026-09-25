@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import "package:flutter/material.dart";
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 /// [KeyboardSwitch] renders different content depending on whether the system keyboard
@@ -176,6 +177,7 @@ class Keyboard extends StatefulWidget {
     this.androidRemoveFocusOnTap = false,
     this.androidRemoveFocusOnSwipe = false,
     this.closeOnTapOnlyIfKeyboardIsOpen = true,
+    this.reserveKeyboardSpaceOnDesktop = false,
   });
 
   final Widget child;
@@ -189,14 +191,27 @@ class Keyboard extends StatefulWidget {
   final bool androidRemoveFocusOnSwipe;
   final bool closeOnTapOnlyIfKeyboardIsOpen;
 
+  /// This param is `false` by default. Sometimes, it's a good idea to run your app
+  /// on desktop (Windows, macOS or Linux) to help develop mobile apps, since running on
+  /// desktop is faster than running on a mobile device or emulator. However, when the
+  /// app runs on desktop, the system keyboard never opens, so you cannot test how your app behaves when the
+  /// keyboard opens and closes. To fix this, set this param to `true` and the [Keyboard]
+  /// widget will install a fake keyboard (a [TextInputControl]) that shows a 275px black
+  /// area at the bottom of this widget whenever the mobile keyboard would open.
+  /// [Keyboard.isOpen] and [KeyboardSwitch] treat that area as the keyboard.
+  /// The physical keyboard keeps working.
+  final bool reserveKeyboardSpaceOnDesktop;
+
   /// Closes only the system keyboard and removes focus from any element that has focus.
   static void close({bool removeFocus = true}) {
     if (removeFocus) FocusManager.instance.primaryFocus?.unfocus();
     SystemChannels.textInput.invokeMethod('TextInput.hide');
+    _FakeDesktopKeyboard.active?.hide();
   }
 
   static void open() {
     SystemChannels.textInput.invokeMethod('TextInput.show');
+    _FakeDesktopKeyboard.active?.showIfAttached();
   }
 
   /// Whether the keyboard is currently open. Requires a [Keyboard] ancestor.
@@ -240,10 +255,23 @@ class Keyboard extends StatefulWidget {
 class _KeyboardState extends State<Keyboard> with WidgetsBindingObserver {
   bool _isOpen = false;
 
+  /// Only non-null when [Keyboard.reserveKeyboardSpaceOnDesktop] is true on desktop.
+  _FakeDesktopKeyboard? _fakeKeyboard;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _updateFakeKeyboard();
+  }
+
+  @override
+  void didUpdateWidget(Keyboard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.reserveKeyboardSpaceOnDesktop != oldWidget.reserveKeyboardSpaceOnDesktop) {
+      _updateFakeKeyboard();
+      _isOpen = _readIsOpen();
+    }
   }
 
   @override
@@ -255,20 +283,100 @@ class _KeyboardState extends State<Keyboard> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _uninstallFakeKeyboard();
     super.dispose();
   }
 
   @override
   void didChangeMetrics() {
+    _refreshIsOpen();
+  }
+
+  void _refreshIsOpen() {
     final next = _readIsOpen();
     if (next != _isOpen) setState(() => _isOpen = next);
   }
 
-  bool _readIsOpen() => View.of(context).viewInsets.bottom > 0;
+  bool _readIsOpen() =>
+      View.of(context).viewInsets.bottom > 0 || (_fakeKeyboard?.isOpen.value ?? false);
+
+  void _updateFakeKeyboard() {
+    final bool shouldInstall =
+        !kIsWeb &&
+        widget.reserveKeyboardSpaceOnDesktop &&
+        (defaultTargetPlatform == TargetPlatform.windows ||
+            defaultTargetPlatform == TargetPlatform.macOS ||
+            defaultTargetPlatform == TargetPlatform.linux);
+
+    if (shouldInstall && _fakeKeyboard == null) {
+      final fakeKeyboard = _FakeDesktopKeyboard();
+      fakeKeyboard.isOpen.addListener(_onFakeKeyboardChanged);
+      _FakeDesktopKeyboard.active = fakeKeyboard;
+      TextInput.setInputControl(fakeKeyboard);
+      _fakeKeyboard = fakeKeyboard;
+    } //
+    else if (!shouldInstall && _fakeKeyboard != null) {
+      _uninstallFakeKeyboard();
+    }
+  }
+
+  void _uninstallFakeKeyboard() {
+    final fakeKeyboard = _fakeKeyboard;
+    if (fakeKeyboard == null) return;
+    _fakeKeyboard = null;
+    fakeKeyboard.isOpen.removeListener(_onFakeKeyboardChanged);
+    if (_FakeDesktopKeyboard.active == fakeKeyboard) {
+      _FakeDesktopKeyboard.active = null;
+      TextInput.restorePlatformInputControl();
+    }
+    fakeKeyboard.isOpen.dispose();
+  }
+
+  void _onFakeKeyboardChanged() {
+    if (!mounted) return;
+    // The text input may request show/hide while a frame is being built. In that case,
+    // defer the rebuild to after the frame, since setState is not allowed during build.
+    if (SchedulerBinding.instance.schedulerPhase == SchedulerPhase.persistentCallbacks) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _refreshIsOpen();
+      });
+    } else {
+      _refreshIsOpen();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return _KeyboardScope(isOpen: _isOpen, child: _withDismiss(context, widget.child));
+    Widget child = _withDismiss(context, widget.child);
+    if (_fakeKeyboard != null) child = _withFakeKeyboardSpace(child);
+    return _KeyboardScope(isOpen: _isOpen, child: child);
+  }
+
+  /// The child always stays as the first child of the Column (whether the fake
+  /// keyboard is open or not), so its state is preserved when the space opens/closes.
+  Widget _withFakeKeyboardSpace(Widget child) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(child: child),
+        if (_fakeKeyboard?.isOpen.value ?? false)
+          const SizedBox(
+            height: 275,
+            child: ColoredBox(
+              color: Colors.black,
+              child: Center(
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: DefaultTextStyle(
+                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                    child: Text('space for the keyboard'),
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
   }
 
   Widget _withDismiss(BuildContext context, Widget child) {
@@ -344,4 +452,43 @@ class _KeyboardScope extends InheritedWidget {
 
   @override
   bool updateShouldNotify(_KeyboardScope oldWidget) => isOpen != oldWidget.isOpen;
+}
+
+/// Development aid used by [Keyboard.reserveKeyboardSpaceOnDesktop]. A
+/// [TextInputControl] that shows no real keyboard, but reports when the mobile keyboard
+/// would be open. The platform text input stays connected (with input type "none"), so
+/// the physical keyboard keeps working.
+class _FakeDesktopKeyboard with TextInputControl {
+  //
+  /// The currently installed fake keyboard, if any. Used by [Keyboard.open] and
+  /// [Keyboard.close], which talk to the platform directly and would otherwise
+  /// bypass this control.
+  static _FakeDesktopKeyboard? active;
+
+  final ValueNotifier<bool> isOpen = ValueNotifier<bool>(false);
+
+  bool _isAttached = false;
+
+  void showIfAttached() {
+    if (_isAttached) show();
+  }
+
+  @override
+  void attach(TextInputClient client, TextInputConfiguration configuration) {
+    _isAttached = true;
+  }
+
+  // Doesn't close here: when focus moves between text fields, the old client is
+  // detached and the new one attached right away. The framework calls [hide] only
+  // if no new client is attached, which avoids a close/open flicker.
+  @override
+  void detach(TextInputClient client) {
+    _isAttached = false;
+  }
+
+  @override
+  void show() => isOpen.value = true;
+
+  @override
+  void hide() => isOpen.value = false;
 }
