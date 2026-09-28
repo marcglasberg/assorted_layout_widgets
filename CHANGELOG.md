@@ -2,6 +2,30 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 12.16.0
+
+* New `Keyboard.isOpening(context)` and `Keyboard.isClosing(context)`, to check whether
+  the keyboard is currently moving up or down.
+
+* New `Keyboard.openFraction(context)`, which returns how much the keyboard is open, from
+  `0` (closed) to `1` (fully open). Widgets that call it rebuild on every frame while the
+  keyboard moves, so you can animate them together with the keyboard.
+
+* New `KeyboardSwitch` parameters `opening` and `closing`, shown while the keyboard is
+  moving up or down.
+
+* New `KeyboardSwitch.fractionBuilder` constructor, whose callback receives how much the
+  keyboard is open, and whether it's currently opening or closing.
+
+* New `Keyboard` params `percentIsOpen` and `percentIsClosed` (both default `0`),
+  from `0` to `1`, as a fraction of the height of the fully open keyboard. The
+  `percentIsOpen` controls when `Keyboard.isOpen` becomes true while the keyboard is
+  opening, and the `percentIsClosed` controls when `Keyboard.isClosed` becomes true while
+  it's closing. For example, `percentIsOpen: 1` considers the keyboard open only when
+  it's fully open, and `percentIsClosed: 1` considers it closed as soon as it starts
+  closing. The defaults keep the previous behavior: open as soon as it starts opening,
+  and closed only when it closes completely.
+
 ## 12.15.5
 
 * New `AnimatedSymbol` widget, which draws a plus, minus, times, check, equals or colon
@@ -54,7 +78,7 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 ## 12.11.0
 
-* New `Keyboard` parameter `closeOnTapOnlyIfKeyboardIsOpen` (default `false`). When
+* New `Keyboard` parameter `closeOnTapOnlyIfKeyboardIsOpen` (default `true`). When
   `true`, the close-on-tap behavior (`iOsCloseOnTap` / `androidCloseOnTap`) acts only
   when the **system** keyboard is actually open: while it's closed, tapping an empty area
   of the screen does nothing.

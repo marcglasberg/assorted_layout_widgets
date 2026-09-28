@@ -40,7 +40,7 @@ Despite the package name, they are not only related to layout. Here they are:
 | <tt>[Pad](#pad)</tt> <i>is an EdgeInsetsGeometry which is easier to type and remember</i>.                                                            | <tt>[TimeBuilder](#timebuilder)</tt> <i>lets you implement clocks, countdowns, stopwatches etc, the right way.</i>                                                     | <tt>[ScrollShadow](#scrollshadow)</tt> <i>adds dynamic top and bottom shadows to a scrollable widget, to indicate overflow content.</i>                  | <tt>[ThousandsSeparatorTextInputFormatter](#thousandsseparatortextinputformatter)</tt> <i>formats numeric input with thousands separators as the user types.</i>                              |
 | <tt>[NormalizedOverflowBox](#normalizedoverflowbox)</tt> <i>is an OverflowBox that throws no errors and is easier to use</i>.                         | <tt>[KeepTallest](#keeptallest)</tt> <i>keeps its height at the tallest child ever seen, preventing layout jumps.</i>                                                  | <tt>[Email](#email)</tt> <i>provides email validation and sanitization, plus an EmailTextInputFormatter to use as the user types.</i>                    | <tt>[CapitalizationTextInputFormatter](#capitalizationtextinputformatter)</tt> <i>capitalizes text as the user types: uppercase, lowercase, first-letter, or title.</i>                       |
 |                                                                                                                                                       | <tt>[AnimatedBetween](#animatedbetween)</tt> <i>animates smoothly between two children, cross-fading their content while resizing the enclosing box.</i>               | <tt>[OtpCodeVerificationField](#otpcodeverificationfield)</tt> <i>is a one-time-password code verification textfield, with lots of features.</i>         | <tt>[NumbersTextInputFormatter](#numberstextinputformatter)</tt> <i>allows only numeric input: integer, or decimal with locale-aware, dot, or comma separators.</i>                           |
-|                                                                                                                                                       |                                                                                                                                                                        | <tt>[AnimatedSymbol](#animatedsymbol)</tt> <i>draws a +, -, x, ✓, = or : symbol, and animates between them.</i>                                        | <tt>[AllowedCharsTextInputFormatter](#allowedcharstextinputformatter)</tt> <i>allows only the characters that match a given regular expression, filtering out everything else.</i>            |
+|                                                                                                                                                       |                                                                                                                                                                        | <tt>[AnimatedSymbol](#animatedsymbol)</tt> <i>draws a +, -, x, ✓, = or : symbol, and animates between them.</i>                                         | <tt>[AllowedCharsTextInputFormatter](#allowedcharstextinputformatter)</tt> <i>allows only the characters that match a given regular expression, filtering out everything else.</i>            |
 |                                                                                                                                                       |                                                                                                                                                                        |                                                                                                                                                          | <tt>[NoSpacesTextInputFormatter](#nospacestextinputformatter)</tt> <i>prevents the user from typing whitespace.</i>                                                                           |
 |                                                                                                                                                       |                                                                                                                                                                        |                                                                                                                                                          | <tt>[AlwaysAtTheEndTextInputFormatter](#alwaysattheendtextinputformatter)</tt> <i>forces the cursor to always stay at the end of the typed text.</i>                                          |
 |                                                                                                                                                       |                                                                                                                                                                        |                                                                                                                                                          | <tt>[StringDotLengthLimiterTextInputFormatter](#stringdotlengthlimitertextinputformatter)</tt> <i>limits text by Dart's String.length (instead of grapheme clusters), to match DB limits.</i> |
@@ -193,8 +193,8 @@ SideBySide example</a>.
 # RowProportional
 
 The `RowProportional` widget arranges its children horizontally, dividing all the
-available horizontal space between them, proportionally to their preferred
-(natural, intrinsic) widths.
+available horizontal space between them, proportionally to their preferred (natural,
+intrinsic) widths.
 
 ```
 RowProportional({
@@ -294,8 +294,8 @@ multiplied by that flex for the proportional distribution. For example,
 will be treated as if it wanted to be 140 pixels wide (70 pixels times 2).
 
 Both plain children and `Expanded` children are forced to assume exactly their
-calculated widths. If instead you use a `Flexible`, the child is allowed to be
-**smaller** than its calculated width (but not larger). In that case the space
+calculated widths. If instead you use a `Flexible`, the child is allowed to be **smaller**
+than its calculated width (but not larger). In that case the space
 reserved for the child is still its full calculated width, and the child is aligned
 to the start of that space.
 
@@ -1723,8 +1723,8 @@ whitespace, but keeps it tidy while the user types:
 * Line breaks are allowed, but at most one completely blank line in a row. Two blank
   lines in a row are reduced to one.
 
-* Spaces and tabs are removed from the end of every line, except from the last line
-  (the one currently being typed).
+* Spaces and tabs are removed from the end of every line, except from the last line (the
+  one currently being typed).
 
 * Double spaces are not allowed: a run of spaces/tabs is reduced to a single space.
 
@@ -1887,8 +1887,8 @@ Email('用户@例子.中国').isValid();                  // true (international
 Email('用户@例子.中国').isValid(allowInternational: false); // false
 ```
 
-* `allowTopLevelDomains` — accept addresses without a dotted domain
-  (e.g. `user@example`). Defaults to `false`.
+* `allowTopLevelDomains` — accept addresses without a dotted domain (e.g. `user@example`).
+  Defaults to `false`.
 * `allowInternational` — accept non-ASCII characters. Defaults to `true`.
 
 **Important:** validating email addresses is tricky, because email providers usually
@@ -2302,7 +2302,7 @@ NonUniformRoundedRectangleBorder example</a>.
 The `SquircleBorder` is similar to Flutter's `ContinuousRectangleBorder`, but it allows
 more configuration options.
 
-It defines a rounded-rectangle shape (a "squircle") where two things are chosen 
+It defines a rounded-rectangle shape (a "squircle") where two things are chosen
 independently: how big the corners are, and how the corner curve looks.
 
 **Corner size** is chosen by the constructor:
@@ -2404,7 +2404,7 @@ MaterialApp(
 
 ### Dismiss parameters
 
-All constructor parameters default to `false`:
+All the following parameters default to `false`:
 
 - `iOsCloseOnTap` — close the keyboard when the user taps an empty area of the screen,
   on iOS.
@@ -2422,12 +2422,13 @@ All constructor parameters default to `false`:
   keyboard is dismissed by a tap, on Android.
 - `androidRemoveFocusOnSwipe` — also remove focus from any focused element when the
   keyboard is dismissed by a swipe, on Android.
+
+The following parameter defaults to `true`:
+
 - `closeOnTapOnlyIfKeyboardIsOpen` — make the close-on-tap behavior (`iOsCloseOnTap` /
   `androidCloseOnTap`) act only when the system keyboard is actually open. When the
   keyboard is closed, taps do nothing: the keyboard is not asked to hide, and focus is
-  not removed. Recommended for apps that use a custom in-app keyboard (a 
-  custom `TextInputControl` that suppresses the platform keyboard).
-
+  not removed. Pass `false` to make taps remove focus even when the keyboard is closed.
 
 ### Recommendation
 
@@ -2450,21 +2451,13 @@ Keyboard(
 );
 ```
 
-However, if your app uses a custom in-app keyboard (a custom `TextInputControl` that
-suppresses the platform keyboard and needs to be open all the time), also 
-pass `closeOnTapOnlyIfKeyboardIsOpen: true`. Otherwise, while the system keyboard is 
-closed, taps on empty areas of the screen would still remove focus from the focused text 
-field, hiding your in-app keyboard:
-
-```
-Keyboard(
-  iOsCloseOnTap: true,
-  iOsCloseOnSwipe: true,
-  iOsRemoveFocusOnTap: true,
-  closeOnTapOnlyIfKeyboardIsOpen: true,
-  child: ...,
-);
-```
+Note that, with the default `closeOnTapOnlyIfKeyboardIsOpen: true`, taps on empty areas
+of the screen only remove focus while the system keyboard is open. This is important if
+your app uses a custom in-app keyboard (a custom `TextInputControl` that suppresses the
+platform keyboard and needs to be open all the time). Otherwise, while the system
+keyboard is closed, taps would still remove focus from the focused text field, hiding
+your in-app keyboard. If you want taps to remove focus even when the keyboard is closed,
+pass `closeOnTapOnlyIfKeyboardIsOpen: false`.
 
 ### Checking the keyboard state
 
@@ -2475,6 +2468,49 @@ keyboard is currently open or closed. Both require you added the `Keyboard` ance
 bool isKeyboardOpen = Keyboard.isOpen(context);
 bool isKeyboardClosed = Keyboard.isClosed(context);
 ```
+
+By default, the keyboard is considered open as soon as it starts opening, and closed
+only when it closes completely. To change this, use the `Keyboard` parameters
+`percentIsOpen` and `percentIsClosed`, both from `0` to `1`, as a fraction of the height
+of the fully open keyboard. The `percentIsOpen` is only used while the keyboard is
+opening, and the `percentIsClosed` only while it's closing. For example:
+
+- `percentIsOpen: 1` considers the keyboard open only when it's fully open.
+- `percentIsClosed: 1` considers the keyboard closed as soon as it starts closing.
+- `percentIsOpen: 0.5` and `percentIsClosed: 0.5` switch at half the keyboard height.
+
+Use `Keyboard.isOpening(context)` and `Keyboard.isClosing(context)` to check whether the
+keyboard is currently moving up or down. These are independent of `isOpen` and
+`isClosed`. For example, with the default `percentIsOpen: 0`, both `isOpen` and
+`isOpening` are true while the keyboard is opening.
+
+```
+bool isKeyboardOpening = Keyboard.isOpening(context);
+bool isKeyboardClosing = Keyboard.isClosing(context);
+```
+
+Use `Keyboard.openFraction(context)` to get how much the keyboard is open, from `0`
+(closed) to `1` (fully open), as a fraction of the height of the fully open keyboard.
+Widgets that call it rebuild on every frame while the keyboard moves (but not while it
+stays still), so you can animate them together with the keyboard:
+
+```
+double fraction = Keyboard.openFraction(context);
+```
+
+Note the height of the fully open keyboard is only known after it opens once. Until
+then, it's estimated as 336 pixels on iOS, and 300 on other platforms.
+
+### Simulating the keyboard on desktop
+
+If you like to develop mobile apps on desktop (Windows, macOS or Linux) because it's
+faster than on a device or emulator, pass `reserveKeyboardSpaceOnDesktop: true` and,
+on desktop, the `Keyboard` widget shows a fake 275px keyboard at the bottom of the screen
+whenever the mobile keyboard would open. Like a real keyboard, it slides in and out,
+covers the bottom of the app, and reports its height in
+`MediaQuery.viewInsetsOf(context)`, so that a `Scaffold` resizes to stay above it.
+`Keyboard.isOpen` and the other methods treat it as the keyboard. The physical
+keyboard keeps working.
 
 ### Programmatically opening and closing the keyboard
 
@@ -2489,7 +2525,7 @@ Keyboard.close();
 # KeyboardSwitch
 
 The `KeyboardSwitch` widget renders different content depending on whether the system
-keyboard is open or closed. There are two ways to use it.
+keyboard is open or closed. There are three ways to use it.
 
 The default constructor takes optional `open` and `closed` widgets. The `open` widget is
 shown when the keyboard is open, and the `closed` widget when it is closed. Both are
@@ -2502,12 +2538,37 @@ KeyboardSwitch(
 );
 ```
 
+It also takes optional `opening` and `closing` widgets, shown while the keyboard is moving
+up or down. These take precedence over `open` and `closed`. When they are missing,
+`open` or `closed` is shown instead, as usual:
+
+```
+KeyboardSwitch(
+  open: Text('Keyboard is open'),
+  closed: Text('Keyboard is closed'),
+  opening: Text('Keyboard is opening'),
+  closing: Text('Keyboard is closing'),
+);
+```
+
 Alternatively, the `KeyboardSwitch.builder` constructor takes a `builder` callback that
 receives the current `isOpen` state, so you can build any widget you want based on it:
 
 ```
 KeyboardSwitch.builder(
   (context, isOpen) => Icon(isOpen ? Icons.keyboard : Icons.keyboard_hide),
+);
+```
+
+Finally, the `KeyboardSwitch.fractionBuilder` constructor takes a callback that receives
+how much the keyboard is open, from `0` (closed) to `1` (fully open), and whether it's
+currently opening or closing. It rebuilds on every frame while the keyboard moves, so you
+can animate your widgets together with the keyboard:
+
+```
+KeyboardSwitch.fractionBuilder(
+  (context, fraction, isOpening, isClosing) =>
+      Opacity(opacity: 1 - fraction, child: Text('Hides as the keyboard opens')),
 );
 ```
 
@@ -2945,8 +3006,8 @@ AnimatedBetween({
       current box size, so it visually stretches or compresses together with the
       box — the incoming child starts at the outgoing child's size and ends at its own
       natural size. Aspect ratio is not preserved — the two axes scale independently.
-    - **`resize`**: The child is forced to the current box size via tight constraints
-      (no scaling). It re-lays out at that size, so text rewraps, flex children
+    - **`resize`**: The child is forced to the current box size via tight constraints (no
+      scaling). It re-lays out at that size, so text rewraps, flex children
       redistribute, etc. The effect is like dragging the edge of a resizable container:
       the content reshapes continuously as the box grows or shrinks.
 
@@ -2968,7 +3029,7 @@ AnimatedBetween.showHide example</a>.
 
 `AnimatedSymbol` draws one of these symbols: plus `+`, minus `-`, times `x`,
 check `✓`, equals `=` or colon `:`. When you change the symbol, it animates
-smoothly into the new one. You can choose the thickness of the lines, the color, and 
+smoothly into the new one. You can choose the thickness of the lines, the color, and
 the size of the widget.
 
 ![](https://raw.githubusercontent.com/marcglasberg/assorted_layout_widgets/refs/heads/master/example/lib/images/symbols.gif)
@@ -2982,8 +3043,8 @@ AnimatedSymbol(
 )
 ```
 
-The symbol is always square, centered, and as large as the available space
-(after the `padding`). Each symbol is made of two bars that rotate, move and resize to
+The symbol is always square, centered, and as large as the available space (after the
+`padding`). Each symbol is made of two bars that rotate, move and resize to
 form the next symbol. The colon is made of two circles: to form it, the bars first turn
 into small squares where the circles will be, and then the squares seem to turn into
 circles. Changing from the colon does the same, in reverse, and takes twice the

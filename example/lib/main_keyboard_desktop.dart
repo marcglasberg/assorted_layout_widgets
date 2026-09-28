@@ -3,30 +3,59 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /// Demonstrates [Keyboard.reserveKeyboardSpaceOnDesktop]. Run it on desktop (Windows,
-/// macOS or Linux): tapping a
-/// text field opens a black "space for the keyboard" area at the bottom, as the mobile
-/// keyboard would. [Keyboard.isOpen] and [KeyboardSwitch] detect it, and the physical
-/// keyboard keeps working.
+/// macOS or Linux): tapping a text field opens a fake keyboard at the bottom, as the
+/// mobile keyboard would. [Keyboard.isOpen], [Keyboard.isOpening],
+/// [Keyboard.isClosing] and [KeyboardSwitch] detect it, and the physical keyboard keeps
+/// working. The sliders change [Keyboard.percentIsOpen] and [Keyboard.percentIsClosed],
+/// and the progress bar shows [Keyboard.openFraction].
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  double percentIsOpen = 0;
+  double percentIsClosed = 0;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      builder: (BuildContext context, Widget? child) =>
-          Keyboard(reserveKeyboardSpaceOnDesktop: true, child: child!),
-      home: const MyHomePage(),
+      builder: (BuildContext context, Widget? child) => Keyboard(
+        reserveKeyboardSpaceOnDesktop: true,
+        percentIsOpen: percentIsOpen,
+        percentIsClosed: percentIsClosed,
+        child: child!,
+      ),
+      home: MyHomePage(
+        percentIsOpen: percentIsOpen,
+        percentIsClosed: percentIsClosed,
+        onPercentIsOpenChanged: (value) => setState(() => percentIsOpen = value),
+        onPercentIsClosedChanged: (value) => setState(() => percentIsClosed = value),
+      ),
     );
   }
 }
 
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
+  const MyHomePage({
+    super.key,
+    required this.percentIsOpen,
+    required this.percentIsClosed,
+    required this.onPercentIsOpenChanged,
+    required this.onPercentIsClosedChanged,
+  });
+
+  final double percentIsOpen;
+  final double percentIsClosed;
+  final ValueChanged<double> onPercentIsOpenChanged;
+  final ValueChanged<double> onPercentIsClosedChanged;
 
   static bool get _isDesktop =>
       !kIsWeb &&
@@ -111,7 +140,41 @@ class MyHomePage extends StatelessWidget {
                   ),
                 ),
               ),
+              const SizedBox(height: 20),
+              TextFieldTapRegion(
+                child: ExcludeFocus(
+                  child: Column(
+                    children: [
+                      _percentSlider(
+                        'percentIsOpen',
+                        percentIsOpen,
+                        onPercentIsOpenChanged,
+                      ),
+                      _percentSlider(
+                        'percentIsClosed',
+                        percentIsClosed,
+                        onPercentIsClosedChanged,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
+          ),
+        ),
+        // Rebuilds on every frame while the keyboard moves.
+        KeyboardSwitch.fractionBuilder(
+          (context, fraction, isOpening, isClosing) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 150,
+                  child: Text('openFraction: ${fraction.toStringAsFixed(2)}'),
+                ),
+                Expanded(child: LinearProgressIndicator(value: fraction)),
+              ],
+            ),
           ),
         ),
         // Pinned at the bottom, so it's visible right above the keyboard space.
@@ -123,9 +186,30 @@ class MyHomePage extends StatelessWidget {
               children: [
                 Icon(isOpen ? Icons.keyboard : Icons.keyboard_hide),
                 const SizedBox(width: 12),
-                Text('Keyboard.isOpen: $isOpen', style: const TextStyle(fontSize: 18)),
+                Text(
+                  'isOpen: $isOpen\n'
+                  'isOpening: ${Keyboard.isOpening(context)}\n'
+                  'isClosing: ${Keyboard.isClosing(context)}',
+                  style: const TextStyle(fontSize: 18),
+                ),
               ],
             ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _percentSlider(String label, double value, ValueChanged<double> onChanged) {
+    return Row(
+      children: [
+        SizedBox(width: 190, child: Text('$label: ${value.toStringAsFixed(2)}')),
+        Expanded(
+          child: Slider(
+            value: value,
+            divisions: 20,
+            label: value.toStringAsFixed(2),
+            onChanged: onChanged,
           ),
         ),
       ],
