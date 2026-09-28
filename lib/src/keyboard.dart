@@ -196,8 +196,9 @@ class Keyboard extends StatefulWidget {
   /// desktop is faster than running on a mobile device or emulator. However, when the
   /// app runs on desktop, the system keyboard never opens, so you cannot test how your app behaves when the
   /// keyboard opens and closes. To fix this, set this param to `true` and the [Keyboard]
-  /// widget will install a fake keyboard (a [TextInputControl]) that shows a 275px black
-  /// area at the bottom of this widget whenever the mobile keyboard would open.
+  /// widget will install a fake keyboard (a [TextInputControl]) that shows a 275px area
+  /// resembling a keyboard at the bottom of this widget whenever the mobile keyboard would open. That
+  /// area slides in and out in 285ms, like a real keyboard.
   /// [Keyboard.isOpen] and [KeyboardSwitch] treat that area as the keyboard.
   /// The physical keyboard keeps working.
   final bool reserveKeyboardSpaceOnDesktop;
@@ -352,29 +353,43 @@ class _KeyboardState extends State<Keyboard> with WidgetsBindingObserver {
     return _KeyboardScope(isOpen: _isOpen, child: child);
   }
 
+  static const double _fakeKeyboardHeight = 275;
+  static const Duration _fakeKeyboardDuration = Duration(milliseconds: 285);
+
+  /// Approximates the curve of the iOS keyboard animation.
+  static const Curve _fakeKeyboardCurve = Cubic(0.38, 0.7, 0.125, 1.0);
+
   /// The child always stays as the first child of the Column (whether the fake
   /// keyboard is open or not), so its state is preserved when the space opens/closes.
+  /// The space slides up from the bottom when opening, and down when closing, like
+  /// a real keyboard.
   Widget _withFakeKeyboardSpace(Widget child) {
+    final bool isOpen = _fakeKeyboard?.isOpen.value ?? false;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Expanded(child: child),
-        if (_fakeKeyboard?.isOpen.value ?? false)
-          const SizedBox(
-            height: 275,
-            child: ColoredBox(
-              color: Colors.black,
-              child: Center(
-                child: Directionality(
-                  textDirection: TextDirection.ltr,
-                  child: DefaultTextStyle(
-                    style: TextStyle(color: Colors.grey, fontSize: 16),
-                    child: Text('space for the keyboard'),
-                  ),
+        TweenAnimationBuilder<double>(
+          tween: Tween<double>(end: isOpen ? _fakeKeyboardHeight : 0),
+          duration: _fakeKeyboardDuration,
+          curve: _fakeKeyboardCurve,
+          builder: (BuildContext context, double height, Widget? keyboard) {
+            if (height <= 0) return const SizedBox.shrink();
+            return SizedBox(
+              height: height,
+              child: ClipRect(
+                child: OverflowBox(
+                  alignment: Alignment.topCenter,
+                  minHeight: _fakeKeyboardHeight,
+                  maxHeight: _fakeKeyboardHeight,
+                  child: keyboard,
                 ),
               ),
-            ),
-          ),
+            );
+          },
+          child: const _FakeKeyboardKeys(),
+        ),
       ],
     );
   }
@@ -441,6 +456,54 @@ class _KeyboardState extends State<Keyboard> with WidgetsBindingObserver {
         }
       },
       child: content,
+    );
+  }
+}
+
+/// Vaguely resembles a mobile keyboard. Each row lists the flex of its keys, and a
+/// negative flex is an empty gap.
+class _FakeKeyboardKeys extends StatelessWidget {
+  const _FakeKeyboardKeys();
+
+  static const List<List<int>> _rows = [
+    [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+    [-1, 2, 2, 2, 2, 2, 2, 2, 2, 2, -1],
+    [3, 2, 2, 2, 2, 2, 2, 2, 3],
+    [5, 10, 5],
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: const Color(0xFF2B2B2B),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(3, 8, 3, 24),
+        child: Column(
+          children: [
+            for (final row in _rows)
+              Expanded(
+                child: Row(
+                  children: [
+                    for (final flex in row)
+                      if (flex < 0)
+                        Spacer(flex: -flex)
+                      else
+                        Expanded(
+                          flex: flex,
+                          child: Container(
+                            margin: const EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF5A5A5A),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                        ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }
