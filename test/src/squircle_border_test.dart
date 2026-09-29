@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Samples [path] on a grid of points covering [rect], returning the
 /// contains() result for each point, so two paths can be compared

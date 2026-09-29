@@ -1,5 +1,5 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A widget that imposes different constraints on its child than it gets
 /// from its parent, possibly allowing the child to overflow the parent.

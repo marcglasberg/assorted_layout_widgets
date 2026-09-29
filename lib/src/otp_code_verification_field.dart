@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:math';
+
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Widget [OtpCodeVerificationField] is a verification code field, used for
 /// one-time-password (OTP) flows such as confirming an email address or a phone number.

@@ -1,8 +1,8 @@
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/foundation.dart';
-import 'package:material_ui/material_ui.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_test/flutter_test.dart' as flutter_test;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// When [closeOnTapOnlyIfKeyboardIsOpen] is null, uses the Keyboard's default.
 Widget _app({

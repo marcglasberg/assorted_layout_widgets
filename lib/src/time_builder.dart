@@ -1,6 +1,6 @@
 import 'package:clock/clock.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Very efficient timer, which rebuilds only when needed:
 ///

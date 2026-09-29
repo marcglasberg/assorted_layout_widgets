@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Widget [KeepTallest] tracks its child's height and never visually shrinks
 /// its own height below the tallest height observed so far. Growing is always
