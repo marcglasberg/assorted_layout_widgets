@@ -23,6 +23,8 @@ dependencies:
   intl: ^0.20.2
   matrix4_transform: ^4.0.1
 
+  material_ui: any
+  cupertino_ui: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

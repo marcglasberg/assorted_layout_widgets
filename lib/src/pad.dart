@@ -1,4 +1,4 @@
-import "package:flutter/material.dart";
+import "package:material_ui/material_ui.dart";
 
 /// [Pad] is an [EdgeInsetsGeometry] which is easy to type and remember.
 /// It can be used in all widgets that accept `padding`,

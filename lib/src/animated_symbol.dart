@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import "package:align_positioned/align_positioned.dart";
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/widgets.dart';
 
 enum SymbolType { plus, minus, times, check, equals, colon }
