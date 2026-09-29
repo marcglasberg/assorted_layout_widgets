@@ -18,13 +18,13 @@ dependencies:
   align_positioned: ^5.0.1
   characters: ^1.4.1
   clock: ^1.1.0
+  cupertino_ui: any
   flutter:
     sdk: flutter
   intl: ^0.20.2
+  material_ui: any
   matrix4_transform: ^4.0.1
 
-  material_ui: any
-  cupertino_ui: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
