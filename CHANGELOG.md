@@ -2,9 +2,9 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
-## Unreleased
+## 13.0.0
 
-* Migrate to the standalone `material_ui` and `cupertino_ui` packages.
+* **Breaking:** Migrate to the standalone `material_ui` and `cupertino_ui` packages.
   Requires Flutter 3.44 / Dart 3.12 or newer. Applications using this package's
   Material or Cupertino widgets should migrate their corresponding imports too,
   so that themes, routes, and public UI types come from the same libraries.
