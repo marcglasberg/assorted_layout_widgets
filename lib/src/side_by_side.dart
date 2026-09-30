@@ -118,34 +118,6 @@ import 'package:material_ui/material_ui.dart';
 /// );
 /// ```
 ///
-/// ## Deprecated usage
-///
-/// The `startChild` and `endChild` properties are deprecated. Use the `children`
-/// property instead. The `innerDistance` property is also deprecated. Use the `gaps`
-/// property instead.
-///
-/// For example, this deprecated code:
-///
-/// ```
-/// return SideBySide(
-///   startChild: Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
-///   endChild: Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
-///   innerDistance: 8.0,
-/// );
-/// ```
-///
-/// Should be replaced with:
-///
-/// ```
-/// return SideBySide(
-///   children: [
-///     Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
-///     Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
-///   ],
-///   gaps: [8.0],
-/// );
-/// ```
-///
 /// For more info, see: https://pub.dartlang.org/packages/assorted_layout_widgets
 ///
 class SideBySide extends MultiChildRenderObjectWidget {
@@ -262,43 +234,11 @@ class SideBySide extends MultiChildRenderObjectWidget {
   /// );
   /// ```
   ///
-  /// ## Deprecated usage
-  ///
-  /// The `startChild` and `endChild` properties are deprecated. Use the `children`
-  /// property instead. The `innerDistance` property is also deprecated. Use the `gaps`
-  /// property instead.
-  ///
-  /// For example, this deprecated code:
-  ///
-  /// ```
-  /// return SideBySide(
-  ///   startChild: Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
-  ///   endChild: Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
-  ///   innerDistance: 8.0,
-  /// );
-  /// ```
-  ///
-  /// Should be replaced with:
-  ///
-  /// ```
-  /// return SideBySide(
-  ///   children: [
-  ///     Text("Hello!", textWidthBasis: TextWidthBasis.longestLine),
-  ///     Text("How are you?", textWidthBasis: TextWidthBasis.longestLine),
-  ///   ],
-  ///   gaps: [8.0],
-  /// );
-  /// ```
-  ///
   /// For more info, see: https://pub.dartlang.org/packages/assorted_layout_widgets
   ///
   factory SideBySide({
     Key? key,
     List<Widget> children = const [],
-    //
-    @Deprecated('Use the `children` property instead.') Widget? startChild,
-    //
-    @Deprecated('Use the `children` property instead.') Widget? endChild,
     //
     List<double> gaps = const [],
     //
@@ -306,48 +246,12 @@ class SideBySide extends MultiChildRenderObjectWidget {
     //
     TextDirection textDirection = TextDirection.ltr,
     //
-    @Deprecated('Use the `gaps` property instead.') double innerDistance = 0,
-    //
     double minEndChildWidth = 0,
     //
     MainAxisSize mainAxisSize = MainAxisSize.max,
     //
   }) {
-    // 1) Deprecated usage.
-    if (startChild != null && endChild != null) {
-      //
-      if (children.isNotEmpty)
-        throw ArgumentError(
-            'Cannot use `startChild` and `endChild` with the `children` property.');
-
-      if (gaps.isNotEmpty)
-        throw ArgumentError('Cannot use `gaps` with the `startChild` property.');
-
-      return SideBySide._(
-        key: key,
-        startChild: startChild,
-        endChild: endChild,
-        crossAxisAlignment: crossAxisAlignment,
-        textDirection: textDirection,
-        innerDistance: innerDistance,
-        minEndChildWidth: minEndChildWidth,
-        mainAxisSize: mainAxisSize,
-      );
-    }
-
-    if (startChild != null && endChild == null)
-      throw ArgumentError(
-          'If you provide `startChild` you should also provide `endChild`. '
-          'However, it is better to provide only `children` instead, '
-          'as `startChild` and `endChild` are deprecated.');
-
-    if (startChild == null && endChild != null)
-      throw ArgumentError(
-          'If you provide `endChild` you should also provide `startChild`. '
-          'However, it is better to provide only `children` instead, '
-          'as `startChild` and `endChild` are deprecated.');
-
-    // 2) Empty usage.
+    // 1) Empty usage.
     if (children.isEmpty)
       return SideBySide._(
         key: key,
@@ -357,16 +261,7 @@ class SideBySide extends MultiChildRenderObjectWidget {
         mainAxisSize: mainAxisSize,
       );
 
-    // 3) When providing [children], can't use `startChild` or `endChild`.
-    if (startChild != null || endChild != null)
-      throw ArgumentError(
-          'Cannot use `startChild` or `endChild` with the `children` property.');
-
-    if (innerDistance != 0)
-      throw ArgumentError('Cannot use `innerDistance` with the `children` property. '
-          'Use `gaps` instead.');
-
-    // 4) A single child.
+    // 2) A single child.
     if (children.length == 1)
       return SideBySide._(
         key: key,
@@ -385,10 +280,9 @@ class SideBySide extends MultiChildRenderObjectWidget {
         endChild: nestedSideBySide,
         crossAxisAlignment: crossAxisAlignment,
         minEndChildWidth: minEndChildWidth,
-        innerDistance: (innerDistance +
-            (gaps.isNotEmpty //
-                ? (i < gaps.length ? gaps[i] : gaps.last) //
-                : 0)),
+        innerDistance: gaps.isNotEmpty //
+            ? (i < gaps.length ? gaps[i] : gaps.last) //
+            : 0,
         textDirection: textDirection,
         mainAxisSize: mainAxisSize,
       );
@@ -475,16 +369,12 @@ class _RenderSideBySide extends RenderBox
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
   //
   _RenderSideBySide({
-    required CrossAxisAlignment crossAxisAlignment,
-    required double innerDistance,
-    required double minEndChildWidth,
-    required TextDirection textDirection,
-    required MainAxisSize mainAxisSize,
-  })  : _crossAxisAlignment = crossAxisAlignment,
-        _innerDistance = innerDistance,
-        _minEndChildWidth = minEndChildWidth,
-        _textDirection = textDirection,
-        _mainAxisSize = mainAxisSize;
+    required this._crossAxisAlignment,
+    required this._innerDistance,
+    required this._minEndChildWidth,
+    required this._textDirection,
+    required this._mainAxisSize,
+  });
 
   CrossAxisAlignment _crossAxisAlignment;
   double _innerDistance;

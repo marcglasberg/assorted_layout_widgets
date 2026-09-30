@@ -120,16 +120,12 @@ class _RenderWrapSuper extends RenderBox
   //
   _RenderWrapSuper({
     List<RenderBox>? children,
-    double spacing = 0.0,
-    double lineSpacing = 0.0,
-    WrapSuperAlignment alignment = WrapSuperAlignment.left,
-    WrapType wrapType = WrapType.balanced,
-    WrapFit wrapFit = WrapFit.min,
-  })  : _spacing = spacing,
-        _lineSpacing = lineSpacing,
-        _alignment = alignment,
-        _wrapType = wrapType,
-        _wrapFit = wrapFit {
+    this._spacing = 0.0,
+    this._lineSpacing = 0.0,
+    this._alignment = WrapSuperAlignment.left,
+    this._wrapType = WrapType.balanced,
+    this._wrapFit = WrapFit.min,
+  }) {
     addAll(children);
   }
 

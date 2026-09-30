@@ -143,23 +143,15 @@ class _RenderRowSuperBox extends RenderBox
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
   //
   _RenderRowSuperBox({
-    required double outerDistance,
-    required double innerDistance,
-    required bool invert,
-    required Alignment alignment,
-    required bool hasSeparator,
-    required bool separatorOnTop,
-    required MainAxisSize mainAxisSize,
-    required bool fill,
-  })  : _outerDistance = outerDistance,
-        _innerDistance = innerDistance,
-        _invert = invert,
-        _alignment = alignment,
-        _hasSeparator = hasSeparator,
-        _separatorOnTop = separatorOnTop,
-        _mainAxisSize = mainAxisSize,
-        _fill = fill,
-        super();
+    required this._outerDistance,
+    required this._innerDistance,
+    required this._invert,
+    required this._alignment,
+    required this._hasSeparator,
+    required this._separatorOnTop,
+    required this._mainAxisSize,
+    required this._fill,
+  })  : super();
 
   double _outerDistance;
   double _innerDistance;

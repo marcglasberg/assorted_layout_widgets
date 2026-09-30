@@ -238,7 +238,7 @@ class Demo extends StatelessWidget {
   Widget separator() => Container(
         width: 70,
         height: 14,
-        color: Colors.black.withOpacity(0.5),
+        color: Colors.black.withValues(alpha: 0.5),
       );
 
   Widget redBox() => Container(
@@ -250,6 +250,6 @@ class Demo extends StatelessWidget {
   Widget blueBox() => Container(
         width: 70,
         height: 30,
-        color: Colors.blue.withOpacity(0.80),
+        color: Colors.blue.withValues(alpha: 0.80),
       );
 }

@@ -199,7 +199,7 @@ class _AnimatedSymbolState extends State<AnimatedSymbol>
         moveByContainerHeight: -0.21 + horizontalDisplacement,
         moveByContainerWidth: -0.1 + horizontalDisplacement,
         rotateDegrees: angle,
-        // color: Colors.green.withOpacity(0.5),
+        // color: Colors.green.withValues(alpha: 0.5),
       ),
       _bar(
         rotateDegrees: 90 + angle,
@@ -207,7 +207,7 @@ class _AnimatedSymbolState extends State<AnimatedSymbol>
         moveByContainerWidth: (bumpSize - 1) / 4.75 + horizontalDisplacement,
         moveByContainerHeight: -0.3 - horizontalDisplacement,
         moveByChildHeight: 0.5,
-        // color: Colors.blue.withOpacity(0.5),
+        // color: Colors.blue.withValues(alpha: 0.5),
       ),
     ];
   }

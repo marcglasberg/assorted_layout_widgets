@@ -127,7 +127,7 @@ class _DemoState extends State<Demo> {
           ),
         );
       },
-      child: Box(width: 100, height: 100, color: color.withOpacity(0.95)),
+      child: Box(width: 100, height: 100, color: color.withValues(alpha: 0.95)),
     );
   }
 }

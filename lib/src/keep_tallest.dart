@@ -358,8 +358,7 @@ class _RenderHeightObserver extends RenderProxyBox {
   double _minHeight;
   ValueChanged<double> onHeightChanged;
 
-  _RenderHeightObserver({required double minHeight, required this.onHeightChanged})
-    : _minHeight = minHeight;
+  _RenderHeightObserver({required this._minHeight, required this.onHeightChanged});
 
   double get minHeight => _minHeight;
 

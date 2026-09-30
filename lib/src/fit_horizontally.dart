@@ -71,18 +71,15 @@ class FitHorizontally extends SingleChildRenderObjectWidget {
 class RenderFitHorizontally extends RenderProxyBox {
   /// Scales and positions its child within itself.
   ///
-  /// The [fit] and [alignment] arguments must not be null.
+  /// The [fit] and [_alignment] arguments must not be null.
   RenderFitHorizontally({
     double shrinkLimit = FitHorizontally.defaultShrinkLimit,
-    bool fitsHeight = false,
-    AlignmentGeometry alignment = Alignment.center,
-    TextDirection? textDirection,
+    this._fitsHeight = false,
+    this._alignment = Alignment.center,
+    this._textDirection,
     RenderBox? child,
   })  : assert(shrinkLimit <= 1.0),
         _shrinkLimit = shrinkLimit,
-        _fitsHeight = fitsHeight,
-        _alignment = alignment,
-        _textDirection = textDirection,
         super(child);
 
   Alignment? _resolvedAlignment;
@@ -314,8 +311,8 @@ class RenderFitHorizontally extends RenderProxyBox {
           sourceRect.width < childSize.width || sourceRect.height < childSize.height;
       assert(scaleX.isFinite && scaleY.isFinite);
       _transform = Matrix4.translationValues(destinationRect.left, destinationRect.top, 0.0)
-        ..scale(scaleX, scaleY, 1.0)
-        ..translate(-sourceRect.left, -sourceRect.top);
+        ..scaleByDouble(scaleX, scaleY, 1.0, 1.0)
+        ..translateByDouble(-sourceRect.left, -sourceRect.top, 0.0, 1.0);
       assert(_transform!.storage.every((double value) => value.isFinite));
     }
   }

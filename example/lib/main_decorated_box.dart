@@ -64,6 +64,7 @@ class Demo extends StatelessWidget {
       );
 
   /// Bor.r etc overrides the color.
+  // ignore: deprecated_member_use
   Widget example3() => const Box.r(
         width: 100,
         height: 100,
@@ -79,6 +80,7 @@ class Demo extends StatelessWidget {
       );
 
   /// Bor.r etc overrides the color in the decoration.
+  // ignore: deprecated_member_use
   Widget example4() => const Box.r(
         width: 100,
         height: 100,
@@ -93,6 +95,7 @@ class Demo extends StatelessWidget {
       );
 
   /// Bor.rand etc overrides the color in the decoration.
+  // ignore: deprecated_member_use
   Widget example5() => const Box.rand(
         width: 100,
         height: 100,

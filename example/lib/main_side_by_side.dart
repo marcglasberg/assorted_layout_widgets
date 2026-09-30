@@ -25,10 +25,6 @@ class Demo extends StatelessWidget {
                 _sideBySideWith2Children(),
                 _sideBySideWith3Children(),
                 _sideBySideMainAxisSize(),
-                //
-                // Uncomment to see the deprecated examples:
-                // _deprecated(),
-                //
                 const Box.gap(1000),
               ],
             ),
@@ -80,36 +76,6 @@ class Demo extends StatelessWidget {
     );
   }
 
-  // ignore: unused_element
-  Widget _deprecated() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text("Deprecated"),
-        const Text("SideBySide(minEndChildWidth: 0, innerDistance: 20)"),
-        for (double width = 380; width >= 0; width -= 40)
-          _deprecatedStartChildAndEndChild(
-              width: width, minEndChildWidth: 0, innerDistance: 20),
-        //
-        const Box(height: 16),
-        const Text("Deprecated"),
-        const Text("SideBySide(minEndChildWidth: 130, innerDistance: 20)"),
-        for (double width = 380; width >= 0; width -= 40)
-          _deprecatedStartChildAndEndChild(
-              width: width, minEndChildWidth: 130, innerDistance: 20),
-        //
-        const Box(height: 16),
-        const Text("Deprecated"),
-        const Text("SideBySide(minEndChildWidth: 50, innerDistance: 20)"),
-        for (double width = 380; width >= 0; width -= 40)
-          _deprecatedStartChildAndEndChild(
-              width: width, minEndChildWidth: 50, innerDistance: 20),
-        //
-        const Divider(height: 48),
-      ],
-    );
-  }
-
   Widget _sideBySideWith2Children() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,7 +83,7 @@ class Demo extends StatelessWidget {
         const Text("SideBySide with 2 children", style: TextStyle(fontSize: 18)),
         const Box(height: 16),
         //
-        const Text("SideBySide.list(minEndChildWidth: 0, innerDistance: 20)"),
+        const Text("SideBySide(minEndChildWidth: 0, gaps: [10, 30])"),
         for (double width = 380; width >= 0; width -= 40)
           _sideBySide(
             texts: ["Hello there, how are you doing?", "I'm good, thank you!"],
@@ -126,7 +92,7 @@ class Demo extends StatelessWidget {
           ),
         //
         const Box(height: 16),
-        const Text("SideBySide.list(minEndChildWidth: 130, innerDistance: 20)"),
+        const Text("SideBySide(minEndChildWidth: 130, gaps: [10, 30])"),
         for (double width = 380; width >= 0; width -= 40)
           _sideBySide(
             texts: ["Hello there, how are you doing?", "I'm good, thank you!"],
@@ -135,7 +101,7 @@ class Demo extends StatelessWidget {
           ),
         //
         const Box(height: 16),
-        const Text("SideBySide.list(minEndChildWidth: 50, innerDistance: 20)"),
+        const Text("SideBySide(minEndChildWidth: 50, gaps: [10, 30])"),
         for (double width = 380; width >= 0; width -= 40)
           _sideBySide(
             texts: ["Hello there, how are you doing?", "I'm good, thank you!"],
@@ -155,7 +121,7 @@ class Demo extends StatelessWidget {
         const Text("SideBySide with 3 children", style: TextStyle(fontSize: 18)),
         const Box(height: 16),
         //
-        const Text("SideBySide.list(minEndChildWidth: 0, innerDistance: 20)"),
+        const Text("SideBySide(minEndChildWidth: 0, gaps: [10, 30])"),
         for (double width = 380; width >= 0; width -= 40)
           _sideBySide(
             texts: ["Hello there", "How are you doing?", "I'm good, thank you!"],
@@ -164,7 +130,7 @@ class Demo extends StatelessWidget {
           ),
         //
         const Box(height: 16),
-        const Text("SideBySide.list(minEndChildWidth: 130, innerDistance: 20)"),
+        const Text("SideBySide(minEndChildWidth: 130, gaps: [10, 30])"),
         for (double width = 380; width >= 0; width -= 40)
           _sideBySide(
             texts: ["Hello there", "How are you doing?", "I'm good, thank you!"],
@@ -173,7 +139,7 @@ class Demo extends StatelessWidget {
           ),
         //
         const Box(height: 16),
-        const Text("SideBySide.list(minEndChildWidth: 50, innerDistance: 20)"),
+        const Text("SideBySide(minEndChildWidth: 50, gaps: [10, 30])"),
         for (double width = 380; width >= 0; width -= 40)
           _sideBySide(
             texts: ["Hello there", "How are you doing?", "I'm good, thank you!"],
@@ -218,41 +184,6 @@ class Demo extends StatelessWidget {
                     style: TextStyle(color: colors[i]),
                   ),
               ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// This is deprecated.
-  Widget _deprecatedStartChildAndEndChild({
-    required double width,
-    required double minEndChildWidth,
-    required double innerDistance,
-  }) {
-    return Container(
-      color: Colors.grey[300],
-      width: width,
-      margin: const Pad(top: 4),
-      child: Row(
-        children: [
-          Expanded(
-            child: SideBySide(
-              minEndChildWidth: minEndChildWidth,
-              startChild: const Text(
-                "Hello there, how are you doing?",
-                overflow: TextOverflow.ellipsis,
-                textWidthBasis: TextWidthBasis.longestLine,
-                style: TextStyle(color: Colors.red),
-              ),
-              endChild: const Text(
-                "I'm good, thank you!",
-                overflow: TextOverflow.ellipsis,
-                textWidthBasis: TextWidthBasis.longestLine,
-                style: TextStyle(color: Colors.blue),
-              ),
-              innerDistance: 20,
             ),
           ),
         ],

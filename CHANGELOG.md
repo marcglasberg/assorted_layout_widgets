@@ -9,6 +9,22 @@ Sponsored by [MyText.ai](https://mytext.ai)
   Material or Cupertino widgets should migrate their corresponding imports too,
   so that themes, routes, and public UI types come from the same libraries.
 
+* **Breaking:** Removed deprecated code:
+    * `TextOneLine` widget: Use `Text` with `maxLines: 1`, instead.
+    * `SideBySide.startChild` and `SideBySide.endChild`: Use the `children` property
+      instead.
+    * `SideBySide.innerDistance`: Use the `gaps` property instead.
+
+* **Breaking:** `ButtonBarSuper` is now a replacement for `OverflowBar` (which replaced
+  the deprecated `ButtonBar`), instead of for `ButtonBar`:
+    * `lineSpacing`: Renamed to `overflowSpacing`, as in `OverflowBar`.
+    * `buttonTextTheme`, `buttonMinWidth`, `buttonHeight`, `buttonPadding` and
+      `layoutBehavior`: Removed, as `OverflowBar` doesn't have them. Style the buttons
+      themselves instead (for example, with `ElevatedButton.styleFrom`).
+    * It no longer adds padding around the buttons, and no longer reads the deprecated
+      `ButtonBarTheme`. Use `spacing`, `overflowSpacing` and a `Padding` widget instead.
+    * New `key` parameter.
+
 ## 12.16.0
 
 * New `Keyboard.isOpening(context)` and `Keyboard.isClosing(context)`, to check whether

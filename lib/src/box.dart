@@ -73,10 +73,9 @@ class Box extends StatelessWidget {
     bool? removePaddingWhenNoChild,
     this.decoration,
     this.decorationPosition = DecorationPosition.background,
-    required bool fixedColor,
+    required this._fixedColor,
   })  : _random = random ?? false,
         removePaddingWhenNoChild = removePaddingWhenNoChild ?? false,
-        _fixedColor = fixedColor,
         super(key: key);
 
   /// Adding `.r` to the box will make it red.

@@ -258,9 +258,8 @@ class SquircleBorder extends OutlinedBorder {
     required this.heightFactor,
     required this.arrow,
     required this.useCheapCalculation,
-    required bool isStadium,
-  }) : assert(superRadius >= 1.0 || superRadius <= -1.0),
-       _isStadium = isStadium;
+    required this._isStadium,
+  }) : assert(superRadius >= 1.0 || superRadius <= -1.0);
 
   /// The fixed size of each corner, in logical pixels, when this border was
   /// created with the default constructor.

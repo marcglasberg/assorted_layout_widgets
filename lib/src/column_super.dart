@@ -110,21 +110,14 @@ class _RenderColumnSuperBox extends RenderBox
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
   //
   _RenderColumnSuperBox({
-    required double outerDistance,
-    required double innerDistance,
-    required bool invert,
-    required Alignment alignment,
-    required bool hasSeparator,
-    required bool separatorOnTop,
-    required bool removeChildrenWithNoHeight,
-  })  : _outerDistance = outerDistance,
-        _innerDistance = innerDistance,
-        _invert = invert,
-        _alignment = alignment,
-        _hasSeparator = hasSeparator,
-        _separatorOnTop = separatorOnTop,
-        _removeChildrenWithNoHeight = removeChildrenWithNoHeight,
-        super();
+    required this._outerDistance,
+    required this._innerDistance,
+    required this._invert,
+    required this._alignment,
+    required this._hasSeparator,
+    required this._separatorOnTop,
+    required this._removeChildrenWithNoHeight,
+  })  : super();
 
   double _outerDistance;
   double _innerDistance;

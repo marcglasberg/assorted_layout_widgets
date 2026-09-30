@@ -34,29 +34,27 @@ class Demo extends StatelessWidget {
 
   Row _row(bool baseline) {
     return Row(
-      crossAxisAlignment: baseline ? CrossAxisAlignment.baseline : CrossAxisAlignment.center,
+      crossAxisAlignment: baseline
+          ? CrossAxisAlignment.baseline
+          : CrossAxisAlignment.center,
       textBaseline: TextBaseline.alphabetic,
       children: const [
         //
         SizedBox(height: 10),
-        Box.g(
-          child: TextOneLine("Hello", style: TextStyle(fontSize: 28)),
-        ),
+        Box.g(child: Text("Hello", style: TextStyle(fontSize: 28), maxLines: 1)),
         Box.y(
           width: 45,
           child: FitHorizontally(
             alignment: Alignment.centerLeft,
-            child: TextOneLine("Hello", style: TextStyle(fontSize: 28)),
+            child: Text("Hello", style: TextStyle(fontSize: 28), maxLines: 1),
           ),
         ),
-        Box.g(
-          child: TextOneLine("Hello", style: TextStyle(fontSize: 60)),
-        ),
+        Box.g(child: Text("Hello", style: TextStyle(fontSize: 60), maxLines: 1)),
         Box.y(
           width: 56,
           child: FitHorizontally(
             alignment: Alignment.centerLeft,
-            child: TextOneLine("Hello", style: TextStyle(fontSize: 60)),
+            child: Text("Hello", style: TextStyle(fontSize: 60), maxLines: 1),
           ),
         ),
       ],

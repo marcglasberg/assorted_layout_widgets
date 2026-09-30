@@ -470,14 +470,11 @@ class _RenderRowProportional extends RenderBox
         RenderBoxContainerDefaultsMixin<RenderBox, RowProportionalParentData> {
   //
   _RenderRowProportional({
-    required double? reservedPadding,
-    required CrossAxisAlignment crossAxisAlignment,
-    required TextDirection textDirection,
-    required TextBaseline? textBaseline,
-  })  : _reservedPadding = reservedPadding,
-        _crossAxisAlignment = crossAxisAlignment,
-        _textDirection = textDirection,
-        _textBaseline = textBaseline;
+    required this._reservedPadding,
+    required this._crossAxisAlignment,
+    required this._textDirection,
+    required this._textBaseline,
+  });
 
   double? _reservedPadding;
   CrossAxisAlignment _crossAxisAlignment;

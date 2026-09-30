@@ -39,7 +39,7 @@ class Demo extends StatelessWidget {
   }
 
   Widget coloredBox(Color color, double height) => Container(
-        color: color.withOpacity(0.8),
+        color: color.withValues(alpha: 0.8),
         width: 50,
         height: height,
       );
@@ -86,7 +86,7 @@ class _ColoredColumnState extends State<ColoredColumn> {
           });
         },
         child: Container(
-          color: color.withOpacity(0.8),
+          color: color.withValues(alpha: 0.8),
           width: 50 + index * 20,
           height: height,
         ),

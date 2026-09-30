@@ -199,12 +199,12 @@ class _DemoState extends State<Demo> {
   Widget separator() => Container(
         width: 100,
         height: separatorHeight,
-        color: Colors.black.withOpacity(0.5),
+        color: Colors.black.withValues(alpha: 0.5),
       );
 
   Widget coloredBox(int index) => Container(
         decoration: BoxDecoration(
-          color: Colors.red.withOpacity(0.5),
+          color: Colors.red.withValues(alpha: 0.5),
           border: Border.all(width: 0.5, color: Colors.black),
         ),
         width: width + index * 10.0,
@@ -214,6 +214,6 @@ class _DemoState extends State<Demo> {
   Widget blueBox() => Container(
         width: 120,
         height: 15,
-        color: Colors.blue.withOpacity(0.80),
+        color: Colors.blue.withValues(alpha: 0.80),
       );
 }

@@ -118,17 +118,13 @@ class RenderConstrainedNormalizedOverflowBox extends RenderAligningShiftedBox {
   /// Creates a render object that lets its child overflow itself.
   RenderConstrainedNormalizedOverflowBox({
     RenderBox? child,
-    double? minWidth,
-    double? maxWidth,
-    double? minHeight,
-    double? maxHeight,
+    this._minWidth,
+    this._maxWidth,
+    this._minHeight,
+    this._maxHeight,
     AlignmentGeometry alignment = Alignment.center,
     TextDirection? textDirection,
-  })  : _minWidth = minWidth,
-        _maxWidth = maxWidth,
-        _minHeight = minHeight,
-        _maxHeight = maxHeight,
-        super(child: child, alignment: alignment, textDirection: textDirection);
+  })  : super(child: child, alignment: alignment, textDirection: textDirection);
 
   /// The minimum width constraint to give the child. Set this to null (the
   /// default) to use the constraint from the parent instead.

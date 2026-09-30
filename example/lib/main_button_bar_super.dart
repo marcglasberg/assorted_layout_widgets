@@ -47,13 +47,10 @@ class Demo extends StatelessWidget {
 
   ButtonBarSuper _bar(WrapType wrapType, WrapFit wrapFit) {
     return ButtonBarSuper(
-      buttonTextTheme: ButtonTextTheme.primary,
       wrapType: wrapType,
       wrapFit: wrapFit,
-      spacing: 2.0,
-      lineSpacing: 10.0,
-      buttonHeight: 48,
-      buttonMinWidth: 40,
+      spacing: 6.0,
+      overflowSpacing: 10.0,
       children: [
         ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
