@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:math';
+
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Widget [OtpCodeVerificationField] is a verification code field, used for
 /// one-time-password (OTP) flows such as confirming an email address or a phone number.
@@ -1343,12 +1344,17 @@ class _BlinkingCursor extends StatefulWidget {
   final AlignmentGeometry alignment;
 
   const _BlinkingCursor({
+    // ignore: unused_element_parameter
     this.ifBlinks = true,
     this.color = const Color(0x55555555),
+    // ignore: unused_element_parameter
     this.millisDuration = 250,
     this.child,
+    // ignore: unused_element_parameter
     this.sizeToChild = false,
+    // ignore: unused_element_parameter
     this.topPadding,
+    // ignore: unused_element_parameter
     this.alignment = Alignment.centerLeft,
   });
 

@@ -1,8 +1,8 @@
 // ignore_for_file: prefer_adjacent_string_concatenation, prefer_const_constructors
 
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 
 String join(String a, String b) => a + b;
 

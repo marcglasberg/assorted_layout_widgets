@@ -1,4 +1,4 @@
-import "package:flutter/material.dart";
+import "package:material_ui/material_ui.dart";
 
 /// The [DetectScroll] can detect if the content of a Scrollable is larger than the
 /// Scrollable itself, which means that the content can be scrolled, and that a scrollbar

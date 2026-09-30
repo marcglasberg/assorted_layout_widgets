@@ -1,6 +1,6 @@
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 
 Widget _boxA() => const SizedBox(key: ValueKey('a'), width: 80, height: 40);
 

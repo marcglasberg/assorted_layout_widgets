@@ -1,6 +1,6 @@
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Demonstrates [Keyboard.reserveKeyboardSpaceOnDesktop]. Run it on desktop (Windows,
 /// macOS or Linux): tapping a text field opens a fake keyboard at the bottom, as the
