@@ -11,18 +11,18 @@ topics:
   - button
 
 environment:
-  sdk: '>=3.9.2 <4.0.0'
-  flutter: ">=3.35.6"
+  sdk: '>=3.12.0 <4.0.0'
+  flutter: ">=3.44.0"
 
 dependencies:
   align_positioned: ^5.0.1
   characters: ^1.4.1
   clock: ^1.1.0
-  cupertino_ui: any
+  cupertino_ui: ^1.0.0
   flutter:
     sdk: flutter
   intl: ^0.20.2
-  material_ui: any
+  material_ui: ^1.0.1
   matrix4_transform: ^4.0.1
 
 dev_dependencies:

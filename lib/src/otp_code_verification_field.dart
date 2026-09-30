@@ -1329,28 +1329,23 @@ class _Button extends StatelessWidget {
 /// Blinks if [ifBlinks]. If not, still applies topPadding, alignment, etc.
 class _BlinkingCursor extends StatefulWidget {
   //
-  final bool ifBlinks;
+  bool get ifBlinks => true;
 
   final Color color;
 
-  final int millisDuration;
+  int get millisDuration => 250;
 
   final Widget? child;
 
-  final bool sizeToChild;
+  bool get sizeToChild => false;
 
-  final double? topPadding;
+  double? get topPadding => null;
 
-  final AlignmentGeometry alignment;
+  AlignmentGeometry get alignment => Alignment.centerLeft;
 
   const _BlinkingCursor({
-    this.ifBlinks = true,
     this.color = const Color(0x55555555),
-    this.millisDuration = 250,
     this.child,
-    this.sizeToChild = false,
-    this.topPadding,
-    this.alignment = Alignment.centerLeft,
   });
 
   @override
