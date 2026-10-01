@@ -70,10 +70,19 @@ import 'package:material_ui/material_ui.dart';
 /// ## Cross alignment and main axis size
 ///
 /// The [crossAxisAlignment] property specifies how to align the widgets vertically.
-/// The default is to center them. At the moment, only [CrossAxisAlignment.start],
-/// [CrossAxisAlignment.end] and [CrossAxisAlignment.center] work. If you provide
-/// [CrossAxisAlignment.baseline] or [CrossAxisAlignment.stretch], you'll get
-/// an [UnimplementedError].
+/// The default is to center them. All alignments work:
+///
+/// * [CrossAxisAlignment.start], [CrossAxisAlignment.end] and
+///   [CrossAxisAlignment.center] align the children to the top, bottom or center.
+///
+/// * [CrossAxisAlignment.stretch] forces the children to fill the available height,
+///   just like in a [Row]. However, while a [Row] can't stretch its children when the
+///   available height is unbounded (for example, inside a [Column]), [SideBySide] will
+///   instead stretch all children to the height of the tallest one.
+///
+/// * [CrossAxisAlignment.baseline] aligns the children by their baselines. To use it
+///   you must also provide the [textBaseline] property, just like in a [Row].
+///   Children with no baseline are aligned to the top.
 ///
 /// The [mainAxisSize] property determines whether the widget will occupy the full
 /// available width ([MainAxisSize.max]) or only as much as it needs ([MainAxisSize.min]).
@@ -186,10 +195,19 @@ class SideBySide extends MultiChildRenderObjectWidget {
   /// ## Cross alignment and main axis size
   ///
   /// The [crossAxisAlignment] property specifies how to align the widgets vertically.
-  /// The default is to center them. At the moment, only [CrossAxisAlignment.start],
-  /// [CrossAxisAlignment.end] and [CrossAxisAlignment.center] work. If you provide
-  /// [CrossAxisAlignment.baseline] or [CrossAxisAlignment.stretch], you'll get
-  /// an [UnimplementedError].
+  /// The default is to center them. All alignments work:
+  ///
+  /// * [CrossAxisAlignment.start], [CrossAxisAlignment.end] and
+  ///   [CrossAxisAlignment.center] align the children to the top, bottom or center.
+  ///
+  /// * [CrossAxisAlignment.stretch] forces the children to fill the available height,
+  ///   just like in a [Row]. However, while a [Row] can't stretch its children when the
+  ///   available height is unbounded (for example, inside a [Column]), [SideBySide] will
+  ///   instead stretch all children to the height of the tallest one.
+  ///
+  /// * [CrossAxisAlignment.baseline] aligns the children by their baselines. To use it
+  ///   you must also provide the [textBaseline] property, just like in a [Row].
+  ///   Children with no baseline are aligned to the top.
   ///
   /// The [mainAxisSize] property determines whether the widget will occupy the full
   /// available width ([MainAxisSize.max]) or only as much as it needs ([MainAxisSize.min]).
@@ -246,11 +264,16 @@ class SideBySide extends MultiChildRenderObjectWidget {
     //
     TextDirection textDirection = TextDirection.ltr,
     //
+    TextBaseline? textBaseline,
+    //
     double minEndChildWidth = 0,
     //
     MainAxisSize mainAxisSize = MainAxisSize.max,
     //
   }) {
+    assert(crossAxisAlignment != CrossAxisAlignment.baseline || textBaseline != null,
+        'To use CrossAxisAlignment.baseline, you must also provide a textBaseline.');
+
     // 1) Empty usage.
     if (children.isEmpty)
       return SideBySide._(
@@ -267,7 +290,10 @@ class SideBySide extends MultiChildRenderObjectWidget {
         key: key,
         startChild: children[0],
         endChild: const SizedBox(),
+        crossAxisAlignment: crossAxisAlignment,
         textDirection: textDirection,
+        textBaseline: textBaseline,
+        mainAxisSize: mainAxisSize,
       );
 
     Widget nestedSideBySide = children.last;
@@ -284,6 +310,7 @@ class SideBySide extends MultiChildRenderObjectWidget {
             ? (i < gaps.length ? gaps[i] : gaps.last) //
             : 0,
         textDirection: textDirection,
+        textBaseline: textBaseline,
         mainAxisSize: mainAxisSize,
       );
     }
@@ -297,6 +324,7 @@ class SideBySide extends MultiChildRenderObjectWidget {
     required this.endChild,
     this.crossAxisAlignment = CrossAxisAlignment.center,
     this.textDirection = TextDirection.ltr,
+    this.textBaseline,
     this.innerDistance = 0,
     this.minEndChildWidth = 0,
     this.mainAxisSize = MainAxisSize.max,
@@ -318,8 +346,8 @@ class SideBySide extends MultiChildRenderObjectWidget {
   final Widget endChild;
 
   /// The [crossAxisAlignment] property specifies how to align the widgets vertically.
-  /// The default is to center them. At the moment, only [CrossAxisAlignment.start],
-  /// [CrossAxisAlignment.end] and [CrossAxisAlignment.center] work.
+  /// The default is to center them. To use [CrossAxisAlignment.baseline], you must
+  /// also provide the [textBaseline] property, just like in a [Row].
   final CrossAxisAlignment crossAxisAlignment;
 
   /// The [textDirection] property controls the direction that children are rendered in.
@@ -330,6 +358,11 @@ class SideBySide extends MultiChildRenderObjectWidget {
   /// This can be used with RTL (right to left) languages, but also when you want to
   /// align children to the right.
   final TextDirection textDirection;
+
+  /// The [textBaseline] property defines which baseline to use when aligning the
+  /// children with [CrossAxisAlignment.baseline]. It's required when
+  /// [crossAxisAlignment] is [CrossAxisAlignment.baseline], and ignored otherwise.
+  final TextBaseline? textBaseline;
 
   /// The distance in pixels between the widgets. The default is zero.
   /// It can be negative, in which case the widgets will overlap.
@@ -349,6 +382,7 @@ class SideBySide extends MultiChildRenderObjectWidget {
         innerDistance: innerDistance,
         minEndChildWidth: minEndChildWidth,
         textDirection: textDirection,
+        textBaseline: textBaseline,
         mainAxisSize: mainAxisSize,
       );
 
@@ -359,6 +393,7 @@ class SideBySide extends MultiChildRenderObjectWidget {
       ..innerDistance = innerDistance
       ..minEndChildWidth = minEndChildWidth
       ..textDirection = textDirection
+      ..textBaseline = textBaseline
       ..mainAxisSize = mainAxisSize;
   }
 }
@@ -373,6 +408,7 @@ class _RenderSideBySide extends RenderBox
     required this._innerDistance,
     required this._minEndChildWidth,
     required this._textDirection,
+    required this._textBaseline,
     required this._mainAxisSize,
   });
 
@@ -380,6 +416,7 @@ class _RenderSideBySide extends RenderBox
   double _innerDistance;
   double _minEndChildWidth;
   TextDirection _textDirection;
+  TextBaseline? _textBaseline;
   MainAxisSize _mainAxisSize;
 
   CrossAxisAlignment get crossAxisAlignment => _crossAxisAlignment;
@@ -389,6 +426,8 @@ class _RenderSideBySide extends RenderBox
   double get minEndChildWidth => _minEndChildWidth;
 
   TextDirection get textDirection => _textDirection;
+
+  TextBaseline? get textBaseline => _textBaseline;
 
   MainAxisSize get mainAxisSize => _mainAxisSize;
 
@@ -413,6 +452,12 @@ class _RenderSideBySide extends RenderBox
   set textDirection(TextDirection value) {
     if (_textDirection == value) return;
     _textDirection = value;
+    markNeedsLayout();
+  }
+
+  set textBaseline(TextBaseline? value) {
+    if (_textBaseline == value) return;
+    _textBaseline = value;
     markNeedsLayout();
   }
 
@@ -444,116 +489,57 @@ class _RenderSideBySide extends RenderBox
   @override
   void performLayout() {
     _findChildren();
-    _performLayout();
-  }
 
-  late double maxChildHeight;
+    final double correctedInnerDistance;
 
-  void _performLayout() {
-    if (textDirection == TextDirection.ltr)
-      _performLayoutLtr();
-    //
-    else if (textDirection == TextDirection.rtl)
-      _performLayoutRtl();
+    if (crossAxisAlignment == CrossAxisAlignment.stretch) {
+      // With a bounded height, the children fill it, just like in a `Row`.
+      if (constraints.hasBoundedHeight)
+        correctedInnerDistance = _layoutChildren(stretchedHeight: constraints.maxHeight);
+      //
+      // With an unbounded height (for example, inside a `Column`) the children can't
+      // fill it. Instead, we lay them out once to find the tallest one, and then lay
+      // them out again, stretched to its height.
+      else {
+        _layoutChildren();
+        correctedInnerDistance = _layoutChildren(
+            stretchedHeight: max(startChild.size.height, endChild.size.height));
+      }
+    }
     //
     else
-      throw AssertionError(textDirection);
+      correctedInnerDistance = _layoutChildren();
+
+    _positionChildren(correctedInnerDistance);
   }
 
-  void _performLayoutRtl() {
-    // How much space (min) the endChild needs + the gap:
-    // If minEndChildWidth is zero, we consider zero for this calculation.
+  /// Lays out the [startChild] and the [endChild], and returns the distance between
+  /// them. If [stretchedHeight] is provided, both children are forced to that height.
+  double _layoutChildren({double? stretchedHeight}) {
+    //
+    final double minHeight = stretchedHeight ?? constraints.minHeight;
+    final double maxHeight = stretchedHeight ?? constraints.maxHeight;
+
+    // What is the minimum width the endChild can occupy?
+    // At the minimum, we have the `minEndChildWidth` plus the inner-distance, except if
+    // the minEndChildWidth is zero, in which case we don't add the inner-distance.
     final double minEndChildAndInnerDistance =
         (minEndChildWidth == 0) ? 0 : (minEndChildWidth + innerDistance);
 
-    // --- Layout startChild. ---
+    // StartChild: ---
     // It can take up to (maxWidth - minEndChildAndInnerDistance).
     final startChildConstraints = BoxConstraints(
       minWidth: 0.0,
       maxWidth: max(0.0, constraints.maxWidth - minEndChildAndInnerDistance),
-      minHeight: constraints.minHeight,
-      maxHeight: constraints.maxHeight,
+      minHeight: minHeight,
+      maxHeight: maxHeight,
     );
+
     startChild.layout(startChildConstraints, parentUsesSize: true);
     final double startChildWidth = startChild.size.width;
 
-    // If the startChild used no width, we remove the gap.
-    final double correctedInnerDistance = (startChildWidth == 0.0) ? 0.0 : innerDistance;
-
-    // --- Layout endChild. ---
-    // For MainAxisSize.max, endChild is forced to fill leftover width.
-    // For MainAxisSize.min, endChild can take up to leftover width as needed.
-    final leftover = constraints.maxWidth - startChildWidth - correctedInnerDistance;
-
-    BoxConstraints endChildConstraints;
-    if (mainAxisSize == MainAxisSize.max) {
-      endChildConstraints = constraints.copyWith(minWidth: 0).tighten(width: leftover);
-    } else {
-      endChildConstraints = BoxConstraints(
-        minWidth: 0,
-        maxWidth: leftover < 0 ? 0 : leftover,
-        minHeight: constraints.minHeight,
-        maxHeight: constraints.maxHeight,
-      );
-    }
-
-    endChild.layout(endChildConstraints, parentUsesSize: true);
-    final double endChildWidth = endChild.size.width;
-
-    // Find the tallest child:
-    final double maxChildHeight = max(startChild.size.height, endChild.size.height);
-
-    // --- Positioning. ---
-    final MultiChildLayoutParentData startChildParentData =
-        startChild.parentData as MultiChildLayoutParentData;
-    final MultiChildLayoutParentData endChildParentData =
-        endChild.parentData as MultiChildLayoutParentData;
-
-    // In RTL, place the startChild on the far right,
-    // and the endChild to its left (with the gap in between).
-    startChildParentData.offset = Offset(
-      constraints.maxWidth - startChildWidth,
-      dy(startChild, maxChildHeight),
-    );
-    endChildParentData.offset = Offset(
-      constraints.maxWidth - startChildWidth - correctedInnerDistance - endChildWidth,
-      dy(endChild, maxChildHeight),
-    );
-
-    // Decide final width:
-    // For MainAxisSize.max, we use constraints.maxWidth.
-    // For MainAxisSize.min, just use the sum of both children plus the gap.
-    if (mainAxisSize == MainAxisSize.max) {
-      size = Size(constraints.maxWidth, maxChildHeight);
-    } else {
-      // The used width is the distance from the leftmost child to the rightmost child.
-      final usedWidth = startChildWidth + correctedInnerDistance + endChildWidth;
-      size = constraints.constrain(Size(usedWidth, maxChildHeight));
-    }
-  }
-
-  void _performLayoutLtr() {
-    //
-    //
-    // What is the minimum width the endChild can occupy?
-    // At the minimum, we have the `minEndChildWidth` plus the inner-distance, except if
-    // the minEndChildWidth is zero, in which case we don't add the inner-distance.
-    double minEndChildAndInnerDistance =
-        (minEndChildWidth == 0) ? 0 : (minEndChildWidth + innerDistance);
-
-    // StartChild: ---
-    var startChildConstraints = BoxConstraints(
-      minWidth: 0.0,
-      maxWidth: max(0.0, constraints.maxWidth - minEndChildAndInnerDistance),
-      minHeight: constraints.minHeight,
-      maxHeight: constraints.maxHeight,
-    );
-
-    startChild.layout(startChildConstraints, parentUsesSize: true);
-    double startChildWidth = startChild.size.width;
-
     // If the startChild is zero width, remove the gap.
-    var correctedInnerDistance = (startChildWidth == 0.0) ? 0 : innerDistance;
+    final double correctedInnerDistance = (startChildWidth == 0.0) ? 0.0 : innerDistance;
 
     // EndChild: ---
     // For MainAxisSize.max, endChild fills leftover width.
@@ -562,64 +548,102 @@ class _RenderSideBySide extends RenderBox
 
     BoxConstraints endChildConstraints;
     if (mainAxisSize == MainAxisSize.max) {
-      endChildConstraints = constraints.copyWith(minWidth: 0).tighten(width: leftover);
+      endChildConstraints = constraints
+          .copyWith(minWidth: 0, minHeight: minHeight, maxHeight: maxHeight)
+          .tighten(width: leftover);
     } else {
       endChildConstraints = BoxConstraints(
         minWidth: 0,
         maxWidth: leftover < 0 ? 0 : leftover,
-        minHeight: constraints.minHeight,
-        maxHeight: constraints.maxHeight,
+        minHeight: minHeight,
+        maxHeight: maxHeight,
       );
     }
 
     endChild.layout(endChildConstraints, parentUsesSize: true);
 
-    double endChildWidth = endChild.size.width;
-    double maxChildHeight = max(startChild.size.height, endChild.size.height);
+    return correctedInnerDistance;
+  }
 
-    // Position children.
+  void _positionChildren(double correctedInnerDistance) {
+    final double startChildWidth = startChild.size.width;
+    final double endChildWidth = endChild.size.width;
+    double height = max(startChild.size.height, endChild.size.height);
+
+    // For `CrossAxisAlignment.baseline`, children are shifted down to align
+    // their baselines, which may make this widget taller than its tallest child.
+    double maxAboveBaseline = 0.0;
+    if (crossAxisAlignment == CrossAxisAlignment.baseline) {
+      assert(textBaseline != null,
+          'To use CrossAxisAlignment.baseline, you must also provide a textBaseline.');
+
+      maxAboveBaseline = max(
+        startChild.getDistanceToBaseline(textBaseline!, onlyReal: true) ?? 0.0,
+        endChild.getDistanceToBaseline(textBaseline!, onlyReal: true) ?? 0.0,
+      );
+
+      height = max(
+        _dy(startChild, height, maxAboveBaseline) + startChild.size.height,
+        _dy(endChild, height, maxAboveBaseline) + endChild.size.height,
+      );
+    }
+
+    // Decide final size:
+    // For MainAxisSize.max, fill available width.
+    // For MainAxisSize.min, match total children width (within constraints).
+    final double width = (mainAxisSize == MainAxisSize.max)
+        ? constraints.maxWidth
+        : startChildWidth + correctedInnerDistance + endChildWidth;
+
+    size = constraints.constrain(Size(width, height));
+
+    final double startChildDx, endChildDx;
+
+    // In LTR, place the startChild on the far left,
+    // and the endChild to its right (with the gap in between).
+    if (textDirection == TextDirection.ltr) {
+      startChildDx = 0.0;
+      endChildDx = startChildWidth + correctedInnerDistance;
+    }
+    //
+    // In RTL, place the startChild on the far right,
+    // and the endChild to its left (with the gap in between).
+    else if (textDirection == TextDirection.rtl) {
+      startChildDx = size.width - startChildWidth;
+      endChildDx = size.width - startChildWidth - correctedInnerDistance - endChildWidth;
+    }
+    //
+    else
+      throw AssertionError(textDirection);
+
     final MultiChildLayoutParentData startChildParentData =
         startChild.parentData as MultiChildLayoutParentData;
-    startChildParentData.offset = Offset(0, dy(startChild, maxChildHeight));
+    startChildParentData.offset =
+        Offset(startChildDx, _dy(startChild, height, maxAboveBaseline));
 
     final MultiChildLayoutParentData endChildParentData =
         endChild.parentData as MultiChildLayoutParentData;
     endChildParentData.offset =
-        Offset(startChildWidth + correctedInnerDistance, dy(endChild, maxChildHeight));
-
-    // Decide final width:
-    // For MainAxisSize.max, fill available width.
-    // For MainAxisSize.min, match total children width (within constraints).
-    if (mainAxisSize == MainAxisSize.max) {
-      size = Size(constraints.maxWidth, maxChildHeight);
-    } else {
-      final usedWidth = startChildWidth + correctedInnerDistance + endChildWidth;
-      size = constraints.constrain(Size(usedWidth, maxChildHeight));
-    }
+        Offset(endChildDx, _dy(endChild, height, maxAboveBaseline));
   }
 
-  double dy(RenderBox child, double maxChildHeight) {
-    final childHeight = child.size.height;
+  double _dy(RenderBox child, double height, double maxAboveBaseline) {
+    final double childHeight = child.size.height;
 
-    if (crossAxisAlignment == CrossAxisAlignment.start)
-      return 0.0;
-    //
-    else if (crossAxisAlignment == CrossAxisAlignment.end)
-      return maxChildHeight - childHeight;
-    //
-    else if (crossAxisAlignment == CrossAxisAlignment.center)
-      return (maxChildHeight - childHeight) / 2;
-    //
-    // TODO: Not yet implemented.
-    else if (crossAxisAlignment == CrossAxisAlignment.baseline)
-      throw UnimplementedError('CrossAxisAlignment.baseline is not yet implemented.');
-    //
-    // TODO: Not yet implemented.
-    else if (crossAxisAlignment == CrossAxisAlignment.stretch)
-      throw UnimplementedError('CrossAxisAlignment.stretch is not yet implemented.');
-    //
-    else
-      throw AssertionError(crossAxisAlignment);
+    switch (crossAxisAlignment) {
+      case CrossAxisAlignment.start:
+      case CrossAxisAlignment.stretch:
+        return 0.0;
+      case CrossAxisAlignment.end:
+        return height - childHeight;
+      case CrossAxisAlignment.center:
+        return (height - childHeight) / 2;
+      case CrossAxisAlignment.baseline:
+        final double? baseline =
+            child.getDistanceToBaseline(textBaseline!, onlyReal: true);
+        // Children with no baseline are aligned to the top, like in a `Row`.
+        return (baseline == null) ? 0.0 : maxAboveBaseline - baseline;
+    }
   }
 
   @override
@@ -631,6 +655,13 @@ class _RenderSideBySide extends RenderBox
   void paint(PaintingContext context, Offset offset) {
     defaultPaint(context, offset);
   }
+
+  /// Reports the baseline of the children, so that nested [SideBySide]s (which is how
+  /// a [SideBySide] with more than two children is implemented) can be aligned by
+  /// their baselines.
+  @override
+  double? computeDistanceToActualBaseline(TextBaseline baseline) =>
+      defaultComputeDistanceToHighestActualBaseline(baseline);
 
   @override
   double computeMinIntrinsicWidth(double height) {

@@ -10,6 +10,8 @@ Widget _boxB() => const SizedBox(key: ValueKey('b'), width: 160, height: 90);
 /// constrain the dimension that animates (height).
 Widget _tallB() => const SizedBox(key: ValueKey('b'), width: 80, height: 90);
 
+Widget _tallB2() => const SizedBox(key: ValueKey('c'), width: 80, height: 120);
+
 Widget _wrap(Widget child) => Directionality(
       textDirection: TextDirection.ltr,
       child: Center(child: child),
@@ -136,5 +138,48 @@ void main() {
       tester.getSize(find.byKey(const ValueKey('b'))),
       const Size(160, 90),
     );
+  });
+  testWidgets(
+      'onEnd is called once when a transition completes, '
+      'and not when the child is first built', (tester) async {
+    int calls = 0;
+    void onEnd() => calls++;
+
+    await tester.pumpWidget(_wrap(AnimatedBetween(onEnd: onEnd, child: _boxA())));
+    await tester.pumpAndSettle();
+    expect(calls, 0);
+
+    await tester.pumpWidget(_wrap(AnimatedBetween(onEnd: onEnd, child: _boxB())));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 120));
+    expect(calls, 0);
+
+    await tester.pumpAndSettle();
+    expect(calls, 1);
+
+    // Shrinking to null (showHide hide) also completes a transition.
+    await tester.pumpWidget(_wrap(AnimatedBetween(onEnd: onEnd, child: null)));
+    await tester.pumpAndSettle();
+    expect(calls, 2);
+  });
+
+  testWidgets(
+      'onEnd is called only once when a transition is interrupted '
+      'by another child change', (tester) async {
+    int calls = 0;
+    void onEnd() => calls++;
+
+    await tester.pumpWidget(_wrap(AnimatedBetween(onEnd: onEnd, child: _boxA())));
+    await tester.pumpAndSettle();
+
+    await tester.pumpWidget(_wrap(AnimatedBetween(onEnd: onEnd, child: _boxB())));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 60));
+
+    await tester.pumpWidget(_wrap(AnimatedBetween(onEnd: onEnd, child: _tallB2())));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(calls, 1);
   });
 }

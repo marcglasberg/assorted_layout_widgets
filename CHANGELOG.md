@@ -2,6 +2,15 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 13.1.0
+
+* New `AnimatedBetween.onEnd` callback.
+
+* `SideBySide` now supports `CrossAxisAlignment.stretch` and `CrossAxisAlignment.baseline`
+  (which requires the new `textBaseline` parameter, just like in a `Row`). Before, they
+  threw an `UnimplementedError`. When the available height is unbounded (for example,
+  inside a `Column`), `stretch` stretches all children to the height of the tallest one.
+
 ## 13.0.0
 
 * **Breaking:** Migrate to the standalone `material_ui` and `cupertino_ui` packages.

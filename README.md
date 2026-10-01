@@ -154,10 +154,19 @@ gaps will be ignored.
 ### Cross alignment
 
 The `crossAxisAlignment` parameter specifies how to align the widgets vertically.
-The default is to center them. At the moment, only `CrossAxisAlignment.start`,
-`CrossAxisAlignment.end` and `CrossAxisAlignment.center` work. If you provide
-`CrossAxisAlignment.baseline` or `CrossAxisAlignment.stretch`, you'll get
-an `UnimplementedError`.
+The default is to center them. All alignments work:
+
+* `CrossAxisAlignment.start`, `CrossAxisAlignment.end` and `CrossAxisAlignment.center`
+  align the children to the top, bottom or center.
+
+* `CrossAxisAlignment.stretch` forces the children to fill the available height, just like
+  in a `Row`. However, while a `Row` can't stretch its children when the available height
+  is unbounded (for example, inside a `Column`), `SideBySide` will instead stretch all
+  children to the height of the tallest one.
+
+* `CrossAxisAlignment.baseline` aligns the children by their baselines. To use it you must
+  also provide the `textBaseline` parameter, just like in a `Row`. Children with no
+  baseline are aligned to the top.
 
 ### Main axis size
 
@@ -2957,6 +2966,7 @@ AnimatedBetween({
   Alignment alignment = Alignment.center,  
   AnimatedBetweenMode modeShorterChild = AnimatedBetweenMode.resize,
   AnimatedBetweenMode modeLargerChild = AnimatedBetweenMode.fit,  
+  VoidCallback? onEnd,
 })
 ```
 
@@ -3004,6 +3014,9 @@ AnimatedBetween({
   These do not affect how the box itself is sized; grow/shrink direction and target
   sizes are still determined from each child's natural size. When one side is `null`
   (as in `showHide`), the non-null side is always treated as the larger child.
+
+- **`onEnd`**: Called when a transition completes. If the child changes again
+  mid-transition, it's called only once, at the end of the last one.
 
 Try running
 the <a href="https://github.com/marcglasberg/assorted_layout_widgets/blob/master/example/lib/main_animated_between.dart">

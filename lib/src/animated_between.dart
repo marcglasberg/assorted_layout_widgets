@@ -116,6 +116,7 @@ class AnimatedBetween extends StatefulWidget {
     this.clipBehavior = Clip.none,
     this.modeShorterChild = AnimatedBetweenMode.resize,
     this.modeLargerChild = AnimatedBetweenMode.fit,
+    this.onEnd,
     this.printDebug = false,
   }) : assert(sizeDurationFactor >= 1.0, 'sizeDurationFactor must be >= 1.0');
 
@@ -136,6 +137,7 @@ class AnimatedBetween extends StatefulWidget {
     this.alignment = Alignment.topCenter,
     this.clipBehavior = Clip.none,
     AnimatedBetweenMode mode = AnimatedBetweenMode.fit,
+    this.onEnd,
     this.printDebug = true,
   }) : assert(sizeDurationFactor >= 1.0, 'sizeDurationFactor must be >= 1.0'),
        modeLargerChild = mode,
@@ -214,6 +216,20 @@ class AnimatedBetween extends StatefulWidget {
   /// When the two children have the exact same area, [modeShorterChild]
   /// is used for both and this parameter is ignored.
   final AnimatedBetweenMode modeLargerChild;
+
+  /// Called when a transition completes, i.e. once both the fade and
+  /// the size animations have finished and the box is at rest with the
+  /// new child.
+  ///
+  /// If the child changes again before a transition completes, the new
+  /// transition takes over from the current visual state, and [onEnd] is
+  /// called only once, when that last transition completes. Changes
+  /// that don't trigger a transition (a child that can update the
+  /// current one in place, or `null` replaced by `null`) don't call it.
+  ///
+  /// This is useful, for example, to trigger an action only after
+  /// the new child has fully appeared, or to chain transitions.
+  final VoidCallback? onEnd;
 
   /// When true, prints the computed fade and size durations (in
   /// milliseconds) at the start of every transition, and whenever the
@@ -477,6 +493,8 @@ class _AnimatedBetweenState extends State<AnimatedBetween> with TickerProviderSt
       _outgoingChildSize = null;
       _setRestingSize(_currentChildSize ?? Size.zero);
     });
+
+    widget.onEnd?.call();
   }
 
   void _handleCurrentChildSizeChanged(Size size) {
