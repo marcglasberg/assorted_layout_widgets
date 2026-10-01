@@ -23,6 +23,10 @@ Sponsored by [MyText.ai](https://mytext.ai)
     * `SideBySide.startChild` and `SideBySide.endChild`: Use the `children` property
       instead.
     * `SideBySide.innerDistance`: Use the `gaps` property instead.
+    * `KeyboardDismiss` widget: Use the `Keyboard` widget instead. Recommended:
+      `Keyboard(iOsCloseOnTap: true, iOsCloseOnSwipe: true, iOsRemoveFocusOnTap: true, child: ...)`.
+    * `KeyboardDismiss.keyboardDismiss()`: Use `Keyboard.close()` instead.
+    * `isScrolled` (of `DetectScroll`): Use `canScroll` instead.
 
 * **Breaking:** `ButtonBarSuper` is now a replacement for `OverflowBar` (which replaced
   the deprecated `ButtonBar`), instead of for `ButtonBar`:

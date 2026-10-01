@@ -473,49 +473,189 @@ class _RenderSideBySide extends RenderBox
       child.parentData = MultiChildLayoutParentData();
   }
 
-  late RenderBox _startChild;
+  RenderBox get startChild => firstChild!;
 
-  RenderBox get startChild => _startChild;
-
-  late RenderBox _endChild;
-
-  RenderBox get endChild => _endChild;
-
-  void _findChildren() {
-    _startChild = firstChild!;
-    _endChild = lastChild!;
-  }
+  RenderBox get endChild => lastChild!;
 
   @override
   void performLayout() {
-    _findChildren();
+    final _Geometry geometry = _computeGeometry(
+      constraints,
+      layoutChild: (child, childConstraints) {
+        child.layout(childConstraints, parentUsesSize: true);
+        return child.size;
+      },
+      childBaseline: (child, childConstraints) =>
+          child.getDistanceToBaseline(textBaseline!, onlyReal: true),
+    );
 
-    final double correctedInnerDistance;
+    size = geometry.size;
+
+    (startChild.parentData as MultiChildLayoutParentData).offset =
+        geometry.startChildOffset;
+
+    (endChild.parentData as MultiChildLayoutParentData).offset = geometry.endChildOffset;
+  }
+
+  /// Same as [performLayout], but only measures the children, without actually laying
+  /// them out. Used by [computeDryLayout], [computeDryBaseline], and to calculate the
+  /// intrinsic heights.
+  _Geometry _computeDryGeometry(BoxConstraints constraints) => _computeGeometry(
+        constraints,
+        layoutChild: (child, childConstraints) => child.getDryLayout(childConstraints),
+        childBaseline: (child, childConstraints) =>
+            child.getDryBaseline(childConstraints, textBaseline!),
+      );
+
+  @override
+  Size computeDryLayout(BoxConstraints constraints) =>
+      _computeDryGeometry(constraints).size;
+
+  /// Reports the highest baseline of the children, just like
+  /// [computeDistanceToActualBaseline] does.
+  @override
+  double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline) {
+    final _Geometry geometry = _computeDryGeometry(constraints);
+
+    final double? startChildBaseline =
+        startChild.getDryBaseline(geometry.children.startChildConstraints, baseline);
+
+    final double? endChildBaseline =
+        endChild.getDryBaseline(geometry.children.endChildConstraints, baseline);
+
+    if (startChildBaseline == null && endChildBaseline == null) return null;
+
+    return min(
+      (startChildBaseline == null)
+          ? double.infinity
+          : geometry.startChildOffset.dy + startChildBaseline,
+      (endChildBaseline == null)
+          ? double.infinity
+          : geometry.endChildOffset.dy + endChildBaseline,
+    );
+  }
+
+  /// Calculates the size of this widget and the offsets of its children. It works both
+  /// for the actual layout and for the dry layout, depending on how [layoutChild]
+  /// measures the children, and how [childBaseline] finds their baselines.
+  _Geometry _computeGeometry(
+    BoxConstraints constraints, {
+    required _LayoutChild layoutChild,
+    required double? Function(RenderBox child, BoxConstraints constraints) childBaseline,
+  }) {
+    final _ChildrenLayout children;
 
     if (crossAxisAlignment == CrossAxisAlignment.stretch) {
       // With a bounded height, the children fill it, just like in a `Row`.
       if (constraints.hasBoundedHeight)
-        correctedInnerDistance = _layoutChildren(stretchedHeight: constraints.maxHeight);
+        children = _layoutChildren(constraints, layoutChild,
+            stretchedHeight: constraints.maxHeight);
       //
       // With an unbounded height (for example, inside a `Column`) the children can't
       // fill it. Instead, we lay them out once to find the tallest one, and then lay
       // them out again, stretched to its height.
       else {
-        _layoutChildren();
-        correctedInnerDistance = _layoutChildren(
-            stretchedHeight: max(startChild.size.height, endChild.size.height));
+        final _ChildrenLayout unstretched = _layoutChildren(constraints, layoutChild);
+        children = _layoutChildren(constraints, layoutChild,
+            stretchedHeight: max(
+                unstretched.startChildSize.height, unstretched.endChildSize.height));
       }
     }
     //
     else
-      correctedInnerDistance = _layoutChildren();
+      children = _layoutChildren(constraints, layoutChild);
 
-    _positionChildren(correctedInnerDistance);
+    final Size startChildSize = children.startChildSize;
+    final Size endChildSize = children.endChildSize;
+    double height = max(startChildSize.height, endChildSize.height);
+
+    // Vertical position of each child.
+    double startChildDy, endChildDy;
+
+    // For `CrossAxisAlignment.baseline`, children are shifted down to align
+    // their baselines, which may make this widget taller than its tallest child.
+    if (crossAxisAlignment == CrossAxisAlignment.baseline) {
+      assert(textBaseline != null,
+          'To use CrossAxisAlignment.baseline, you must also provide a textBaseline.');
+
+      final double? startChildBaseline =
+          childBaseline(startChild, children.startChildConstraints);
+
+      final double? endChildBaseline =
+          childBaseline(endChild, children.endChildConstraints);
+
+      final double maxAboveBaseline =
+          max(startChildBaseline ?? 0.0, endChildBaseline ?? 0.0);
+
+      // Children with no baseline are aligned to the top, like in a `Row`.
+      startChildDy =
+          (startChildBaseline == null) ? 0.0 : maxAboveBaseline - startChildBaseline;
+
+      endChildDy = (endChildBaseline == null) ? 0.0 : maxAboveBaseline - endChildBaseline;
+
+      height = max(
+        startChildDy + startChildSize.height,
+        endChildDy + endChildSize.height,
+      );
+    }
+    //
+    else {
+      startChildDy = _dy(startChildSize.height, height);
+      endChildDy = _dy(endChildSize.height, height);
+    }
+
+    // Decide final size:
+    // For MainAxisSize.max, fill available width.
+    // For MainAxisSize.min, match total children width (within constraints).
+    final double width = _fillsWidth(constraints)
+        ? constraints.maxWidth
+        : startChildSize.width + children.correctedInnerDistance + endChildSize.width;
+
+    final Size size = constraints.constrain(Size(width, height));
+
+    // Horizontal position of each child.
+    final double startChildDx, endChildDx;
+
+    // In LTR, place the startChild on the far left,
+    // and the endChild to its right (with the gap in between).
+    if (textDirection == TextDirection.ltr) {
+      startChildDx = 0.0;
+      endChildDx = startChildSize.width + children.correctedInnerDistance;
+    }
+    //
+    // In RTL, place the startChild on the far right,
+    // and the endChild to its left (with the gap in between).
+    else if (textDirection == TextDirection.rtl) {
+      startChildDx = size.width - startChildSize.width;
+      endChildDx = size.width -
+          startChildSize.width -
+          children.correctedInnerDistance -
+          endChildSize.width;
+    }
+    //
+    else
+      throw AssertionError(textDirection);
+
+    return _Geometry(
+      children: children,
+      size: size,
+      startChildOffset: Offset(startChildDx, startChildDy),
+      endChildOffset: Offset(endChildDx, endChildDy),
+    );
   }
 
-  /// Lays out the [startChild] and the [endChild], and returns the distance between
-  /// them. If [stretchedHeight] is provided, both children are forced to that height.
-  double _layoutChildren({double? stretchedHeight}) {
+  /// For [MainAxisSize.max], the widget fills the available width, if it's bounded.
+  /// Otherwise (just like a [Row]), it's as wide as its children.
+  bool _fillsWidth(BoxConstraints constraints) =>
+      (mainAxisSize == MainAxisSize.max) && constraints.hasBoundedWidth;
+
+  /// Lays out the [startChild] and the [endChild] using [layoutChild].
+  /// If [stretchedHeight] is provided, both children are forced to that height.
+  _ChildrenLayout _layoutChildren(
+    BoxConstraints constraints,
+    _LayoutChild layoutChild, {
+    double? stretchedHeight,
+  }) {
     //
     final double minHeight = stretchedHeight ?? constraints.minHeight;
     final double maxHeight = stretchedHeight ?? constraints.maxHeight;
@@ -535,19 +675,19 @@ class _RenderSideBySide extends RenderBox
       maxHeight: maxHeight,
     );
 
-    startChild.layout(startChildConstraints, parentUsesSize: true);
-    final double startChildWidth = startChild.size.width;
+    final Size startChildSize = layoutChild(startChild, startChildConstraints);
 
     // If the startChild is zero width, remove the gap.
-    final double correctedInnerDistance = (startChildWidth == 0.0) ? 0.0 : innerDistance;
+    final double correctedInnerDistance =
+        (startChildSize.width == 0.0) ? 0.0 : innerDistance;
 
     // EndChild: ---
     // For MainAxisSize.max, endChild fills leftover width.
     // For MainAxisSize.min, endChild can take up to leftover width.
-    final leftover = constraints.maxWidth - startChildWidth - correctedInnerDistance;
+    final leftover = constraints.maxWidth - startChildSize.width - correctedInnerDistance;
 
     BoxConstraints endChildConstraints;
-    if (mainAxisSize == MainAxisSize.max) {
+    if (_fillsWidth(constraints)) {
       endChildConstraints = constraints
           .copyWith(minWidth: 0, minHeight: minHeight, maxHeight: maxHeight)
           .tighten(width: leftover);
@@ -560,89 +700,28 @@ class _RenderSideBySide extends RenderBox
       );
     }
 
-    endChild.layout(endChildConstraints, parentUsesSize: true);
+    final Size endChildSize = layoutChild(endChild, endChildConstraints);
 
-    return correctedInnerDistance;
+    return _ChildrenLayout(
+      startChildConstraints: startChildConstraints,
+      endChildConstraints: endChildConstraints,
+      startChildSize: startChildSize,
+      endChildSize: endChildSize,
+      correctedInnerDistance: correctedInnerDistance,
+    );
   }
 
-  void _positionChildren(double correctedInnerDistance) {
-    final double startChildWidth = startChild.size.width;
-    final double endChildWidth = endChild.size.width;
-    double height = max(startChild.size.height, endChild.size.height);
-
-    // For `CrossAxisAlignment.baseline`, children are shifted down to align
-    // their baselines, which may make this widget taller than its tallest child.
-    double maxAboveBaseline = 0.0;
-    if (crossAxisAlignment == CrossAxisAlignment.baseline) {
-      assert(textBaseline != null,
-          'To use CrossAxisAlignment.baseline, you must also provide a textBaseline.');
-
-      maxAboveBaseline = max(
-        startChild.getDistanceToBaseline(textBaseline!, onlyReal: true) ?? 0.0,
-        endChild.getDistanceToBaseline(textBaseline!, onlyReal: true) ?? 0.0,
-      );
-
-      height = max(
-        _dy(startChild, height, maxAboveBaseline) + startChild.size.height,
-        _dy(endChild, height, maxAboveBaseline) + endChild.size.height,
-      );
-    }
-
-    // Decide final size:
-    // For MainAxisSize.max, fill available width.
-    // For MainAxisSize.min, match total children width (within constraints).
-    final double width = (mainAxisSize == MainAxisSize.max)
-        ? constraints.maxWidth
-        : startChildWidth + correctedInnerDistance + endChildWidth;
-
-    size = constraints.constrain(Size(width, height));
-
-    final double startChildDx, endChildDx;
-
-    // In LTR, place the startChild on the far left,
-    // and the endChild to its right (with the gap in between).
-    if (textDirection == TextDirection.ltr) {
-      startChildDx = 0.0;
-      endChildDx = startChildWidth + correctedInnerDistance;
-    }
-    //
-    // In RTL, place the startChild on the far right,
-    // and the endChild to its left (with the gap in between).
-    else if (textDirection == TextDirection.rtl) {
-      startChildDx = size.width - startChildWidth;
-      endChildDx = size.width - startChildWidth - correctedInnerDistance - endChildWidth;
-    }
-    //
-    else
-      throw AssertionError(textDirection);
-
-    final MultiChildLayoutParentData startChildParentData =
-        startChild.parentData as MultiChildLayoutParentData;
-    startChildParentData.offset =
-        Offset(startChildDx, _dy(startChild, height, maxAboveBaseline));
-
-    final MultiChildLayoutParentData endChildParentData =
-        endChild.parentData as MultiChildLayoutParentData;
-    endChildParentData.offset =
-        Offset(endChildDx, _dy(endChild, height, maxAboveBaseline));
-  }
-
-  double _dy(RenderBox child, double height, double maxAboveBaseline) {
-    final double childHeight = child.size.height;
-
+  /// The vertical position of a child, for all alignments except baseline.
+  double _dy(double childHeight, double height) {
     switch (crossAxisAlignment) {
       case CrossAxisAlignment.start:
       case CrossAxisAlignment.stretch:
+      case CrossAxisAlignment.baseline:
         return 0.0;
       case CrossAxisAlignment.end:
         return height - childHeight;
       case CrossAxisAlignment.center:
         return (height - childHeight) / 2;
-      case CrossAxisAlignment.baseline:
-        final double? baseline =
-            child.getDistanceToBaseline(textBaseline!, onlyReal: true);
-        // Children with no baseline are aligned to the top, like in a `Row`.
-        return (baseline == null) ? 0.0 : maxAboveBaseline - baseline;
     }
   }
 
@@ -665,31 +744,55 @@ class _RenderSideBySide extends RenderBox
 
   @override
   double computeMinIntrinsicWidth(double height) {
-    _findChildren();
     return startChild.computeMinIntrinsicWidth(height);
   }
 
   @override
   double computeMaxIntrinsicWidth(double height) {
-    _findChildren();
     return startChild.computeMaxIntrinsicWidth(height);
   }
 
+  /// The height of this widget depends only on its width, so the min and max intrinsic
+  /// heights are the same: the height of the (dry) layout with that width.
   @override
-  double computeMinIntrinsicHeight(double width) {
-    _findChildren();
-    return max(
-      startChild.computeMinIntrinsicHeight(width),
-      endChild.computeMinIntrinsicHeight(width),
-    );
-  }
+  double computeMinIntrinsicHeight(double width) =>
+      _computeDryGeometry(BoxConstraints(maxWidth: width)).size.height;
 
   @override
-  double computeMaxIntrinsicHeight(double width) {
-    _findChildren();
-    return max(
-      startChild.computeMaxIntrinsicHeight(width),
-      endChild.computeMaxIntrinsicHeight(width),
-    );
-  }
+  double computeMaxIntrinsicHeight(double width) =>
+      _computeDryGeometry(BoxConstraints(maxWidth: width)).size.height;
+}
+
+/// Lays out (or measures, for the dry layout) a [child], and returns its size.
+typedef _LayoutChild = Size Function(RenderBox child, BoxConstraints constraints);
+
+/// The constraints and sizes of the children of a [SideBySide], after layout.
+class _ChildrenLayout {
+  _ChildrenLayout({
+    required this.startChildConstraints,
+    required this.endChildConstraints,
+    required this.startChildSize,
+    required this.endChildSize,
+    required this.correctedInnerDistance,
+  });
+
+  final BoxConstraints startChildConstraints, endChildConstraints;
+  final Size startChildSize, endChildSize;
+
+  /// The distance between the children, which is zero if the startChild is zero width.
+  final double correctedInnerDistance;
+}
+
+/// The size of a [SideBySide], and the positions of its children, after layout.
+class _Geometry {
+  _Geometry({
+    required this.children,
+    required this.size,
+    required this.startChildOffset,
+    required this.endChildOffset,
+  });
+
+  final _ChildrenLayout children;
+  final Size size;
+  final Offset startChildOffset, endChildOffset;
 }

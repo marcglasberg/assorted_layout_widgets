@@ -276,9 +276,6 @@ class _DetectScrollInherited extends InheritedWidget {
     required this.scrollbarWidth,
   }) : super(key: key, child: child);
 
-  @Deprecated("Use `canScroll` instead. The old `isScrolled` will be removed very soon.")
-  bool get isScrolled => canScroll;
-
   @override
   bool updateShouldNotify(_DetectScrollInherited oldWidget) {
     return oldWidget.canScroll != canScroll || oldWidget.scrollbarWidth != scrollbarWidth;

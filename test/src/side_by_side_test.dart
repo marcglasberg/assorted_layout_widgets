@@ -233,4 +233,159 @@ void main() {
     expect(tester.getRect(find.byKey(k1)).right, rect.right);
     expect(tester.getRect(find.byKey(k2)).left, rect.left);
   });
+
+  testWidgets('With unbounded width, MainAxisSize.max is as wide as its children.', (
+    tester,
+  ) async {
+    //
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: UnconstrainedBox(
+          child: SideBySide(
+            children: const [
+              SizedBox(width: 30, height: 10),
+              SizedBox(width: 40, height: 10),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    expect(sideBySideSize(tester), const Size(70, 10));
+  });
+
+  /// Pumps the [SideBySide] inside an [IntrinsicHeight], in a box 200 pixels wide.
+  Future<void> pumpIntrinsicHeight(WidgetTester tester, SideBySide sideBySide) {
+    return tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: SizedBox(width: 200, child: IntrinsicHeight(child: sideBySide)),
+        ),
+      ),
+    );
+  }
+
+  testWidgets('The intrinsic height considers the width each child actually gets.', (
+    tester,
+  ) async {
+    //
+    // The square gets only the leftover 50 pixels of width, so it's 50 pixels tall,
+    // and not 200 (which it would be, if it had the full width).
+    await pumpIntrinsicHeight(
+      tester,
+      SideBySide(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          SizedBox(width: 150, height: 10),
+          AspectRatio(key: k2, aspectRatio: 1),
+        ],
+      ),
+    );
+
+    expect(sideBySideSize(tester), const Size(200, 50));
+    expect(tester.getSize(find.byKey(k2)), const Size(50, 50));
+  });
+
+  testWidgets('The intrinsic height considers the baseline alignment.', (tester) async {
+    //
+    // Three children, so the baseline of the nested SideBySide is also needed.
+    await pumpIntrinsicHeight(
+      tester,
+      SideBySide(
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
+        children: const [
+          // Baseline at 15, height 70.
+          Column(
+            key: k1,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('A', style: TextStyle(fontSize: 20)),
+              SizedBox(width: 10, height: 50),
+            ],
+          ),
+          // Baseline at 30, height 40.
+          Text('B', key: k2, style: TextStyle(fontSize: 40)),
+          // No baseline.
+          SizedBox(key: k3, width: 10, height: 20),
+        ],
+      ),
+    );
+
+    // The column shifts down 15, so it ends at 15 + 70 = 85.
+    expect(sideBySideSize(tester).height, 85.0);
+    expect(top(tester, k1), 15.0);
+    expect(top(tester, k2), 0.0);
+    expect(top(tester, k3), 0.0);
+  });
+
+  testWidgets('The dry layout and dry baseline match the actual layout.', (
+    tester,
+  ) async {
+    //
+    const children = [
+      Text('A', style: TextStyle(fontSize: 20)),
+      Text('B', style: TextStyle(fontSize: 40)),
+      SizedBox(width: 10, height: 50),
+    ];
+
+    for (final crossAxisAlignment in CrossAxisAlignment.values) {
+      for (final mainAxisSize in MainAxisSize.values) {
+        for (final textDirection in TextDirection.values) {
+          //
+          // Both with bounded height (in a box) and unbounded height (in a column).
+          for (final inColumn in [false, true]) {
+            final sideBySide = SideBySide(
+              crossAxisAlignment: crossAxisAlignment,
+              textBaseline: TextBaseline.alphabetic,
+              mainAxisSize: mainAxisSize,
+              textDirection: textDirection,
+              children: children,
+            );
+
+            await tester.pumpWidget(
+              Directionality(
+                textDirection: TextDirection.ltr,
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: SizedBox(
+                    width: 200,
+                    height: inColumn ? null : 100,
+                    child: inColumn
+                        ? Column(mainAxisSize: MainAxisSize.min, children: [sideBySide])
+                        : Align(alignment: Alignment.topLeft, child: sideBySide),
+                  ),
+                ),
+              ),
+            );
+
+            final RenderBox box = tester.renderObject(find.byType(SideBySide).first);
+            final reason = '$crossAxisAlignment, $mainAxisSize, $textDirection, '
+                'inColumn: $inColumn';
+
+            expect(box.getDryLayout(box.constraints), box.size, reason: reason);
+
+            // The actual baseline can only be read by the parent, during its layout,
+            // unless we say we are checking intrinsics.
+            final double? actualBaseline;
+            RenderObject.debugCheckingIntrinsics = true;
+            try {
+              actualBaseline = box.getDistanceToBaseline(TextBaseline.alphabetic);
+            } finally {
+              RenderObject.debugCheckingIntrinsics = false;
+            }
+
+            expect(
+              box.getDryBaseline(box.constraints, TextBaseline.alphabetic),
+              actualBaseline,
+              reason: reason,
+            );
+          }
+        }
+      }
+    }
+  });
 }
