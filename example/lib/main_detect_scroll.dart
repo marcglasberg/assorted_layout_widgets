@@ -1,4 +1,3 @@
-// ignore_for_file: deprecated_member_use
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -22,14 +21,14 @@ class HomePage extends StatelessWidget {
   /// This theme makes the scrollbar always visible, with a thickness of 20 px.
   ScrollbarThemeData _scrollbarTheme() {
     return ScrollbarThemeData(
-      thumbVisibility: MaterialStateProperty.all(true),
-      trackVisibility: MaterialStateProperty.all(true),
-      thickness: MaterialStateProperty.all(20.0),
+      thumbVisibility: WidgetStateProperty.all(true),
+      trackVisibility: WidgetStateProperty.all(true),
+      thickness: WidgetStateProperty.all(20.0),
       interactive: true,
       radius: const Radius.circular(8),
       minThumbLength: 32,
-      trackColor: MaterialStateProperty.all(Colors.blue[100]),
-      thumbColor: MaterialStateProperty.all(Colors.blue[900]),
+      trackColor: WidgetStateProperty.all(Colors.blue[100]),
+      thumbColor: WidgetStateProperty.all(Colors.blue[900]),
       crossAxisMargin: 0,
       mainAxisMargin: 0,
     );
