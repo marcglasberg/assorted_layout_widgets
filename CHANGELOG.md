@@ -2,6 +2,16 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 13.2.0
+
+* `ScrollShadow` now supports horizontal scrollables. They show shadows at the left and
+  right edges, configured by the new `left*` and `right*` parameters (visibility, color,
+  divider color, paddings and radius). The existing `top*` and `bottom*` parameters and
+  defaults are unchanged, and still apply to vertical scrollables. Shadows are placed on
+  the physical edges, taking `reverse` and the text direction (RTL) into account.
+  Note: Before, a horizontal scrollable inside a `ScrollShadow` would wrongly drive the
+  top and bottom shadows. It now drives the left and right shadows instead.
+
 ## 13.1.0
 
 * New `AnimatedBetween.onEnd` callback.

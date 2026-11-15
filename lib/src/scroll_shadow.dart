@@ -3,14 +3,16 @@ import "dart:math";
 import "package:assorted_layout_widgets/assorted_layout_widgets.dart";
 import "package:material_ui/material_ui.dart";
 
-/// The [ShadowVisibility] defines the behavior of shadows applied to the `top` and
-/// `bottom` edges of a scrollable widget, based on the scroll state and content
-/// dimensions. This applies independently to the `top` and `bottom` edges, allowing
+/// The [ShadowVisibility] defines the behavior of the shadow applied to one edge
+/// (`top`, `bottom`, `left` or `right`) of a scrollable widget, based on the scroll
+/// state and content dimensions. This applies independently to each edge, allowing
 /// different shadow behaviors for each.
 ///
 /// - `whenScrolled`: The shadow is displayed only when there is overflow content in the
 ///   respective direction, indicating that more content can be revealed by scrolling.
 ///   If the content fits entirely within the viewport, the shadow will not be shown.
+///   The `top` and `bottom` edges react to vertical scrollables, while the `left` and
+///   `right` edges react to horizontal scrollables.
 ///
 /// - `alwaysOn`: The shadow is always visible, regardless of the scroll state or content
 ///   size. This provides a consistent appearance at the edge of the scrollable area.
@@ -33,15 +35,20 @@ enum ShadowVisibility {
   alwaysOff,
 }
 
-/// A widget that adds shadows to the top and bottom edges of a scrollable area
-/// to visually indicate overflow content.
+/// A widget that adds shadows to the edges of a scrollable area to visually
+/// indicate overflow content.
 ///
 /// The [ScrollShadow] is designed to dynamically display shadows at the edges of
 /// a scrollable widget based on the scroll state and content size. Shadows help
 /// provide a visual cue that more content is available in a particular direction.
 ///
+/// Vertical scrollables show shadows at the `top` and `bottom` edges, and horizontal
+/// scrollables show shadows at the `left` and `right` edges. The edges are physical,
+/// so the scroll direction, the text direction (RTL), and `reverse` are all taken into
+/// account: the shadow always appears at the edge where more content can be revealed.
+///
 /// The visibility, padding, color, and other aspects of the shadows can be customized
-/// independently for the top and bottom edges.
+/// independently for each edge.
 ///
 /// ### Example Usage
 /// ```dart
@@ -56,6 +63,19 @@ enum ShadowVisibility {
 ///   ),
 /// );
 /// ```
+///
+/// ### Horizontal Example
+/// ```dart
+/// ScrollShadow(
+///   leftShadowColor: Colors.black45,
+///   rightShadowColor: Colors.black45,
+///   child: ListView.builder(
+///     scrollDirection: Axis.horizontal,
+///     itemCount: 50,
+///     itemBuilder: (context, index) => SizedBox(width: 100, child: Text('Item $index')),
+///   ),
+/// );
+/// ```
 class ScrollShadow extends StatefulWidget {
   //
 
@@ -64,6 +84,13 @@ class ScrollShadow extends StatefulWidget {
 
   /// Default padding applied to the left side of the shadow for top and bottom edges.
   static const double defaultLeftPadding = 5.0;
+
+  /// Default padding applied to the top side of the shadow for left and right edges.
+  static const double defaultTopPadding = 5.0;
+
+  /// Default padding applied to the bottom side of the shadow for left and right edges.
+  /// It's larger than [defaultTopPadding] to leave room for a horizontal scrollbar.
+  static const double defaultBottomPadding = 14.0;
 
   /// Default radius used for rounding the shadow's corners.
   static const Radius defaultRadius = Radius.circular(4.0);
@@ -86,6 +113,24 @@ class ScrollShadow extends StatefulWidget {
   /// Radius used for rounding the bottom shadow's corners.
   final Radius bottomRadius;
 
+  /// Padding applied to the top side of the left shadow.
+  final double leftTopPadding;
+
+  /// Padding applied to the bottom side of the left shadow.
+  final double leftBottomPadding;
+
+  /// Radius used for rounding the left shadow's corners.
+  final Radius leftRadius;
+
+  /// Padding applied to the top side of the right shadow.
+  final double rightTopPadding;
+
+  /// Padding applied to the bottom side of the right shadow.
+  final double rightBottomPadding;
+
+  /// Radius used for rounding the right shadow's corners.
+  final Radius rightRadius;
+
   /// Controls the visibility behavior of the top shadow.
   ///
   /// Options:
@@ -102,6 +147,22 @@ class ScrollShadow extends StatefulWidget {
   /// - [ShadowVisibility.alwaysOff]: Never displays the shadow.
   final ShadowVisibility bottomShadowVisibility;
 
+  /// Controls the visibility behavior of the left shadow, for horizontal scrollables.
+  ///
+  /// Options:
+  /// - [ShadowVisibility.whenScrolled]: Displays the shadow only when content overflows.
+  /// - [ShadowVisibility.alwaysOn]: Always displays the shadow.
+  /// - [ShadowVisibility.alwaysOff]: Never displays the shadow.
+  final ShadowVisibility leftShadowVisibility;
+
+  /// Controls the visibility behavior of the right shadow, for horizontal scrollables.
+  ///
+  /// Options:
+  /// - [ShadowVisibility.whenScrolled]: Displays the shadow only when content overflows.
+  /// - [ShadowVisibility.alwaysOn]: Always displays the shadow.
+  /// - [ShadowVisibility.alwaysOff]: Never displays the shadow.
+  final ShadowVisibility rightShadowVisibility;
+
   /// The color of the top shadow.
   ///
   /// Defaults to [Colors.black].
@@ -112,6 +173,16 @@ class ScrollShadow extends StatefulWidget {
   /// Defaults to [Colors.black].
   final Color bottomShadowColor;
 
+  /// The color of the left shadow.
+  ///
+  /// Defaults to [Colors.black].
+  final Color leftShadowColor;
+
+  /// The color of the right shadow.
+  ///
+  /// Defaults to [Colors.black].
+  final Color rightShadowColor;
+
   /// The divider color that appears along the top edge of the shadow.
   ///
   /// Defaults to a semi-transparent black.
@@ -121,6 +192,16 @@ class ScrollShadow extends StatefulWidget {
   ///
   /// Defaults to a semi-transparent black.
   final Color bottomShadowDividerColor;
+
+  /// The divider color that appears along the left edge of the shadow.
+  ///
+  /// Defaults to a semi-transparent black.
+  final Color leftShadowDividerColor;
+
+  /// The divider color that appears along the right edge of the shadow.
+  ///
+  /// Defaults to a semi-transparent black.
+  final Color rightShadowDividerColor;
 
   /// The elevation of the shadows, which determines their intensity and blur radius.
   ///
@@ -140,15 +221,21 @@ class ScrollShadow extends StatefulWidget {
   /// further below in the widget tree.
   final Widget? child;
 
-  /// A widget that adds shadows to the top and bottom edges of a scrollable area
-  /// to visually indicate overflow content.
+  /// A widget that adds shadows to the edges of a scrollable area to visually
+  /// indicate overflow content.
   ///
   /// The [ScrollShadow] is designed to dynamically display shadows at the edges of
   /// a scrollable widget based on the scroll state and content size. Shadows help
   /// provide a visual cue that more content is available in a particular direction.
   ///
+  /// Vertical scrollables show shadows at the `top` and `bottom` edges, and horizontal
+  /// scrollables show shadows at the `left` and `right` edges. The edges are physical,
+  /// so the scroll direction, the text direction (RTL), and `reverse` are all taken
+  /// into account: the shadow always appears at the edge where more content can be
+  /// revealed.
+  ///
   /// The visibility, padding, color, and other aspects of the shadows can be customized
-  /// independently for the top and bottom edges.
+  /// independently for each edge.
   ///
   /// ### Example Usage
   /// ```dart
@@ -171,12 +258,24 @@ class ScrollShadow extends StatefulWidget {
     double? bottomRightPadding,
     double? bottomLeftPadding,
     Radius? bottomRadius,
+    double? leftTopPadding,
+    double? leftBottomPadding,
+    Radius? leftRadius,
+    double? rightTopPadding,
+    double? rightBottomPadding,
+    Radius? rightRadius,
     this.topShadowVisibility = ShadowVisibility.whenScrolled,
     this.bottomShadowVisibility = ShadowVisibility.whenScrolled,
+    this.leftShadowVisibility = ShadowVisibility.whenScrolled,
+    this.rightShadowVisibility = ShadowVisibility.whenScrolled,
     this.topShadowColor = Colors.black,
     this.bottomShadowColor = Colors.black,
+    this.leftShadowColor = Colors.black,
+    this.rightShadowColor = Colors.black,
     this.topShadowDividerColor = const Color(0xD0000000),
     this.bottomShadowDividerColor = const Color(0xD0000000),
+    this.leftShadowDividerColor = const Color(0xD0000000),
+    this.rightShadowDividerColor = const Color(0xD0000000),
     this.elevation,
     this.ifHidesShadowForNegativeScroll = false,
     super.key,
@@ -185,7 +284,13 @@ class ScrollShadow extends StatefulWidget {
         topRadius = topRadius ?? defaultRadius,
         bottomRightPadding = bottomRightPadding ?? defaultRightPadding,
         bottomLeftPadding = bottomLeftPadding ?? defaultLeftPadding,
-        bottomRadius = bottomRadius ?? defaultRadius;
+        bottomRadius = bottomRadius ?? defaultRadius,
+        leftTopPadding = leftTopPadding ?? defaultTopPadding,
+        leftBottomPadding = leftBottomPadding ?? defaultBottomPadding,
+        leftRadius = leftRadius ?? defaultRadius,
+        rightTopPadding = rightTopPadding ?? defaultTopPadding,
+        rightBottomPadding = rightBottomPadding ?? defaultBottomPadding,
+        rightRadius = rightRadius ?? defaultRadius;
 
   const ScrollShadow.simple({
     required this.child,
@@ -195,12 +300,24 @@ class ScrollShadow extends StatefulWidget {
     this.bottomRightPadding = 0.0,
     this.bottomLeftPadding = 0.0,
     this.bottomRadius = Radius.zero,
+    this.leftTopPadding = 0.0,
+    this.leftBottomPadding = 0.0,
+    this.leftRadius = Radius.zero,
+    this.rightTopPadding = 0.0,
+    this.rightBottomPadding = 0.0,
+    this.rightRadius = Radius.zero,
     this.topShadowVisibility = ShadowVisibility.whenScrolled,
     this.bottomShadowVisibility = ShadowVisibility.whenScrolled,
+    this.leftShadowVisibility = ShadowVisibility.whenScrolled,
+    this.rightShadowVisibility = ShadowVisibility.whenScrolled,
     this.topShadowColor = Colors.black,
     this.bottomShadowColor = Colors.black,
+    this.leftShadowColor = Colors.black,
+    this.rightShadowColor = Colors.black,
     this.topShadowDividerColor = const Color(0xD0000000),
     this.bottomShadowDividerColor = const Color(0xD0000000),
+    this.leftShadowDividerColor = const Color(0xD0000000),
+    this.rightShadowDividerColor = const Color(0xD0000000),
     this.elevation,
     this.ifHidesShadowForNegativeScroll = false,
     super.key,
@@ -227,27 +344,31 @@ class _ScrollShadowState extends State<ScrollShadow> {
       bottomRightPadding: widget.bottomRightPadding,
       bottomLeftPadding: widget.bottomLeftPadding,
       bottomRadius: widget.bottomRadius,
+      leftTopPadding: widget.leftTopPadding,
+      leftBottomPadding: widget.leftBottomPadding,
+      leftRadius: widget.leftRadius,
+      rightTopPadding: widget.rightTopPadding,
+      rightBottomPadding: widget.rightBottomPadding,
+      rightRadius: widget.rightRadius,
       topShadowVisibility: widget.topShadowVisibility,
       bottomShadowVisibility: widget.bottomShadowVisibility,
+      leftShadowVisibility: widget.leftShadowVisibility,
+      rightShadowVisibility: widget.rightShadowVisibility,
       topShadowColor: widget.topShadowColor,
       bottomShadowColor: widget.bottomShadowColor,
+      leftShadowColor: widget.leftShadowColor,
+      rightShadowColor: widget.rightShadowColor,
       topShadowDividerColor: widget.topShadowDividerColor,
       bottomShadowDividerColor: widget.bottomShadowDividerColor,
+      leftShadowDividerColor: widget.leftShadowDividerColor,
+      rightShadowDividerColor: widget.rightShadowDividerColor,
       elevation: widget.elevation,
       ifHidesShadowForNegativeScroll: widget.ifHidesShadowForNegativeScroll,
     );
   }
 
-  /// Determine if the scrollable is reversed based on the `axisDirection`
-  /// from `ScrollMetrics`.
-  bool _isReverse(ScrollMetrics metrics) {
-    return metrics.axisDirection == AxisDirection.up ||
-        metrics.axisDirection == AxisDirection.left;
-  }
-
   bool _handleScrollMetricsNotification(ScrollMetricsNotification notification) {
-    final isReversed = _isReverse(notification.metrics);
-    _shadowPainter?.update(notification.metrics, isReversed);
+    _shadowPainter?.update(notification.metrics);
     return false; // Allow the notification to continue bubbling
   }
 
@@ -256,8 +377,7 @@ class _ScrollShadowState extends State<ScrollShadow> {
     if (notification is ScrollUpdateNotification ||
         notification is OverscrollNotification) {
       //
-      final isReversed = _isReverse(notification.metrics);
-      _shadowPainter?.update(notification.metrics, isReversed);
+      _shadowPainter?.update(notification.metrics);
     }
 
     return false; // Allow the notification to continue bubbling
@@ -301,13 +421,25 @@ class _ShadowPainter extends ChangeNotifier implements CustomPainter {
     this.bottomRightPadding,
     this.bottomLeftPadding,
     this.bottomRadius,
+    required this.leftTopPadding,
+    required this.leftBottomPadding,
+    required this.leftRadius,
+    required this.rightTopPadding,
+    required this.rightBottomPadding,
+    required this.rightRadius,
     double? elevation,
     this.topShadowVisibility = ShadowVisibility.whenScrolled,
     this.bottomShadowVisibility = ShadowVisibility.whenScrolled,
+    this.leftShadowVisibility = ShadowVisibility.whenScrolled,
+    this.rightShadowVisibility = ShadowVisibility.whenScrolled,
     this.topShadowColor = Colors.black,
     this.bottomShadowColor = Colors.black,
+    this.leftShadowColor = Colors.black,
+    this.rightShadowColor = Colors.black,
     this.topShadowDividerColor = const Color(0xD0000000),
     this.bottomShadowDividerColor = const Color(0xD0000000),
+    this.leftShadowDividerColor = const Color(0xD0000000),
+    this.rightShadowDividerColor = const Color(0xD0000000),
     this.ifHidesShadowForNegativeScroll = false,
   }) : elevation = (elevation == null ? _defaultShadowElevation : min(10.0, elevation));
 
@@ -315,20 +447,36 @@ class _ShadowPainter extends ChangeNotifier implements CustomPainter {
   final double topLeftPadding;
   final double? bottomRightPadding;
   final double? bottomLeftPadding;
+  final double leftTopPadding;
+  final double leftBottomPadding;
+  final double rightTopPadding;
+  final double rightBottomPadding;
   final Radius? topRadius;
   final Radius? bottomRadius;
+  final Radius leftRadius;
+  final Radius rightRadius;
   final double elevation;
   final ShadowVisibility topShadowVisibility;
   final ShadowVisibility bottomShadowVisibility;
+  final ShadowVisibility leftShadowVisibility;
+  final ShadowVisibility rightShadowVisibility;
   final Color topShadowColor;
   final Color bottomShadowColor;
+  final Color leftShadowColor;
+  final Color rightShadowColor;
   final Color topShadowDividerColor;
   final Color bottomShadowDividerColor;
+  final Color leftShadowDividerColor;
+  final Color rightShadowDividerColor;
   final bool ifHidesShadowForNegativeScroll;
 
-  bool reverse = false;
+  // How much content there is beyond each physical edge (capped at 100).
+  // The top/bottom distances come from vertical scrollables, and the
+  // left/right distances come from horizontal scrollables.
   double? _topDistance;
   double? _bottomDistance;
+  double? _leftDistance;
+  double? _rightDistance;
   bool _mounted = true;
 
   bool get mounted => _mounted;
@@ -339,19 +487,28 @@ class _ShadowPainter extends ChangeNotifier implements CustomPainter {
     super.dispose();
   }
 
-  void update(ScrollMetrics metrics, bool reverse) {
-    this.reverse = reverse;
+  /// The [ScrollMetrics.axisDirection] already accounts for the scroll axis,
+  /// the `reverse` flag, and the text direction (RTL), so it tells us which
+  /// physical edge is the scroll "start" (where `pixels` is zero).
+  void update(ScrollMetrics metrics) {
+    final double distanceBefore = min(metrics.pixels, 100.0);
+    final double distanceAfter = metrics.maxScrollExtent.isFinite
+        ? min(metrics.maxScrollExtent - metrics.pixels, 100.0)
+        : 100.0;
 
-    if (!reverse) {
-      _topDistance = min(metrics.pixels, 100.0);
-      _bottomDistance = metrics.maxScrollExtent.isFinite
-          ? min(metrics.maxScrollExtent - metrics.pixels, 100.0)
-          : 100.0;
-    } else {
-      _bottomDistance = min(metrics.pixels, 100.0);
-      _topDistance = metrics.maxScrollExtent.isFinite
-          ? min(metrics.maxScrollExtent - metrics.pixels, 100.0)
-          : 100.0;
+    switch (metrics.axisDirection) {
+      case AxisDirection.down:
+        _topDistance = distanceBefore;
+        _bottomDistance = distanceAfter;
+      case AxisDirection.up:
+        _bottomDistance = distanceBefore;
+        _topDistance = distanceAfter;
+      case AxisDirection.right:
+        _leftDistance = distanceBefore;
+        _rightDistance = distanceAfter;
+      case AxisDirection.left:
+        _rightDistance = distanceBefore;
+        _leftDistance = distanceAfter;
     }
 
     if (mounted) notifyListeners();
@@ -359,41 +516,51 @@ class _ShadowPainter extends ChangeNotifier implements CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    _paintTopShadowIfNecessary(canvas, size);
-    _paintBottomShadowIfNecessary(canvas, size);
+    _paintShadowIfNecessary(
+      visibility: topShadowVisibility,
+      distance: _topDistance,
+      oppositeDistance: _bottomDistance,
+      draw: (shadowElevation) => _drawTopShadow(canvas, size, shadowElevation),
+    );
+    _paintShadowIfNecessary(
+      visibility: bottomShadowVisibility,
+      distance: _bottomDistance,
+      oppositeDistance: _topDistance,
+      draw: (shadowElevation) => _drawBottomShadow(canvas, size, shadowElevation),
+    );
+    _paintShadowIfNecessary(
+      visibility: leftShadowVisibility,
+      distance: _leftDistance,
+      oppositeDistance: _rightDistance,
+      draw: (shadowElevation) => _drawLeftShadow(canvas, size, shadowElevation),
+    );
+    _paintShadowIfNecessary(
+      visibility: rightShadowVisibility,
+      distance: _rightDistance,
+      oppositeDistance: _leftDistance,
+      draw: (shadowElevation) => _drawRightShadow(canvas, size, shadowElevation),
+    );
   }
 
-  void _paintTopShadowIfNecessary(Canvas canvas, Size size) {
-    if (topShadowVisibility == ShadowVisibility.alwaysOff) return;
-    if (topShadowVisibility == ShadowVisibility.alwaysOn) {
-      _drawTopShadow(canvas, size, elevation);
+  void _paintShadowIfNecessary({
+    required ShadowVisibility visibility,
+    required double? distance,
+    required double? oppositeDistance,
+    required void Function(double shadowElevation) draw,
+  }) {
+    if (visibility == ShadowVisibility.alwaysOff) return;
+    if (visibility == ShadowVisibility.alwaysOn) {
+      draw(elevation);
       return;
     }
     // ShadowVisibility.whenScrolled
     if (ifHidesShadowForNegativeScroll &&
-        _bottomDistance != null &&
-        _bottomDistance! < 0) {
+        oppositeDistance != null &&
+        oppositeDistance < 0) {
       return;
     }
-    if ((_topDistance ?? 0) > 0) {
-      final topElevation = min(elevation, _topDistance! / 5);
-      _drawTopShadow(canvas, size, topElevation);
-    }
-  }
-
-  void _paintBottomShadowIfNecessary(Canvas canvas, Size size) {
-    if (bottomShadowVisibility == ShadowVisibility.alwaysOff) return;
-    if (bottomShadowVisibility == ShadowVisibility.alwaysOn) {
-      _drawBottomShadow(canvas, size, elevation);
-      return;
-    }
-    // ShadowVisibility.whenScrolled
-    if (ifHidesShadowForNegativeScroll && _topDistance != null && _topDistance! < 0) {
-      return;
-    }
-    if ((_bottomDistance ?? 0) > 0) {
-      final bottomElevation = min(elevation, _bottomDistance! / 5);
-      _drawBottomShadow(canvas, size, bottomElevation);
+    if ((distance ?? 0) > 0) {
+      draw(min(elevation, distance! / 5));
     }
   }
 
@@ -473,14 +640,87 @@ class _ShadowPainter extends ChangeNotifier implements CustomPainter {
     canvas.restore();
   }
 
+  void _drawLeftShadow(Canvas canvas, Size size, double shadowElevation) {
+    final double top = leftTopPadding;
+    final double bottom = size.height - leftBottomPadding;
+
+    canvas.save();
+
+    // Divider line.
+    canvas.drawLine(
+      Offset(0, top),
+      Offset(0, bottom),
+      Paint()
+        ..color = leftShadowDividerColor
+        ..strokeWidth = 0.1,
+    );
+
+    // Clip area.
+    canvas.clipRRect(
+      RRect.fromRectAndCorners(
+        Rect.fromLTRB(0, top, size.width / 2, bottom),
+        topLeft: leftRadius,
+        bottomLeft: leftRadius,
+      ),
+    );
+
+    // Shadow to the left of the left edge. The light source is above, so the shadow
+    // doesn't spread much sideways. Like the bottom shadow, the path is moved
+    // inwards a bit, so that the shadow is visible inside the clip area.
+    final double inset = shadowElevation * 2;
+    final path = Path()..addRect(Rect.fromLTRB(-20.0 + inset, top, inset, bottom));
+
+    canvas.drawShadow(path, leftShadowColor, shadowElevation, true);
+    canvas.restore();
+  }
+
+  void _drawRightShadow(Canvas canvas, Size size, double shadowElevation) {
+    final double top = rightTopPadding;
+    final double bottom = size.height - rightBottomPadding;
+
+    canvas.save();
+
+    // Divider line.
+    canvas.drawLine(
+      Offset(size.width, top),
+      Offset(size.width, bottom),
+      Paint()
+        ..color = rightShadowDividerColor
+        ..strokeWidth = 0.1,
+    );
+
+    // Clip area.
+    canvas.clipRRect(
+      RRect.fromRectAndCorners(
+        Rect.fromLTRB(size.width / 2, top, size.width, bottom),
+        topRight: rightRadius,
+        bottomRight: rightRadius,
+      ),
+    );
+
+    // Shadow to the right of the right edge. Moved inwards a bit, like the left shadow.
+    final double inset = shadowElevation * 2;
+    final path = Path()
+      ..addRect(Rect.fromLTRB(size.width - inset, top, size.width + 20.0 - inset, bottom));
+
+    canvas.drawShadow(path, rightShadowColor, shadowElevation, true);
+    canvas.restore();
+  }
+
   @override
   bool shouldRepaint(_ShadowPainter oldDelegate) {
     return topRightPadding != oldDelegate.topRightPadding ||
         topLeftPadding != oldDelegate.topLeftPadding ||
         bottomRightPadding != oldDelegate.bottomRightPadding ||
         bottomLeftPadding != oldDelegate.bottomLeftPadding ||
+        leftTopPadding != oldDelegate.leftTopPadding ||
+        leftBottomPadding != oldDelegate.leftBottomPadding ||
+        rightTopPadding != oldDelegate.rightTopPadding ||
+        rightBottomPadding != oldDelegate.rightBottomPadding ||
         topRadius != oldDelegate.topRadius ||
         bottomRadius != oldDelegate.bottomRadius ||
+        leftRadius != oldDelegate.leftRadius ||
+        rightRadius != oldDelegate.rightRadius ||
         elevation != oldDelegate.elevation;
   }
 
