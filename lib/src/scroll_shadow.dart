@@ -219,6 +219,10 @@ class ScrollShadow extends StatefulWidget {
   /// Typically, this is directly the scrollable widget such as `ListView`,
   /// `SingleChildScrollView`, or `GridView`, but the scrollable can be
   /// further below in the widget tree.
+  ///
+  /// Only the closest scrollable descendant drives the shadows. Scrollables
+  /// nested inside it are ignored. To show shadows for a nested scrollable,
+  /// wrap it with its own [ScrollShadow].
   final Widget? child;
 
   /// A widget that adds shadows to the edges of a scrollable area to visually
@@ -368,14 +372,19 @@ class _ScrollShadowState extends State<ScrollShadow> {
   }
 
   bool _handleScrollMetricsNotification(ScrollMetricsNotification notification) {
-    _shadowPainter?.update(notification.metrics);
+    // Only the closest scrollable descendant drives the shadows. Notifications
+    // from scrollables nested inside it (depth > 0) are ignored.
+    if (notification.depth == 0) {
+      _shadowPainter?.update(notification.metrics);
+    }
     return false; // Allow the notification to continue bubbling
   }
 
   bool _handleScrollNotification(ScrollNotification notification) {
-    // Catch updates & overscroll.
-    if (notification is ScrollUpdateNotification ||
-        notification is OverscrollNotification) {
+    // Catch updates & overscroll, from the closest scrollable descendant only.
+    if (notification.depth == 0 &&
+        (notification is ScrollUpdateNotification ||
+            notification is OverscrollNotification)) {
       //
       _shadowPainter?.update(notification.metrics);
     }
@@ -490,6 +499,10 @@ class _ShadowPainter extends ChangeNotifier implements CustomPainter {
   /// The [ScrollMetrics.axisDirection] already accounts for the scroll axis,
   /// the `reverse` flag, and the text direction (RTL), so it tells us which
   /// physical edge is the scroll "start" (where `pixels` is zero).
+  ///
+  /// The distances of the other axis are cleared, so that no stale shadows
+  /// remain if the scrollable changes axis (for example, when the child is
+  /// rebuilt from a vertical list to a horizontal one).
   void update(ScrollMetrics metrics) {
     final double distanceBefore = min(metrics.pixels, 100.0);
     final double distanceAfter = metrics.maxScrollExtent.isFinite
@@ -509,6 +522,15 @@ class _ShadowPainter extends ChangeNotifier implements CustomPainter {
       case AxisDirection.left:
         _rightDistance = distanceBefore;
         _leftDistance = distanceAfter;
+    }
+
+    switch (metrics.axis) {
+      case Axis.vertical:
+        _leftDistance = null;
+        _rightDistance = null;
+      case Axis.horizontal:
+        _topDistance = null;
+        _bottomDistance = null;
     }
 
     if (mounted) notifyListeners();

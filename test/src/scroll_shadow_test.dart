@@ -1,4 +1,5 @@
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -26,8 +27,10 @@ void main() {
     bool reverse = false,
     int count = 10,
     ScrollPhysics? physics,
+    Key? key,
   }) =>
       ListView(
+        key: key,
         scrollDirection: axis,
         controller: controller,
         reverse: reverse,
@@ -35,12 +38,15 @@ void main() {
         children: items(axis, count: count),
       );
 
-  /// Pumps the [scrollShadow] in a [width] x [height] box. Each call creates
-  /// a fresh state, so that calling it again in the same test starts over.
+  /// Pumps the [scrollShadow] in a [width] x [height] box.
+  ///
+  /// By default, each call creates a fresh state, so that calling it again in the
+  /// same test starts over. Use [freshState] false to keep the [ScrollShadow] state.
   Future<void> pump(
     WidgetTester tester,
     Widget scrollShadow, {
     TextDirection textDirection = TextDirection.ltr,
+    bool freshState = true,
   }) async {
     await tester.pumpWidget(
       Directionality(
@@ -48,7 +54,7 @@ void main() {
         child: Align(
           alignment: Alignment.topLeft,
           child: SizedBox(
-            key: UniqueKey(),
+            key: freshState ? UniqueKey() : null,
             width: width,
             height: height,
             child: scrollShadow,
@@ -60,48 +66,55 @@ void main() {
     await tester.pump();
   }
 
-  /// Records what the [ScrollShadow] painter draws.
-  TestRecordingCanvas recordPaint(WidgetTester tester) {
-    final RenderObject renderObject = tester.renderObject(
+  /// Records what the painter of the [shadow] draws (by default, the outermost
+  /// [ScrollShadow]). Only the painter itself is recorded, not the children, so
+  /// that the shadows of nested [ScrollShadow]s are not mixed up.
+  ({TestRecordingCanvas canvas, Size size}) recordPaint(
+    WidgetTester tester, {
+    Finder? shadow,
+  }) {
+    final renderObject = tester.renderObject<RenderCustomPaint>(
       find
           .descendant(
-            of: find.byType(ScrollShadow),
+            of: shadow ?? find.byType(ScrollShadow).first,
             matching: find.byType(CustomPaint),
           )
           .first,
     );
     final canvas = TestRecordingCanvas();
-    renderObject.paint(TestRecordingPaintingContext(canvas), Offset.zero);
-    return canvas;
+    renderObject.foregroundPainter!.paint(canvas, renderObject.size);
+    return (canvas: canvas, size: renderObject.size);
   }
 
   /// The divider lines drawn by the painter, as (start, end) pairs.
-  List<(Offset, Offset)> dividerLines(WidgetTester tester) => recordPaint(tester)
-      .invocations
-      .where((invocation) => invocation.invocation.memberName == #drawLine)
-      .map((invocation) => (
-            invocation.invocation.positionalArguments[0] as Offset,
-            invocation.invocation.positionalArguments[1] as Offset,
-          ))
-      .toList();
+  List<(Offset, Offset)> dividerLines(WidgetTester tester, {Finder? shadow}) =>
+      recordPaint(tester, shadow: shadow)
+          .canvas
+          .invocations
+          .where((invocation) => invocation.invocation.memberName == #drawLine)
+          .map((invocation) => (
+                invocation.invocation.positionalArguments[0] as Offset,
+                invocation.invocation.positionalArguments[1] as Offset,
+              ))
+          .toList();
 
   /// The physical edges that currently show a shadow. Each shadow draws
   /// exactly one divider line along its edge, plus one shadow.
-  Set<Edge> shadowEdges(WidgetTester tester) {
-    final canvas = recordPaint(tester);
+  Set<Edge> shadowEdges(WidgetTester tester, {Finder? shadow}) {
+    final (:canvas, :size) = recordPaint(tester, shadow: shadow);
 
     final int shadowCount = canvas.invocations
         .where((invocation) => invocation.invocation.memberName == #drawShadow)
         .length;
 
     final edges = <Edge>{};
-    for (final (p1, p2) in dividerLines(tester)) {
+    for (final (p1, p2) in dividerLines(tester, shadow: shadow)) {
       if (p1.dy == p2.dy) {
         if (p1.dy == 0) edges.add(Edge.top);
-        if (p1.dy == height) edges.add(Edge.bottom);
+        if (p1.dy == size.height) edges.add(Edge.bottom);
       } else if (p1.dx == p2.dx) {
         if (p1.dx == 0) edges.add(Edge.left);
-        if (p1.dx == width) edges.add(Edge.right);
+        if (p1.dx == size.width) edges.add(Edge.right);
       }
     }
 
@@ -168,21 +181,112 @@ void main() {
       ]);
     });
 
-    testWidgets('A nested horizontal scrollable does not affect the top/bottom shadows.',
-        (tester) async {
-      final verticalController = ScrollController();
-      final horizontalController = ScrollController();
+  });
+
+  group('Nested scrollables (default visibility)', () {
+    //
+    testWidgets(
+        'A horizontal list nested in a vertical list neither adds left/right shadows '
+        'nor changes the top/bottom shadows.', (tester) async {
+      final outerController = ScrollController();
+      final innerController = ScrollController();
       await pump(
         tester,
         ScrollShadow(
-          leftShadowVisibility: ShadowVisibility.alwaysOff,
-          rightShadowVisibility: ShadowVisibility.alwaysOff,
           child: ListView(
-            controller: verticalController,
+            controller: outerController,
             children: [
               SizedBox(
                 height: 100,
-                child: list(axis: Axis.horizontal, controller: horizontalController),
+                child: list(axis: Axis.horizontal, controller: innerController),
+              ),
+              ...items(Axis.vertical),
+            ],
+          ),
+        ),
+      );
+      // After laying out, the nested list overflows, but has no effect.
+      expect(shadowEdges(tester), {Edge.bottom});
+
+      for (final double position in [350, 700, 0]) {
+        innerController.jumpTo(position);
+        await tester.pump();
+        expect(shadowEdges(tester), {Edge.bottom});
+      }
+
+      outerController.jumpTo(50); // Keeps the nested list visible.
+      await tester.pump();
+      expect(shadowEdges(tester), {Edge.top, Edge.bottom});
+
+      for (final double position in [350, 700, 0]) {
+        innerController.jumpTo(position);
+        await tester.pump();
+        expect(shadowEdges(tester), {Edge.top, Edge.bottom});
+      }
+
+      outerController.jumpTo(outerController.position.maxScrollExtent);
+      await tester.pump();
+      expect(shadowEdges(tester), {Edge.top});
+    });
+
+    testWidgets(
+        'A vertical list nested in a horizontal list neither adds top/bottom shadows '
+        'nor changes the left/right shadows.', (tester) async {
+      final outerController = ScrollController();
+      final innerController = ScrollController();
+      await pump(
+        tester,
+        ScrollShadow(
+          child: ListView(
+            controller: outerController,
+            scrollDirection: Axis.horizontal,
+            children: [
+              SizedBox(
+                width: 100,
+                child: list(axis: Axis.vertical, controller: innerController),
+              ),
+              ...items(Axis.horizontal),
+            ],
+          ),
+        ),
+      );
+      expect(shadowEdges(tester), {Edge.right});
+
+      for (final double position in [400, 800, 0]) {
+        innerController.jumpTo(position);
+        await tester.pump();
+        expect(shadowEdges(tester), {Edge.right});
+      }
+
+      outerController.jumpTo(50); // Keeps the nested list visible.
+      await tester.pump();
+      expect(shadowEdges(tester), {Edge.left, Edge.right});
+
+      for (final double position in [400, 800, 0]) {
+        innerController.jumpTo(position);
+        await tester.pump();
+        expect(shadowEdges(tester), {Edge.left, Edge.right});
+      }
+    });
+
+    testWidgets(
+        'A ScrollShadow around a nested list shows its own shadows, '
+        'without affecting the outer ScrollShadow.', (tester) async {
+      final outerController = ScrollController();
+      final innerController = ScrollController();
+      final innerShadow = find.byKey(const Key('inner'));
+      await pump(
+        tester,
+        ScrollShadow(
+          child: ListView(
+            controller: outerController,
+            children: [
+              SizedBox(
+                height: 100,
+                child: ScrollShadow(
+                  key: const Key('inner'),
+                  child: list(axis: Axis.horizontal, controller: innerController),
+                ),
               ),
               ...items(Axis.vertical),
             ],
@@ -190,14 +294,141 @@ void main() {
         ),
       );
       expect(shadowEdges(tester), {Edge.bottom});
+      expect(shadowEdges(tester, shadow: innerShadow), {Edge.right});
 
+      innerController.jumpTo(350);
+      await tester.pump();
+      expect(shadowEdges(tester), {Edge.bottom});
+      expect(shadowEdges(tester, shadow: innerShadow), {Edge.left, Edge.right});
+
+      outerController.jumpTo(50);
+      await tester.pump();
+      expect(shadowEdges(tester), {Edge.top, Edge.bottom});
+      expect(shadowEdges(tester, shadow: innerShadow), {Edge.left, Edge.right});
+    });
+
+    testWidgets('The scrollable may be further below in the widget tree.', (tester) async {
+      final controller = ScrollController();
+      await pump(
+        tester,
+        ScrollShadow(
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                Expanded(child: list(axis: Axis.horizontal, controller: controller)),
+              ],
+            ),
+          ),
+        ),
+      );
+      expect(shadowEdges(tester), {Edge.right});
+
+      controller.jumpTo(300);
+      await tester.pump();
+      expect(shadowEdges(tester), {Edge.left, Edge.right});
+    });
+  });
+
+  group('Changing the scroll axis while keeping the ScrollShadow state', () {
+    //
+    Future<void> pumpKeepingState(WidgetTester tester, Widget scrollShadow) =>
+        pump(tester, scrollShadow, freshState: false);
+
+    testWidgets('Replacing the child: vertical → horizontal → vertical.', (tester) async {
+      await pumpKeepingState(
+        tester,
+        ScrollShadow(child: list(axis: Axis.vertical, key: const Key('v1'))),
+      );
+      final state = tester.state(find.byType(ScrollShadow));
+      expect(shadowEdges(tester), {Edge.bottom});
+
+      await pumpKeepingState(
+        tester,
+        ScrollShadow(child: list(axis: Axis.horizontal, key: const Key('h'))),
+      );
+      expect(tester.state(find.byType(ScrollShadow)), same(state));
+      expect(shadowEdges(tester), {Edge.right});
+
+      await pumpKeepingState(
+        tester,
+        ScrollShadow(child: list(axis: Axis.vertical, key: const Key('v2'))),
+      );
+      expect(tester.state(find.byType(ScrollShadow)), same(state));
+      expect(shadowEdges(tester), {Edge.bottom});
+    });
+
+    testWidgets('Changing the scrollDirection of the same list.', (tester) async {
+      await pumpKeepingState(tester, ScrollShadow(child: list(axis: Axis.vertical)));
+      final state = tester.state(find.byType(ScrollShadow));
+      expect(shadowEdges(tester), {Edge.bottom});
+
+      await pumpKeepingState(tester, ScrollShadow(child: list(axis: Axis.horizontal)));
+      expect(tester.state(find.byType(ScrollShadow)), same(state));
+      expect(shadowEdges(tester), {Edge.right});
+
+      await pumpKeepingState(tester, ScrollShadow(child: list(axis: Axis.vertical)));
+      expect(tester.state(find.byType(ScrollShadow)), same(state));
+      expect(shadowEdges(tester), {Edge.bottom});
+    });
+
+    testWidgets('After scrolling, no stale shadows remain from the previous axis.',
+        (tester) async {
+      final verticalController = ScrollController();
+      final horizontalController = ScrollController();
+
+      await pumpKeepingState(
+        tester,
+        ScrollShadow(
+          child: list(axis: Axis.vertical, controller: verticalController, key: const Key('v')),
+        ),
+      );
+      verticalController.jumpTo(400);
+      await tester.pump();
+      expect(shadowEdges(tester), {Edge.top, Edge.bottom});
+
+      // The horizontal content fits, so no shadows at all.
+      await pumpKeepingState(
+        tester,
+        ScrollShadow(child: list(axis: Axis.horizontal, count: 2, key: const Key('h1'))),
+      );
+      expect(shadowEdges(tester), isEmpty);
+
+      await pumpKeepingState(
+        tester,
+        ScrollShadow(
+          child: list(
+              axis: Axis.horizontal, controller: horizontalController, key: const Key('h2')),
+        ),
+      );
       horizontalController.jumpTo(350);
       await tester.pump();
-      expect(shadowEdges(tester), {Edge.bottom});
+      expect(shadowEdges(tester), {Edge.left, Edge.right});
 
-      horizontalController.jumpTo(700);
-      await tester.pump();
-      expect(shadowEdges(tester), {Edge.bottom});
+      // The vertical content fits, so no shadows at all.
+      await pumpKeepingState(
+        tester,
+        ScrollShadow(child: list(axis: Axis.vertical, count: 1, key: const Key('v2'))),
+      );
+      expect(shadowEdges(tester), isEmpty);
+    });
+
+    testWidgets('alwaysOn and alwaysOff are kept when the axis changes.', (tester) async {
+      Widget shadow(Widget child) => ScrollShadow(
+            topShadowVisibility: ShadowVisibility.alwaysOn,
+            bottomShadowVisibility: ShadowVisibility.alwaysOff,
+            leftShadowVisibility: ShadowVisibility.alwaysOn,
+            rightShadowVisibility: ShadowVisibility.alwaysOff,
+            child: child,
+          );
+
+      await pumpKeepingState(tester, shadow(list(axis: Axis.vertical, key: const Key('v'))));
+      expect(shadowEdges(tester), {Edge.top, Edge.left});
+
+      await pumpKeepingState(
+          tester, shadow(list(axis: Axis.horizontal, key: const Key('h'))));
+      expect(shadowEdges(tester), {Edge.top, Edge.left});
     });
   });
 
@@ -311,6 +542,7 @@ void main() {
 
       double leftElevation() {
         final shadows = recordPaint(tester)
+            .canvas
             .invocations
             .where((invocation) => invocation.invocation.memberName == #drawShadow)
             .toList();

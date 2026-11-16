@@ -9,8 +9,13 @@ Sponsored by [MyText.ai](https://mytext.ai)
   divider color, paddings and radius). The existing `top*` and `bottom*` parameters and
   defaults are unchanged, and still apply to vertical scrollables. Shadows are placed on
   the physical edges, taking `reverse` and the text direction (RTL) into account.
-  Note: Before, a horizontal scrollable inside a `ScrollShadow` would wrongly drive the
-  top and bottom shadows. It now drives the left and right shadows instead.
+
+* Fix: `ScrollShadow` now only reacts to its closest scrollable descendant. Before,
+  scrollables nested inside it (for example, a horizontal list inside a vertical list)
+  would also drive its shadows. To show shadows for a nested scrollable, wrap it with
+  its own `ScrollShadow`. Also, when the scrollable changes axis (for example, the child
+  is rebuilt from a vertical list to a horizontal one), the shadows of the previous axis
+  are now cleared.
 
 ## 13.1.0
 

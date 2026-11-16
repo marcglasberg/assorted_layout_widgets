@@ -2596,6 +2596,9 @@ padding, and elevation independently for each edge.
 - Control shadow color, elevation, and padding for precise styling.
 - The shadows are placed on the physical edges, taking `reverse` and the text direction
   (RTL) into account.
+- Only the closest scrollable descendant drives the shadows. Scrollables nested inside it
+  (for example, a horizontal list inside a vertical list) are ignored. To show shadows
+  for a nested scrollable, wrap it with its own `ScrollShadow`.
 
 ### Example Usage
 
@@ -2665,7 +2668,8 @@ ScrollShadow({
 ### Parameters
 
 - **`child`**: The scrollable widget wrapped by `ScrollShadow`. Typically, this is a
-  `ListView`, `SingleChildScrollView`, `GridView`, etc.
+  `ListView`, `SingleChildScrollView`, `GridView`, etc. The scrollable may also be further
+  below in the widget tree, but only the closest one drives the shadows.
 
 - **`topRightPadding`**, **`topLeftPadding`**: Padding applied to the right and left sides
   of the top shadow. Defaults to `14.0` and `5.0`, respectively.
