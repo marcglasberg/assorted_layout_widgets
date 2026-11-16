@@ -2,6 +2,44 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
+## 13.2.0
+
+* `ScrollShadow` now supports horizontal scrollables. They show shadows at the left and
+  right edges, configured by the new `left*` and `right*` parameters (visibility, color,
+  divider color, paddings and radius). The existing `top*` and `bottom*` parameters and
+  defaults are unchanged, and still apply to vertical scrollables. Shadows are placed on
+  the physical edges, taking `reverse` and the text direction (RTL) into account.
+
+* **Behavior change:** A `ScrollShadow` around a horizontal scrollable now shows left and
+  right shadows (by default, `ShadowVisibility.whenScrolled`), and no longer shows top
+  and bottom shadows for it. This also applies to a `PageView` or `TabBarView`: the
+  shadows now follow the pages (left and right), and the vertical lists inside the pages
+  no longer drive the top and bottom shadows. To keep top and bottom shadows for those
+  lists, wrap each one with its own `ScrollShadow`. To turn off the new left and right
+  shadows, use `leftShadowVisibility: ShadowVisibility.alwaysOff` and
+  `rightShadowVisibility: ShadowVisibility.alwaysOff`.
+
+* Fix: `ScrollShadow` now only reacts to its closest scrollable descendants. Before,
+  scrollables nested inside them (for example, a horizontal list inside a vertical list,
+  or the inner list of a `NestedScrollView`) would also drive its shadows. To show
+  shadows for a nested scrollable, wrap it with its own `ScrollShadow`.
+
+* Fix: When the scrollable changes axis (for example, the child is rebuilt from a
+  vertical list to a horizontal one), the shadows of the previous axis are now cleared.
+  When the scrollable is removed (for example, the child is replaced by a widget that
+  doesn't scroll), its shadows are now cleared too.
+
+* A vertical and a horizontal scrollable can now drive the shadows at the same time, for
+  example the two axes of a `TwoDimensionalScrollView` (like a `TableView`), or a
+  vertical and a horizontal list side by side.
+
+* Fix: Changing the parameters of a `ScrollShadow` (visibility, colors, paddings, radius,
+  elevation and `ifHidesShadowForNegativeScroll`) after it was first built is now
+  applied immediately. Before, the new values were ignored.
+
+* Docs: The default `ScrollShadow.elevation` is `4.0` (the README said `2.5`), and values
+  above `10.0` are treated as `10.0`.
+
 ## 13.1.0
 
 * New `AnimatedBetween.onEnd` callback.

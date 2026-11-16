@@ -2578,20 +2578,29 @@ one.
 
 # ScrollShadow
 
-`ScrollShadow` is a Flutter widget that adds shadows to the top and bottom edges of a
-scrollable widget to indicate overflow content. The shadows dynamically appear or
-disappear based on the scroll state, providing a visual cue that more content can be
-revealed in a specific direction.
+`ScrollShadow` adds shadows to the edges of a scrollable, to show that there is more
+content to see. The shadows appear and disappear as the user scrolls.
 
-This widget is highly customizable, allowing you to control the shadow behavior, color,
-padding, and elevation independently for the top and bottom edges.
+Vertical scrollables get shadows at the top and bottom. Horizontal scrollables get
+shadows at the left and right.
 
 ## Features
 
-- Dynamically display shadows when the content overflows the scrollable area.
-- Customize shadow visibility behavior for the top and bottom edges independently.
-- Supports `whenScrolled`, `alwaysOn`, and `alwaysOff` shadow visibility modes.
-- Control shadow color, elevation, and padding for precise styling.
+- Shows a shadow only on the sides where there is more content.
+- Works with vertical and horizontal scrollables.
+- Each edge can be `whenScrolled`, `alwaysOn` or `alwaysOff`.
+- Customize the color, elevation, padding and radius of each edge.
+- Works with `reverse` and with right-to-left languages.
+
+### Nested scrollables
+
+`ScrollShadow` follows only the scrollable closest to it. Scrollables inside that one
+are ignored. For example, around a vertical list that has horizontal lists inside, only
+the vertical list gets shadows. And around a `PageView`, the shadows follow the pages,
+not the lists inside the pages.
+
+To get shadows for an inner scrollable, wrap it with its own `ScrollShadow`. In general,
+use one `ScrollShadow` per scrollable.
 
 ### Example Usage
 
@@ -2609,6 +2618,20 @@ ScrollShadow(
 );
 ```
 
+### Horizontal Example
+
+```
+ScrollShadow(
+  leftShadowColor: Colors.black54,
+  rightShadowColor: Colors.black54,
+  child: ListView.builder(
+    scrollDirection: Axis.horizontal,
+    itemCount: 50,
+    itemBuilder: (context, index) => SizedBox(width: 100, child: Text('Item $index')),
+  ),
+);
+```
+
 ### Constructor
 
 ```
@@ -2620,12 +2643,24 @@ ScrollShadow({
   double? bottomRightPadding,
   double? bottomLeftPadding,
   Radius? bottomRadius,
+  double? leftTopPadding,
+  double? leftBottomPadding,
+  Radius? leftRadius,
+  double? rightTopPadding,
+  double? rightBottomPadding,
+  Radius? rightRadius,
   ShadowVisibility topShadowVisibility = ShadowVisibility.whenScrolled,
   ShadowVisibility bottomShadowVisibility = ShadowVisibility.whenScrolled,
+  ShadowVisibility leftShadowVisibility = ShadowVisibility.whenScrolled,
+  ShadowVisibility rightShadowVisibility = ShadowVisibility.whenScrolled,
   Color topShadowColor = Colors.black,
   Color bottomShadowColor = Colors.black,
+  Color leftShadowColor = Colors.black,
+  Color rightShadowColor = Colors.black,
   Color topShadowDividerColor = const Color(0xD0000000),
   Color bottomShadowDividerColor = const Color(0xD0000000),
+  Color leftShadowDividerColor = const Color(0xD0000000),
+  Color rightShadowDividerColor = const Color(0xD0000000),
   double? elevation,
   bool ifHidesShadowForNegativeScroll = false,
   Key? key,
@@ -2649,20 +2684,35 @@ ScrollShadow({
 - **`bottomRadius`**: Radius for rounding the corners of the bottom shadow. Defaults to
   `Radius.circular(4.0)`.
 
-- **`topShadowVisibility`**, **`bottomShadowVisibility`**: Controls the visibility
-  behavior of the top and bottom shadows. Available options:
-    - `ShadowVisibility.whenScrolled`: Shows the shadow only when the content overflows.
+- **`leftTopPadding`**, **`leftBottomPadding`**: Padding applied to the top and bottom
+  sides of the left shadow. Defaults to `5.0` and `14.0`, respectively (the larger bottom
+  padding leaves room for a horizontal scrollbar).
+
+- **`leftRadius`**: Radius for rounding the corners of the left shadow. Defaults to
+  `Radius.circular(4.0)`.
+
+- **`rightTopPadding`**, **`rightBottomPadding`**: Padding applied to the top and bottom
+  sides of the right shadow. Defaults to `5.0` and `14.0`, respectively.
+
+- **`rightRadius`**: Radius for rounding the corners of the right shadow. Defaults to
+  `Radius.circular(4.0)`.
+
+- **`topShadowVisibility`**, **`bottomShadowVisibility`**, **`leftShadowVisibility`**,
+  **`rightShadowVisibility`**: Controls the visibility behavior of each shadow.
+  Available options:
+    - `ShadowVisibility.whenScrolled`: Shows the shadow only when there is more content
+      on that side.
     - `ShadowVisibility.alwaysOn`: Always displays the shadow.
     - `ShadowVisibility.alwaysOff`: Never displays the shadow.
 
-- **`topShadowColor`**, **`bottomShadowColor`**: Colors for the top and bottom shadows.
-  Defaults to `Colors.black`.
+- **`topShadowColor`**, **`bottomShadowColor`**, **`leftShadowColor`**,
+  **`rightShadowColor`**: Colors for each shadow. Defaults to `Colors.black`.
 
-- **`topShadowDividerColor`**, **`bottomShadowDividerColor`**: Divider colors applied at
-  the top and bottom edges of the shadows.
+- **`topShadowDividerColor`**, **`bottomShadowDividerColor`**, **`leftShadowDividerColor`**,
+  **`rightShadowDividerColor`**: Divider colors applied at the edges of the shadows.
 
 - **`elevation`**: The elevation of the shadows, determining their intensity and blur
-  radius. Defaults to `2.5`.
+  radius. Defaults to `4.0`. The maximum is `10.0`.
 
 - **`ifHidesShadowForNegativeScroll`**: If `true`, hides the shadow when the scroll
   position is negative (e.g., overscroll). Defaults to `false`.
