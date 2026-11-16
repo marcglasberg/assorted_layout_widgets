@@ -178,16 +178,16 @@ class _CircleButtonState extends State<CircleButton> {
       child: Button(
         onTap: onTap,
         minVisualTapDuration: CircleButton.minVisualTapDuration,
+        // The button itself adds the clickable area around the circle.
+        clickAreaMargin: clickAreaMargin,
+        debugShowClickableArea: colorOfClickableArea.a != 0,
         builder: ({required bool isPressed}) {
-          return Container(
-              color: colorOfClickableArea,
-              padding: clickAreaMargin,
-              child: (builder == null)
-                  ? _content(isPressed)
-                  : builder!(
-                      isHover: isHover,
-                      isPressed: isPressed,
-                      child: _content(isPressed)));
+          final Widget content = _content(isPressed);
+          final CircleButtonBuilder? builder = this.builder;
+
+          return (builder == null)
+              ? content
+              : builder(isHover: isHover, isPressed: isPressed, child: content);
         },
       ),
     );

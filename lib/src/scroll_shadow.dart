@@ -517,7 +517,13 @@ class _ShadowPainter extends ChangeNotifier implements CustomPainter {
   /// which is still there, so that both axes can show shadows at the same time (for
   /// example, in a [TwoDimensionalScrollView], or with a vertical and a horizontal
   /// scrollable side by side).
+  ///
+  /// This is called for every scroll update, which means on every frame while
+  /// scrolling. However, the shadows only change while the scroll position is near
+  /// one of the ends. For this reason, it only repaints if some shadow changed.
   void update(ScrollMetrics metrics, BuildContext? source) {
+    final _ShadowElevations elevationsBefore = _shadowElevations;
+
     final double distanceBefore = min(metrics.pixels, 100.0);
     final double distanceAfter = metrics.maxScrollExtent.isFinite
         ? min(metrics.maxScrollExtent - metrics.pixels, 100.0)
@@ -547,7 +553,7 @@ class _ShadowPainter extends ChangeNotifier implements CustomPainter {
         _horizontalSource = source;
     }
 
-    _notify();
+    if (_shadowElevations != elevationsBefore) _notify();
   }
 
   /// The distances of the other axis are stale if they came from this same scrollable
@@ -585,51 +591,45 @@ class _ShadowPainter extends ChangeNotifier implements CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    _paintShadowIfNecessary(
-      visibility: _config.topShadowVisibility,
-      distance: _topDistance,
-      oppositeDistance: _bottomDistance,
-      draw: (shadowElevation) => _drawTopShadow(canvas, size, shadowElevation),
-    );
-    _paintShadowIfNecessary(
-      visibility: _config.bottomShadowVisibility,
-      distance: _bottomDistance,
-      oppositeDistance: _topDistance,
-      draw: (shadowElevation) => _drawBottomShadow(canvas, size, shadowElevation),
-    );
-    _paintShadowIfNecessary(
-      visibility: _config.leftShadowVisibility,
-      distance: _leftDistance,
-      oppositeDistance: _rightDistance,
-      draw: (shadowElevation) => _drawLeftShadow(canvas, size, shadowElevation),
-    );
-    _paintShadowIfNecessary(
-      visibility: _config.rightShadowVisibility,
-      distance: _rightDistance,
-      oppositeDistance: _leftDistance,
-      draw: (shadowElevation) => _drawRightShadow(canvas, size, shadowElevation),
-    );
+    final (top, bottom, left, right) = _shadowElevations;
+    if (top != null) _drawTopShadow(canvas, size, top);
+    if (bottom != null) _drawBottomShadow(canvas, size, bottom);
+    if (left != null) _drawLeftShadow(canvas, size, left);
+    if (right != null) _drawRightShadow(canvas, size, right);
   }
 
-  void _paintShadowIfNecessary({
-    required ShadowVisibility visibility,
-    required double? distance,
-    required double? oppositeDistance,
-    required void Function(double shadowElevation) draw,
-  }) {
-    if (visibility == ShadowVisibility.alwaysOff) return;
-    if (visibility == ShadowVisibility.alwaysOn) {
-      draw(elevation);
-      return;
-    }
-    // ShadowVisibility.whenScrolled
-    if (_config.ifHidesShadowForNegativeScroll &&
-        oppositeDistance != null &&
-        oppositeDistance < 0) {
-      return;
-    }
-    if ((distance ?? 0) > 0) {
-      draw(min(elevation, distance! / 5));
+  /// The elevation of the shadow of each edge. Apart from the [config] and the size,
+  /// this is all the shadows depend on. In particular, the shadows only depend on the
+  /// scroll position through these values.
+  _ShadowElevations get _shadowElevations => (
+        _shadowElevation(_config.topShadowVisibility, _topDistance, _bottomDistance),
+        _shadowElevation(_config.bottomShadowVisibility, _bottomDistance, _topDistance),
+        _shadowElevation(_config.leftShadowVisibility, _leftDistance, _rightDistance),
+        _shadowElevation(_config.rightShadowVisibility, _rightDistance, _leftDistance),
+      );
+
+  /// The elevation of the shadow of an edge, or null if it has no shadow. The
+  /// [distance] is how much content there is beyond that edge, and the
+  /// [oppositeDistance] is how much content there is beyond the opposite edge.
+  double? _shadowElevation(
+    ShadowVisibility visibility,
+    double? distance,
+    double? oppositeDistance,
+  ) {
+    switch (visibility) {
+      case ShadowVisibility.alwaysOff:
+        return null;
+      case ShadowVisibility.alwaysOn:
+        return elevation;
+      case ShadowVisibility.whenScrolled:
+        if (_config.ifHidesShadowForNegativeScroll &&
+            oppositeDistance != null &&
+            oppositeDistance < 0) {
+          return null;
+        }
+
+        // The shadow grows with the distance, until it reaches the elevation.
+        return (distance != null && distance > 0) ? min(elevation, distance / 5) : null;
     }
   }
 
@@ -816,3 +816,7 @@ class _ShadowPainter extends ChangeNotifier implements CustomPainter {
   @override
   SemanticsBuilderCallback? get semanticsBuilder => null;
 }
+
+/// The elevations of the top, bottom, left and right shadows of a [ScrollShadow].
+/// The elevation of an edge is null when it has no shadow.
+typedef _ShadowElevations = (double? top, double? bottom, double? left, double? right);

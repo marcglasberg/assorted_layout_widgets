@@ -631,4 +631,109 @@ void main() {
       expect(await edgesWhileOverscrolling(ifHides: true), isEmpty);
     });
   });
+
+  group('Repaints only when the shadows change', () {
+    //
+    RenderCustomPaint renderShadows(WidgetTester tester) =>
+        tester.renderObject<RenderCustomPaint>(
+          find
+              .descendant(
+                of: find.byType(ScrollShadow),
+                matching: find.byType(CustomPaint),
+              )
+              .first,
+        );
+
+    /// Scrolls to the given [pixels], and returns whether the shadows will be
+    /// painted again because of it.
+    Future<bool> repaintsWhenScrollingTo(
+      WidgetTester tester,
+      ScrollController controller,
+      double pixels,
+    ) async {
+      controller.jumpTo(pixels);
+      final bool repaints = renderShadows(tester).debugNeedsPaint;
+      await tester.pump();
+      return repaints;
+    }
+
+    testWidgets('Only repaints near the ends, where the shadows grow and shrink.',
+        (tester) async {
+      final controller = ScrollController();
+
+      // The content is 5000 pixels long, so the max scroll extent is 4800.
+      await pump(
+        tester,
+        ScrollShadow(child: list(axis: Axis.vertical, controller: controller, count: 50)),
+      );
+      expect(renderShadows(tester).debugNeedsPaint, isFalse);
+
+      Future<bool> repaintsAt(double pixels) =>
+          repaintsWhenScrollingTo(tester, controller, pixels);
+
+      // The top shadow appears, and grows until its elevation of 4 (at 20 pixels).
+      expect(await repaintsAt(5), isTrue);
+      expect(await repaintsAt(10), isTrue);
+      expect(await repaintsAt(20), isTrue);
+      expect(shadowEdges(tester), {Edge.top, Edge.bottom});
+
+      // Both shadows are complete, and stay the same while scrolling in the middle.
+      expect(await repaintsAt(21), isFalse);
+      expect(await repaintsAt(60), isFalse);
+      expect(await repaintsAt(500), isFalse);
+      expect(await repaintsAt(2000), isFalse);
+      expect(await repaintsAt(4780), isFalse);
+      expect(await repaintsAt(100), isFalse);
+      expect(await repaintsAt(4780), isFalse);
+      expect(shadowEdges(tester), {Edge.top, Edge.bottom});
+
+      // The bottom shadow shrinks, and disappears.
+      expect(await repaintsAt(4790), isTrue);
+      expect(await repaintsAt(4795), isTrue);
+      expect(await repaintsAt(4800), isTrue);
+      expect(shadowEdges(tester), {Edge.top});
+
+      // And it appears again.
+      expect(await repaintsAt(4799), isTrue);
+      expect(shadowEdges(tester), {Edge.top, Edge.bottom});
+    });
+
+    testWidgets('Shadows that are always on never change while scrolling.',
+        (tester) async {
+      final controller = ScrollController();
+
+      await pump(
+        tester,
+        ScrollShadow(
+          topShadowVisibility: ShadowVisibility.alwaysOn,
+          bottomShadowVisibility: ShadowVisibility.alwaysOn,
+          child: list(axis: Axis.vertical, controller: controller, count: 50),
+        ),
+      );
+
+      expect(await repaintsWhenScrollingTo(tester, controller, 5), isFalse);
+      expect(await repaintsWhenScrollingTo(tester, controller, 2000), isFalse);
+      expect(await repaintsWhenScrollingTo(tester, controller, 4800), isFalse);
+      expect(shadowEdges(tester), {Edge.top, Edge.bottom});
+    });
+
+    testWidgets('A larger elevation takes longer to be complete.', (tester) async {
+      final controller = ScrollController();
+
+      // With an elevation of 10, the shadow is complete at 50 pixels.
+      await pump(
+        tester,
+        ScrollShadow(
+          elevation: 10,
+          child: list(axis: Axis.vertical, controller: controller, count: 50),
+        ),
+      );
+
+      expect(await repaintsWhenScrollingTo(tester, controller, 20), isTrue);
+      expect(await repaintsWhenScrollingTo(tester, controller, 40), isTrue);
+      expect(await repaintsWhenScrollingTo(tester, controller, 50), isTrue);
+      expect(await repaintsWhenScrollingTo(tester, controller, 60), isFalse);
+      expect(await repaintsWhenScrollingTo(tester, controller, 3000), isFalse);
+    });
+  });
 }

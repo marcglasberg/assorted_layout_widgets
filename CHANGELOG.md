@@ -2,7 +2,7 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
-## 13.3.0
+## 13.3.1
 
 * `WrapSuper` now supports right-to-left text
   ([#16](https://github.com/marcglasberg/assorted_layout_widgets/issues/16)). The new
@@ -73,8 +73,15 @@ Sponsored by [MyText.ai](https://mytext.ai)
   elevation and `ifHidesShadowForNegativeScroll`) after it was first built is now
   applied immediately. Before, the new values were ignored.
 
-* Docs: The default `ScrollShadow.elevation` is `4.0` (the README said `2.5`), and values
-  above `10.0` are treated as `10.0`.
+* Performance improvements: `RowSuper`, `ScrollShadow`, `Button`, `CircleButton`,
+  `ColumnSuper`.
+
+* Small fixes in `ColumnSuper`, `RowSuper`, `FitHorizontally`, `Box`.
+
+* Fix: `AnimatedBetween.showHide` no longer prints debug information by default (its
+  `printDebug` parameter now defaults to false, as documented).
+
+* Fix: A `SideBySide` with more than two children can now have a `GlobalKey`.
 
 ## 13.1.0
 

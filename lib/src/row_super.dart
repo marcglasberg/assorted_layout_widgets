@@ -25,7 +25,8 @@ class RowSuper extends MultiChildRenderObjectWidget {
   /// It can be negative, in which case the cells will overlap.
   final double innerDistance;
 
-  /// If true will paint the cells that come later on top of the ones that came before.
+  /// If true will paint the cells that come first on top of the ones that come later.
+  /// If false (the default) the cells that come later are painted on top.
   /// This is specially useful when cells overlap (negative innerDistance).
   final bool invert;
 
@@ -93,23 +94,23 @@ class RowSuper extends MultiChildRenderObjectWidget {
             children: _childrenPlusSeparator(
                 children, separator, fitHorizontally, shrinkLimit));
 
+  /// The non-null children (wrapped in a [FitHorizontally], if [fitHorizontally] is
+  /// true), followed by the separator (if it's used).
   static List<Widget> _childrenPlusSeparator(
     List<Widget?> children,
     Widget? separator,
     bool fitHorizontally,
     double? shrinkLimit,
-  ) {
-    var iterable = children.where((child) => child != null);
-    if (fitHorizontally)
-      iterable = iterable.map((child) {
-        return (child is RowSpacer) //
-            ? child
-            : FitHorizontally(shrinkLimit: shrinkLimit, child: child);
-      });
-    List<Widget> list = List.of(iterable.cast());
-    if (separator != null && children.isNotEmpty) list.add(separator);
-    return list;
-  }
+  ) =>
+      [
+        for (final Widget? child in children)
+          if (child != null)
+            if (fitHorizontally && child is! RowSpacer)
+              FitHorizontally(shrinkLimit: shrinkLimit, child: child)
+            else
+              child,
+        if (separator != null && children.isNotEmpty) separator,
+      ];
 
   @override
   _RenderRowSuperBox createRenderObject(BuildContext context) => _RenderRowSuperBox(
@@ -151,7 +152,7 @@ class _RenderRowSuperBox extends RenderBox
     required this._separatorOnTop,
     required this._mainAxisSize,
     required this._fill,
-  })  : super();
+  });
 
   double _outerDistance;
   double _innerDistance;
@@ -190,10 +191,11 @@ class _RenderRowSuperBox extends RenderBox
     markNeedsLayout();
   }
 
+  /// Only changes the order in which the cells are painted and hit-tested.
   set invert(bool value) {
     if (_invert == value) return;
     _invert = value;
-    markNeedsLayout();
+    markNeedsPaint();
   }
 
   set alignment(Alignment value) {
@@ -208,10 +210,11 @@ class _RenderRowSuperBox extends RenderBox
     markNeedsLayout();
   }
 
+  /// Only changes the order in which the separators are painted.
   set separatorOnTop(bool value) {
     if (_separatorOnTop == value) return;
     _separatorOnTop = value;
-    markNeedsLayout();
+    markNeedsPaint();
   }
 
   set mainAxisSize(MainAxisSize value) {
@@ -232,126 +235,131 @@ class _RenderRowSuperBox extends RenderBox
       child.parentData = MultiChildLayoutParentData();
   }
 
+  /// The separator, which is the last child (when there is a separator).
+  /// Found during layout.
   RenderBox? _renderSeparator;
 
-  RenderBox? get renderSeparator => _renderSeparator;
+  /// The cells, which are all the children except the separator.
+  /// Found during layout.
+  List<RenderBox> _cells = const [];
 
-  List<RenderBox>? _children;
+  /// The height of the row, before applying its own constraints.
+  /// Calculated during layout.
+  double _maxChildHeight = 0.0;
 
-  List<RenderBox>? get children => _children;
+  /// All the children except the separator. This doesn't depend on the layout,
+  /// so it may also be used to calculate the intrinsic sizes.
+  List<RenderBox> _findCells() {
+    final RenderBox? separator = hasSeparator ? lastChild : null;
+    final List<RenderBox> cells = <RenderBox>[];
 
-  void _findChildrenAndSeparator() {
-    _children = [];
-    _renderSeparator = null;
     RenderBox? child = firstChild;
-    while (child != null) {
-      final MultiChildLayoutParentData childParentData =
-          child.parentData as MultiChildLayoutParentData;
-      var recentChild = child;
-      child = childParentData.nextSibling;
-      if (!hasSeparator || child != null) _children!.add(recentChild);
+    while (child != null && child != separator) {
+      cells.add(child);
+      child = childAfter(child);
     }
 
-    if (hasSeparator) _renderSeparator = lastChild;
+    return cells;
   }
 
-  /// The layout constraints provided by your parent are available via the [constraints] getter.
-  ///
-  /// If [sizedByParent] is true, then this function should not actually change
-  /// the dimensions of this render object. Instead, that work should be done by
-  /// [performResize]. If [sizedByParent] is false, then this function should
-  /// both change the dimensions of this render object and instruct its children
-  /// to layout.
-  ///
-  /// In implementing this function, you must call [layout] on each of your
-  /// children, passing true for parentUsesSize if your layout information is
-  /// dependent on your child's layout information. Passing true for
-  /// parentUsesSize ensures that this render object will undergo layout if the
-  /// child undergoes layout. Otherwise, the child can change its layout
-  /// information without informing this render object.
   @override
   void performLayout() {
     //
-    _findChildrenAndSeparator();
+    final List<RenderBox> cells = _cells = _findCells();
+    final RenderBox? separator = _renderSeparator = hasSeparator ? lastChild : null;
 
-    if (_children!.isEmpty) {
-      size = constraints.constrain(Size.zero);
-    } else {
-      _performLayout();
-    }
-  }
+    final BoxConstraints constraints = this.constraints;
 
-  late double maxChildHeight;
-
-  void _performLayout() {
-    //
-    var availableWidth = max(
-      0.0,
-      constraints.maxWidth -
-          (outerDistance * 2) -
-          (innerDistance * (_children!.length - 1)),
+    // The separator occupies no space, so the layout doesn't depend on its size.
+    // It's positioned later, when it's painted.
+    separator?.layout(
+      BoxConstraints(maxHeight: constraints.maxHeight),
+      parentUsesSize: false,
     );
 
-    int numberOfSpacers = 0;
-    List<double> childWidth = [];
-    double totalChildrenWidth = 0.0;
-    for (RenderBox child in _children!) {
-      if (child is RenderRowSpacer) numberOfSpacers++;
-      var maxIntrinsicWidth = child.computeMaxIntrinsicWidth(constraints.maxHeight);
-      childWidth.add(maxIntrinsicWidth);
-      totalChildrenWidth += maxIntrinsicWidth;
+    if (cells.isEmpty) {
+      _maxChildHeight = 0.0;
+      size = constraints.constrain(Size.zero);
+      return;
     }
 
-    double spacerWidth = (availableWidth <= totalChildrenWidth)
-        ? 0.0
-        : (availableWidth - totalChildrenWidth) / numberOfSpacers;
+    final double availableWidth = max(
+      0.0,
+      constraints.maxWidth - (outerDistance * 2) - (innerDistance * (cells.length - 1)),
+    );
 
+    // 1) The preferred width of each cell.
+    //
+    // Note: This must ask for the max intrinsic width with `getMaxIntrinsicWidth`,
+    // which caches its result until the cell changes. Otherwise, each layout of the
+    // row would measure all the cells again (which is expensive for text).
+    final List<double> preferredWidths = List<double>.filled(cells.length, 0.0);
+    double totalPreferredWidth = 0.0;
+    int numberOfSpacers = 0;
+
+    for (int i = 0; i < cells.length; i++) {
+      final RenderBox cell = cells[i];
+      if (cell is RenderRowSpacer) numberOfSpacers++;
+
+      final double preferredWidth = cell.getMaxIntrinsicWidth(constraints.maxHeight);
+      preferredWidths[i] = preferredWidth;
+      totalPreferredWidth += preferredWidth;
+    }
+
+    // The free space, if there is any, is divided between the spacers.
+    final double spacerWidth = (availableWidth <= totalPreferredWidth)
+        ? 0.0
+        : (availableWidth - totalPreferredWidth) / numberOfSpacers;
+
+    // Cells that don't fit always shrink. They only grow if they should fill the row.
     double scale = (fill)
-        ? availableWidth / totalChildrenWidth
-        : min(1.0, availableWidth / totalChildrenWidth);
+        ? availableWidth / totalPreferredWidth
+        : min(1.0, availableWidth / totalPreferredWidth);
 
     if (scale.isNaN) scale = 1.0;
 
-    List<double> maxChildWidth = [];
-    for (double width in childWidth) {
-      maxChildWidth.add(width * scale);
-    }
+    // 2) Lay out the cells, scaling their preferred widths.
+    double maxChildHeight = 0.0;
 
-    maxChildHeight = 0.0;
+    for (int i = 0; i < cells.length; i++) {
+      final double width = preferredWidths[i] * scale;
 
-    for (int i = 0; i < _children!.length; i++) {
-      double width = maxChildWidth[i];
+      final RenderBox cell = cells[i];
 
-      BoxConstraints innerConstraints = BoxConstraints(
+      cell.layout(
+        BoxConstraints(
           maxHeight: constraints.maxHeight,
           maxWidth: width,
-          minWidth: fill ? width : 0.0);
+          minWidth: fill ? width : 0.0,
+        ),
+        parentUsesSize: true,
+      );
 
-      var child = _children![i];
-      child.layout(innerConstraints, parentUsesSize: true);
-      maxChildHeight = max(maxChildHeight, child.size.height);
+      maxChildHeight = max(maxChildHeight, cell.size.height);
     }
 
     maxChildHeight =
         max(min(maxChildHeight, constraints.maxHeight), constraints.minHeight);
 
+    _maxChildHeight = maxChildHeight;
+
+    // 3) Position the cells.
+    //
     // Apply horizontal alignment only if there are no RowSpacers and should not fill.
-    double alignmentDisplacement = ((numberOfSpacers == 0) &&
-                (availableWidth > totalChildrenWidth) &&
+    final double alignmentDisplacement = ((numberOfSpacers == 0) &&
+                (availableWidth > totalPreferredWidth) &&
                 (mainAxisSize == MainAxisSize.max)) &&
             !fill
-        ? (availableWidth - totalChildrenWidth) * ((alignment.x + 1) / 2)
+        ? (availableWidth - totalPreferredWidth) * ((alignment.x + 1) / 2)
         : 0.0;
 
     double dx = outerDistance + alignmentDisplacement;
 
-    for (int i = 0; i < _children!.length; i++) {
-      var child = _children![i];
-      final MultiChildLayoutParentData childParentData =
-          child.parentData as MultiChildLayoutParentData;
-      childParentData.offset = Offset(dx, dy(child, maxChildHeight));
-      dx += child.size.width + innerDistance;
-      if (child is RenderRowSpacer) dx += spacerWidth;
+    for (final RenderBox cell in cells) {
+      final cellParentData = cell.parentData! as MultiChildLayoutParentData;
+      cellParentData.offset = Offset(dx, _dy(cell, maxChildHeight));
+      dx += cell.size.width + innerDistance;
+      if (cell is RenderRowSpacer) dx += spacerWidth;
     }
 
     dx = dx - innerDistance + outerDistance;
@@ -360,173 +368,125 @@ class _RenderRowSuperBox extends RenderBox
       size = constraints.constrain(Size(dx, maxChildHeight));
     else
       size = constraints.constrain(Size(constraints.maxWidth, maxChildHeight));
-
-    if (hasSeparator) {
-      var innerConstraints = BoxConstraints(maxHeight: constraints.maxHeight);
-      renderSeparator!.layout(innerConstraints, parentUsesSize: false);
-    }
   }
 
-  double dy(RenderBox child, double maxChildHeight) {
-    final childHeight = child.size.height;
-    final double centerY = (maxChildHeight - childHeight) / 2.0;
-    var result = centerY + alignment.y * centerY;
+  /// The vertical position of the [child] inside the given [height],
+  /// according to the [alignment].
+  double _dy(RenderBox child, double height) {
+    final double centerY = (height - child.size.height) / 2.0;
+    final double result = centerY + alignment.y * centerY;
     if (result.isNaN) throw AssertionError();
     return result;
   }
 
+  /// The cell painted on top is the first one to be hit-tested. The separator is not
+  /// hit-tested, since the same separator is painted in many places (once per gap).
   @override
   bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
-    return invert
-        ? _invertedHitTestChildren(result, position: position)
-        : _normalHitTestChildren(result, position: position);
-  }
+    final List<RenderBox> cells = _cells;
+    final int step = invert ? 1 : -1;
 
-  bool _normalHitTestChildren(BoxHitTestResult result, {required Offset position}) {
-    RenderBox? child = lastChild;
-    while (child != null) {
-      // The x, y parameters have the top left of the node's box as the origin.
-      final childParentData = child.parentData! as ContainerBoxParentData<RenderBox>;
+    for (int i = invert ? 0 : cells.length - 1; i >= 0 && i < cells.length; i += step) {
+      final RenderBox cell = cells[i];
+      final cellParentData = cell.parentData! as MultiChildLayoutParentData;
+
       final bool isHit = result.addWithPaintOffset(
-        offset: childParentData.offset,
+        offset: cellParentData.offset,
         position: position,
         hitTest: (BoxHitTestResult result, Offset transformed) {
-          assert(transformed == position - childParentData.offset);
-          return child!.hitTest(result, position: transformed);
+          assert(transformed == position - cellParentData.offset);
+          return cell.hitTest(result, position: transformed);
         },
       );
-      if (isHit) {
-        return true;
-      }
-      child = childParentData.previousSibling;
+
+      if (isHit) return true;
     }
+
     return false;
   }
 
-  bool _invertedHitTestChildren(BoxHitTestResult result, {required Offset position}) {
-    RenderBox? child = firstChild;
-
-    while (child != null) {
-      // The x, y parameters have the top left of the node's box as the origin.
-      final childParentData = child.parentData! as ContainerBoxParentData<RenderBox>;
-
-      final bool isHit = result.addWithPaintOffset(
-        offset: childParentData.offset,
-        position: position,
-        hitTest: (BoxHitTestResult result, Offset transformed) {
-          assert(transformed == position - childParentData.offset);
-          return child!.hitTest(result, position: transformed);
-        },
-      );
-      if (isHit) {
-        return true;
-      }
-      child = childParentData.nextSibling;
-    }
-    return false;
-  }
-
+  /// Usually, each cell is painted on top of the previous ones. If [invert] is true,
+  /// the cells are painted from the last to the first, so that the first ones are
+  /// on top.
   @override
   void paint(PaintingContext context, Offset offset) {
-    if (invert)
-      invertPaint(context, offset);
-    else
-      defaultPaint(context, offset);
-  }
+    final List<RenderBox> cells = _cells;
+    final int start = invert ? cells.length - 1 : 0;
+    final int step = invert ? -1 : 1;
 
-  @override
-  void defaultPaint(PaintingContext context, Offset offset) {
+    // Separators below the cells are all painted before the cells.
     if (!separatorOnTop)
-      for (int i = 0; i < _children!.length; i++) {
-        final MultiChildLayoutParentData? childParentData =
-            _children![i].parentData as MultiChildLayoutParentData?;
-        _paintSeparators(i, context, offset, childParentData);
+      for (int i = start; i >= 0 && i < cells.length; i += step) {
+        _paintSeparatorBefore(i, context, offset);
       }
 
-    for (int i = 0; i < _children!.length; i++) {
-      var child = _children![i];
-      final MultiChildLayoutParentData childParentData =
-          child.parentData as MultiChildLayoutParentData;
-      context.paintChild(child, childParentData.offset + offset);
-      if (separatorOnTop) _paintSeparators(i, context, offset, childParentData);
+    for (int i = start; i >= 0 && i < cells.length; i += step) {
+      final RenderBox cell = cells[i];
+      final cellParentData = cell.parentData! as MultiChildLayoutParentData;
+      context.paintChild(cell, cellParentData.offset + offset);
+
+      // A separator on top is painted right after the two cells it separates.
+      if (separatorOnTop) _paintSeparatorBefore(invert ? i + 1 : i, context, offset);
     }
   }
 
-  void invertPaint(PaintingContext context, Offset offset) {
-    var children = _children!.reversed.toList();
+  /// Paints the separator in the gap between the cell with the given [index] and the
+  /// previous cell (if there is a separator, and there is such a gap).
+  void _paintSeparatorBefore(int index, PaintingContext context, Offset offset) {
+    final RenderBox? separator = _renderSeparator;
+    if (separator == null || index <= 0 || index >= _cells.length) return;
 
-    if (!separatorOnTop)
-      for (int i = 0; i < children.length; i++) {
-        final MultiChildLayoutParentData? childParentData =
-            children[i].parentData as MultiChildLayoutParentData?;
-        _paintSeparators(i, context, offset, childParentData);
-      }
+    final cellParentData = _cells[index].parentData! as MultiChildLayoutParentData;
 
-    for (int i = 0; i < children.length; i++) {
-      var child = children[i];
-      final MultiChildLayoutParentData childParentData =
-          child.parentData as MultiChildLayoutParentData;
-      context.paintChild(child, childParentData.offset + offset);
-      if (separatorOnTop) _paintSeparators(i, context, offset, childParentData);
-    }
-  }
-
-  void _paintSeparators(int i, PaintingContext context, Offset offset,
-      MultiChildLayoutParentData? childParentData) {
-    if (hasSeparator && i > 0 && i < _children!.length) {
-      context.paintChild(
-          renderSeparator!,
-          offset +
-              Offset(
-                childParentData!.offset.dx -
-                    (innerDistance + renderSeparator!.size.width) / 2,
-                dy(renderSeparator!, maxChildHeight),
-              ));
-    }
+    context.paintChild(
+      separator,
+      offset +
+          Offset(
+            cellParentData.offset.dx - (innerDistance + separator.size.width) / 2,
+            _dy(separator, _maxChildHeight),
+          ),
+    );
   }
 
   @override
-  double computeMinIntrinsicWidth(double height) {
-    _findChildrenAndSeparator();
-    double dx = 0.0;
-    for (RenderBox child in _children!) {
-      dx += child.computeMinIntrinsicWidth(height);
-    }
-    if (_children!.isNotEmpty) dx += ((_children!.length - 1) * innerDistance);
-    dx += outerDistance * 2;
-    return dx;
-  }
+  double computeMinIntrinsicWidth(double height) =>
+      _intrinsicWidth((RenderBox cell) => cell.getMinIntrinsicWidth(height));
 
   @override
-  double computeMaxIntrinsicWidth(double height) {
-    _findChildrenAndSeparator();
-    double dx = 0.0;
-    for (RenderBox child in _children!) {
-      dx += child.computeMaxIntrinsicWidth(height);
+  double computeMaxIntrinsicWidth(double height) =>
+      _intrinsicWidth((RenderBox cell) => cell.getMaxIntrinsicWidth(height));
+
+  /// The sum of the widths of the cells (given by [cellWidth]), plus the distances.
+  double _intrinsicWidth(double Function(RenderBox cell) cellWidth) {
+    final List<RenderBox> cells = _findCells();
+
+    double width = 0.0;
+    for (final RenderBox cell in cells) {
+      width += cellWidth(cell);
     }
-    if (_children!.isNotEmpty) dx += ((_children!.length - 1) * innerDistance);
-    dx += outerDistance * 2;
-    return dx;
+
+    if (cells.isNotEmpty) width += ((cells.length - 1) * innerDistance);
+    width += outerDistance * 2;
+
+    return width;
   }
 
   @override
   double computeMinIntrinsicHeight(double width) {
-    _findChildrenAndSeparator();
-    double dy = 0.0;
-    for (RenderBox child in _children!) {
-      dy = max(dy, child.computeMinIntrinsicHeight(width));
+    double height = 0.0;
+    for (final RenderBox cell in _findCells()) {
+      height = max(height, cell.getMinIntrinsicHeight(width));
     }
-    return dy;
+    return height;
   }
 
   @override
   double computeMaxIntrinsicHeight(double width) {
-    _findChildrenAndSeparator();
-    double dy = 0.0;
-    for (RenderBox child in _children!) {
-      dy = max(dy, child.computeMaxIntrinsicHeight(width));
+    double height = 0.0;
+    for (final RenderBox cell in _findCells()) {
+      height = max(height, cell.getMaxIntrinsicHeight(width));
     }
-    return dy;
+    return height;
   }
 }
 

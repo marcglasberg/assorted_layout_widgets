@@ -388,4 +388,53 @@ void main() {
       }
     }
   });
+
+  testWidgets('A GlobalKey may be used with more than two children.', (tester) async {
+    final globalKey = GlobalKey();
+
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: SizedBox(
+            width: 200,
+            height: 100,
+            child: SideBySide(
+              key: globalKey,
+              children: const [
+                SizedBox(key: k1, width: 30, height: 10),
+                SizedBox(key: k2, width: 40, height: 10),
+                SizedBox(key: k3, width: 50, height: 10),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+    expect(tester.getTopLeft(find.byKey(k3)).dx, 70);
+
+    // The key is the key of the widget that contains all the children.
+    expect(tester.getSize(find.byKey(globalKey)).width, 200);
+    expect(find.descendant(of: find.byKey(globalKey), matching: find.byKey(k1)),
+        findsOneWidget);
+  });
+
+  testWidgets('The intrinsic width is the intrinsic width of the first child.', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      children: const [
+        SizedBox(key: k1, width: 30, height: 10),
+        SizedBox(key: k2, width: 40, height: 10),
+      ],
+    );
+
+    final RenderBox box = tester.renderObject(find.byType(SideBySide));
+    expect(box.getMinIntrinsicWidth(double.infinity), 30);
+    expect(box.getMaxIntrinsicWidth(double.infinity), 30);
+  });
 }

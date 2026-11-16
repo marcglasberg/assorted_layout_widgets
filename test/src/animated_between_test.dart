@@ -182,4 +182,52 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(calls, 1);
   });
+
+  testWidgets(
+      'The transition still works when the widget is rebuilt in every frame '
+      'of the transition', (tester) async {
+    int calls = 0;
+    void onEnd() => calls++;
+
+    await tester.pumpWidget(_wrap(AnimatedBetween(onEnd: onEnd, child: _boxA())));
+    await tester.pumpAndSettle();
+    expect(tester.getSize(find.byType(AnimatedBetween)), const Size(80, 40));
+
+    // Pumps the widget again (with a new but equal configuration) in each frame.
+    double previousHeight = 40;
+    for (int i = 0; i < 100; i++) {
+      await tester.pumpWidget(_wrap(AnimatedBetween(onEnd: onEnd, child: _tallB())));
+      await tester.pump(const Duration(milliseconds: 16));
+
+      final double height = tester.getSize(find.byType(AnimatedBetween)).height;
+      expect(height, greaterThanOrEqualTo(previousHeight));
+      previousHeight = height;
+    }
+
+    expect(tester.takeException(), isNull);
+    expect(tester.getSize(find.byType(AnimatedBetween)), const Size(80, 90));
+    expect(calls, 1);
+  });
+
+  testWidgets('showHide animates the child in and out', (tester) async {
+    Widget showHide({required bool show}) =>
+        _wrap(AnimatedBetween.showHide(show: show, child: _boxA()));
+
+    await tester.pumpWidget(showHide(show: false));
+    await tester.pumpAndSettle();
+    expect(tester.getSize(find.byType(AnimatedBetween)), Size.zero);
+
+    await tester.pumpWidget(showHide(show: true));
+    await tester.pumpAndSettle();
+    expect(tester.getSize(find.byType(AnimatedBetween)), const Size(80, 40));
+
+    await tester.pumpWidget(showHide(show: false));
+    await tester.pumpAndSettle();
+    expect(tester.getSize(find.byType(AnimatedBetween)), Size.zero);
+  });
+
+  test('Debug information is not printed by default', () {
+    expect(AnimatedBetween(child: _boxA()).printDebug, isFalse);
+    expect(AnimatedBetween.showHide(show: true, child: _boxA()).printDebug, isFalse);
+  });
 }

@@ -96,7 +96,8 @@ class RenderFitHorizontally extends RenderProxyBox {
     markNeedsPaint();
   }
 
-  /// How to inscribe the child into the space allocated during layout.
+  /// How much the child is allowed to shrink horizontally, from 0.0 (no limit)
+  /// to 1.0 (doesn't shrink).
   double get shrinkLimit => _shrinkLimit;
   double _shrinkLimit;
 
@@ -104,10 +105,12 @@ class RenderFitHorizontally extends RenderProxyBox {
     if (_shrinkLimit == value) return;
     _shrinkLimit = value;
     _clearPaintData();
-    markNeedsPaint();
+
+    // The constraints given to the child depend on the shrink limit.
+    markNeedsLayout();
   }
 
-  /// How to inscribe the child into the space allocated during layout.
+  /// If the child is resized (keeping its aspect ratio) to fit the available height.
   bool get fitsHeight => _fitsHeight;
   bool _fitsHeight;
 
@@ -115,7 +118,9 @@ class RenderFitHorizontally extends RenderProxyBox {
     if (_fitsHeight == value) return;
     _fitsHeight = value;
     _clearPaintData();
-    markNeedsPaint();
+
+    // The constraints given to the child depend on it.
+    markNeedsLayout();
   }
 
   /// How to align the child within its parent's bounds.
@@ -159,8 +164,12 @@ class RenderFitHorizontally extends RenderProxyBox {
         // Special case when shrinkLimit is 1.0, we can calculate faster.
         if (shrinkLimit == 1.0) {
           double intrinsicHeight = child!.getMinIntrinsicHeight(constraints.maxWidth);
-          var calc = constraints.maxHeight * intrinsicHeight;
-          double width = (calc == 0.0) ? 0.0 : constraints.maxWidth / calc;
+
+          // The child will be scaled by `maxHeight / intrinsicHeight` to fit the
+          // height, so this is the width that fits the available width after that.
+          double width = (constraints.maxHeight == 0.0)
+              ? 0.0
+              : intrinsicHeight * constraints.maxWidth / constraints.maxHeight;
 
           child!.layout(BoxConstraints(maxWidth: width, maxHeight: intrinsicHeight),
               parentUsesSize: true);
@@ -327,15 +336,16 @@ class RenderFitHorizontally extends RenderProxyBox {
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    if (size.isEmpty || child!.size.isEmpty) return;
+    final RenderBox? child = this.child;
+    if (child == null || size.isEmpty || child.size.isEmpty) return;
+
     _updatePaintData();
-    if (child != null) {
-      if (_hasVisualOverflow!)
-        context.pushClipRect(
-            needsCompositing, offset, Offset.zero & size, _paintChildWithTransform);
-      else
-        _paintChildWithTransform(context, offset);
-    }
+
+    if (_hasVisualOverflow!)
+      context.pushClipRect(
+          needsCompositing, offset, Offset.zero & size, _paintChildWithTransform);
+    else
+      _paintChildWithTransform(context, offset);
   }
 
   @override
@@ -388,7 +398,7 @@ class RenderFitHorizontally extends RenderProxyBox {
     super.debugFillProperties(properties);
     properties.add(DoubleProperty('shrink', shrink));
     properties.add(DoubleProperty('shrinkLimit', shrinkLimit));
-    properties.add(DiagnosticsProperty<Alignment>('alignment', alignment as Alignment?));
+    properties.add(DiagnosticsProperty<AlignmentGeometry>('alignment', alignment));
     properties.add(EnumProperty<TextDirection>('textDirection', textDirection, defaultValue: null));
   }
 }

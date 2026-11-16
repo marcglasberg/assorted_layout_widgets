@@ -138,7 +138,7 @@ class AnimatedBetween extends StatefulWidget {
     this.clipBehavior = Clip.none,
     AnimatedBetweenMode mode = AnimatedBetweenMode.fit,
     this.onEnd,
-    this.printDebug = true,
+    this.printDebug = false,
   }) : assert(sizeDurationFactor >= 1.0, 'sizeDurationFactor must be >= 1.0'),
        modeLargerChild = mode,
        modeShorterChild = AnimatedBetweenMode.fit,
@@ -245,6 +245,11 @@ class AnimatedBetween extends StatefulWidget {
 class _AnimatedBetweenState extends State<AnimatedBetween> with TickerProviderStateMixin {
   late final AnimationController _fadeController;
   late final AnimationController _sizeController;
+
+  /// Notifies when any of the two animations change. It's created only once, so that
+  /// the [AnimatedBuilder] doesn't need to change what it listens to in each build.
+  late final Listenable _animations =
+      Listenable.merge(<Listenable>[_fadeController, _sizeController]);
 
   /// Pending delayed start of the fade animation, used on grow
   /// transitions so the fade ends together with the (longer) size
@@ -624,7 +629,7 @@ class _AnimatedBetweenState extends State<AnimatedBetween> with TickerProviderSt
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: Listenable.merge(<Listenable>[_fadeController, _sizeController]),
+      animation: _animations,
       builder: (BuildContext context, Widget? child) {
         if (!_isTransitioning) {
           if (_currentChild == null) {

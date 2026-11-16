@@ -301,7 +301,8 @@ class SideBySide extends MultiChildRenderObjectWidget {
     // Create something like: s(1, s(2,3))
     for (int i = children.length - 2; i >= 0; i--) {
       nestedSideBySide = SideBySide._(
-        key: key,
+        // Only the outermost one gets the key (a GlobalKey can't be used twice).
+        key: (i == 0) ? key : null,
         startChild: children[i],
         endChild: nestedSideBySide,
         crossAxisAlignment: crossAxisAlignment,
@@ -744,12 +745,12 @@ class _RenderSideBySide extends RenderBox
 
   @override
   double computeMinIntrinsicWidth(double height) {
-    return startChild.computeMinIntrinsicWidth(height);
+    return startChild.getMinIntrinsicWidth(height);
   }
 
   @override
   double computeMaxIntrinsicWidth(double height) {
-    return startChild.computeMaxIntrinsicWidth(height);
+    return startChild.getMaxIntrinsicWidth(height);
   }
 
   /// The height of this widget depends only on its width, so the min and max intrinsic

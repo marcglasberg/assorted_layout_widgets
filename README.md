@@ -498,8 +498,9 @@ ColumnSuper({
 * **`innerDistance`** is the distance in pixels between the cells. It can be negative, in
   which case the cells will overlap.
 
-* **`invert`** if true will paint the cells that come later on top of the ones that came
-  before. This is specially useful when cells overlap (negative `innerDistance`).
+* **`invert`** if true will paint the cells that come first on top of the ones that come
+  later. If false (the default) the cells that come later are painted on top. This is
+  specially useful when cells overlap (negative `innerDistance`).
 
 * **`alignment`** will align the cells horizontally if they are smaller than the available
   horizontal space.

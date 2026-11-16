@@ -95,15 +95,23 @@ class _ButtonState extends State<Button> {
   @override
   Widget build(BuildContext context) {
     //
+    Widget content = widget.builder(isPressed: _isPressed);
+
+    final EdgeInsetsGeometry? clickAreaMargin = widget.clickAreaMargin;
+    if (clickAreaMargin != null)
+      content = Padding(padding: clickAreaMargin, child: content);
+
+    // The clickable area is only painted when debugging it. Otherwise it's
+    // transparent, and there is no need to add a widget just to paint nothing
+    // (the listener below is opaque, so the whole area is clickable anyway).
+    if (widget.colorOfClickableArea.a != 0)
+      content = ColoredBox(color: widget.colorOfClickableArea, child: content);
+
     // Here we use a listener, not a GestureDetector, because we want
     // allow the parent to detect the tap when [onTap] is null.
     var listener = Listener(
       behavior: HitTestBehavior.opaque,
-      child: Container(
-        color: widget.colorOfClickableArea,
-        padding: widget.clickAreaMargin,
-        child: widget.builder(isPressed: _isPressed),
-      ),
+      child: content,
 
       // Visual change starts on onPointerDown.
       onPointerDown: (_) {

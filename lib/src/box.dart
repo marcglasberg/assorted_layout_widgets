@@ -364,6 +364,7 @@ class Box extends StatelessWidget {
       height: height ?? this.height,
       alignment: alignment ?? this.alignment,
       random: random ?? _random,
+      removePaddingWhenNoChild: removePaddingWhenNoChild,
       decoration: decoration ?? this.decoration,
       decorationPosition: decorationPosition ?? this.decorationPosition,
       fixedColor: _fixedColor,
@@ -431,7 +432,7 @@ class Box extends StatelessWidget {
     double? height,
   }) =>
       copyWith(
-        width: width == null ? this.width : max(0, ((this.height ?? 0.0) + width)),
+        width: width == null ? this.width : max(0, ((this.width ?? 0.0) + width)),
         height: height == null ? this.height : max(0, ((this.height ?? 0.0) + height)),
       );
 
