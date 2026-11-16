@@ -30,7 +30,7 @@ class ButtonBarSuper extends StatelessWidget {
 
   /// The horizontal alignment of the buttons in each line.
   ///
-  /// Defaults to [WrapSuperAlignment.left].
+  /// Defaults to [WrapSuperAlignment.start].
   final WrapSuperAlignment alignment;
 
   /// How the buttons are distributed into lines.
@@ -51,7 +51,7 @@ class ButtonBarSuper extends StatelessWidget {
     super.key,
     this.spacing = 0.0,
     this.overflowSpacing = 0.0,
-    this.alignment = WrapSuperAlignment.left,
+    this.alignment = WrapSuperAlignment.start,
     this.wrapType = WrapType.balanced,
     this.wrapFit = WrapFit.larger,
     this.children = const <Widget>[],

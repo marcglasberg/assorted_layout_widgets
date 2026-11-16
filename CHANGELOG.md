@@ -2,7 +2,43 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
 
-## 13.2.0
+## 13.3.0
+
+* `WrapSuper` now supports right-to-left text
+  ([#16](https://github.com/marcglasberg/assorted_layout_widgets/issues/16)). The new
+  `textDirection` parameter defaults to the ambient `Directionality`. In right-to-left
+  text, the children of each line are placed from right to left. The line breaks don't
+  change.
+
+* New `WrapSuperAlignment.start` and `WrapSuperAlignment.end` alignments, which follow the
+  text direction. `start` is now the default alignment of `WrapSuper` and
+  `ButtonBarSuper`, instead of `left`. The existing `left`, `right` and `center` alignments
+  are unchanged, and ignore the text direction.
+
+* **Behavior change:** Inside a right-to-left `Directionality`, a `WrapSuper` or
+  `ButtonBarSuper` now places its children from right to left. If you don't set
+  `alignment`, its lines are now aligned to the right. To keep the previous layout, use
+  `textDirection: TextDirection.ltr` and `alignment: WrapSuperAlignment.left`.
+
+* New `WrapSuper.crossAxisAlignment` parameter
+  ([#28](https://github.com/marcglasberg/assorted_layout_widgets/issues/28)). It aligns
+  children shorter than the tallest child in their line to the top (`start`, the default),
+  center or bottom (`end`) of the line, just like in a `Wrap`.
+
+* Fix: The dry layout and intrinsic height of a `WrapSuper` now match its actual layout.
+  Before, they always used the `WrapType.fit` line breaks and the children's own widths,
+  so they were wrong for `WrapType.balanced` (the default) and for `WrapFit.divided`,
+  `proportional` and `larger`. They also reported the width of the widest line, while
+  `WrapSuper` actually takes all the available width. This affected widgets that measure
+  their children, such as `IntrinsicHeight`.
+
+* Fix: The max intrinsic width of a `WrapSuper` now includes the `spacing` between its
+  children. Before, a `WrapSuper` given its max intrinsic width (for example, inside an
+  `IntrinsicWidth`) would wrap its last child to a second line.
+
+* Fix: A `WrapSuper` with an unbounded width (for example, inside an `UnconstrainedBox`)
+  now places all its children in a single line, and is as wide as that line. Before, it
+  threw an error.
 
 * `ScrollShadow` now supports horizontal scrollables. They show shadows at the left and
   right edges, configured by the new `left*` and `right*` parameters (visibility, color,

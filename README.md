@@ -742,19 +742,30 @@ algorithms</a>.
 
 `WrapSuper` displays its children in lines. It will leave `spacing` horizontal space
 between each child, and it will leave `lineSpacing` vertical space between each line. The
-contents of each line will then be aligned according to the `alignment`. The algorithm for
-the line-breaks is chosen by `wrapType`.
+algorithm for the line-breaks is chosen by `wrapType`.
 
 ```
 WrapSuper({
   Key key,
   WrapType wrapType,
+  WrapFit wrapFit,
   double spacing,
   double lineSpacing,
   WrapSuperAlignment alignment,
+  WrapCrossAlignment crossAxisAlignment,
+  TextDirection textDirection,
   List<Widget> children,
 });
-```          
+```
+
+Each line is aligned horizontally according to the `alignment`: `start` (the default),
+`end`, `center`, `left` or `right`. Children shorter than the tallest child in their line
+are aligned vertically according to the `crossAxisAlignment`: `start` (top, the default),
+`center` or `end` (bottom).
+
+The `textDirection` defaults to the ambient `Directionality`. In right-to-left text,
+children are placed from right to left, `start` aligns lines to the right, and `end` aligns
+them to the left. The `left` and `right` alignments ignore the text direction.
 
 `WrapSuper` with `WrapType.fit` uses a
 <a href="https://en.wikipedia.org/wiki/Greedy_algorithm">greedy algorithm</a> for line
