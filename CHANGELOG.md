@@ -1,8 +1,8 @@
 Sponsored by [MyText.ai](https://mytext.ai)
 
-[![](./example/SponsoredByMyTextAi.png)](https://mytext.ai)
+[![](./example/SponsoredByMyTextAi.jpg)](https://mytext.ai)
 
-## 13.3.1
+## 13.3.2
 
 * `WrapSuper` now supports right-to-left text
   ([#16](https://github.com/marcglasberg/assorted_layout_widgets/issues/16)). The new
