@@ -1,6 +1,6 @@
 name: assorted_layout_widgets
 description: Widgets SideBySide, RowProportional, AnimatedBetween, Box, Pad, Delayed, WrapSuper, OtpCodeVerificationField, ButtonBarSuper, NormalizedOverflowBox, showDialogSuper and much more.
-version: 13.3.2
+version: 13.3.3
 homepage: https://github.com/marcglasberg/assorted_layout_widgets
 # author: Marcelo Glasberg <marcglasberg@gmail.com>
 topics:
@@ -11,19 +11,19 @@ topics:
   - button
 
 environment:
-  sdk: '>=3.12.0 <4.0.0'
-  flutter: ">=3.44.0"
+  sdk: '>=3.13.0 <4.0.0'
+  flutter: ">=3.47.0"
 
 dependencies:
-  align_positioned: ^5.0.1
+  align_positioned: ^5.1.2
   characters: ^1.4.1
   clock: ^1.1.0
-  cupertino_ui: ^1.0.0
+  cupertino_ui: ^1.1.7
   flutter:
     sdk: flutter
   intl: ^0.20.2
-  material_ui: ^1.0.1
-  matrix4_transform: ^4.0.1
+  material_ui: ^1.11.1
+  matrix4_transform: ^4.1.0
 
 dev_dependencies:
   flutter_test:

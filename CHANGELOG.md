@@ -2,6 +2,11 @@ Sponsored by [MyText.ai](https://mytext.ai)
 
 [![](./example/SponsoredByMyTextAi.jpg)](https://mytext.ai)
 
+## 13.3.3
+
+* Update the layout and design dependencies for Flutter 3.50 compatibility.
+* Require Dart >=3.13.0 and Flutter >=3.47.0.
+
 ## 13.3.2
 
 * `WrapSuper` now supports right-to-left text

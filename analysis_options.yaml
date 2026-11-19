@@ -135,7 +135,6 @@ linter:
     # Always prefer function references over typedefs.
     # Jumping twice in code to see the signature of a lambda sucks. This is different from the flutter analysis_options
     # https://dart-lang.github.io/linter/lints/avoid_private_typedef_functions.html
-    - avoid_private_typedef_functions
 
     # Don't explicitly set defaults
     # Dart SDK: >= 2.8.0-dev.1.0 • (Linter v0.1.107)
@@ -707,7 +706,6 @@ linter:
 
     # Remove async/await clutter when not required
     # https://dart-lang.github.io/linter/lints/unnecessary_await_in_return.html
-    - unnecessary_await_in_return
 
     # Remove unnecessary braces
     # https://dart-lang.github.io/linter/lints/unnecessary_brace_in_string_interps.html
